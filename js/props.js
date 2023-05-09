@@ -193,10 +193,6 @@ export default {
     this.setupAllBuildings();
     this.setupAllZeds();
     this.setupAllPaths();
-    /*
-    for (const prop in buildingProps) {
-      this.generateCard(prop);
-    };*/
     this.bind();
     this.preloadBuidlings();
     this.preloadItems();
@@ -623,12 +619,6 @@ export default {
 
   removePath: function(x, y) {
     paths[x][y] = undefined;
-  },
-
-  generateCard: function(buildingName) {
-    let props = buildingProps[buildingName];
-    let type = this.getBuildingTypeOf(buildingName);
-    let actions = this.getBuildingActionsFor(type);
   },
 
   getBuildingProps: function() {

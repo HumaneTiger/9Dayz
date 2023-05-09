@@ -140,6 +140,29 @@
   background-repeat: no-repeat;
 }
 
+.card .inner .status {
+  position: absolute;
+  z-index: 1;
+  top: 26px;
+  right: 26px;
+}
+.card .inner .status div {
+  display: none;
+  width: 56px;
+  height: 56px;
+  padding: 0 8px;
+  background: url(../img/card/status.png) center center no-repeat;
+  background-size: contain;
+}
+.card .inner .status div.status-locked {
+  background-image: url(../img/card/status-locked.png);
+}
+.card .inner .status div.status-looted {
+  background-image: url(../img/card/status-looted.png);
+}
+.card .inner .status div.status-infested {
+  background-image: url(../img/card/status-infested.png);
+}
 .card h2 {
   position: absolute;
   top: 32px;

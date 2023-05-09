@@ -6,6 +6,7 @@ let ambientDelay = 10;
 export default {
 
     init() {
+      this.playAmbientLoop();
     },
 
     playAmbientLoop: function() {
@@ -15,7 +16,6 @@ export default {
         if (ambientIndex > 4) ambientIndex = 1;
         this.playAmbientLoop();
       }.bind(this), (ambientTimes[ambientIndex-1] + ambientDelay) * 1000);
-
     },
 
     music(name, delay, vol) {

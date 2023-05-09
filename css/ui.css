@@ -239,7 +239,7 @@ ul#properties li.time {
   left: 520px;
   top: 340px;
 }
-#inventory {
+#inventory .inner {
   padding: 45px 40px;
 }
 #inventory .slot {
@@ -287,7 +287,7 @@ ul#properties li.time {
   position: absolute;
   bottom: 34px;
   width: 100%;
-  margin: 0 -45px;
+  margin: 0;
   text-align: center;
 }
 #inventory p.info .material-symbols-outlined {

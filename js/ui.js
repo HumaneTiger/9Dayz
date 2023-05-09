@@ -148,7 +148,7 @@ export default {
 
     if (!amientLoopStarted) {
       amientLoopStarted = true;
-      Audio.playAmbientLoop();
+      Audio.init();
     }
 
     if (clickAction) {

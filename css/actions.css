@@ -46,10 +46,14 @@
 #cards .card li.locked .additional {
   display: none;
 }
-#cards .card.locked h2:after {
-  content: ' (locked)';
-  font-size: 26px;
-  line-height: 1em;
+#cards .card.locked .status-locked {
+  display: inline-block;
+}
+#cards .card.looted .status-looted {
+  display: inline-block;
+}
+#cards .card.infested .status-infested {
+  display: inline-block;
 }
 #cards .card li.locked .additional-locked {
   display: block;

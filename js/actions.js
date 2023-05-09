@@ -74,6 +74,7 @@ export default {
             if (clickCard.querySelector('ul.items li.item') === null) {
               clickCard.querySelector('ul.items').remove();
               clickCard.querySelector('div.banner')?.classList.remove('is--hidden');
+              clickCard.classList.add('looted');
               // check if card can be removed (no actions left)
               Cards.updateCardDeck();
             }

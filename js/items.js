@@ -26,9 +26,14 @@ export default {
     Props.addToInventory('drink-1', 1);
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
-
-    Props.addToInventory('stone', 1);
-    Props.addToInventory('tape', 1);
+    /*
+    Props.addToInventory('stone', 2);
+    Props.addToInventory('tape', 2);
+    Props.addToInventory('branch', 2);
+    Props.addToInventory('stump', 1);
+    Props.addToInventory('straw-wheet', 1);
+    Props.addToInventory('pepper', 1);
+    */
 
     this.generateInventorySlots();
     this.fillInventorySlots();
@@ -69,6 +74,8 @@ export default {
     if (hoverButton) {
       if (hoverButton.classList.contains('active')) {
         craftContainer.querySelector('p.info').textContent = "Click to " + hoverButton.dataset.action;
+      } else if (hoverButton.classList.contains('only1')) {
+        craftContainer.querySelector('p.info').textContent = "Can't do - can carry only one";
       } else {
         craftContainer.querySelector('p.info').textContent = "Can't do - items missing";
       }
@@ -431,7 +438,10 @@ export default {
   checkCraftPrereq: function() {
     const here = Player.getPlayerPosition();
     const buildingsHere = Map.getBuildingsAt(here.x, here.y);
-    craftContainer.querySelectorAll('.button-craft').forEach((el) => el.classList.remove('active'));
+    craftContainer.querySelectorAll('.button-craft').forEach((el) => {
+      el.classList.remove('active');
+      el.classList.remove('only1');
+    });
     let totalCrafting = 0;
     // meat
     if (inventory.items['duck']?.amount > 0 && inventory.items['knife']?.amount > 0) {
@@ -439,14 +449,22 @@ export default {
       totalCrafting++;
     }
     // wooden club
-    if ((inventory.items['fail']?.amount > 0 || inventory.items['hacksaw']?.amount > 0) && inventory.items['stump']?.amount > 0 && !inventory.items['wooden-club']?.amount) {
-      craftContainer.querySelector('.button-craft[data-item="wooden-club"]').classList.add('active');
-      totalCrafting++;
+    if ((inventory.items['fail']?.amount > 0 || inventory.items['hacksaw']?.amount > 0) && inventory.items['stump']?.amount > 0) {
+      if (inventory.items['wooden-club']?.amount) {
+        craftContainer.querySelector('.button-craft[data-item="wooden-club"]').classList.add('only1');
+      } else {
+        craftContainer.querySelector('.button-craft[data-item="wooden-club"]').classList.add('active');
+        totalCrafting++;  
+      }
     }
     // improvised axe
-    if (inventory.items['tape']?.amount > 0 && inventory.items['branch']?.amount > 0 && inventory.items['stone']?.amount > 0 && !inventory.items['improvised-axe']?.amount) {
-      craftContainer.querySelector('.button-craft[data-item="improvised-axe"]').classList.add('active');
-      totalCrafting++;
+    if (inventory.items['tape']?.amount > 0 && inventory.items['branch']?.amount > 0 && inventory.items['stone']?.amount > 0) {
+      if (inventory.items['improvised-axe']?.amount) {
+        craftContainer.querySelector('.button-craft[data-item="improvised-axe"]').classList.add('only1');
+      } else {
+        craftContainer.querySelector('.button-craft[data-item="improvised-axe"]').classList.add('active');
+        totalCrafting++;
+      }
     }
     // fireplace
     if (inventory.items['stone']?.amount > 0 && inventory.items['stump']?.amount > 0 && inventory.items['straw-wheet']?.amount > 0) {
@@ -454,7 +472,7 @@ export default {
       totalCrafting++;
     }
     // roast
-    if (buildingsHere && buildingsHere[0] === 'fireplace' && (inventory.items['meat']?.amount > 0 || inventory.items['pepper']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0)) {
+    if (buildingsHere && buildingsHere.includes('fireplace') && (inventory.items['meat']?.amount > 0 || inventory.items['pepper']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0)) {
       craftContainer.querySelector('.button-craft[data-item="roast"]').classList.add('active');
       totalCrafting++;
     }
@@ -555,7 +573,7 @@ export default {
   generateInventorySlots: function() {
     for (var item in items) {
       if (items[item][0] !== 'extra') {
-        inventoryContainer.innerHTML += '<div class="slot unknown '+items[item][0]+' item-'+item+'" data-item="'+item+'"><img src="./img/items/' + item + '.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span><span class="action">' + items[item][0] + '</span></div>';
+        inventoryContainer.querySelector('.inner').innerHTML += '<div class="slot unknown '+items[item][0]+' item-'+item+'" data-item="'+item+'"><img src="./img/items/' + item + '.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span><span class="action">' + items[item][0] + '</span></div>';
       }
     }
   },
