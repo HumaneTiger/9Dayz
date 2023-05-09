@@ -1,0 +1,105 @@
+html, body {
+	margin: 0;
+	padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Kalam', cursive;
+    font-size: 24px;
+    background-color: black;
+}
+
+body * {
+    box-sizing: border-box;
+    user-select: none;
+}
+.material-symbols-outlined {
+    font-weight: 400 !important;
+}
+#startscreen {
+    /*display: none;*/
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 254, 251, 1);
+    color: rgba(0, 0, 0, 0.6);  
+    z-index: 1;
+    padding: 0 25vw;
+    opacity: 1;
+    transition: opacity 1.5s ease-out;
+    font-size: 2.5vh;
+}
+#startscreen img.logo {
+    width: auto;
+    height: 24vh;
+    margin-bottom: -3vh;
+}
+#startscreen p {
+    text-align: center;
+}
+#startscreen p.spacing {
+    margin-top: 6vh;
+}
+#startscreen p.nospacing {
+    margin-bottom: 0;
+}
+#startscreen .button {
+    display: inline-block;
+    cursor: pointer;
+    background-color: rgba(255, 254, 251, 1);
+    box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
+    border: 2px rgba(53, 35, 26, 0.5) solid;
+    text-transform: capitalize;
+    color: rgba(53, 35, 26, 0.66);
+    padding: 20px 48px 16px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    line-height: 0.9em;
+    opacity: 0.7;
+    vertical-align: top;  
+    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.2s ease-out;
+}
+#startscreen .button small {
+    font-size: 1.5vh;
+    line-height: 2em;
+    display: block;
+}
+#startscreen .button:hover {
+  transform: scale(1.1);
+  opacity: 1;
+  box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
+}
+#viewport {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 2135px;
+    height: 1200px;
+    transform-origin: top left;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    transform: translateX(-50%);
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+    font-weight: normal;
+}
+
+main {
+    height: 1200px;
+    width: 100%;
+    position: absolute;
+    z-index: 5;
+}
+
+main ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}

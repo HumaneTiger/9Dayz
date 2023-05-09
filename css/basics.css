@@ -1,0 +1,79 @@
+.is--hidden {
+    display: none !important;
+}
+
+.spacing--top {
+    margin-top: 8px;
+}
+
+.align--center {
+    text-align: center;
+}
+
+.align--right {
+    text-align: right;
+}
+
+.text--tiny {
+    font-size: 12px;
+    filter: brightness(85%);
+}
+
+.text--small {
+    font-size: 0.9em;
+}
+
+.text--ssmedium {
+    font-size: 1.2em;
+}
+
+.text--smedium {
+    font-size: 1.5em;
+}
+
+.text--medium {
+    font-size: 2em;
+    line-height: 1em;
+}
+
+.text--large {
+    font-size: 3em;
+    line-height: 1.3em;
+}
+
+.text--uppercase {
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+em {
+  font-style: initial;
+}
+
+hr.spacing {
+    border: 0 none;
+    padding: 4px 0;
+}
+
+hr.spacing--small {
+    border: 0 none;
+    padding: 5px 0;
+    margin: 0;
+}
+
+small {
+    text-transform: uppercase;
+    font-size: 10px;
+    filter: brightness(85%);
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    33% { transform: translateX(5px); }
+    66% { transform: translateX(-8px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake linear 0.2s 3 forwards;
+}

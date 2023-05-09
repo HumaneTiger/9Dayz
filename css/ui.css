@@ -1,0 +1,473 @@
+main {
+  background-image: url(../img/ui/background.jpg);
+  background-size: cover;
+  background-position: center center;
+}
+
+#damage-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 101;
+  background-image: url(../img/ui/damage.png);
+  background-size: cover;
+  background-position: center center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2000ms linear;
+}
+
+#night-ui-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-image: url(../img/ui/night-overlay.png);
+  background-size: cover;
+  background-position: center center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1500ms linear;
+}
+
+ul#properties {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0 20px;
+  list-style: none;
+  z-index: 50;
+  transform: translateY(-100px);
+  transition: transform 0.8s ease-out;
+}
+ul#properties.active {
+  transform: translateY(0);
+}
+ul#properties li {
+  background-color: rgba(255, 254, 251, 1);
+  box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);
+  color: rgba(0, 0, 0, 0.6);
+  position: relative;
+  padding: 10px 15px 10px 65px;
+  font-size: 38px;
+  line-height: 1em;
+  border-radius: 8px;
+  width: 20%;
+  background-position: 10px center;
+  background-size: 48px;
+  background-repeat: no-repeat;
+  transition: transform 0.1s ease-out;
+}
+ul#properties span.meter {
+  box-shadow: 0 1px 3px inset rgba(53, 35, 26, 0.5);
+  border-radius: 6px;
+  box-sizing: content-box;
+  display: block;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.1s ease-out, padding 0.1s ease-out;
+}
+ul#properties span.meter em {
+  padding: 10px 0 0 10px;
+  display: inline-block;
+}
+#protection {
+  width: 120px;
+  height: 130px;
+  background-image: url('../img/icons/shield.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  padding-top: 42px;
+  position: absolute;
+  left: 50%;
+  top: -43%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+  font-size: 48px;
+  display: none;
+}
+ul#properties li.health {
+  background-image: url(../img/icons/health.png);
+  width: 30%;
+}
+ul#properties li.health span.meter {
+  background: linear-gradient(#dcfada, #9bf295);
+}
+ul#properties li.health.in-battle {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: 722px;
+}
+ul#properties li.health.in-battle #protection{
+  display: block;
+}
+ul#properties li.food {
+  background-image: url(../img/icons/food.png);
+}
+ul#properties li.food span.meter {
+  background: linear-gradient(#f7d4c0, #ec9f71), linear-gradient(#ffe6d8, #f7d4c0);
+  background-clip: content-box, padding-box;
+}
+
+ul#properties li.thirst {
+  background-image: url(../img/icons/water-2.png);
+}
+ul#properties li.thirst span.meter {
+  background: linear-gradient(#a2daf4, #82c8e8), linear-gradient(#ccefff, #a2daf4);
+  background-clip: content-box, padding-box;
+}
+
+ul#properties li.energy {
+  background-image: url(../img/icons/energy.png);
+  width: 30%;
+}
+ul#properties li.energy span.meter {
+  background: linear-gradient(#fff1c6, #ffeb90), linear-gradient(#fff9e4, #fff1c6);
+  background-clip: content-box, padding-box;
+}
+
+ul#properties li.time {
+  background-image: url(../img/icons/time.png);
+  width: 10%;
+}
+
+#craft,
+#inventory {
+  position: absolute;
+  z-index: 6; /* 1 more than cards container */
+  bottom: 90px;
+  left: 30px;
+  width: 800px;
+  height: 540px;
+  transform: translateX(-830px);
+  background: url(../img/ui/inventory.png) 0 0 no-repeat;
+  transition: transform 0.3s ease-in-out;
+}
+#craft .inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url(../img/ui/crafting.png) 0 0 no-repeat;
+}
+#craft.active,
+#inventory.active {
+  transform: translateX(0);
+}
+#inventory .wooden-club,
+#inventory .improvised-axe {
+  height: 217px;
+  width: 160px;
+  position: absolute;
+  top: 20px;
+  right: -152px;
+}
+#inventory .wooden-club {
+  top: 270px;
+}
+#inventory .weapon .extension {
+  display: inline-block;
+  background-color: #f0e4da ;
+  color: rgba(91, 155, 213, 1);
+  padding: 11px 24px 4px;
+  line-height: 1em;
+  border-bottom-right-radius: 8px 8px;
+  border-bottom-left-radius: 8px 8px;
+  font-size: 16px;
+  font-weight: 300;
+  position: absolute;
+  bottom: -20px;
+  left: 40%;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
+  background: linear-gradient(to bottom, rgba(53, 35, 26, 0.1) 0, #fffefb 8px, #fffefb 100%);
+  z-index: -1;
+}
+#inventory .weapon .extension u {
+  color: rgba(53, 35, 26, 0.2);
+  text-decoration: none;
+}
+
+/* button styles in actions.css ! */
+#craft div.button-craft {
+  cursor: pointer;
+  position: absolute;
+  color: rgba(53, 35, 26, 0.8);
+  width: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+#craft div.button-craft .locked {
+  display: none;
+}
+#craft .button-craft:not(.active) {
+  cursor: default;
+  opacity: 0.75;
+  color: #dc6452;
+  background-color: rgba(255, 254, 251, 1);  
+}
+#craft .button-craft:not(.active) .locked {
+  display: inline-block;
+  padding-right: 4px;
+  line-height: 0.8;
+  vertical-align: top;
+}
+.button-craft[data-item="meat"] {
+  left: 90px;
+  top: 240px;
+}
+.button-craft[data-item="wooden-club"] {
+  left: 200px;
+  top: 120px;
+}
+.button-craft[data-item="improvised-axe"] {
+  left: 580px;
+  top: 130px;
+}
+.button-craft[data-item="fireplace"] {
+  left: 330px;
+  top: 280px;
+}
+.button-craft[data-item="roast"] {
+  left: 520px;
+  top: 340px;
+}
+#inventory {
+  padding: 45px 40px;
+}
+#inventory .slot {
+  border: 1px rgba(53, 35, 26, 0.5) dashed;
+  border-radius: 8px;
+  background-color: rgba(53, 35, 26, 0.01);
+  display: inline-block;
+  margin: 0 4px;
+  position: relative;
+  width: 72px;
+  height: 70px;
+  transition: background-color 0.1s ease-out;
+}
+#inventory .slot span.unknown {
+  position: absolute;
+  font-size: 32px;
+  color: rgba(53, 35, 26, 0.8);
+  text-align: center;
+  top: 13px;
+  left: 0;
+  width: 100%;
+  font-weight: 300;
+}
+#inventory .slot img.bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 0.2;
+}
+#inventory .slot span.amount {
+  color: rgba(53, 35, 26, 0.8);
+  text-shadow: 0 0 5px#fffefb, 0 0 3px #fffefb;
+  font-size: 18px;
+  position: absolute;
+  top: 2px;
+  left: 4px;
+}
+#craft p.info,
+#inventory p.info {
+  color: rgba(53, 35, 26, 0.6);
+  font-weight: 300;
+  font-size: 24px;
+  position: absolute;
+  bottom: 34px;
+  width: 100%;
+  margin: 0 -45px;
+  text-align: center;
+}
+#inventory p.info .material-symbols-outlined {
+  display: inline-block;
+  padding-left: 4px;
+  line-height: 1.4em;
+  vertical-align: top;
+}
+#inventory p.info .name,
+#inventory p.info .food,
+#inventory p.info .drink,
+#inventory p.info .energy {
+  display: inline-block;
+  padding-right: 12px;
+}
+#inventory p.info .food {
+  font-weight: 400;
+  color: #ec9f71;
+}
+#inventory p.info .drink {
+  font-weight: 400;
+  color: #82c8e8;
+}
+#inventory p.info .energy {
+  font-weight: 400;
+  color: #ddaa30;
+}
+
+#inventory .slot.unknown img.bg {
+  opacity: 0;
+}
+#inventory .slot.unknown span.amount {
+  display: none;
+}
+#inventory .slot.unknown span.unknown {
+  display: inline-block;
+}
+#inventory .slot span.action {
+  text-shadow: 0 0 5px rgb(53, 35, 26), 0 0 3px rgb(53, 35, 26);
+  display: inline-block;
+  padding: 3px 6px 2px;
+  border-radius: 3px;
+  line-height: 1em;
+  color: white;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+}
+#inventory .slot.active {
+  border: 1px rgba(53, 35, 26, 0.5) solid;
+}
+#inventory .slot.active img.bg {
+  opacity: 1;
+}
+#inventory .slot.active span.amount {
+  display: inline-block;
+}
+#inventory .slot.active span.unknown {
+  display: none;
+}
+#inventory .slot.inactive img.bg {
+  opacity: 0.2;
+}
+#inventory .slot.inactive span.amount {
+  display: inline-block;
+}
+#inventory .slot.inactive span.unknown {
+  display: none;
+}
+#inventory .slot.active.eat,
+#inventory .slot.active.drink {
+  cursor: pointer;
+}
+#inventory .slot.active.eat:hover,
+#inventory .slot.active.drink:hover {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+#inventory .slot.active.eat:hover span.action,
+#inventory .slot.active.drink:hover span.action {
+  opacity: 1;
+}
+
+ul#actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0 20px;
+  list-style: none;
+  z-index: 50;
+  transform: translateY(100px);
+  transition: transform 0.8s ease-out;
+}
+ul#actions.active {
+  transform: translateY(0);
+}
+
+ul#actions li {
+  background-color: rgba(255, 254, 251, 1);
+  box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);
+  color: rgba(53, 35, 26, 0.66);
+  padding: 16px 20px 4px 20px;
+  border-radius: 8px;
+  width: 20%;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+}
+
+ul#actions li.transfer,
+ul#actions li:not(.mixed):hover {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+ul#properties li.transfer {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+ul#actions li:not(.mixed):active {
+  transform: scale(1.05) translateY(2px);
+  background-color: white;
+  opacity: 1;
+}
+
+ul#actions li span {
+  background-position: left 4px;
+  background-size: 48px;
+  background-repeat: no-repeat;
+  font-size: 42px;
+  padding-left: 60px;
+  line-height: 1em;
+  margin: 0 auto;
+}
+
+ul#actions li.mixed {
+  text-align: left;
+  cursor: default;
+}
+
+ul#actions li span.countdown,
+ul#actions li span.time {
+  display: inline-block;
+  width: 40%;
+  padding-left: 0;
+  margin: 0;
+}
+ul#actions li span.countdown {
+  text-align: right;
+}
+ul#actions li span.seperator {
+  width: 20%;
+  padding: 0 18px;
+  margin: 0;
+  text-align: center;
+}
+
+ul#actions li.inventory span {
+  background-image: url(../img/actions/inventory.png);
+}
+
+ul#actions li.craft span {
+  background-image: url(../img/actions/craft.png);
+}
+
+ul#actions li.explore span {
+  background-image: url(../img/actions/explore.png);
+}
+
+ul#actions li.map span {
+  background-image: url(../img/actions/map.png);
+}
+

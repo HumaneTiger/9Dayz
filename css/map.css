@@ -1,0 +1,198 @@
+#maximap {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+#maximap .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+}
+
+#maximap .inner span.quadrant {
+  position: absolute;
+  color: #ffff00;
+  background-color: rgba(0,0,0,0.4);
+  font-family: Calibri;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 30;
+}
+#maximap .inner span.quadrant.i-building {
+  color: #00ffff;
+}
+#maximap .inner span.quadrant.i-zed {
+  color: #f00;
+}
+#maximap .inner span.quadrant.i-path {
+  color: #eebbff;
+}
+#maximap .inner .morning,
+#maximap .inner .evening,
+#maximap .inner .night {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 21;
+  transition: opacity 4500ms linear;
+}
+
+#maximap .inner .morning {
+  mix-blend-mode: overlay;
+  background-color: rgba(70, 140, 255, 0.5);
+}
+
+#maximap .inner .evening {
+  mix-blend-mode: overlay;
+  background-color: rgba(255, 140, 0, 1);
+}
+
+#maximap .inner .night {
+  z-index: 22;  
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+#maximap .inner .map-highlights {
+  z-index: 19;
+}
+#maximap .inner .map-buildings {
+  z-index: 90;
+}
+
+#maximap .inner .map-highlights #scoutmarker {
+  z-index: 1;
+  transform: translate(-12px, -14px) scale(1.5);
+}
+
+#maximap .inner .map-highlights .zed-area {
+  position: absolute;
+  opacity: 0.7;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  transform: scale(2.5) translateY(1px);
+  background: url(../img/icons/buildings/zombie-area.png) center center no-repeat;
+  background-size: contain;
+}
+
+#maximap .inner .map-buildings .zed-icon,
+#maximap .inner .map-buildings .building-icon {
+  position: absolute;
+  z-index: 2;
+}
+
+#maximap .inner .map-buildings .zed-icon.highlight,
+#maximap .inner .map-buildings .building-icon.highlight {
+  z-index: 3;
+}
+
+#maximap .inner .map-buildings .zed-icon img,
+#maximap .inner .map-buildings .building-icon img {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s ease-out, filter 0.2s ease-out;
+}
+
+#maximap .inner .map-buildings .zed-icon.highlight img,
+#maximap .inner .map-buildings .building-icon.highlight img {
+  transform: scale(1.5);
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5));
+}
+
+#maximap .inner .map-quadrant {
+  z-index: 30;
+}
+
+#maximap .inner .map {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  transform: translate3d(0, -177.6px, 0);
+  transition: transform 1s ease-in;
+}
+
+#maximap .inner .map-quadrant,
+#maximap .inner .map-cover,
+#maximap .inner .map-highlights,
+#maximap .inner .map-buildings,
+#maximap .inner .map-low,
+#maximap .inner .map-middle,
+#maximap .inner .map-high {
+  position: absolute;
+  left: 0;
+  top: -50%;
+  width: 100%;
+}
+
+#maximap .inner .map-low {
+  z-index: 1;
+}
+
+#maximap .inner .map-middle {
+  z-index: 10;
+}
+
+#maximap .inner .map-high {
+  z-index: 20;
+}
+
+#maximap .inner .map-cover {
+  z-index: 30;
+}
+
+#maximap .inner .map-cover img {
+  visibility: hidden;
+}
+
+#maximap .inner .map-cover .cover {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  bottom: 0;
+  background-image: url(../img/ui/map-blank-grid.jpg);
+  background-size: 100% auto;
+/*  mask:
+    radial-gradient(at 70% 75%, transparent 4%, black 12%, black),
+    radial-gradient(at 60% 65%, transparent 4%, black 12%, black);*/
+  mask-size: 100% 100%;
+  mask-composite: intersect;
+  mask-repeat: no-repeat; /* don't forget this */
+}
+
+#maximap .inner .map-cover .cover .location {
+  font-weight: 300;
+  color: rgba(37, 10, 2, 1);
+  font-size: 20px;
+  position: absolute;
+  z-index: 1;
+  text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff;
+}
+
+#maximap .inner .map-cover .cover .location:before {
+  content: '✗';
+  font-weight: 300;
+  color: rgba(255, 140, 0, 1);
+  display: inline-block;
+  vertical-align: top;
+  line-height: 1;
+  padding-right: 8px;
+  font-size: 32px;
+}
+
+#maximap .inner .map-high img {
+  filter: drop-shadow(-7px 3px 7px rgba(0, 0, 0, 0.5)) drop-shadow(-21px 10px 7px rgba(0, 0, 0, 0.4));
+  transition: filter 4500ms linear;
+}
+
+#maximap .inner .map-middle img {
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+  transition: filter 4500ms linear;
+}

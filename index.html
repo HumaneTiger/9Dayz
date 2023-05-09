@@ -1,0 +1,180 @@
+﻿<!doctype html>
+<html lang="EN">
+
+  <head>
+      <meta charset="utf-8">
+      <title>9 Dayz</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="icon" type="image/png" href="favicon.png">
+
+      <link rel="stylesheet" href="css/main.css">
+      <link rel="stylesheet" href="css/basics.css">
+      <link rel="stylesheet" href="css/ui.css">
+      <link rel="stylesheet" href="css/map.css">
+      <link rel="stylesheet" href="css/player.css">
+      <link rel="stylesheet" href="css/cards.css">
+      <link rel="stylesheet" href="css/actions.css">
+      <link rel="stylesheet" href="css/items.css">
+
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet"> 
+      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet" />
+      
+  </head>
+
+  <!-- 
+    CREDITS:
+  -->
+
+  <body>
+    <!--
+    <div id="startscreen">
+      <p class="nospacing">
+        <img class="logo" src="./img/ui/logo.png">
+      </p>
+      <div class="start">
+        <p>My dearest, I hope this letter reaches you.</p>
+        <p>Our world is broken by this terrible virus and the end is near. We will escape with one of the last ships to a secret and safe place.</p>
+        <p>However, time is running out. I beg you, try to be at the pier in Haling Cove in 9 days at the latest. That's the little town on the river, north of our home, which now no longer exists.</p>
+        <p>Please hurry, the ship can't wait any longer.</p>
+        <p class="spacing">
+            <span class="button start">Start Easy<small>(GDM Jam Version + Bugfixes)</small></span>
+        </p>
+        <p>
+          <span class="button start-real">Start Real<small>(Items will be consumed in battles)</small></span>
+        </p>
+      </div>
+      <div class="you-win is--hidden">
+        <p style="font-size: 56px; line-height: 0.3;">You win the game!</p>
+        <p>Congratulations for getting that far!</p>
+        <p>The ship will bring you to safety now.</p>
+        <p>Thanks for playing!</p>
+        <p class="spacing">
+          <span class="button restart">Play Again</span>
+        </p>
+      </div>
+      <div class="you-died is--hidden">
+        <p style="font-size: 72px;">You died.</p>
+        <p class="spacing">
+          <span class="button restart">Play Again</span>
+        </p>
+      </div>
+    </div>
+    -->
+    <div id="damage-cover"></div>
+    <div id="viewport">
+      <main>
+        <div id="night-ui-cover"></div>
+        <ul id="properties" class="active">
+          <li class="health"><span class="meter"><em id="health-meter">100</em>/100</span><span id="protection">0</span></li>
+          <li class="food"><span class="meter"><em id="food-meter">100</em>/100</span></li>
+          <li class="thirst"><span class="meter"><em id="thirst-meter">100</em>/100</span></li>
+          <li class="energy"><span class="meter"><em id="energy-meter">100</em>/100</span></li>
+        </ul>
+        <ul id="actions" class="active">
+          <li class="inventory"><span>Inventory (<em id="inventory-numbers">0</em>)</span></li>
+          <li class="craft"><span>Craft (<em id="crafting-total">0</em>)</span></li>
+          <li class="mixed"><span class="countdown">Day <em id="gametime-days">1</em></span><span class="seperator">⬦</span><span class="time" id="gametime-hours"></span></li>
+          <li class="explore"><span>Explore</span></li>
+          <li class="map"><span>Map</span></li>
+        </ul>
+        <div id="inventory">
+          <p class="info"></p>
+          <div class="weapon wooden-club is--hidden">
+            <img src="./img/card/wooden-club.png" width="100%" height="auto">
+            <span class="extension">◈◈◈</span>
+          </div>
+          <div class="weapon improvised-axe is--hidden">
+            <img src="./img/card/improvised-axe.png" width="100%" height="auto">
+            <span class="extension">◈◈◈</span>
+          </div>
+        </div>
+        <div id="craft">
+          <div class="inner">
+            <div class="button-craft active" data-item="meat" data-action="prepare meat"><span class="material-symbols-outlined locked">lock</span>Prepare</div>
+            <div class="button-craft" data-item="wooden-club" data-action="craft wooden club"><span class="material-symbols-outlined locked">lock</span>Craft</div>
+            <div class="button-craft" data-item="improvised-axe" data-action="improvise an axe"><span class="material-symbols-outlined locked">lock</span>Craft</div>
+            <div class="button-craft" data-item="fireplace" data-action="build a fireplace"><span class="material-symbols-outlined locked">lock</span>Craft</div>
+            <div class="button-craft" data-item="roast" data-action="roast food"><span class="material-symbols-outlined locked">lock</span>Roast</div>
+          </div>
+          <p class="info"></p>
+        </div>
+        <div id="maximap">
+          <div class="inner">
+            <div class="night"></div>
+            <div class="morning"></div>
+            <div class="evening"></div>
+            <div id="player"></div>
+            <div class="map">
+              <div class="map-quadrant"></div>
+              <div class="map-buildings"></div>
+              <div class="map-cover">
+                <div class="cover"></div>
+                <img src="./img/ui/map-blank.jpg" width="2135" height="2135">
+              </div>
+              <div class="map-high">
+                <img src="./img/ui/map-high.png" width="2135" height="2135">
+              </div>  
+              <div class="map-highlights">
+                <div id="scoutmarker" class="searching is--hidden"><div></div><div></div></div>
+              </div>
+              <div class="map-middle">
+                <img src="./img/ui/map-middle.png" width="2135" height="2135">
+              </div>  
+              <div class="map-low">
+                <img src="./img/ui/map-low.jpg" width="2135" height="2135">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="items"></div>
+        <div class="scratch"><img src="./img/zombies/scratch.png"></div>
+        <div id="battle-cards" class="is--hidden">
+          <div class="end-turn">End Turn</div>
+          <em id="draw-amount">0</em>
+          <div class="draw"></div>
+          <div class="play"></div>
+          <div id="action-points"><span id="ap">3</span>/3</div>
+          <div id="battle-stats">
+            <span class="red"></span>
+            <span class="blue"></span>
+          </div>
+          <p id="battle-message">Zombies Turn</p>
+        </div>
+        <div id="cards">
+          <div class="cards-blocker is--hidden"></div>
+        </div>
+      </main>
+    </div>
+
+    <div id="all-audio">
+      <audio class="music-ambient-1" src="./audio/ambient-1.mp3" preload></audio>
+      <audio class="music-ambient-2" src="./audio/ambient-2.mp3" preload></audio>
+      <audio class="music-ambient-3" src="./audio/ambient-3.mp3" preload></audio>
+      <audio class="music-ambient-4" src="./audio/ambient-4.mp3" preload></audio>
+      <audio class="sfx-punch" src="./audio/fx/punch.mp3" preload></audio>
+      <audio class="sfx-deal-card" src="./audio/fx/deal-card.mp3" preload></audio>
+      <audio class="sfx-zed-appears" src="./audio/fx/zed-appears.mp3" preload></audio>
+      <audio class="sfx-zed-attacks" src="./audio/fx/zed-attacks.mp3" preload></audio>
+      <audio class="sfx-punch" src="./audio/fx/punch.mp3" preload></audio>
+      <audio class="sfx-nope" src="./audio/fx/nope.mp3" preload></audio>
+      <audio class="sfx-click" src="./audio/fx/click.mp3" preload></audio>
+      <audio class="sfx-pick" src="./audio/fx/pick-up.mp3" preload></audio>
+      <audio class="sfx-break-twig" src="./audio/fx/break-twig.mp3" preload></audio>
+      <audio class="sfx-chop-rock" src="./audio/fx/chop-rock.mp3" preload></audio>
+      <audio class="sfx-chop-wood" src="./audio/fx/chop-wood.mp3" preload></audio>
+      <audio class="sfx-collect-stones" src="./audio/fx/collect-stones.mp3" preload></audio>
+      <audio class="sfx-craft" src="./audio/fx/craft.mp3" preload></audio>
+      <audio class="sfx-open-book" src="./audio/fx/open-book.mp3" preload></audio>
+      <audio class="sfx-water" src="./audio/fx/water.mp3" preload></audio>
+      <audio class="sfx-catch-fish" src="./audio/fx/catch-fish.mp3" preload></audio>
+      <audio class="sfx-build-something" src="./audio/fx/build-something.mp3" preload></audio>
+      <audio class="sfx-wooden-box" src="./audio/fx/wooden-box.mp3" preload></audio>
+    </div>
+  
+    <script src="js/init.js" type="module" defer async></script>
+    
+  </body>
+
+</html>

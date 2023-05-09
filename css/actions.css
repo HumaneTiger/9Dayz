@@ -1,0 +1,140 @@
+#cards .actions {
+  position: absolute;
+  top: 52%;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 4;
+}
+#cards .card:hover ul.actions li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#cards .actions li {
+  text-align: center;
+  margin: 16px 0;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.2s ease-out, transform 0.3s ease-out;
+}
+#cards .actions li .material-symbols-outlined {
+  display: none;
+}
+#cards .actions li.critical a,
+#cards .actions li.critical span.additional {
+  color: #dc6452;  
+}
+#cards .actions li.critical .material-symbols-outlined  {
+  display: inline-block;
+}
+#cards .card a span.additional-locked,
+#cards .card li.locked a,
+#cards .card.locked li.search a,
+#cards .card.locked li.rest a,
+#cards .card.locked li.sleep a {
+  color: #ed7d31;
+}
+#cards .card li.locked .material-symbols-outlined,
+#cards .card.locked li.search .material-symbols-outlined,
+#cards .card.locked li.rest .material-symbols-outlined,
+#cards .card.locked li.sleep .material-symbols-outlined {
+  display: inline-block;
+}
+.card ul.actions .additional-locked {
+  display: none;
+}
+#cards .card li.locked .additional {
+  display: none;
+}
+#cards .card.locked h2:after {
+  content: ' (locked)';
+  font-size: 26px;
+  line-height: 1em;
+}
+#cards .card li.locked .additional-locked {
+  display: block;
+}
+#cards .card.locked li.search .additional,
+#cards .card.locked li.rest .additional,
+#cards .card.locked li.sleep .additional {
+  display: none;
+}
+#battle-cards .end-turn,
+#craft .button-craft,
+#cards .actions a {
+  display: inline-block;
+  background-color: rgba(255, 254, 251, 1);
+  box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
+  border: 2px rgba(53, 35, 26, 0.5) solid;
+  font-size: 26px;
+  text-transform: capitalize;
+  color: rgba(53, 35, 26, 0.66);
+  padding: 16px 8px 12px;
+  width: 200px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 0.9em;
+  vertical-align: top;
+  transform: scale(0.9);
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background-color 0.3s ease-out,  opacity 0.2s ease-in;
+}
+#battle-cards .end-turn:hover,
+#craft .button-craft:hover,
+#cards .actions a:hover {
+  transform: scale(1);
+  box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
+}
+#cards .actions a:hover span.additional-locked,
+#cards .actions a:hover span.additional {
+  opacity: 1;
+  margin-top: 3px;
+}
+.card.hover-button .actions a:not(:hover) {
+  opacity: 0.75;
+  background-color: rgba(255, 254, 251, 0.75);
+}
+
+#cards .actions a span.text {
+  display: block;
+}
+#cards .actions a span.text .material-symbols-outlined {
+  font-size: 26px;
+  margin-top: -3px;
+  margin-right: -4px;
+  vertical-align: top;
+}
+ul.actions a span.additional-locked,
+ul.actions a span.additional {
+  display: block;
+  font-size: 20px;
+  color: rgba(91, 155, 213, 1);
+  opacity: 0;
+  margin-top: -24px;
+  transition: opacity 0.1s ease-out, margin-top 0.1s ease-out;
+}
+
+.card p.activity {
+  position: absolute;
+  top: 33%;
+  width: 100%;
+  font-family: 'Kalam';
+  color: rgba(137, 110, 102, 1);
+  font-size: 42px;
+  text-align: center;
+  text-transform: capitalize;
+  z-index: 1;
+}
+
+.glow {
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px #fff, 0 0 12px #fffefb, 0 0 20px #dff, 0 0 25px #dff, 0 0 30px #dff;
+  }
+  to {
+    text-shadow: 0 0 6px #fff, 0 0 15px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #dff, 0 0 70px #dff, 0 0 80px #dff;
+  }
+}
