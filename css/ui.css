@@ -71,6 +71,7 @@ ul#properties span.meter {
   width: 100%;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
   transition: width 0.1s ease-out, padding 0.1s ease-out;
 }
 ul#properties span.meter em {
