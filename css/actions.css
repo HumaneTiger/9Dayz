@@ -55,6 +55,9 @@
 #cards .card.infested .status-infested {
   display: inline-block;
 }
+#cards .card.zombieshere .status-zombies {
+  display: inline-block;
+}
 #cards .card li.locked .additional-locked {
   display: block;
 }

@@ -160,6 +160,9 @@
 .card .inner .status div.status-looted {
   background-image: url(../img/card/status-looted.png);
 }
+.card .inner .status div.status-zombies {
+  background-image: url(../img/card/status-zombies.png);
+}
 .card .inner .status div.status-infested {
   background-image: url(../img/card/status-infested.png);
 }

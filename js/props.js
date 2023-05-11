@@ -84,15 +84,15 @@ var buildingProps = {
 var buildingActions = {
   'house': [ 'scout area|30', 'break door|10|30', 'search|20', 'rest|60' ],
   'car': [ 'scout area|30', 'smash window|20', 'search|20', 'rest|60' ],
-  'farm': [ 'scout area|30', 'gather|20' ],
-  'tree': [ 'scout area|30', 'gather|20', 'cut down|15|25', 'rest|60' ],
+  'farm': [ 'gather|20','scout area|30' ],
+  'tree': [ 'gather|20', 'scout area|30', 'cut down|15|25', 'rest|60' ],
   'church': [ 'scout area|30', 'break door|10|30', 'search|20', 'rest|60' ],
   'signpost': [ 'read|1' ],
   'place': [ 'head toward|0', 'quick travel|0' ],
-  'train': [ 'scout area|30', 'search|20' ],
+  'train': [ 'search|20', 'scout area|30' ],
   'shop': [ 'scout area|30', 'break door|30|20', 'search|20' ],
   'industrial': [ 'scout area|30', 'break door|45|30', 'search|20' ],
-  'water': [ 'drink|5', 'gather|20' ],
+  'water': [ 'gather|20', 'drink|5' ],
   'camping': [ 'scout area|30', 'break door|5|30', 'search|20', 'rest|60' ]
 };
 
@@ -645,8 +645,8 @@ export default {
   getBuildingActionsFor: function(buildingName) {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
-    if (buildingName === 'fireplace') actions.push('cook|30');
     let actionSet = [];
+    if (buildingName === 'fireplace') actionSet.push('cook|30');
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
