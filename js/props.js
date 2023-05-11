@@ -646,7 +646,7 @@ export default {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
     let actionSet = [];
-    if (buildingName === 'fireplace') actionSet.push('cook|30');
+    if (buildingName === 'fireplace') actionSet.push({name: 'cook', time: 30});
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
