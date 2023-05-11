@@ -481,6 +481,12 @@ export default {
         Map.showTargetLocation('Greenleafton');
       } else if (cardRef.dataset.name === 'signpost-4') {
         Map.showTargetLocation('Haling Cove');
+      } else if (cardRef.dataset.name === 'signpost-5') {
+        Map.showTargetLocation('Billibalds Farm');
+      } else if (cardRef.dataset.name === 'signpost-6') {
+        Map.showTargetLocation('Camp Silverlake');
+      } else if (cardRef.dataset.name === 'signpost-7') {
+        Map.showTargetLocation('Harbor Gas Station');
       }
       Cards.removeCardFromDeck(cardRef);
 

@@ -181,7 +181,7 @@ export default {
                             'style="left: ' + Math.round(x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                             '<div class="inner"><div class="status"><div class="status-locked"></div><div class="status-infested"></div><div class="status-looted"></div></div><h2>' + buildingName.replace('-1', '').replace('-2', '').replace('-', ' ') + '</h2>' +
                             '<p class="activity glow is--hidden"></p>' +
-                            '<img class="motive" src="./img/buildings/' + buildingName + '.png">';
+                            '<img class="motive" src="./img/buildings/' + (buildingName.startsWith('signpost-') ? 'signpost' : buildingName) + '.png">';
     let cardMarkupPost = '<div class="banner"><img src="./img/icons/buildings/' + type + '.png"></div></div><span class="distance">' + distance + '</span></div>';
 
     let cardMarkup = cardMarkupPre;

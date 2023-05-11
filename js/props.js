@@ -33,7 +33,7 @@ var buildingTypes = {
   'farm': ['field', 'compost', 'scarecrow'],
   'tree': [ 'small-tree', 'big-tree'],
   'church': [ 'church' ],
-  'signpost': [ 'signpost-1', 'signpost-2', 'signpost-3', 'signpost-4' ],
+  'signpost': [ 'signpost-1', 'signpost-2', 'signpost-3', 'signpost-4', 'signpost-5', 'signpost-6', 'signpost-7' ],
   'place': [ 'milton', 'sobor' ],
   'train': [ 'train-wreck-2', 'train-wreck-1' ],
   'shop': ['market', 'gas-station'],
@@ -55,6 +55,9 @@ var buildingProps = {
   'signpost-2': { worthful: 0, spawn: 0, items: [] },
   'signpost-3': { worthful: 0, spawn: 0, items: [] },
   'signpost-4': { worthful: 0, spawn: 0, items: [] },
+  'signpost-5': { worthful: 0, spawn: 0, items: [] },
+  'signpost-6': { worthful: 0, spawn: 0, items: [] },
+  'signpost-7': { worthful: 0, spawn: 0, items: [] },
   'old-villa': { worthful: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'wine', 'exodus', 'books'] },
   'car-2': { worthful: 1, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
   'field': { worthful: 1, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'] },
@@ -134,7 +137,10 @@ var targetLocations = {
   'Rocksprings': [22, 34],
   'Haling Cove': [16, 8],
   'Litchfield': [15, 23],
-  'Greenleafton': [33, 35]
+  'Greenleafton': [33, 35],
+  'Billibalds Farm': [40, 30],
+  'Camp Silverlake': [28, 22],
+  'Harbor Gas Station': [34, 16]
 };
 
 var items = {
@@ -216,7 +222,7 @@ export default {
     let images = [];
     for (const prop in buildingProps) {
       images[i] = new Image();
-      images[i].src = '../img/buildings/'+prop+'.png';
+      images[i].src = '../img/buildings/' + (prop.startsWith('signpost-') ? 'signpost' : prop) + '.png';
     };
   },
   preloadItems: function() {
@@ -420,6 +426,9 @@ export default {
     this.setupBuilding(16, 31, ['signpost-2']);
     this.setupBuilding(19, 36, ['signpost-3']);
     this.setupBuilding(19, 21, ['signpost-4']);
+    this.setupBuilding(36, 31, ['signpost-5']);
+    this.setupBuilding(29, 29, ['signpost-6']);
+    this.setupBuilding(31, 22, ['signpost-7']);
     this.setupBuilding(23, 35, ['car-1']);
     this.setupBuilding(35, 41, ['car-1']);
     this.setupBuilding(32, 30, ['car-2']);
