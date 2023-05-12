@@ -190,6 +190,8 @@ export default {
         zombie.style.zIndex = 220;
         zombie.style.left = (2135/2) - (fightingZombies.length * spaceX / 2) + (i * spaceX) + 'px';
       }
+      document.getElementById('inventory').classList.remove('active');
+      document.getElementById('craft').classList.remove('active');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
       window.setTimeout(function(surprised) {
         document.getElementById('properties').classList.remove('active');
@@ -334,8 +336,7 @@ export default {
       }
       if (!inventory.items[item].durability) {
         //remove item from inventory
-        inventory.items[item].amount -= 1;
-        if (inventory.items[item].amount < 0) inventory.items[item].amount = 0;
+        Props.addToInventory(item, -1);
         //remove item from battle deck
         for (var i = 0; i < battleDeck.length; i += 1) {
           if (battleDeck[i].name === inventory.items[item].name) {

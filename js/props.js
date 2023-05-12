@@ -300,6 +300,7 @@ export default {
     amount = parseInt(amount);
     if (inventory.items[item] !== undefined) {
       inventory.items[item].amount += amount;
+      inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
       if (durability !== undefined) {
         inventory.items[item].durability += durability;
         if (inventory.items[item].durability === 0) { inventory.items[item].amount = 0 }
