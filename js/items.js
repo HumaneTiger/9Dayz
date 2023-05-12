@@ -26,14 +26,14 @@ export default {
     Props.addToInventory('drink-1', 1);
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
-    
+    /*
     Props.addToInventory('stone', 2);
     Props.addToInventory('tape', 2);
     Props.addToInventory('branch', 2);
     Props.addToInventory('stump', 1);
     Props.addToInventory('straw-wheet', 1);
     Props.addToInventory('pepper', 1);
-    
+    */
 
     this.generateInventorySlots();
     this.fillInventorySlots();
@@ -258,6 +258,20 @@ export default {
     Player.changeProps('protection', -100);
     Player.changeProps('actions', -100);
     Player.changeProps('actions', 3);
+
+    document.querySelector('#action-points-warning .very-low')?.classList.add('is--hidden');
+    document.querySelector('#action-points-warning .low')?.classList.add('is--hidden');
+    document.querySelector('#action-points')?.classList.remove('low-energy');
+
+    if (Player.getProp('energy') < 10) {
+      Player.changeProps('actions', -2);
+      document.querySelector('#action-points-warning .very-low')?.classList.remove('is--hidden');
+      document.querySelector('#action-points')?.classList.add('low-energy');
+    } else if (Player.getProp('energy') < 33) {
+      Player.changeProps('actions', -1);
+      document.querySelector('#action-points-warning .low')?.classList.remove('is--hidden');
+      document.querySelector('#action-points')?.classList.add('low-energy');
+    }
     this.shuffle(battleDeck);
     battlePlayContainer.innerHTML = '';
     let maxItems = 5;

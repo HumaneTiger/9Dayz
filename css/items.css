@@ -421,6 +421,25 @@
   color: rgba(0, 0, 0, 0.6);
   font-size: 48px;
 }
+#action-points.low-energy {
+  bottom: 76px;
+}
+
+#action-points-warning {
+  width: 214px;
+  position: absolute;
+  left: calc(465px - 44px);
+  bottom: 18px;
+  text-align: center;
+  color: rgb(255, 180, 190);
+  font-size: 22px;
+  line-height: 1em;
+}
+#action-points-warning .material-symbols-outlined {
+  line-height: 1em;
+  vertical-align: bottom;
+  margin-left: -0.2em;
+}
 
 .shake {
   animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;

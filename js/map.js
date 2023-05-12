@@ -106,6 +106,7 @@ export default {
     const uncoverY = Math.floor(y / 4);
     var mask = '';
 
+    // solution for chrome? https://blog.logrocket.com/css-mask-image-property/
     if (!isChromium && mapCover && uncoverMatrix[uncoverX][uncoverY] === undefined) {
       uncoverMatrix[uncoverX][uncoverY] = true;
       // create new Mask

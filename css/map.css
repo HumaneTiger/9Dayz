@@ -159,9 +159,6 @@
   bottom: 0;
   background-image: url(../img/ui/map-blank-grid.jpg);
   background-size: 100% auto;
-/*  mask:
-    radial-gradient(at 70% 75%, transparent 4%, black 12%, black),
-    radial-gradient(at 60% 65%, transparent 4%, black 12%, black);*/
   mask-size: 100% 100%;
   mask-composite: intersect;
   mask-repeat: no-repeat; /* don't forget this */
