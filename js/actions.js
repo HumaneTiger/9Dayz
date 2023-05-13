@@ -141,6 +141,19 @@ export default {
     }
   },
 
+  fastForward: function(callbackfunction, cardRef, time, newSpeedOpt) {
+    const defaultSpeed = Props.getGameSpeedDefault();
+    const newSpeed = newSpeedOpt || 400;
+    if (time) {
+      let ticks = parseInt(time) / 10;
+      Props.setGameSpeedDefault(newSpeed);
+      window.setTimeout(function(defaultSpeed, cardRef) {
+        Props.setGameSpeedDefault(defaultSpeed);
+        callbackfunction.call(this, cardRef);
+      }.bind(this), ticks * newSpeed, defaultSpeed, cardRef);  
+    }
+  },
+
   simulateGathering: function(cardRef, action, time) {
 
     Player.lockMovement(true);
@@ -205,7 +218,7 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForeward(function(cardRef) {
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
       const x = parseInt(cardRef.dataset.x);
       const y = parseInt(cardRef.dataset.y);
@@ -218,7 +231,6 @@ export default {
       document.getElementById('scoutmarker').classList.add('is--hidden');
       Player.lockMovement(false);
     }, cardRef, time, 800);
-
   },
 
   simulateResting: function(cardRef, time) {
@@ -239,7 +251,7 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForeward(function(cardRef) {
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
       Player.changeProps('energy', 15);
       Player.changeProps('health', 10);
@@ -248,19 +260,6 @@ export default {
       document.getElementById('scoutmarker').classList.add('is--hidden');
       Player.lockMovement(false);
     }, cardRef, time, 800);
-  },
-
-  fastForeward: function(callbackfunction, cardRef, time, newSpeedOpt) {
-    const defaultSpeed = Props.getGameSpeedDefault();
-    const newSpeed = newSpeedOpt || 400;
-    if (time) {
-      let ticks = parseInt(time) / 10;
-      Props.setGameSpeedDefault(newSpeed);
-      window.setTimeout(function(defaultSpeed, cardRef) {
-        Props.setGameSpeedDefault(defaultSpeed);
-        callbackfunction.call(this, cardRef);
-      }.bind(this), ticks * newSpeed, defaultSpeed, cardRef);  
-    }
   },
 
   simulateSleeping: function(cardRef, time) {
@@ -315,13 +314,12 @@ export default {
     cardRef.querySelector('p.activity').textContent = 'Cutting Down...';
     cardRef.querySelector('p.activity').classList.remove('is--hidden');
 
-    let timeout = 2500;
     Audio.sfx('chop-wood');
+    Audio.sfx('chop-wood', 800);
+    Audio.sfx('chop-wood', 1600);
 
-    window.setTimeout(function(cardRef) {
-
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
-
       if (Props.getGameMode() === 'real') {
         Props.addToInventory('improvised-axe', 0, -1);
       }
@@ -331,9 +329,7 @@ export default {
       Items.fillInventorySlots();
       Cards.removeCardFromDeck(cardRef);
       Player.lockMovement(false);
-
-    }.bind(this), timeout, cardRef);
-
+    }, cardRef, time, 800);
   },
 
   simulateLuring: function(cardRef, action, time) {
@@ -348,7 +344,6 @@ export default {
     cardRef.querySelector('p.activity').textContent = 'Luring...';
     cardRef.querySelector('p.activity').classList.remove('is--hidden');
 
-    let timeout = 5000;
     const x = parseInt(cardRef.dataset.x);
     const y = parseInt(cardRef.dataset.y);
     const scoutMarker = document.getElementById('scoutmarker');
@@ -357,20 +352,18 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    window.setTimeout(function(x, y, cardRef) {
-
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
       document.getElementById('scoutmarker').classList.add('is--hidden');
-
-      // 50:50 chance it works
+      // 60:40 chance it works
       if (Math.random() >= 0.4) {
         Items.startBattle(false, cardRef);
       } else {
         Player.lockMovement(false);
         Audio.sfx('nope');
+        Cards.updateCardDeck();
       }
-
-    }.bind(this), timeout, x, y, cardRef);
+    }, cardRef, time, 1600);
   },
 
   gotIt: function(cardRef) {
@@ -385,8 +378,6 @@ export default {
     Player.lockMovement(true);
     const x = parseInt(cardRef.dataset.x);
     const y = parseInt(cardRef.dataset.y);
-
-    //if (x % 4 === 0 || y % 4 === 0) { Map.mapUncoverAt(x, y); }
 
     Player.findZeds(x, y);
     Cards.updateCardDeck();
@@ -406,11 +397,11 @@ export default {
     cardRef.querySelector('p.activity').textContent = 'Breaking Door...';
     cardRef.querySelector('p.activity').classList.remove('is--hidden');
 
-    let timeout = 3000;
     Audio.sfx('chop-wood');
+    Audio.sfx('chop-wood', 800);
+    Audio.sfx('chop-wood', 1600);
 
-    window.setTimeout(function(cardRef) {
-
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
       if (Props.getGameMode() === 'real') {
         Props.addToInventory('improvised-axe', 0, -1);
@@ -418,8 +409,7 @@ export default {
       }
       cardRef.classList.remove('locked');
       Player.lockMovement(false);
-
-    }.bind(this), timeout, cardRef);
+    }, cardRef, time, 800);
   },
 
   simulateSmashing: function(cardRef, time) {
@@ -431,16 +421,13 @@ export default {
     cardRef.querySelector('p.activity').textContent = 'Smashing Window...';
     cardRef.querySelector('p.activity').classList.remove('is--hidden');
 
-    let timeout = 2000;
     Audio.sfx('chop-wood');
 
-    window.setTimeout(function(cardRef) {
-
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
       Player.lockMovement(false);
       cardRef.classList.remove('locked');
-
-    }.bind(this), timeout, cardRef);
+    }, cardRef, time, 800);
   },
 
   drinking: function(cardRef, time) {
@@ -450,16 +437,13 @@ export default {
     cardRef.querySelector('p.activity').textContent = 'Drinking...';
     cardRef.querySelector('p.activity').classList.remove('is--hidden');
 
-    let timeout = 2000;
     Audio.sfx('water');
 
-    window.setTimeout(function(cardRef) {
-
+    this.fastForward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
       Player.changeProps('thirst', 25);
       Player.lockMovement(false);
-
-    }.bind(this), timeout, cardRef);
+    }, cardRef, time, 800);
   },
 
   reading: function(cardRef) {
@@ -467,10 +451,7 @@ export default {
     cardRef.querySelector('li.read')?.remove();
     cardRef.querySelector('ul.actions').classList.add('is--hidden');
 
-    let timeout = 100;
-
     window.setTimeout(function(cardRef) {
-
       this.endAction(cardRef); // has to be right at the beginning
       Player.lockMovement(false);
       if (cardRef.dataset.name === 'signpost-1') {
@@ -490,7 +471,6 @@ export default {
         Map.showTargetLocation('Harbor Gas Station');
       }
       Cards.removeCardFromDeck(cardRef);
-
-    }.bind(this), timeout, cardRef);
+    }.bind(this), 100, cardRef);
   }
 }

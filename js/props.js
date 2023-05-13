@@ -85,15 +85,15 @@ var buildingProps = {
 var buildingActions = {
   'house': [ 'scout area|30', 'break door|10|30', 'search|20', 'rest|60' ],
   'car': [ 'scout area|30', 'smash window|20', 'search|20', 'rest|60' ],
-  'farm': [ 'gather|20','scout area|30' ],
-  'tree': [ 'gather|20', 'scout area|30', 'cut down|15|25', 'rest|60' ],
+  'farm': [ 'gather|15','scout area|30' ],
+  'tree': [ 'gather|15', 'scout area|30', 'cut down|25|25', 'rest|60' ],
   'church': [ 'scout area|30', 'break door|10|30', 'search|20', 'rest|60' ],
   'signpost': [ 'read|1' ],
   'place': [ 'head toward|0', 'quick travel|0' ],
   'train': [ 'search|20', 'scout area|30' ],
   'shop': [ 'scout area|30', 'break door|30|20', 'search|20' ],
   'industrial': [ 'scout area|30', 'break door|45|30', 'search|20' ],
-  'water': [ 'gather|20', 'drink|5' ],
+  'water': [ 'gather|15', 'drink|10' ],
   'camping': [ 'scout area|30', 'break door|5|30', 'search|20', 'rest|60' ]
 };
 
