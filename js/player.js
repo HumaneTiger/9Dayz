@@ -157,25 +157,34 @@ export default {
     if (playerPosition.x % 4 === 0 || playerPosition.y % 4 === 0) {
       Map.mapUncoverAt(playerPosition.x, playerPosition.y);
     }
-    this.findBuildings(playerPosition.x, playerPosition.y);
-    this.findZeds(playerPosition.x, playerPosition.y);
-    this.findEvents(playerPosition.x, playerPosition.y);
-    Cards.updateCardDeck();
+
+    window.setTimeout(function() {
+
+      this.findBuildings(playerPosition.x, playerPosition.y);
+      this.findZeds(playerPosition.x, playerPosition.y);
+      this.findEvents(playerPosition.x, playerPosition.y);
+
+      Cards.updateCardDeck();
+
+      // check if player walked into a zed
+      if (allZeds[playerPosition.x][playerPosition.y] && allZeds[playerPosition.x][playerPosition.y].length > 0) {
+        // make sure zed isn't already dead
+        if (!document.querySelector('#cards .card.dead.zombie[data-x="'+ playerPosition.x +'"][data-y="'+ playerPosition.y +'"]')) {
+          window.setTimeout(function() {
+            Items.startBattle(true);
+          }.bind(this), 800);  
+        }
+      }
+    }.bind(this), 0);
+
     this.changeProps('energy', -3);
     this.changeProps('thirst', -2);
     this.changeProps('food', -1);
+
     if (this.getProp('food') <= 0) this.changeProps('health', -5);
     if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
     if (this.getProp('energy') <= 0) this.changeProps('energy', -5);
-    // check if player walked into a zed
-    if (allZeds[playerPosition.x][playerPosition.y] && allZeds[playerPosition.x][playerPosition.y].length > 0) {
-      // make sure zed isn't already dead
-      if (!document.querySelector('#cards .card.dead.zombie[data-x="'+ playerPosition.x +'"][data-y="'+ playerPosition.y +'"]')) {
-        window.setTimeout(function() {
-          Items.startBattle(true);
-        }.bind(this), 800);  
-      }
-    }
+
   },
 
   lockMovement: function(moveable) {
@@ -286,7 +295,7 @@ export default {
     const buildingsHere = Cards.refreshBuildingsAt(x, y);
     if (allQuadrants[x][y] !== undefined && !buildingsHere) {
       Map.placeBuildingsAt(x, y);
-      Cards.addCardsToDeck(x, y);
+      Cards.addCardsToDeck(x, y);  
     }
   },
 

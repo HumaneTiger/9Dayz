@@ -6,7 +6,7 @@
 }
 
 #maximap .inner {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -35,7 +35,7 @@
 #maximap .inner .morning,
 #maximap .inner .evening,
 #maximap .inner .night {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   opacity: 0;
@@ -116,7 +116,8 @@
   height: 100%;
   z-index: 20;
   transform: translate3d(0, -177.6px, 0);
-  transition: transform 1s ease-in;
+  transition: transform 1s linear;
+  will-change: transition;
 }
 
 #maximap .inner .map-quadrant,
@@ -126,7 +127,7 @@
 #maximap .inner .map-low,
 #maximap .inner .map-middle,
 #maximap .inner .map-high {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: -50%;
   width: 100%;
@@ -170,7 +171,7 @@
   font-size: 20px;
   position: absolute;
   z-index: 1;
-  text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff;
+  text-shadow: 0 2px 2px #fff, 0 -2px 2px #fff, 2px 0 2px #fff, -2px 0 2px #fff, 0 0 2px #fff, 0 0 4px #fff;
 }
 
 #maximap .inner .map-cover .cover .location:before {

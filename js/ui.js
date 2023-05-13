@@ -189,7 +189,8 @@ export default {
   },
   
   resizeViewport: function() {
-    viewport.style.transform = 'scale(' + (window.innerHeight / 1200) + ') translateX(-50%)';
+    const scaleFactor = window.innerHeight / 1200;
+    viewport.style.transform = 'scale3d('+scaleFactor+','+scaleFactor+','+scaleFactor+') translate3d(-50%,0,0)';
   },
 
   hourlyTasks: function(hour) {

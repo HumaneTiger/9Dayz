@@ -10,7 +10,9 @@ const allZeds = Props.getAllZeds();
 
 const map = document.querySelector('#maximap .map');
 const mapCover = map.querySelector('.map-cover .cover');
-const isChromium = window.chrome;
+// deactivate this fow feature, as it causes hefty performance issues
+// will try to solve the non-interactive map parts with canvas later
+const isChromium = true; // window.chrome;
 
 var uncoverMatrix = new Array(15);
 for (var i = 0; i < uncoverMatrix.length; i += 1) { uncoverMatrix[i] = new Array(30); }
@@ -86,9 +88,7 @@ export default {
   moveMapYTo: function(y) {
     const refVert = 885, refPosY = 33;
     let shiftY = (refPosY - y) * 44.4;
-    
     map.style.transform = 'translate3d(0, ' + shiftY + 'px, 0)';
-
   },
 
   showTargetLocation: function(target) {

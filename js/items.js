@@ -26,14 +26,14 @@ export default {
     Props.addToInventory('drink-1', 1);
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
-    
+    /*
     Props.addToInventory('stone', 2);
     Props.addToInventory('tape', 2);
     Props.addToInventory('branch', 2);
     Props.addToInventory('stump', 1);
     Props.addToInventory('straw-wheet', 1);
     Props.addToInventory('pepper', 1);
-    
+    */
 
     this.generateInventorySlots();
     this.fillInventorySlots();
