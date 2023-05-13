@@ -193,7 +193,7 @@ export default {
         show = false;
       }
       if (show) {
-        actionList += '<li class="' + action.name.replace(' ', '-') + '"><a href="#' + action.name.replace(' ', '-') + '" class="action-button"><span class="text"><span class="material-symbols-outlined">lock</span> ' + action.name + '</span><span class="additional">' + action.time + ' min</span><span class="additional-locked"></span></a></li>';
+        actionList += '<li class="' + action.name.replace(' ', '-') + '"><a data-time="'+action.time+'" href="#' + action.name.replace(' ', '-') + '" class="action-button"><span class="text"><span class="material-symbols-outlined">lock</span> ' + action.name + '</span><span class="additional">' + action.time + ' min</span><span class="additional-locked"></span></a></li>';
       }
     });
 

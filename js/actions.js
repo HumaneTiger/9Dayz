@@ -26,34 +26,35 @@ export default {
       ev.stopPropagation();
       if (clickButton) {
         const action = clickButton.href.split('#')[1];
+        const time = clickButton.dataset.time;
         if (action && !clickButton.closest('li').classList.contains('locked')) {
           Audio.sfx('click');
           if (action === 'gather' || action === 'search') {
-            this.simulateGathering(clickCard, action);
+            this.simulateGathering(clickCard, action, time);
           } else if (action === 'scout-area') {
-            this.simulateScouting(clickCard, action);
+            this.simulateScouting(clickCard, action, time);
           } else if (action === 'rest') {
-            this.simulateResting(clickCard);
+            this.simulateResting(clickCard, time);
           } else if (action === 'sleep') {
-            this.simulateSleeping(clickCard);
+            this.simulateSleeping(clickCard, time);
           } else if (action === 'cook') {
             this.simulateCooking(clickCard);
           } else if (action === 'cut-down') {
-            this.simulateCuttingDown(clickCard);
+            this.simulateCuttingDown(clickCard, time);
           } else if (action === 'smash-window') {
-            this.simulateSmashing(clickCard);
+            this.simulateSmashing(clickCard, time);
           } else if (action === 'break-door') {
-            this.simulateBreaking(clickCard);
+            this.simulateBreaking(clickCard, time);
           } else if (action === 'attack') {
             this.simulateAttacking(clickCard);
           } else if (action === 'lure') {
-            this.simulateLuring(clickCard, action);
+            this.simulateLuring(clickCard, action, time);
           } else if (action === 'got-it') {
             this.gotIt(clickCard);
           } else if (action === 'read') {
             this.reading(clickCard);
           } else if (action === 'drink') {
-            this.drinking(clickCard);
+            this.drinking(clickCard, time);
           } else {
             console.log('Unknown action: ' + action);
           }
@@ -128,6 +129,18 @@ export default {
     }
   },
 
+  endAction: function(cardRef) {
+    Player.lockMovement(false);
+    if (cardRef.querySelector('p.activity')) {
+      cardRef.querySelector('p.activity').textContent = '';
+      cardRef.querySelector('p.activity').classList.add('is--hidden');  
+    }
+    cardRef.querySelector('ul.actions')?.classList.remove('is--hidden');
+    if (cardRef.querySelector('ul.items')?.classList.contains('is--hidden')) {
+      cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
+    }
+  },
+
   simulateGathering: function(cardRef, action, time) {
 
     Player.lockMovement(true);
@@ -171,18 +184,6 @@ export default {
     }
   },
 
-  endAction: function(cardRef) {
-    Player.lockMovement(false);
-    if (cardRef.querySelector('p.activity')) {
-      cardRef.querySelector('p.activity').textContent = '';
-      cardRef.querySelector('p.activity').classList.add('is--hidden');  
-    }
-    cardRef.querySelector('ul.actions')?.classList.remove('is--hidden');
-    if (cardRef.querySelector('ul.items')?.classList.contains('is--hidden')) {
-      cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
-    }
-  },
-
   simulateScouting: function(cardRef, action, time) {
 
     Player.lockMovement(true);
@@ -196,7 +197,6 @@ export default {
     cardRef.querySelector('p.activity').textContent = 'Scouting...';
     cardRef.querySelector('p.activity').classList.remove('is--hidden');
 
-    let timeout = 8000;
     const x = parseInt(cardRef.dataset.x);
     const y = parseInt(cardRef.dataset.y);
     const scoutMarker = document.getElementById('scoutmarker');
@@ -205,22 +205,19 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    window.setTimeout(function(x, y, cardRef) {
-
+    this.fastForeward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
-
+      const x = parseInt(cardRef.dataset.x);
+      const y = parseInt(cardRef.dataset.y);
       if (x % 4 === 0 || y % 4 === 0) {
         Map.mapUncoverAt(x, y);
       }
-
       Player.findBuildings(x, y);
       Player.findZeds(x, y);
       Cards.updateCardDeck();
-
       document.getElementById('scoutmarker').classList.add('is--hidden');
       Player.lockMovement(false);
-  
-    }.bind(this), timeout, x, y, cardRef);
+    }, cardRef, time, 800);
 
   },
 
@@ -237,29 +234,33 @@ export default {
     const x = parseInt(cardRef.dataset.x);
     const y = parseInt(cardRef.dataset.y);
     const scoutMarker = document.getElementById('scoutmarker');
+
     scoutMarker.style.left = Math.round(x * 44.4) + 'px';
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    let timeout = 10000;
-    // fast forward with the constant effects:
-    // - gaining energy (little)
-    // - gaining health (little)
-    // - loosing food
-    // - loosing thirst
-    window.setTimeout(function(x, y, cardRef) {
-
+    this.fastForeward(function(cardRef) {
       this.endAction(cardRef); // has to be right at the beginning
-
       Player.changeProps('energy', 15);
       Player.changeProps('health', 10);
       Player.changeProps('food', -12);
       Player.changeProps('thirst', -15);
       document.getElementById('scoutmarker').classList.add('is--hidden');
       Player.lockMovement(false);
-  
-    }.bind(this), timeout, x, y, cardRef);
+    }, cardRef, time, 800);
+  },
 
+  fastForeward: function(callbackfunction, cardRef, time, newSpeedOpt) {
+    const defaultSpeed = Props.getGameSpeedDefault();
+    const newSpeed = newSpeedOpt || 400;
+    if (time) {
+      let ticks = parseInt(time) / 10;
+      Props.setGameSpeedDefault(newSpeed);
+      window.setTimeout(function(defaultSpeed, cardRef) {
+        Props.setGameSpeedDefault(defaultSpeed);
+        callbackfunction.call(this, cardRef);
+      }.bind(this), ticks * newSpeed, defaultSpeed, cardRef);  
+    }
   },
 
   simulateSleeping: function(cardRef, time) {
@@ -300,7 +301,7 @@ export default {
 
   },
 
-  simulateCooking: function(cardRef, time) {
+  simulateCooking: function() {
     document.getElementById('craft').classList.toggle('active');
     document.getElementById('inventory').classList.remove('active');
   },
@@ -335,7 +336,7 @@ export default {
 
   },
 
-  simulateLuring: function(cardRef, action) {
+  simulateLuring: function(cardRef, action, time) {
 
     Player.lockMovement(true);
     /* remove selected action */
@@ -379,7 +380,7 @@ export default {
     }
   },
 
-  simulateAttacking: function(cardRef, time) {
+  simulateAttacking: function(cardRef) {
 
     Player.lockMovement(true);
     const x = parseInt(cardRef.dataset.x);
@@ -461,7 +462,7 @@ export default {
     }.bind(this), timeout, cardRef);
   },
 
-  reading: function(cardRef, time) {
+  reading: function(cardRef) {
     /* remove selected action */
     cardRef.querySelector('li.read')?.remove();
     cardRef.querySelector('ul.actions').classList.add('is--hidden');

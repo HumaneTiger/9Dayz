@@ -10,7 +10,8 @@ import Actions from './actions.js'
 let startHour = 7; // 7
 let tick = 0;
 let ticksPerHour = 6;
-let tickInterval = 4000; //4000
+let tickInterval = 100;
+let tickCurrent = 0;
 
 let timeIsUnity = {
     gameHours: 24 + startHour,
@@ -53,21 +54,71 @@ function bind() {
     })
 }
 
+function triggerGameTick() {
+
+    tick += 1;
+    
+    /* TICKY TASKS */
+    if (tick % ticksPerHour === 0) {
+
+        timeIsUnity.gameHours += 1;
+
+        /* HOURLY TASKS */
+        Ui.hourlyTasks(timeIsUnity.todayHours);
+
+        //Day.updateBrightness(timeIsUnity.todayHours);
+
+        if (timeIsUnity.gameHours % 24 === 0) {
+
+            timeIsUnity.gameDays += 1;
+
+            /* DAILY TASKS */
+            Ui.dailyTasks(timeIsUnity.gameDays);
+        }
+    }
+
+    timeIsUnity.todayHours = timeIsUnity.gameHours - timeIsUnity.gameDays * 24;    
+    timeIsUnity.todayTime = timeIsUnity.todayHours < 10 ? '0' + timeIsUnity.todayHours + ':' : timeIsUnity.todayHours + ':';
+    timeIsUnity.todayTime += (tick % 6) + '0';
+}
+
 function initiateMainGameLoop() {
 
     window.setTimeout(function() {
 
         /* go foreward in time */
+        tickCurrent += tickInterval;
+
+        if (tickCurrent >= Props.getGameSpeedDefault()) {
+            tickCurrent = 0;
+            triggerGameTick();
+        }
+
+        if (!Ui.isGamePaused()) {
+            initiateMainGameLoop();
+        } else {
+            idleLoop();
+        }
+
+    }, tickInterval);
+}
+
+/*
+function initiateMainGameLoop() {
+
+    window.setTimeout(function() {
+
+        // go foreward in time
 
         tick += 1;
 
-        /* TICKY TASKS */
+        // TICKY TASKS
 
         if (tick % ticksPerHour === 0) {
     
             timeIsUnity.gameHours += 1;
 
-            /* HOURLY TASKS */
+            // HOURLY TASKS
 
             Ui.hourlyTasks(timeIsUnity.todayHours);
 
@@ -77,7 +128,7 @@ function initiateMainGameLoop() {
 
                 timeIsUnity.gameDays += 1;
 
-                /* DAILY TASKS */
+                // DAILY TASKS
 
                 Ui.dailyTasks(timeIsUnity.gameDays);
 
@@ -98,6 +149,7 @@ function initiateMainGameLoop() {
     }, tickInterval);
 
 }
+*/
 
 function idleLoop() {
     window.setTimeout(function() {

@@ -1,6 +1,7 @@
 import Binding from './binding.js'
 
 const mapSize = { width: 45, height: 45 };
+var gameSpeedDefault = 4000;
 
 var inventory = {
   items: new Array(),
@@ -246,6 +247,14 @@ export default {
 
   getGameMode: function() {
     return gameMode;
+  },
+
+  setGameSpeedDefault: function(speed) {
+    gameSpeedDefault = speed;
+  },
+
+  getGameSpeedDefault: function() {
+    return gameSpeedDefault;
   },
 
   setGameMode: function(mode) {
