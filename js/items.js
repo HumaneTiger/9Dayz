@@ -26,6 +26,7 @@ export default {
     Props.addToInventory('drink-1', 1);
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
+    Props.addToInventory('energy-pills', 1);
     /*
     Props.addToInventory('stone', 2);
     Props.addToInventory('tape', 2);

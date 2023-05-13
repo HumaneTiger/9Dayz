@@ -130,7 +130,7 @@ export default {
     let cardMarkup = cardMarkupPre;
 
     cardMarkup += '<ul class="actions">' +
-                  '<li class="lure"><a data-time="20" href="#lure" class="action-button"><span class="text">Lure</span><span class="additional">20 min - 60%</span></a></li><li class="attackz critical"><a href="#attack" class="action-button"><span class="text"><span class="material-symbols-outlined">release_alert</span> Attack</span><span class="additional">More might join</span></a></li>' +
+                  '<li class="lure"><a data-time="20" data-energy="5" href="#lure" class="action-button"><span class="text">Lure</span><span class="additional">20 min - 60%</span></a></li><li class="attackz critical"><a data-energy="-20" href="#attack" class="action-button"><span class="text"><span class="material-symbols-outlined">release_alert</span> Attack</span><span class="additional">-20 <span class="material-symbols-outlined energy">flash_on</span></span></a></li>' +
                   '<li class="search is--hidden"><a href="#search" class="action-button"><span class="text">Search</span><span class="additional-locked"></span></a></li>' +
                   '</ul>';
 
@@ -189,11 +189,15 @@ export default {
 
     actions.forEach(action => {  
       let show = true;
+      let energyAddon = '';
       if (!locked && (action.name === 'break door' || action.name === 'smash window')) {
         show = false;
       }
+      if (action.energy) {
+        energyAddon = ' | ' + action.energy + '<span class="material-symbols-outlined energy">flash_on</span>';
+      }
       if (show) {
-        actionList += '<li class="' + action.name.replace(' ', '-') + '"><a data-time="'+action.time+'" href="#' + action.name.replace(' ', '-') + '" class="action-button"><span class="text"><span class="material-symbols-outlined">lock</span> ' + action.name + '</span><span class="additional">' + action.time + ' min</span><span class="additional-locked"></span></a></li>';
+        actionList += '<li class="' + action.name.replace(' ', '-') + '"><a data-time="'+action.time+'" data-energy="'+action.energy+'" href="#' + action.name.replace(' ', '-') + '" class="action-button"><span class="text"><span class="material-symbols-outlined">lock</span> ' + action.name + '</span><span class="additional">' + action.time + ' min'+energyAddon+'</span><span class="additional-locked"></span></a></li>';
       }
     });
 

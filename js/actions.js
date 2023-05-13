@@ -26,35 +26,36 @@ export default {
       ev.stopPropagation();
       if (clickButton) {
         const action = clickButton.href.split('#')[1];
-        const time = clickButton.dataset.time;
+        const time = parseInt(clickButton.dataset.time);
+        const energy = parseInt(clickButton.dataset.energy) || 0;
         if (action && !clickButton.closest('li').classList.contains('locked')) {
           Audio.sfx('click');
           if (action === 'gather' || action === 'search') {
-            this.simulateGathering(clickCard, action, time);
+            this.simulateGathering(clickCard, action, time, energy);
           } else if (action === 'scout-area') {
-            this.simulateScouting(clickCard, action, time);
+            this.simulateScouting(clickCard, time, energy);
           } else if (action === 'rest') {
-            this.simulateResting(clickCard, time);
+            this.simulateResting(clickCard, time, energy);
           } else if (action === 'sleep') {
-            this.simulateSleeping(clickCard, time);
+            this.simulateSleeping(clickCard, time, energy);
           } else if (action === 'cook') {
             this.simulateCooking(clickCard);
           } else if (action === 'cut-down') {
-            this.simulateCuttingDown(clickCard, time);
+            this.simulateCuttingDown(clickCard, time, energy);
           } else if (action === 'smash-window') {
-            this.simulateSmashing(clickCard, time);
+            this.simulateSmashing(clickCard, time, energy);
           } else if (action === 'break-door') {
-            this.simulateBreaking(clickCard, time);
+            this.simulateBreaking(clickCard, time, energy);
           } else if (action === 'attack') {
             this.simulateAttacking(clickCard);
           } else if (action === 'lure') {
-            this.simulateLuring(clickCard, action, time);
+            this.simulateLuring(clickCard, time, energy);
           } else if (action === 'got-it') {
             this.gotIt(clickCard);
           } else if (action === 'read') {
             this.reading(clickCard);
           } else if (action === 'drink') {
-            this.drinking(clickCard, time);
+            this.drinking(clickCard, time, energy);
           } else {
             console.log('Unknown action: ' + action);
           }
@@ -141,7 +142,7 @@ export default {
     }
   },
 
-  fastForward: function(callbackfunction, cardRef, time, newSpeedOpt) {
+  fastForward: function(callbackfunction, cardRef, time, newSpeedOpt, energy) {
     const defaultSpeed = Props.getGameSpeedDefault();
     const newSpeed = newSpeedOpt || 400;
     if (time) {
@@ -149,12 +150,12 @@ export default {
       Props.setGameSpeedDefault(newSpeed);
       window.setTimeout(function(defaultSpeed, cardRef) {
         Props.setGameSpeedDefault(defaultSpeed);
-        callbackfunction.call(this, cardRef);
+        callbackfunction.call(this, cardRef, energy);
       }.bind(this), ticks * newSpeed, defaultSpeed, cardRef);  
     }
   },
 
-  simulateGathering: function(cardRef, action, time) {
+  simulateGathering: function(cardRef, action, time, energy) {
 
     Player.lockMovement(true);
     /* remove selected action */
@@ -180,28 +181,29 @@ export default {
     allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
 
     for (var i = 1; i <= allPreviews.length; i += 1) {
-      window.setTimeout(function(index, allPreviews, allItems, cardRef) {
+      window.setTimeout(function(index, allPreviews, allItems, cardRef, energy) {
         allPreviews[index - 1].classList.add('is--hidden');
         if (allPreviews[index]) {
           allPreviews[index].querySelector('.unknown').classList.add('is--hidden');
           allPreviews[index].querySelector('.searching').classList.remove('is--hidden');        
         }
         if (allItems[index-1]) {
-          allItems[index-1].classList.remove('is--hidden');      
+          allItems[index-1].classList.remove('is--hidden');     
         }
         if (index === allPreviews.length) {
           this.endAction(cardRef);
+          Player.changeProps('energy', energy); 
           Player.lockMovement(false);
         }
-      }.bind(this), i * timeout, i, allPreviews, allItems, cardRef);
+      }.bind(this), i * timeout, i, allPreviews, allItems, cardRef, energy);
     }
   },
 
-  simulateScouting: function(cardRef, action, time) {
+  simulateScouting: function(cardRef, time, energy) {
 
     Player.lockMovement(true);
     /* remove selected action */
-    cardRef.querySelector('li.' + action).remove();
+    cardRef.querySelector('li.scout-area').remove();
 
     cardRef.querySelector('div.banner').classList.add('is--hidden');
     cardRef.querySelector('ul.actions').classList.add('is--hidden');
@@ -218,7 +220,7 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForward(function(cardRef) {
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
       const x = parseInt(cardRef.dataset.x);
       const y = parseInt(cardRef.dataset.y);
@@ -229,11 +231,12 @@ export default {
       Player.findZeds(x, y);
       Cards.updateCardDeck();
       document.getElementById('scoutmarker').classList.add('is--hidden');
+      Player.changeProps('energy', energy); 
       Player.lockMovement(false);
-    }, cardRef, time, 800);
+    }, cardRef, time, 800, energy);
   },
 
-  simulateResting: function(cardRef, time) {
+  simulateResting: function(cardRef, time, energy) {
 
     Player.lockMovement(true);
     cardRef.querySelector('div.banner').classList.add('is--hidden');
@@ -251,18 +254,18 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForward(function(cardRef) {
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
-      Player.changeProps('energy', 15);
-      Player.changeProps('health', 10);
-      Player.changeProps('food', -12);
-      Player.changeProps('thirst', -15);
+      Player.changeProps('energy', energy);
+      Player.changeProps('health', Math.floor(energy / 2));
+      Player.changeProps('food', -10);
+      Player.changeProps('thirst', -14);
       document.getElementById('scoutmarker').classList.add('is--hidden');
       Player.lockMovement(false);
-    }, cardRef, time, 800);
+    }, cardRef, time, 800, energy);
   },
 
-  simulateSleeping: function(cardRef, time) {
+  simulateSleeping: function(cardRef, time, energy) {
 
     Player.lockMovement(true);
     cardRef.querySelector('div.banner').classList.add('is--hidden');
@@ -279,25 +282,15 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    let timeout = 5000;
-    // fast forward with the constant effects:
-    // - gaining energy (alot)
-    // - gaining health (alot)
-    // - loosing food
-    // - loosing thirst
-    window.setTimeout(function(x, y, cardRef) {
-
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
-
-      Player.changeProps('energy', 90);
-      Player.changeProps('health', 50);
-      Player.changeProps('food', -35);
-      Player.changeProps('thirst', -50);
+      Player.changeProps('energy', energy);
+      Player.changeProps('health', Math.floor(energy / 2));
+      Player.changeProps('food', -45);
+      Player.changeProps('thirst', -55);
       document.getElementById('scoutmarker').classList.add('is--hidden');
       Player.lockMovement(false);
-  
-    }.bind(this), timeout, x, y, cardRef);
-
+    }, cardRef, time, 100, energy);
   },
 
   simulateCooking: function() {
@@ -305,7 +298,7 @@ export default {
     document.getElementById('inventory').classList.remove('active');
   },
 
-  simulateCuttingDown: function(cardRef, time) {
+  simulateCuttingDown: function(cardRef, time, energy) {
 
     Player.lockMovement(true);
     cardRef.querySelector('ul.actions').classList.add('is--hidden');
@@ -318,7 +311,7 @@ export default {
     Audio.sfx('chop-wood', 800);
     Audio.sfx('chop-wood', 1600);
 
-    this.fastForward(function(cardRef) {
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
       if (Props.getGameMode() === 'real') {
         Props.addToInventory('improvised-axe', 0, -1);
@@ -328,15 +321,16 @@ export default {
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Cards.removeCardFromDeck(cardRef);
+      Player.changeProps('energy', energy);
       Player.lockMovement(false);
-    }, cardRef, time, 800);
+    }, cardRef, time, 800, energy);
   },
 
-  simulateLuring: function(cardRef, action, time) {
+  simulateLuring: function(cardRef, time, energy) {
 
     Player.lockMovement(true);
     /* remove selected action */
-    cardRef.querySelector('li.' + action)?.remove();
+    cardRef.querySelector('li.lure')?.remove();
 
     cardRef.querySelector('ul.actions').classList.add('is--hidden');
 
@@ -352,18 +346,19 @@ export default {
     scoutMarker.style.top = Math.round(y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForward(function(cardRef) {
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
       document.getElementById('scoutmarker').classList.add('is--hidden');
       // 60:40 chance it works
       if (Math.random() >= 0.4) {
         Items.startBattle(false, cardRef);
       } else {
+        Player.changeProps('energy', energy);
         Player.lockMovement(false);
         Audio.sfx('nope');
         Cards.updateCardDeck();
       }
-    }, cardRef, time, 1600);
+    }, cardRef, time, 1600, energy);
   },
 
   gotIt: function(cardRef) {
@@ -388,7 +383,7 @@ export default {
 
   },
 
-  simulateBreaking: function(cardRef, time) {
+  simulateBreaking: function(cardRef, time, energy) {
     /* remove selected action */
     cardRef.querySelector('li.break-door')?.remove();
     cardRef.querySelector('ul.actions').classList.add('is--hidden');
@@ -401,18 +396,19 @@ export default {
     Audio.sfx('chop-wood', 800);
     Audio.sfx('chop-wood', 1600);
 
-    this.fastForward(function(cardRef) {
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
       if (Props.getGameMode() === 'real') {
         Props.addToInventory('improvised-axe', 0, -1);
         Items.fillInventorySlots();
       }
       cardRef.classList.remove('locked');
+      Player.changeProps('energy', energy);
       Player.lockMovement(false);
-    }, cardRef, time, 800);
+    }, cardRef, time, 800, energy);
   },
 
-  simulateSmashing: function(cardRef, time) {
+  simulateSmashing: function(cardRef, time, energy) {
     /* remove selected action */
     cardRef.querySelector('li.smash-window')?.remove();
     cardRef.querySelector('ul.actions').classList.add('is--hidden');
@@ -423,11 +419,12 @@ export default {
 
     Audio.sfx('chop-wood');
 
-    this.fastForward(function(cardRef) {
+    this.fastForward(function(cardRef, energy) {
       this.endAction(cardRef); // has to be right at the beginning
       Player.lockMovement(false);
+      Player.changeProps('energy', energy);
       cardRef.classList.remove('locked');
-    }, cardRef, time, 800);
+    }, cardRef, time, 800, energy);
   },
 
   drinking: function(cardRef, time) {

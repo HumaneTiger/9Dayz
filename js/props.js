@@ -83,18 +83,18 @@ var buildingProps = {
 };
 
 var buildingActions = {
-  'house': [ 'scout area|30', 'break door|10|30', 'search|20', 'rest|60' ],
-  'car': [ 'scout area|30', 'smash window|20', 'search|20', 'rest|60' ],
-  'farm': [ 'gather|15','scout area|30' ],
-  'tree': [ 'gather|15', 'scout area|30', 'cut down|25|25', 'rest|60' ],
-  'church': [ 'scout area|30', 'break door|10|30', 'search|20', 'rest|60' ],
+  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|360|+100' ],
+  'car': [ 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20' ],
+  'farm': [ 'gather|15|-10','scout area|30' ],
+  'tree': [ 'gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+10' ],
+  'church': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ],
   'signpost': [ 'read|1' ],
   'place': [ 'head toward|0', 'quick travel|0' ],
-  'train': [ 'search|20', 'scout area|30' ],
-  'shop': [ 'scout area|30', 'break door|30|20', 'search|20' ],
-  'industrial': [ 'scout area|30', 'break door|45|30', 'search|20' ],
-  'water': [ 'gather|15', 'drink|10' ],
-  'camping': [ 'scout area|30', 'break door|5|30', 'search|20', 'rest|60' ]
+  'train': [ 'search|20|-5', 'scout area|30' ],
+  'shop': [ 'break door|30|-20', 'search|20|-10', 'scout area|30' ],
+  'industrial': [ 'break door|45|-30', 'search|20|-20', 'scout area|30' ],
+  'water': [ 'gather|15|-5', 'drink|10' ],
+  'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ]
 };
 
 var weapons = {
@@ -188,7 +188,7 @@ var items = {
   'straw-wheet': ['craft', 0, 0, 0, 0, 0],
   'stump': ['craft', 0, 0, 0, 3, 3],
   'tape': ['craft', 0, 0, 0, 1, 0],
-  'tomato': ['eat', 8, 5, 0],
+  'tomato': ['eat', 4, 8, 3],
   'wine': ['drink', 5, 35, 20],
   'improvised-axe': ['extra', 0, 0, 0, 8, 4],
   'wooden-club': ['extra', 0, 0, 0, 6, 3]
@@ -677,7 +677,7 @@ export default {
           // these are exceptions for certain building <-> action combos that make no sense
         } else {
           singleAction.time = action.split("|")[1];
-          singleAction.energy = action.split("|")[2];
+          singleAction.energy = action.split("|")[2] || 0;
           actionSet.push(singleAction);  
         }
       });

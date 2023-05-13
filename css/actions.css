@@ -24,8 +24,13 @@
 #cards .actions li.critical span.additional {
   color: #dc6452;  
 }
-#cards .actions li.critical .material-symbols-outlined  {
+#cards .actions li.critical .material-symbols-outlined {
   display: inline-block;
+}
+#cards .actions li .material-symbols-outlined.energy {
+  display: inline-block;
+  line-height: 0.9em;
+  vertical-align: top;
 }
 #cards .card a span.additional-locked,
 #cards .card li.locked a,
