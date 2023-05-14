@@ -48,6 +48,17 @@ export default {
     });
   },
 
+  disableActions: function(disabled) {
+    for (const [index, card] of cardDeck.entries()) {
+      let cardRef = cardsContainer.querySelector('.' + (card.name + '-' + card.x + '-' + card.y));
+      if (!disabled || cardRef.classList.contains('event')) {
+        cardRef.classList.remove('actions-locked');
+      } else {
+        cardRef.classList.add('actions-locked');
+      }
+    }
+  },
+
   removeCardFromDeck: function(removeCard, noUpdate) {
     const name = removeCard.dataset.name;
     const x = parseInt(removeCard.dataset.x); 
