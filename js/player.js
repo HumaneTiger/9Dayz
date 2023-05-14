@@ -19,8 +19,8 @@ var playerProps = {
   protection: 0,
   actions: 0
 }
-var moveLocked = false;
 
+var moveLocked = false;
 var moving = false;
 
 export default {
@@ -146,20 +146,13 @@ export default {
   },
 
   updatePlayer: function() {
-    player.style.left = Math.round(playerPosition.x * 44.4 + 17) + 'px';
-    if (playerPosition.y < 20) {
-      player.style.top = 885 - Math.round((20 - playerPosition.y) * 44.4) + 'px';
-    } else if (playerPosition.y > 40) {
-      player.style.top = 885 + Math.round((playerPosition.y - 40) * 44.4) + 'px';
-    } else {
-      player.style.top = '885px';
-    }
-    if (playerPosition.x % 4 === 0 || playerPosition.y % 4 === 0) {
-      Map.mapUncoverAt(playerPosition.x, playerPosition.y);
-    }
+
+    this.movePlayerTo(playerPosition.x, playerPosition.y);
 
     window.setTimeout(function() {
 
+      Cards.disableActions(false);
+      
       this.findBuildings(playerPosition.x, playerPosition.y);
       this.findZeds(playerPosition.x, playerPosition.y);
       this.findEvents(playerPosition.x, playerPosition.y);
@@ -185,6 +178,20 @@ export default {
     if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
     if (this.getProp('energy') <= 0) this.changeProps('energy', -5);
 
+  },
+
+  movePlayerTo: function(x, y) {
+    player.style.left = Math.round(x * 44.4 + 17) + 'px';
+    if (y < 20) {
+      player.style.top = 885 - Math.round((20 - y) * 44.4) + 'px';
+    } else if (y > 40) {
+      player.style.top = 885 + Math.round((y - 40) * 44.4) + 'px';
+    } else {
+      player.style.top = '885px';
+    }
+    if (x % 4 === 0 || y % 4 === 0) {
+      Map.mapUncoverAt(x, y);
+    }
   },
 
   lockMovement: function(moveable) {
