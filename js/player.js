@@ -162,7 +162,9 @@ export default {
       // check if player walked into a zed
       if (allZeds[playerPosition.x][playerPosition.y] && allZeds[playerPosition.x][playerPosition.y].length > 0) {
         // make sure zed isn't already dead
-        if (!document.querySelector('#cards .card.dead.zombie[data-x="'+ playerPosition.x +'"][data-y="'+ playerPosition.y +'"]')) {
+        // dead / looted zeds have to be removed from allZeds[] in the future!
+        let zombieCandidate = document.querySelector('#cards .card.zombie[data-x="'+ playerPosition.x +'"][data-y="'+ playerPosition.y +'"]');
+        if (zombieCandidate && !zombieCandidate.classList.contains('dead')) {
           window.setTimeout(function() {
             Items.startBattle(true);
           }.bind(this), 800);  
@@ -183,7 +185,6 @@ export default {
   },
 
   movePlayerTo: function(x, y) {
-    console.log(x,y);
     player.style.left = Math.round(x * 44.4 + 17) + 'px';
     if (y < 20) {
       player.style.top = 885 - Math.round((20 - y) * 44.4) + 'px';
