@@ -145,14 +145,14 @@ export default {
     Map.mapUncoverAt(playerPosition.x, playerPosition.y);
   },
 
-  updatePlayer: function() {
+  updatePlayer: function(noPenalty) {
 
     this.movePlayerTo(playerPosition.x, playerPosition.y);
 
     window.setTimeout(function() {
 
       Cards.disableActions(false);
-      
+
       this.findBuildings(playerPosition.x, playerPosition.y);
       this.findZeds(playerPosition.x, playerPosition.y);
       this.findEvents(playerPosition.x, playerPosition.y);
@@ -170,9 +170,11 @@ export default {
       }
     }.bind(this), 0);
 
-    this.changeProps('energy', -3);
-    this.changeProps('thirst', -2);
-    this.changeProps('food', -1);
+    if (!noPenalty) {
+      this.changeProps('energy', -1);
+      this.changeProps('thirst', -2);
+      this.changeProps('food', -1);  
+    }
 
     if (this.getProp('food') <= 0) this.changeProps('health', -5);
     if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
@@ -181,6 +183,7 @@ export default {
   },
 
   movePlayerTo: function(x, y) {
+    console.log(x,y);
     player.style.left = Math.round(x * 44.4 + 17) + 'px';
     if (y < 20) {
       player.style.top = 885 - Math.round((20 - y) * 44.4) + 'px';
@@ -188,6 +191,9 @@ export default {
       player.style.top = 885 + Math.round((y - 40) * 44.4) + 'px';
     } else {
       player.style.top = '885px';
+    }
+    if (playerPosition.y >= 20 && playerPosition.y <= 40) {
+      Map.moveMapYTo(y);
     }
     if (x % 4 === 0 || y % 4 === 0) {
       Map.mapUncoverAt(x, y);
@@ -250,9 +256,6 @@ export default {
       }
       if (posXBefore !== playerPosition.x || posYBefore !== playerPosition.y) {
         this.updatePlayer();
-        if (playerPosition.y >= 20 && playerPosition.y <= 40) {
-          Map.moveMapYTo(playerPosition.y);
-        }
         moving = true;
         window.setTimeout(function() { moving = false; }, 1000);
       }  

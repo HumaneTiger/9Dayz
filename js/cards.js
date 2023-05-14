@@ -141,7 +141,7 @@ export default {
     let cardMarkup = cardMarkupPre;
 
     cardMarkup += '<ul class="actions">' +
-                  '<li class="lure"><a data-time="20" data-energy="5" href="#lure" class="action-button"><span class="text">Lure</span><span class="additional">20 min - 60%</span></a></li><li class="attackz critical"><a data-energy="-20" href="#attack" class="action-button"><span class="text"><span class="material-symbols-outlined">release_alert</span> Attack</span><span class="additional">-20 <span class="material-symbols-outlined energy">flash_on</span></span></a></li>' +
+                  '<li class="lure"><a data-time="20" data-energy="-5" href="#lure" class="action-button"><span class="text">Lure</span><span class="additional">20 min - 60%</span></a></li><li class="attackz critical"><a data-energy="-15" href="#attack" class="action-button"><span class="text"><span class="material-symbols-outlined">release_alert</span> Attack</span><span class="additional">-15 <span class="material-symbols-outlined energy">flash_on</span></span></a></li>' +
                   '<li class="search is--hidden"><a href="#search" class="action-button"><span class="text">Search</span><span class="additional-locked"></span></a></li>' +
                   '</ul>';
 

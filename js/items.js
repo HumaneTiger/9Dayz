@@ -3,6 +3,7 @@ import Binding from './binding.js'
 import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
+import Actions from './actions.js'
 import Map from './map.js'
 
 const items = Props.getAllItems();
@@ -31,7 +32,7 @@ export default {
     Props.addToInventory('stone', 2);
     Props.addToInventory('tape', 2);
     Props.addToInventory('branch', 2);
-    Props.addToInventory('stump', 1);
+    Props.addToInventory('stump', 4);
     Props.addToInventory('straw-wheet', 1);
     Props.addToInventory('pepper', 1);
     */
@@ -176,17 +177,24 @@ export default {
     const spaceX = 400;
 
     if (singleZed) {
-      fightingZombies.push(singleZed.dataset.name +'-'+ singleZed.dataset.x +'-'+ singleZed.dataset.y);
+      let zombieCandidate = document.querySelector('#cards .card.zombie.' + (singleZed.dataset.name +'-'+ singleZed.dataset.x +'-'+ singleZed.dataset.y));
+      if (zombieCandidate && !zombieCandidate.classList.contains('dead')) {
+        fightingZombies.push(zombieCandidate);
+      }
     } else {
       for (const card in cardDeck) {
         if (cardDeck[card].type === 'zombie' && cardDeck[card].dist < 2.9) {
-          fightingZombies.push(cardDeck[card].name +'-'+ cardDeck[card].x +'-'+ cardDeck[card].y);
+          let zombieCandidate = document.querySelector('#cards .card.zombie.' + (cardDeck[card].name +'-'+ cardDeck[card].x +'-'+ cardDeck[card].y));
+          if (zombieCandidate && !zombieCandidate.classList.contains('dead')) {
+            fightingZombies.push(zombieCandidate);
+          }
         }
       }  
     }
+
     if (fightingZombies.length > 0) {
       for (var i = 0; i < fightingZombies.length; i += 1)  {
-        let zombie = document.querySelector('#cards .card.zombie.' + fightingZombies[i]);
+        let zombie = fightingZombies[i];
         zombie.classList.add('fight');
         zombie.style.zIndex = 220;
         zombie.style.left = (2135/2) - (fightingZombies.length * spaceX / 2) + (i * spaceX) + 'px';
@@ -200,6 +208,8 @@ export default {
         document.querySelector('#cards .cards-blocker').classList.add('active');
         this.spawnBattleDeck(surprised);
       }.bind(this), 100, surprised);  
+    } else {
+      this.endBattle();
     }
   },
 
@@ -231,20 +241,24 @@ export default {
   },
 
   endBattle: function() {
+
     battleDeck = [];
+
     // Battle UI
     document.getElementById('battle-cards').classList.add('is--hidden');
     battleDrawContainer.innerHTML = '';
     battlePlayContainer.innerHTML = '';
     document.getElementById('draw-amount').style.left = '0';
     battleDrawContainer.style.width = '';
+
     // UI
     battleHealthMeter.classList.remove('in-battle');
     document.getElementById('properties').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.querySelector('#cards .cards-blocker').classList.remove('active');
-    Player.lockMovement(false);
+
     window.setTimeout(function() {
+      Player.changeProps('energy', -15);
       const allAttackingZeds = document.querySelectorAll('#cards .card.zombie.fight');
       document.querySelector('#cards .cards-blocker').classList.add('is--hidden');
       allAttackingZeds.forEach(zed => {
@@ -253,7 +267,7 @@ export default {
         zed.querySelector('.actions li.attackz')?.remove();
         zed.querySelector('.actions li.search')?.classList.remove('is--hidden');
       });
-      Cards.updateCardDeck();
+      Actions.goBackFromAction(); // go back before any new DOM nodes will be added to Card deck
     }.bind(this), 100);
   },
 

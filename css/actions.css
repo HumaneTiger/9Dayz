@@ -16,7 +16,7 @@
   transform: translateY(-12px);
   transition: opacity 0.2s ease-out, transform 0.3s ease-out;
 }
-#cards .card.actions-locked .inner {
+#cards .card.actions-locked .inner ul.actions {
   pointer-events: none;
 }
 #cards .card.actions-locked ul.actions a {
