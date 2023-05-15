@@ -10,7 +10,7 @@ const allZeds = Props.getAllZeds();
 const allEvents = Props.getAllEvents();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 18, y: 44 };
+var playerPosition = { x: 18, y: 44 }; //{ x: 10, y: 32 };
 var playerProps = {
   health: 100,
   food: 65,

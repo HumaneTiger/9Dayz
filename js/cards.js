@@ -14,12 +14,17 @@ const cardWidth = 380 * 0.8;
 const zIndexBase = 200;
 
 var cardDeck = [];
+var cardId = 0;
 
 const weaponProps = Props.getWeaponProps();
 
 export default {
   
   init() {
+  },
+
+  getCardById: function(cardId) {
+    return document.getElementById(cardId);
   },
 
   addCardsToDeck(x, y) {
@@ -57,6 +62,10 @@ export default {
         cardRef.classList.add('actions-locked');
       }
     }
+  },
+
+  removeCardFromDeckById: function(cardId) {
+    this.removeCardFromDeck(this.getCardById(cardId));
   },
 
   removeCardFromDeck: function(removeCard, noUpdate) {
@@ -105,7 +114,7 @@ export default {
 
   addEventToDeck(x, y, event) {
     
-    let cardMarkup = '<div class="card event ' + ('event-' + x + '-' + y) + '"' +
+    let cardMarkup = '<div id="card-' + cardId + '" class="card event ' + ('event-' + x + '-' + y) + '"' +
                         'data-name="event" data-x="' + x + '" data-y="' + y + '" ' +
                         'style="left: ' + Math.round(x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                         '<div class="inner"><h2>' + event.title + '</h2><p class="text">' + event.text + '</p>' +
@@ -120,6 +129,8 @@ export default {
     });
 
     cardsContainer.innerHTML += cardMarkup;
+
+    cardId += 1;
   },
 
   getCardDeck: function() {
@@ -128,7 +139,7 @@ export default {
 
   addZedCardMarkup: function(name, x, y) {
 
-    let cardMarkupPre = '<div class="card zombie ' + (name + '-' + x + '-' + y) + '"' +
+    let cardMarkupPre = '<div id="card-' + cardId + '" class="card zombie ' + (name + '-' + x + '-' + y) + '"' +
                         'data-name="' + name + '" data-x="' + x + '" data-y="' + y + '" ' +
                         'style="left: ' + Math.round(x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                         '<div class="inner"><div class="attack">'+Math.floor(Math.random()*6+4)+'</div><div class="health">'+Math.floor(Math.random()*10+6)+'</div>' +
@@ -170,6 +181,8 @@ export default {
 
     cardsContainer.innerHTML += cardMarkup;
 
+    cardId += 1;
+
   },
 
   addCardMarkup: function(buildingName, x, y) {
@@ -187,7 +200,7 @@ export default {
       }
     });
 
-    let cardMarkupPre = '<div class="card ' + (buildingName + '-' + x + '-' + y) + ' ' + (locked ? 'locked ' : '') + '" ' +
+    let cardMarkupPre = '<div id="card-' + cardId + '" class="card ' + (buildingName + '-' + x + '-' + y) + ' ' + (locked ? 'locked ' : '') + '" ' +
                             'data-name="' + buildingName + '" data-x="' + x + '" data-y="' + y + '" ' +
                             'style="left: ' + Math.round(x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                             '<div class="inner"><div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested"></div></div><h2>' + buildingName.replace('-1', '').replace('-2', '').replace('-', ' ') + '</h2>' +
@@ -237,6 +250,8 @@ export default {
     cardMarkup += cardMarkupPost;
 
     cardsContainer.innerHTML += cardMarkup;
+
+    cardId += 1;
 
   },
 
@@ -392,37 +407,40 @@ export default {
 
       window.setTimeout(function(i, cardDeck) {
         
-        let cardRef = cardsContainer.querySelector('.' + (cardDeck[i].name + '-' + cardDeck[i].x + '-' + cardDeck[i].y));
+        // when running too fast, Cards get removed from deck before the last Cards here are processed
+        // doesn't seem to do any harm
+        if (cardDeck[i] !== undefined) {
+          
+          let cardRef = cardsContainer.querySelector('.' + (cardDeck[i].name + '-' + cardDeck[i].x + '-' + cardDeck[i].y));
 
-        if (cardRef) {
+          if (cardRef) {
 
-          let distance = 'Here';
-          if (cardDeck[i].dist > 1) {
-            distance = Math.round(cardDeck[i].dist * 4.4) + ' min';
-          }
-          cardRef.querySelector('.distance').textContent = distance;
-          if (cardRef.style.top === '600px') {
-            cardRef.style.top = '';
-            Audio.sfx('deal-card');
-          }
-          cardRef.style.transform = '';
+            let distance = 'Here';
+            if (cardDeck[i].dist > 1) {
+              distance = Math.round(cardDeck[i].dist * 4.4) + ' min';
+            }
+            cardRef.querySelector('.distance').textContent = distance;
+            if (cardRef.style.top === '600px') {
+              cardRef.style.top = '';
+              Audio.sfx('deal-card');
+            }
+            cardRef.style.transform = '';
 
-          if (!cardRef.classList.contains('fight')) {
-            cardRef.style.left = cardLeftPosition + 'px';
-            cardRef.style.zIndex = zIndexBase - cardIndex;  
-          }
+            if (!cardRef.classList.contains('fight')) {
+              cardRef.style.left = cardLeftPosition + 'px';
+              cardRef.style.zIndex = zIndexBase - cardIndex;  
+            }
 
-          cardIndex += 1;
-          if (cardDeck.length < 7 || cardIndex < 3) {
-            cardLeftPosition += cardWidth;
-          } else {
-            cardLeftPosition += cardWidth / (cardIndex - 1.95);
+            cardIndex += 1;
+            if (cardDeck.length < 7 || cardIndex < 3) {
+              cardLeftPosition += cardWidth;
+            } else {
+              cardLeftPosition += cardWidth / (cardIndex - 1.95);
+            }
           }
         }
-
       }, 300 + 100 * i, i, cardDeck);
     }
-    
   },
 
   refreshBuildingsAt: function(x, y) {

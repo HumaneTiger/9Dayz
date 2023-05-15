@@ -64,6 +64,10 @@ body * {
     vertical-align: top;  
     transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.2s ease-out;
 }
+#startscreen .button.start {
+    padding: 12px 24px 2px;
+    font-size: 18px;
+}
 #startscreen .button small {
     font-size: 1.5vh;
     line-height: 2em;
