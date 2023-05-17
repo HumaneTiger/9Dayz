@@ -28,20 +28,18 @@ export default {
   },
 
   addCardsToDeck(x, y) {
-    let newBuildings = allBuildings[x][y];
-
-    if (newBuildings.length) {
-      for (var i = 0; i < newBuildings.length; i += 1) {
-        cardDeck.push({
-          name: newBuildings[i],
+    // rename: add new building cards to deck
+    // use add singlecard to deck
+    allBuildings[x][y]?.forEach(building => {  
+      cardDeck.push({
+          id: cardId,
+          name: building,
           type: 'building',
           x: x,
           y: y
-        });
-        this.addCardMarkup(newBuildings[i], x, y);
-      }
-    }
-    
+      });
+      this.addCardMarkup(building, x, y);
+    });
   },
 
   addSingleCardToDeck(x, y, type, name) {
@@ -323,6 +321,7 @@ export default {
       // Prevent Search / Gather / Rest / Sleep / Cut Down
       let gatherAction = cardRef.querySelector('ul.actions li.gather');
       let searchAction = cardRef.querySelector('ul.actions li.search');
+      let scoutAction = cardRef.querySelector('ul.actions li.scout-area');
       let restAction = cardRef.querySelector('ul.actions li.rest');
       let sleepAction = cardRef.querySelector('ul.actions li.sleep');
       let cutDownAction = cardRef.querySelector('ul.actions li.cut-down');
@@ -330,6 +329,7 @@ export default {
       let smashAction = cardRef.querySelector('ul.actions li.smash-window');
       let breakAction = cardRef.querySelector('ul.actions li.break-door');
       let drinkAction = cardRef.querySelector('ul.actions li.drink');
+      let readAction = cardRef.querySelector('ul.actions li.read');
 
       // - when too far away (not "Here")
       // - when Zeds around
@@ -345,6 +345,8 @@ export default {
         gatherAction ? gatherAction.querySelector('.additional-locked').textContent = infoText : false;
         searchAction?.classList.add('locked');
         searchAction ? searchAction.querySelector('.additional-locked').textContent = infoText : false;
+        scoutAction?.classList.add('locked');
+        scoutAction ? scoutAction.querySelector('.additional-locked').textContent = infoText : false;
         restAction?.classList.add('locked');
         restAction ? restAction.querySelector('.additional-locked').textContent = infoText : false;
         sleepAction?.classList.add('locked');
@@ -355,14 +357,18 @@ export default {
         cookAction ? cookAction.querySelector('.additional-locked').textContent = infoText : false;
         drinkAction?.classList.add('locked');
         drinkAction ? drinkAction.querySelector('.additional-locked').textContent = infoText : false;
+        readAction?.classList.add('locked');
+        readAction ? readAction.querySelector('.additional-locked').textContent = infoText : false;
       } else {
         gatherAction?.classList.remove('locked');
         searchAction?.classList.remove('locked');
+        scoutAction?.classList.remove('locked');
         restAction?.classList.remove('locked');
         sleepAction?.classList.remove('locked');
         cutDownAction?.classList.remove('locked');
         cookAction?.classList.remove('locked');
         drinkAction?.classList.remove('locked');
+        readAction?.classList.remove('locked');
       }
       // - when "no tools" (Cut down)
       if (cardDeck[i].dist <= 1.5) {

@@ -16,6 +16,30 @@ var crafting = {
 
 var gameMode = 'easy';
 
+// all generated ids go in here
+var objectIdsAt = new Array(mapSize.width);
+for (var i = 0; i < objectIdsAt.length; i += 1) { objectIdsAt[i] = new Array(mapSize.height); }
+
+// all object properties go in here
+// id
+// name
+// type = building, zombie, event
+// { actions }
+// locked
+// looted
+// zed nearby
+// active / inactive
+// distance
+// attack / defense
+// removed (or splice?)
+
+var objects = [];
+var objectsIdCounter = 0;
+var zedCounter = 1;
+
+
+
+
 var quadrant = new Array(mapSize.width);
 for (var i = 0; i < quadrant.length; i += 1) { quadrant[i] = new Array(mapSize.height); }
 
@@ -199,6 +223,7 @@ export default {
   init() {
     this.setupAllBuildings();
     this.setupAllZeds();
+    this.setupAllEvents();
     this.setupAllPaths();
     this.bind();
     this.preloadBuidlings();
@@ -216,8 +241,10 @@ export default {
       object: crafting,
       property: 'total',
       element: document.getElementById('crafting-total')
-  })
-},
+    })
+  },
+
+  /* ==================== the good ones ==================== */
 
   preloadBuidlings: function() {
     let images = [];
@@ -261,6 +288,43 @@ export default {
     gameMode = mode;
   },
 
+  /* inventory */
+  getAllItems: function() {
+    return items;
+  },
+
+  /* active crafting number */
+  getCrafting: function() {
+    return crafting;
+  },
+
+  getObjectIdsAt: function(x, y) {
+    return objectIdsAt[x][y];
+  },
+
+  addObjectIdAt: function(id, x, y) {
+    if (objectIdsAt[x][y] !== undefined) {
+      objectIdsAt[x][y].push(id);
+    } else {
+      objectIdsAt[x][y] = [];
+      objectIdsAt[x][y].push(id);
+    }
+  },
+  
+  getObject: function(id) {
+    return objects[id];
+  },
+
+  setObject: function(id, data) {
+    objects[id] = data;
+  },
+
+  /* ==================== the bad ones ==================== */
+
+  getAllBuildings: function() {
+    return buildings;
+  },
+
   getAllQuadrants: function() {
     return quadrant;
   },
@@ -271,10 +335,6 @@ export default {
   
   getAllZeds: function() {
     return zeds;
-  },
-
-  removeBuilding: function(x, y, name) {
-
   },
 
   getAllEvents: function() {
@@ -289,20 +349,12 @@ export default {
     return paths;
   },
 
-  getAllItems: function() {
-    return items;
-  },
-
   getAllTargetLocations: function() {
     return targetLocations;
   },
   
   getInventory: function() {
     return inventory;
-  },
-  
-  getCrafting: function() {
-    return crafting;
   },
   
   addToInventory: function(item, amount, durability) {
@@ -569,6 +621,29 @@ export default {
   },
 
   setupBuilding: function(x, y, buildingNamesArray) {
+    /* the good ones */
+    buildingNamesArray.forEach(buildingName => {
+      this.addObjectIdAt(objectsIdCounter, x, y);
+      this.setObject(objectsIdCounter, {
+        name: buildingName,
+        title: buildingName.startsWith('signpost-') ? 'signpost' : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
+        type: 'building',
+        text: false,
+        actions: [],
+        items: [],
+        locked: '',
+        looted: false,
+        zedNearby: null,
+        active: null,
+        distance: null,
+        attack: undefined,
+        defense: undefined, // use later for building cards in battle
+        dead: false,
+        removed: false
+      });  
+      objectsIdCounter += 1;
+    });
+    /* the bad ones */
     if (quadrant[x][y] === undefined) {
       quadrant[x][y] = buildingNamesArray;
       return true;
@@ -576,8 +651,68 @@ export default {
     return false;
   },
 
-  setZedAt: function(x, y, value) {
-    zeds[x][y] = value;
+  setZedAt: function(x, y, amount) {
+    /* the good ones */
+    for (var i = 0; i < amount; i += 1) {
+
+      let name = 'zombie-' + zedCounter;
+      zedCounter += 1;
+      zedCounter > 3 ? zedCounter = 1 : false;
+
+      this.addObjectIdAt(objectsIdCounter, x, y);
+      this.setObject(objectsIdCounter, {
+        name: name,
+        title: '',
+        type: 'zombie',
+        text: false,
+        actions: [],
+        items: [],
+        locked: '',
+        looted: false,
+        zedNearby: null,
+        active: null,
+        distance: null,
+        attack: Math.floor(Math.random()*6+4),
+        defense: Math.floor(Math.random()*10+6),
+        dead: false,
+        removed: false
+      });  
+
+      objectsIdCounter += 1;
+
+    }
+
+    /* the bad ones */
+    zeds[x][y] = amount;
+  },
+
+  setupAllEvents: function() {
+    /* the good ones */
+    for (var event in events) {
+      const x = event.split('-')[0];
+      const y = event.split('-')[1];
+      this.addObjectIdAt(objectsIdCounter, x, y);
+      this.setObject(objectsIdCounter, {
+        name: 'event',
+        title: events[event].title,
+        type: 'event',
+        text: events[event].text,
+        actions: [{
+          id: 'got-it', label: 'Got it!'
+        }],
+        items: [],
+        locked: '',
+        looted: false,
+        zedNearby: null,
+        active: null,
+        distance: null,
+        attack: undefined,
+        defense: undefined, // use later for building cards in battle
+        dead: false,
+        removed: false
+      });  
+      objectsIdCounter += 1;
+    };
   },
 
   addZedAt: function(x, y, name) {

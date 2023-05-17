@@ -304,9 +304,12 @@ export default {
 
   handleFoundBuildings(x, y) {
     const buildingsHere = Cards.refreshBuildingsAt(x, y);
+    // makes sure there weren't buildings placed already
     if (allQuadrants[x][y] !== undefined && !buildingsHere) {
+      // adds buildings from quadrant -> buildings (placed buildings)
       Map.placeBuildingsAt(x, y);
-      Cards.addCardsToDeck(x, y);  
+      // adds cards for these newly placed buildings
+      Cards.addCardsToDeck(x, y);
     }
   },
 
