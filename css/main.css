@@ -27,7 +27,7 @@ body * {
     height: 100vh;
     background-color: rgba(255, 254, 251, 1);
     color: rgba(0, 0, 0, 0.6);  
-    z-index: 1;
+    z-index: 2;
     padding: 0 25vw;
     opacity: 1;
     transition: opacity 1.5s ease-out;

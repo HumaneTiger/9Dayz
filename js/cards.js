@@ -276,6 +276,7 @@ export default {
     var cardIndex = 0;
     const playerPosition = Player.getPlayerPosition();
     let zedHere = false;
+    const cardConsole = document.getElementById('card-console');
 
     // remove Cards with no actions left
     for (var i = cardDeck.length - 1; i >= 0; i -= 1) {
@@ -297,7 +298,17 @@ export default {
     }
 
     this.sortCardDeck(playerPosition);
-    
+
+    cardConsole.innerHTML = '';
+    for (var i = 0; i < cardDeck.length; i += 1) {
+      let cardRef = cardsContainer.querySelector('.' + (cardDeck[i].name + '-' + cardDeck[i].x + '-' + cardDeck[i].y));
+      let cardId = cardRef.id.split('-')[1];
+      let objectId = Props.getObjectIdsAt(cardDeck[i].x, cardDeck[i].y);
+      cardConsole.innerHTML = cardConsole.innerHTML + cardId + ': ' + cardDeck[i].name + ' (' + cardDeck[i].type + ', ' + cardDeck[i].x + ', ' + cardDeck[i].y + ')<br>';
+      cardConsole.innerHTML = cardConsole.innerHTML + objectId + ': ';
+      cardConsole.innerHTML = cardConsole.innerHTML + JSON.stringify(Props.getObject(objectId)).replaceAll('","', '", "').replaceAll('":"', '": "').replaceAll('":', '": ') + '<br><br>';
+    }
+
     for (var i = cardDeck.length - 1; i >= 0; i -= 1) {
       if (cardDeck[i].type === 'zombie' && cardDeck[i].dist <= 1) {
         let cardRef = cardsContainer.querySelector('.' + (cardDeck[i].name + '-' + cardDeck[i].x + '-' + cardDeck[i].y));

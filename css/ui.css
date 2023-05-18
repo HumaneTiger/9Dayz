@@ -3,7 +3,23 @@ main {
   background-size: cover;
   background-position: center center;
 }
-
+#card-console {
+  background-color: rgba(255, 254, 251, 0.9);
+  box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);
+  color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  padding: 10px 60px 10px 15px;
+  font-size: 14px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.4em;
+  border-radius: 8px;
+  width: 20vw;
+  right: -16px;
+  top: 3vh;
+  height: 94vh;
+  z-index: 1;
+  overflow-y: scroll;
+}
 #damage-cover {
   position: absolute;
   width: 100%;
