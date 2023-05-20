@@ -116,7 +116,7 @@ export default {
         const here = Player.getPlayerPosition();
         let success = Props.setupBuilding(here.x, here.y, ['fireplace']);
         if (success) {
-          Player.handleFoundBuildings(here.x, here.y);
+          //Player.handleFoundBuildings(here.x, here.y);
           Cards.updateCardDeck();
           Props.addToInventory('stone', -1);
           Props.addToInventory('stump', -1);

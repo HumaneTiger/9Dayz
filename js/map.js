@@ -35,6 +35,20 @@ export default {
     }
   },
 
+  showObjectIconsByIds: function(objectIds) {
+    objectIds?.forEach(objectId => {
+      let object = Props.getObject(objectId);
+      const x = object.x,
+            y = object.y,
+            type = object.type;
+    
+      if (type !== undefined && !object.discovered) {
+        buidingsContainer.innerHTML += "<span class='building-icon at-" + x + "-" + y + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
+                                      "<img src='./img/icons/buildings/" + type + ".png'></span>";  
+      }
+    });
+  },
+
   placeZedsAt: function(x, y) {
     if (allZeds[x][y] === 1 || allZeds[x][y] === 2 || allZeds[x][y] === 3) {
       highlightsContainer.innerHTML += "<span class='zed-area at-" + x + "-" + y + "' style='top: " + Math.round(y * 44.4 + 8) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>";

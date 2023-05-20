@@ -561,7 +561,7 @@ export default {
     this.setupBuilding(15, 14, ['big-tree', 'small-tree']);
     this.setupBuilding(16, 14, ['small-tree']);
     this.setupBuilding(15, 16, ['big-tree', 'small-tree']);
-    this.setupBuilding(14, 16, ['mall-tree', 'big-tree']);
+    this.setupBuilding(14, 16, ['small-tree', 'big-tree']);
     this.setupBuilding(12, 9, ['big-tree', 'small-tree']);
     this.setupBuilding(12, 8, ['small-tree']);
     this.setupBuilding(16, 8, ['big-tree', 'small-tree']);
@@ -621,20 +621,47 @@ export default {
   },
 
   setupBuilding: function(x, y, buildingNamesArray) {
+
     /* the good ones */
     buildingNamesArray.forEach(buildingName => {
+      let lootItemList = [];
+      let props = buildingProps[buildingName];
+      let allItems = JSON.parse(JSON.stringify(props.items));
+      let probability = 9;
+      for (var i = 0; i < props.spawn; i += 1) {
+        let randomItem = Math.floor(Math.random() * allItems.length);
+        if ((Math.random() * 10) < probability) {
+          lootItemList.push({
+            name: JSON.parse(JSON.stringify(allItems[randomItem])),
+            amount: 1
+          });
+          probability = 6;
+        } else {
+          lootItemList.push({
+            name: JSON.parse(JSON.stringify(allItems[randomItem])),
+            amount: 0
+          });        
+        }
+        allItems.splice(randomItem, 1);
+      }
+      
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
+        x: x,
+        y: y,
         name: buildingName,
         title: buildingName.startsWith('signpost-') ? 'signpost' : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
-        type: 'building',
+        type: this.getBuildingTypeOf(buildingName),
+        group: 'building',
         text: false,
-        actions: [],
-        items: [],
+        actions: this.getBuildingActionsFor(buildingName),
+        items: lootItemList,
         locked: '',
         looted: false,
-        zedNearby: null,
-        active: null,
+        zednearby: null,
+        active: false,
+        inreach: false,
+        discovered: false,
         distance: null,
         attack: undefined,
         defense: undefined, // use later for building cards in battle
@@ -661,16 +688,25 @@ export default {
 
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
+        x: x,
+        y: y,
         name: name,
         title: '',
-        type: 'zombie',
+        type: undefined,
+        group: 'zombie',
         text: false,
-        actions: [],
+        actions: [
+          { id: 'lure', label: 'Lure' },
+          { id: 'attack', label: 'Attack!' },
+          { id: 'search', label: 'Search' }
+        ],
         items: [],
         locked: '',
         looted: false,
-        zedNearby: null,
-        active: null,
+        zednearby: null,
+        active: false,
+        inreach: false,
+        discovered: false,
         distance: null,
         attack: Math.floor(Math.random()*6+4),
         defense: Math.floor(Math.random()*10+6),
@@ -693,9 +729,12 @@ export default {
       const y = event.split('-')[1];
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
+        x: x,
+        y: y,
         name: 'event',
         title: events[event].title,
-        type: 'event',
+        type: undefined,
+        group: 'event',
         text: events[event].text,
         actions: [{
           id: 'got-it', label: 'Got it!'
@@ -703,8 +742,10 @@ export default {
         items: [],
         locked: '',
         looted: false,
-        zedNearby: null,
-        active: null,
+        zednearby: null,
+        active: false,
+        inreach: false,
+        discovered: false,
         distance: null,
         attack: undefined,
         defense: undefined, // use later for building cards in battle
@@ -795,7 +836,9 @@ export default {
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
-        singleAction.name = action.split("|")[0];
+        singleAction.name = action.split("|")[0]; // old
+        singleAction.label = action.split("|")[0]; // new
+        singleAction.id = action.split("|")[0].replaceAll(' ', '-'); // new
         if ((buildingName === 'pump' && singleAction.name === 'fish') ||
             (buildingName === 'pump' && singleAction.name === 'gather') ||
             (buildingName === 'outhouse' && singleAction.name === 'break door') ||
@@ -814,6 +857,22 @@ export default {
           singleAction.time = action.split("|")[1];
           singleAction.energy = action.split("|")[2] || 0;
           actionSet.push(singleAction);  
+        }
+
+        if (singleAction.name === 'gather' ||
+            singleAction.name === 'search' ||
+            singleAction.name === 'scout-area' ||
+            singleAction.name === 'rest' ||
+            singleAction.name === 'sleep' ||
+            singleAction.name === 'cut-down' ||
+            singleAction.name === 'cook' ||
+            singleAction.name === 'smash-window' ||
+            singleAction.name === 'break-door' ||
+            singleAction.name === 'drink' ||
+            singleAction.name === 'read') {
+          singleAction.needsUnlock = true;
+        } else {
+          singleAction.needsUnlock = false;
         }
       });
     }

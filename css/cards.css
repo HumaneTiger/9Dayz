@@ -45,32 +45,32 @@
 .card.zombie {
   background-image: url(../img/card/card-bg-z.png);
 }
-.card.zombie.fight {
+.card.fight {
   z-index: 220;
 }
-.card.zombie .dead {
+.card .dead {
   width: 100%;
   position: absolute;
   top: 22%;
   display: none;
 }
-.card.zombie.dead .dead {
+.card.dead .dead {
   display: block;
 }
-.card.zombie.dead .health,
-.card.zombie.dead .attack {
+.card.dead div.health,
+.card.dead div.attack {
   display: none !important;
 }
-.card.zombie .dead img {
+.card .dead img {
   width: 100%;
   height: auto;
 }
 #dismantle-card.active,
-.card.zombie.fight.active {
+.card.fight.active {
   box-shadow: 0 0 5px 4px #dc6452, 0 0 12px 8px #dc6452;
 }
-.card.zombie .attack,
-.card.zombie .health {
+.card div.attack,
+.card div.health {
   position: absolute;
   width: 70px;
   height: 70px;
@@ -78,17 +78,17 @@
   box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
   text-align: center;
   font-size: 52px;
-  line-height: 1.5em;
+  line-height: 1.55em;
   font-weight: 300;
 }
-.card.zombie .attack {
+.card div.attack {
   left: 30px;
   top: 30px;
   color: white;
   background-color: rgba(220, 100, 82, 0.66);
   border: 1px rgba(220, 100, 82, 0.2) solid;
 }
-.card.zombie .health {
+.card div.health {
   right: 30px;
   top: 30px;
   color: white;
@@ -177,11 +177,11 @@
   text-transform: capitalize;
 }
 #cards .card li.got-it {
-  margin-top: 300px;
+  margin-top: 340px;
 }
 .card p.text {
   position: absolute;
-  top: 88px;
+  top: 80px;
   width: 100%;
   padding: 0 36px;
   font-family: 'Kalam';

@@ -2,12 +2,8 @@ import Binding from './binding.js'
 import Props from './props.js'
 import Cards from './cards.js'
 import Map from './map.js'
-import Items from './items.js'
 
-const allQuadrants = Props.getAllQuadrants();
 const allPaths = Props.getAllPaths();
-const allZeds = Props.getAllZeds();
-const allEvents = Props.getAllEvents();
 
 var player = document.getElementById("player");
 var playerPosition = { x: 18, y: 44 }; //{ x: 10, y: 32 };
@@ -120,17 +116,15 @@ export default {
   },
 
   checkForWin: function() {
-    //if (playerPosition.x === 30 && playerPosition.y === 7) {
-      let startScreen = document.getElementById('startscreen');
-      startScreen.classList.remove('is--hidden');
-      startScreen.style.opacity = 0;
-      window.setTimeout(function() {
-        startScreen.querySelector('.start').classList.add('is--hidden');
-        startScreen.querySelector('.you-win').classList.remove('is--hidden');
-        startScreen.querySelector('.you-died').classList.add('is--hidden');
-        startScreen.style.opacity = 1;
-      }, 300);
-    //}
+    let startScreen = document.getElementById('startscreen');
+    startScreen.classList.remove('is--hidden');
+    startScreen.style.opacity = 0;
+    window.setTimeout(function() {
+      startScreen.querySelector('.start').classList.add('is--hidden');
+      startScreen.querySelector('.you-win').classList.remove('is--hidden');
+      startScreen.querySelector('.you-died').classList.add('is--hidden');
+      startScreen.style.opacity = 1;
+    }, 300);
   },
 
   initPlayer: function() {
@@ -153,23 +147,14 @@ export default {
 
       Cards.disableActions(false);
 
-      this.findBuildings(playerPosition.x, playerPosition.y);
-      this.findZeds(playerPosition.x, playerPosition.y);
-      this.findEvents(playerPosition.x, playerPosition.y);
-
-      Cards.updateCardDeck();
+      const allFoundObjectIds = this.findObjects(playerPosition.x, playerPosition.y);
+      this.handleFoundObjectIds(allFoundObjectIds);
 
       // check if player walked into a zed
-      if (allZeds[playerPosition.x][playerPosition.y] && allZeds[playerPosition.x][playerPosition.y].length > 0) {
-        // make sure zed isn't already dead
-        // dead / looted zeds have to be removed from allZeds[] in the future!
-        let zombieCandidate = document.querySelector('#cards .card.zombie[data-x="'+ playerPosition.x +'"][data-y="'+ playerPosition.y +'"]');
-        if (zombieCandidate && !zombieCandidate.classList.contains('dead')) {
-          window.setTimeout(function() {
-            Items.startBattle(true);
-          }.bind(this), 800);  
-        }
-      }
+      // make sure zed isn't already dead
+      // dead / looted zeds have to be removed from allZeds[] in the future!
+      // window.setTimeout(function() { Items.startBattle(true); }.bind(this), 800);
+      
     }.bind(this), 0);
 
     if (!noPenalty) {
@@ -271,54 +256,30 @@ export default {
     return playerProps[prop];
   },
 
-  findBuildings: function(x, y) {
-    this.handleFoundBuildings(x, y);
-    this.handleFoundBuildings(x, y-1);
-    this.handleFoundBuildings(x+1, y-1);
-    this.handleFoundBuildings(x+1, y);
-    this.handleFoundBuildings(x+1, y+1);
-    this.handleFoundBuildings(x, y+1);
-    this.handleFoundBuildings(x-1, y+1);
-    this.handleFoundBuildings(x-1, y);
-    this.handleFoundBuildings(x-1, y-1);
+  findObjects: function(x, y) {
+    
+    let allFoundObjectIds = [];
+    x = parseInt(x);
+    y = parseInt(y);
+
+    Props.getObjectIdsAt(x, y) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x, y)) : false;
+    Props.getObjectIdsAt(x, y-1) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x, y-1)) : false;
+    Props.getObjectIdsAt(x+1, y-1) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x+1, y-1)) : false;
+    Props.getObjectIdsAt(x+1, y) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x+1, y)) : false;
+    Props.getObjectIdsAt(x+1, y+1) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x+1, y+1)) : false;
+    Props.getObjectIdsAt(x, y+1) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x, y+1)) : false;
+    Props.getObjectIdsAt(x-1, y+1) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x-1, y+1)) : false;
+    Props.getObjectIdsAt(x-1, y) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x-1, y)) : false;
+    Props.getObjectIdsAt(x-1, y-1) ? allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x-1, y-1)) : false;
+
+    return allFoundObjectIds;
   },
 
-  findZeds: function(x, y) {
-    this.handleFoundZeds(x, y);
-    this.handleFoundZeds(x, y-1);
-    this.handleFoundZeds(x+1, y-1);
-    this.handleFoundZeds(x+1, y);
-    this.handleFoundZeds(x+1, y+1);
-    this.handleFoundZeds(x, y+1);
-    this.handleFoundZeds(x-1, y+1);
-    this.handleFoundZeds(x-1, y);
-    this.handleFoundZeds(x-1, y-1);
-  },
-
-  findEvents: function(x, y) {
-    if (allEvents[x+'-'+y] !== undefined) {
-      Cards.addEventToDeck(x, y, allEvents[x+'-'+y]);
-      delete allEvents[x+'-'+y];
+  handleFoundObjectIds: function(allFoundObjectIds) {
+    if (allFoundObjectIds.length) {
+      Map.showObjectIconsByIds(allFoundObjectIds);
+      Cards.addObjectsByIds(allFoundObjectIds);
     }
-  },
-
-  handleFoundBuildings(x, y) {
-    const buildingsHere = Cards.refreshBuildingsAt(x, y);
-    // makes sure there weren't buildings placed already
-    if (allQuadrants[x][y] !== undefined && !buildingsHere) {
-      // adds buildings from quadrant -> buildings (placed buildings)
-      Map.placeBuildingsAt(x, y);
-      // adds cards for these newly placed buildings
-      Cards.addCardsToDeck(x, y);
-    }
-  },
-
-  handleFoundZeds(x, y) {
-    if (allZeds[x][y] && (Props.getZedAt(x, y) === 1 || Props.getZedAt(x, y) === 2 || Props.getZedAt(x, y) === 3)) {
-      Map.placeZedsAt(x, y);
-      Cards.addZedsToDeck(x, y, allZeds[x][y]);
-    }
-    Cards.refreshZombiesAt(x, y);
   }
 
 }
