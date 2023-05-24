@@ -37,9 +37,6 @@ var objects = [];
 var objectsIdCounter = 0;
 var zedCounter = 1;
 
-
-
-
 var quadrant = new Array(mapSize.width);
 for (var i = 0; i < quadrant.length; i += 1) { quadrant[i] = new Array(mapSize.height); }
 
@@ -68,42 +65,42 @@ var buildingTypes = {
 };
 
 var buildingProps = {
-  'barn': { worthful: 1, spawn: 2, items: ['claw', 'duck', 'straw-wheet', 'pumpkin'] },
-  'big-tree': { worthful: 2, spawn: 3, items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'] },
-  'outhouse': { worthful: 0, spawn: 1, items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'] },
-  'pump': { worthful: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
-  'house': { worthful: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
-  'farm-house': { worthful: 2, spawn: 3, items: ['bread-2', 'wine', 'pumpkin', 'carrot', 'knife', 'pepper', 'tomato', 'exodus'] },
-  'town-house': { worthful: 3, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
-  'car-1': { worthful: 1, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
-  'signpost-1': { worthful: 0, spawn: 0, items: [] },
-  'signpost-2': { worthful: 0, spawn: 0, items: [] },
-  'signpost-3': { worthful: 0, spawn: 0, items: [] },
-  'signpost-4': { worthful: 0, spawn: 0, items: [] },
-  'signpost-5': { worthful: 0, spawn: 0, items: [] },
-  'signpost-6': { worthful: 0, spawn: 0, items: [] },
-  'signpost-7': { worthful: 0, spawn: 0, items: [] },
-  'old-villa': { worthful: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'wine', 'exodus', 'books'] },
-  'car-2': { worthful: 1, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
-  'field': { worthful: 1, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'] },
-  'compost': { worthful: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'] },
-  'scarecrow': { worthful: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin'] },
-  'small-tree': { worthful: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone'] },
-  'church': { worthful: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
-  'milton': { worthful: 0, spawn: 0, items: [] },
-  'sobor': { worthful: 0, spawn: 0, items: [] },
-  'train-wreck-2': { worthful: 2, spawn: 2, items: ['energy-pills', 'pincers', 'spanner'] },
-  'train-wreck-1': { worthful: 1, spawn: 3, items: ['snack-1', 'snack-2', 'drink-2', 'drink-5', 'wine'] },
-  'market': { worthful: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-3', 'drink-4', 'exodus'] },
-  'gas-station': { worthful: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
-  'tool-shed': { worthful: 2, spawn: 2, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
-  'garage': { worthful: 3, spawn: 3, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
-  'well': { worthful: 0, spawn: 1, items: ['branch', 'rosehip', 'reef', 'stone'] },
-  'jetty': { worthful: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck'] },
-  'seating': { worthful: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
-  'log-cabine': { worthful: 1, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
-  'cottage': { worthful: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
-  'fireplace': { worthful: 2, spawn: 0, items: [] }
+  'barn': { locked: 1.2, spawn: 2, items: ['claw', 'duck', 'straw-wheet', 'pumpkin'] },
+  'big-tree': { locked: 0, spawn: 3, items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'] },
+  'outhouse': { locked: 0, spawn: 1, items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'] },
+  'pump': { locked: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
+  'house': { locked: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
+  'farm-house': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'pumpkin', 'carrot', 'knife', 'pepper', 'tomato', 'exodus'] },
+  'town-house': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
+  'car-1': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
+  'signpost-1': { locked: 0, spawn: 0, items: [] },
+  'signpost-2': { locked: 0, spawn: 0, items: [] },
+  'signpost-3': { locked: 0, spawn: 0, items: [] },
+  'signpost-4': { locked: 0, spawn: 0, items: [] },
+  'signpost-5': { locked: 0, spawn: 0, items: [] },
+  'signpost-6': { locked: 0, spawn: 0, items: [] },
+  'signpost-7': { locked: 0, spawn: 0, items: [] },
+  'old-villa': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'wine', 'exodus', 'books'] },
+  'car-2': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
+  'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'] },
+  'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'] },
+  'scarecrow': { locked: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin'] },
+  'small-tree': { locked: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone'] },
+  'church': { locked: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
+  'milton': { locked: 0, spawn: 0, items: [] },
+  'sobor': { locked: 0, spawn: 0, items: [] },
+  'train-wreck-2': { locked: 0, spawn: 2, items: ['energy-pills', 'pincers', 'spanner'] },
+  'train-wreck-1': { locked: 0, spawn: 3, items: ['snack-1', 'snack-2', 'drink-2', 'drink-5', 'wine'] },
+  'market': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-3', 'drink-4', 'exodus'] },
+  'gas-station': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
+  'tool-shed': { locked: 2, spawn: 2, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
+  'garage': { locked: 3, spawn: 3, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
+  'well': { locked: 0, spawn: 1, items: ['branch', 'rosehip', 'reef', 'stone'] },
+  'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck'] },
+  'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
+  'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
+  'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
+  'fireplace': { locked: 0, spawn: 0, items: [] }
 };
 
 var buildingActions = {
@@ -644,7 +641,7 @@ export default {
         }
         allItems.splice(randomItem, 1);
       }
-      
+
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
         x: x,
@@ -656,7 +653,7 @@ export default {
         text: false,
         actions: this.getBuildingActionsFor(buildingName),
         items: lootItemList,
-        locked: '',
+        locked: (Math.random() * props.locked > 1) ? true : false,
         looted: false,
         zednearby: null,
         active: false,
@@ -666,6 +663,7 @@ export default {
         attack: undefined,
         defense: undefined, // use later for building cards in battle
         dead: false,
+        disabled: false,
         removed: false
       });  
       objectsIdCounter += 1;
@@ -701,7 +699,7 @@ export default {
           { id: 'search', label: 'Search' }
         ],
         items: [],
-        locked: '',
+        locked: undefined,
         looted: false,
         zednearby: null,
         active: false,
@@ -711,6 +709,7 @@ export default {
         attack: Math.floor(Math.random()*6+4),
         defense: Math.floor(Math.random()*10+6),
         dead: false,
+        disabled: false,
         removed: false
       });  
 
@@ -740,7 +739,7 @@ export default {
           id: 'got-it', label: 'Got it!'
         }],
         items: [],
-        locked: '',
+        locked: undefined,
         looted: false,
         zednearby: null,
         active: false,
@@ -750,6 +749,7 @@ export default {
         attack: undefined,
         defense: undefined, // use later for building cards in battle
         dead: false,
+        disabled: false,
         removed: false
       });  
       objectsIdCounter += 1;
@@ -839,41 +839,40 @@ export default {
         singleAction.name = action.split("|")[0]; // old
         singleAction.label = action.split("|")[0]; // new
         singleAction.id = action.split("|")[0].replaceAll(' ', '-'); // new
-        if ((buildingName === 'pump' && singleAction.name === 'fish') ||
-            (buildingName === 'pump' && singleAction.name === 'gather') ||
-            (buildingName === 'outhouse' && singleAction.name === 'break door') ||
-            (buildingName === 'small-tree' && singleAction.name === 'rest') ||
-            (buildingName === 'big-tree' && singleAction.name === 'cut down') ||
-            (buildingName === 'fireplace' && singleAction.name === 'break door') ||
-            (buildingName === 'fireplace' && singleAction.name === 'scout area') ||
-            (buildingName === 'fireplace' && singleAction.name === 'search') ||
-            (buildingName === 'seating' && singleAction.name === 'break door') ||
-            (buildingName === 'seating' && singleAction.name === 'scout area') ||
-            (buildingName === 'seating' && singleAction.name === 'sleep') ||
-            (buildingName === 'well' && singleAction.name === 'gather') ||
-            (buildingName === 'well' && singleAction.name === 'fish')) {
+        if ((buildingName === 'pump' && singleAction.id === 'fish') ||
+            (buildingName === 'pump' && singleAction.id === 'gather') ||
+            (buildingName === 'outhouse' && singleAction.id === 'break-door') ||
+            (buildingName === 'small-tree' && singleAction.id === 'rest') ||
+            (buildingName === 'big-tree' && singleAction.id === 'cut-down') ||
+            (buildingName === 'fireplace' && singleAction.id === 'break-door') ||
+            (buildingName === 'fireplace' && singleAction.id === 'scout-area') ||
+            (buildingName === 'fireplace' && singleAction.id === 'search') ||
+            (buildingName === 'seating' && singleAction.id === 'break-door') ||
+            (buildingName === 'seating' && singleAction.id === 'scout-area') ||
+            (buildingName === 'seating' && singleAction.id === 'sleep') ||
+            (buildingName === 'well' && singleAction.id === 'gather') ||
+            (buildingName === 'well' && singleAction.id === 'fish')) {
           // these are exceptions for certain building <-> action combos that make no sense
         } else {
           singleAction.time = action.split("|")[1];
           singleAction.energy = action.split("|")[2] || 0;
-          actionSet.push(singleAction);  
+          actionSet.push(singleAction);
         }
 
-        if (singleAction.name === 'gather' ||
-            singleAction.name === 'search' ||
-            singleAction.name === 'scout-area' ||
-            singleAction.name === 'rest' ||
-            singleAction.name === 'sleep' ||
-            singleAction.name === 'cut-down' ||
-            singleAction.name === 'cook' ||
-            singleAction.name === 'smash-window' ||
-            singleAction.name === 'break-door' ||
-            singleAction.name === 'drink' ||
-            singleAction.name === 'read') {
+        if (singleAction.id === 'gather' ||
+            singleAction.id === 'search' ||
+            singleAction.id === 'scout-area' ||
+            singleAction.id === 'rest' ||
+            singleAction.id === 'sleep' ||
+            singleAction.id === 'cut-down' ||
+            singleAction.id === 'cook' ||
+            singleAction.id === 'drink' ||
+            singleAction.id === 'read') {
           singleAction.needsUnlock = true;
         } else {
           singleAction.needsUnlock = false;
         }
+        singleAction.locked = undefined;
       });
     }
     return actionSet;

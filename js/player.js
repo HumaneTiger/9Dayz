@@ -145,7 +145,7 @@ export default {
 
     window.setTimeout(function() {
 
-      Cards.disableActions(false);
+      Cards.enableActions();
 
       const allFoundObjectIds = this.findObjects(playerPosition.x, playerPosition.y);
       this.handleFoundObjectIds(allFoundObjectIds);

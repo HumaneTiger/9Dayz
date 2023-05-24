@@ -5,8 +5,6 @@ import Cards from './cards.js'
 import Map from './map.js'
 import Items from './items.js'
 
-var actionsLocked = false;
-
 export default {
   
   init() {
@@ -16,43 +14,39 @@ export default {
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
-  lockActions: function(locked) {
-    actionsLocked = locked;
-  },
-
-  isActionsLocked: function() {
-    return actionsLocked;
-  },
-
   checkForCardClick: function(ev) {
 
     const target = ev.target;
-    const clickCard = target.closest('div.card');
-    const clickButton = target.closest('a.action-button');
+    const cardId = target.closest('div.card')?.id;
+    const clickButton = target.closest('div.action-button');
     const grabItem = target.closest('li.item:not(.is--hidden)');
 
-    if (clickCard) {
+    if (cardId) {
+
+      const object = Props.getObject(cardId);
 
       ev.preventDefault();
       ev.stopPropagation();
 
-      const cardId = clickCard.id;
-      
-      if (clickButton && (!actionsLocked || clickCard.classList.contains('event'))) {
-        const action = clickButton.href.split('#')[1];
+      if (clickButton && !object.disabled) {
+
+        const action = clickButton.dataset.action;
         const time = parseInt(clickButton.dataset.time);
         const energy = parseInt(clickButton.dataset.energy) || 0;
-        const x = clickCard.dataset.x,
-              y = clickCard.dataset.y;
-        if (action && !clickButton.closest('li').classList.contains('locked')) {
+        const x = object.x,
+              y = object.y;
+
+        if (action && !object.actions.find(singleAction => singleAction.name === action)?.locked) {
           Audio.sfx('click');
           if (action === 'search') {
             this.showActionFeedback(cardId, "Searching...", 'li.search');
-            clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
+            //implement in cards.js ?
+            //clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
             this.goToAndAction(x, y, this.simulateGathering, cardId, time, energy, 0);
           } else if (action === 'gather') {
             this.showActionFeedback(cardId, "Gathering...", 'li.gather');
-            clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
+            //implement in cards.js ?
+            //clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
             this.goToAndAction(x, y, this.simulateGathering, cardId, time, energy, 0);
           } else if (action === 'scout-area') {
             this.showActionFeedback(cardId, 'Scouting...', 'li.scout-area');
@@ -178,8 +172,7 @@ export default {
   
   goToAndAction: function(x, y, actionfunction, cardId, time, energy, delay) {
     Player.lockMovement(true);
-    this.lockActions(true);
-    Cards.disableActions(true);
+    Cards.disableActions();
     Player.movePlayerTo(x, y);
     window.setTimeout(function() {
       actionfunction.call(this, cardId, time, energy);
@@ -189,7 +182,6 @@ export default {
   goBackFromAction: function(cardId) {
     this.endAction(cardId);
     Player.updatePlayer(true);
-    this.lockActions(false);
     window.setTimeout(function() {
       Player.lockMovement(false);
     }.bind(this), 1000);
@@ -363,8 +355,7 @@ export default {
   simulateLuring: function(cardId, time, energy) {
 
     Player.lockMovement(true);
-    this.lockActions(true);
-    Cards.disableActions(true);
+    Cards.disableActions();
 
     const cardRef = Cards.getCardById(cardId);
     const x = parseInt(cardRef.dataset.x);
@@ -393,8 +384,7 @@ export default {
         Items.startBattle(false, cardRef);
       } else {
         // das auch :-)
-        this.lockActions(false);
-        Cards.disableActions(false);
+        Cards.enableActions();
         Player.lockMovement(false);
         Player.changeProps('energy', energy);
         Audio.sfx('nope');

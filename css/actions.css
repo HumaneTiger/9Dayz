@@ -19,14 +19,14 @@
 #cards .card.actions-locked .inner ul.actions {
   pointer-events: none;
 }
-#cards .card.actions-locked ul.actions a {
+#cards .card.actions-locked ul.actions .action-button {
   opacity: 0.75;
   background-color: rgba(255, 254, 251, 0.75);
 }
 #cards .actions li .material-symbols-outlined {
   display: none;
 }
-#cards .actions li.critical a,
+#cards .actions li.critical .action-button,
 #cards .actions li.critical span.additional {
   color: #dc6452;  
 }
@@ -38,11 +38,11 @@
   line-height: 0.9em;
   vertical-align: top;
 }
-#cards .card a span.additional-locked,
-#cards .card li.locked a,
-#cards .card.locked li.search a,
-#cards .card.locked li.rest a,
-#cards .card.locked li.sleep a {
+#cards .card .action-button span.additional-locked,
+#cards .card li.locked .action-button,
+#cards .card.locked li.search .action-button,
+#cards .card.locked li.rest .action-button,
+#cards .card.locked li.sleep .action-button {
   color: #ed7d31;
 }
 #cards .card li.locked .material-symbols-outlined,
@@ -79,7 +79,8 @@
 }
 #battle-cards .end-turn,
 #craft .button-craft,
-#cards .actions a {
+#cards .actions .action-button {
+  cursor: pointer;
   display: inline-block;
   background-color: rgba(255, 254, 251, 1);
   box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
@@ -88,7 +89,7 @@
   text-transform: capitalize;
   color: rgba(53, 35, 26, 0.66);
   padding: 16px 8px 12px;
-  width: 200px;
+  min-width: 200px;
   border-radius: 8px;
   text-align: center;
   text-decoration: none;
@@ -99,31 +100,32 @@
 }
 #battle-cards .end-turn:hover,
 #craft .button-craft:hover,
-#cards .actions a:hover {
+#cards .actions .action-button:hover {
   transform: scale(1);
   box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
 }
-#cards .actions a:hover span.additional-locked,
-#cards .actions a:hover span.additional {
+#cards .actions .action-button:hover span.additional-locked,
+#cards .actions .action-button:hover span.additional {
   opacity: 1;
   margin-top: 3px;
 }
-.card.hover-button .actions a:not(:hover) {
+.card.hover-button .actions .action-button:not(:hover) {
   opacity: 0.75;
   background-color: rgba(255, 254, 251, 0.75);
 }
 
-#cards .actions a span.text {
+#cards .actions .action-button span.text {
   display: block;
+  white-space: nowrap;
 }
-#cards .actions a span.text .material-symbols-outlined {
+#cards .actions .action-button span.text .material-symbols-outlined {
   font-size: 26px;
   margin-top: -3px;
   margin-right: -4px;
   vertical-align: top;
 }
-ul.actions a span.additional-locked,
-ul.actions a span.additional {
+ul.actions .action-button span.additional-locked,
+ul.actions .action-button span.additional {
   display: block;
   font-size: 20px;
   color: rgba(91, 155, 213, 1);

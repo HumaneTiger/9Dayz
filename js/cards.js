@@ -64,6 +64,30 @@ export default {
         }
       });
 
+      // set action states
+      object.actions?.forEach(action => {
+        action.locked = false;
+        if (object.locked && action.needsUnlock) {
+          action.locked = true;
+        }
+        if (!object.inreach && object.group !== 'event') {
+          action.locked = true;
+        }
+        if (object.zednearby && object.group !== 'event') {
+          action.locked = true;
+        }
+        if (action.id === 'smash-window') {
+          if (!Items.inventoryContains('stone') && !Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
+            action.locked = true;
+          }
+        }
+        if (action.id === 'cut-down' || action.id === 'break-door') {
+          if (!Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
+            action.locked = true;
+          }
+        }
+      });
+
       // removed
       // remove Cards with no actions and items left
 
@@ -163,24 +187,6 @@ export default {
           } else {
             cardRef.classList.remove('zombieshere');
           }
-          // - when "no tools" (Cut down)
-          /*
-            if (!Items.inventoryContains('stone') && !Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
-              smashAction?.classList.add('locked');
-              smashAction ? smashAction.querySelector('.additional-locked').textContent = 'Axe/Stone needed' : false;
-            } else {
-              smashAction?.classList.remove('locked');
-            }
-            if (!Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
-              breakAction?.classList.add('locked');
-              breakAction ? breakAction.querySelector('.additional-locked').textContent = 'Axe needed' : false;
-              cutDownAction?.classList.add('locked');
-              cutDownAction ? cutDownAction.querySelector('.additional-locked').textContent = 'Axe needed' : false;
-            } else {
-              breakAction?.classList.remove('locked');
-              cutDownAction?.classList.remove('locked');
-            }
-          */
         }
 
         // deactivate cards
@@ -251,20 +257,24 @@ export default {
         }
         additionInfo += '</span>';
       }
-      let locked = '',
-          additionLockedInfo = '';
-      if (!object.inreach) {
-        locked = ' locked';
+
+      let additionLockedInfo = '';
+      if (action.locked && (action.id === 'cut-down' || action.id === 'break-door')) {
+        additionLockedInfo = '<span class="additional-locked">Axe needed</span>';        
+      }
+      if (action.locked && action.id === 'smash-window') {
+        additionLockedInfo = '<span class="additional-locked">Axe or Stone needed</span>';
+      }
+      if (action.locked && !object.inreach) {
         additionLockedInfo = '<span class="additional-locked">Too far away</span>';
       }
-      if (object.zednearby) {
-        locked = ' locked';
+      if (action.locked && object.zednearby) {
         additionLockedInfo = '<span class="additional-locked">Zombies nearby</span>';
       }
 
-      actionList += '<li class="' + action.id + locked + '"><a data-time="'+ action.time + '" data-energy="' + action.energy + '" href="#' + action.id + '" class="action-button">' +
+      actionList += '<li class="' + action.id + (action.locked ? ' locked ' : '') + '"><div data-time="'+ action.time + '" data-energy="' + action.energy + '" data-action="' + action.id + '" class="action-button">' +
                     '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
-                    additionInfo + additionLockedInfo + '</a></li>';
+                    additionInfo + additionLockedInfo + '</div></li>';
     });
 
     // generate item markup
@@ -302,15 +312,24 @@ export default {
 
   },
 
-  disableActions: function(disabled) {
-    for (const [index, card] of cardDeck.entries()) {
-      let cardRef = cardsContainer.querySelector('.' + (card.name + '-' + card.x + '-' + card.y));
-      if (!disabled || cardRef.classList.contains('event')) {
-        cardRef.classList.remove('actions-locked');
-      } else {
-        cardRef.classList.add('actions-locked');
+  disableActions: function() {
+    cardDeckIds?.forEach(function(cardId, index) {
+      const object = Props.getObject(cardId);
+      const cardRef = document.getElementById(cardId);
+      if (object.group !== 'event') {
+        object.disabled = true;
+        cardRef.classList.add('actions-locked');  
       }
-    }
+    });
+  },
+
+  enableActions: function() {
+    cardDeckIds?.forEach(function(cardId, index) {
+      const object = Props.getObject(cardId);
+      const cardRef = document.getElementById(cardId);
+      object.disabled = false;
+      cardRef.classList.remove('actions-locked');  
+    });  
   },
 
   removeCardFromDeckById: function(cardId) {
