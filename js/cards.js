@@ -1,14 +1,13 @@
 import Audio from './audio.js'
 import Props from './props.js'
 import Player from './player.js'
-import Map from './map.js'
 import Items from './items.js'
 
 const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
 const zIndexBase = 200;
 
-var cardDeck = [], cardDeckIds = [];
+var cardDeck = [];
 
 export default {
   
@@ -23,8 +22,11 @@ export default {
     if (objectIds !== undefined) {
       objectIds?.forEach(objectId => {
         let object = Props.getObject(objectId);
-        if (!object.discovered) {
-          cardDeckIds.push(objectId);
+        if (!object.discovered && !object.removed) {
+          cardDeck.push({
+            id: objectId,
+            distance: 0
+          });
         }
       });
     }
@@ -35,12 +37,16 @@ export default {
 
     const playerPosition = Player.getPlayerPosition();
 
-    cardDeckIds?.forEach(id => {
+    cardDeck?.forEach(function(card, index) {
 
+      const id = card.id;
       let object = Props.getObject(id);
 
+      const distance = Math.sqrt( Math.pow((playerPosition.x - object.x), 2) + Math.pow((playerPosition.y - object.y), 2) );
+
       // distance
-      object.distance = Math.sqrt( Math.pow((playerPosition.x - object.x), 2) + Math.pow((playerPosition.y - object.y), 2) );
+      object.distance = distance;
+      cardDeck[index].distance = distance;
 
       // active
       if (object.distance > 4.5) {
@@ -73,7 +79,7 @@ export default {
         if (!object.inreach && object.group !== 'event') {
           action.locked = true;
         }
-        if (object.zednearby && object.group !== 'event') {
+        if (object.zednearby && object.group !== 'event' && object.group !== 'zombie' && action.id !== 'scout-area' && action.id !== 'read') {
           action.locked = true;
         }
         if (action.id === 'smash-window') {
@@ -88,38 +94,39 @@ export default {
         }
       });
 
-      // removed
-      // remove Cards with no actions and items left
+      // no actions and items left: remove Card
+      if (!object.actions?.length && !object.items?.length) {
+        object.removed = true;
+      }
 
     });
 
-    // cardDeckIds.sort(this.compare);
-    // add distance to make it possible
+    cardDeck.sort(this.compare);
+    
   },
 
   renderCardDeck: function() {
    
     this.calculateCardDeckProperties();
 
-    cardDeckIds?.forEach(id => {  
-      const object = Props.getObject(id);
+    cardDeck?.forEach(card => {  
+      const object = Props.getObject(card.id);
       if (!object.discovered) {
         object.discovered = true;
-        this.createCardMarkup(id);
-      } else {
-        this.updateCardMarkup(id);
+        this.createCardMarkup(card.id);
       }
     });
-    this.logDeck();
+
     this.refreshCardDeck();
+    this.logDeck();
   },
 
   logDeck: function() {
     const cardConsole = document.getElementById('card-console');
     cardConsole.innerHTML = '';
-    cardDeckIds?.forEach(id => {  
-      const object = Props.getObject(id);
-      cardConsole.innerHTML = cardConsole.innerHTML + id + ': ';
+    cardDeck?.forEach(card => {  
+      const object = Props.getObject(card.id);
+      cardConsole.innerHTML = cardConsole.innerHTML + card.id + ': ';
       cardConsole.innerHTML = cardConsole.innerHTML + JSON.stringify(object).replaceAll('","', '", "').replaceAll('":"', '": "').replaceAll('":', '": ') + '<br>';
       cardConsole.innerHTML += '<br>';
     });
@@ -137,10 +144,10 @@ export default {
       cardsContainer.classList.remove('cards-at-bottom');
     }
 
-    cardDeckIds?.forEach(function(cardId, index) {
+    cardDeck?.forEach(function(card, index) {
 
-      const object = Props.getObject(cardId);
-      const cardRef = document.getElementById(cardId);
+      const object = Props.getObject(card.id);
+      const cardRef = document.getElementById(card.id);
 
       if (!object.removed) {
 
@@ -158,7 +165,7 @@ export default {
             cardRef.style.zIndex = zIndexBase - index;  
           }
 
-          if (cardDeckIds.length < 7 || index < 3) {
+          if (cardDeck.length < 7 || index < 3) {
             cardLeftPosition += cardWidth;
           } else {
             cardLeftPosition += cardWidth / (index - 1.95);
@@ -187,6 +194,7 @@ export default {
           } else {
             cardRef.classList.remove('zombieshere');
           }
+          cardRef.querySelector('.distance').textContent = (object.distance > 1 ? Math.round(object.distance * 4.4) + ' min' : 'Here');
         }
 
         // deactivate cards
@@ -203,16 +211,43 @@ export default {
             window.setTimeout(function(cardRef, object) {
               if (object.group === 'event') {
                 object.removed = true;
-                cardRef.remove();
               } else {
                 cardRef.classList.add('is--hidden');
                 cardRef.style.opacity = 1;
               }
             }, 300, cardRef, object);
-          }, 300, cardId);  
+          }, 300, card.id);  
+        }
+      }
+
+      if (object.removed) {
+        if (cardRef) {
+          cardRef.classList.add('remove');
+          /*
+          if (removeCard.classList.contains('zombie')) {
+            Map.removeZedsAt(x, y);
+          } else if (removeCard.classList.contains('event')) {
+            // do nothing
+          } else {
+            Map.removeBuildingsAt(x, y);
+          }*/
+          window.setTimeout(function(removeCard) {
+            removeCard.remove();
+          }, 300, cardRef);
         }
       }
     });
+
+    // removing all removed ids at the very end outside the foreach
+    // doing it the very old school "go backward" way, as this is the most solid approach to avoid any kind of crazy problems
+
+    for (let i = cardDeck.length - 1; i >= 0; i--) {
+      const object = Props.getObject(cardDeck[i].id);
+      if (object.removed) {
+        cardDeck.splice(i, 1);
+      }
+    }
+
   },
 
   updateCardMarkup: function(id) {
@@ -313,9 +348,9 @@ export default {
   },
 
   disableActions: function() {
-    cardDeckIds?.forEach(function(cardId, index) {
-      const object = Props.getObject(cardId);
-      const cardRef = document.getElementById(cardId);
+    cardDeck.forEach(function(card, index) {
+      const object = Props.getObject(card.id);
+      const cardRef = document.getElementById(card.id);
       if (object.group !== 'event') {
         object.disabled = true;
         cardRef.classList.add('actions-locked');  
@@ -324,18 +359,59 @@ export default {
   },
 
   enableActions: function() {
-    cardDeckIds?.forEach(function(cardId, index) {
-      const object = Props.getObject(cardId);
-      const cardRef = document.getElementById(cardId);
+    cardDeck.forEach(function(card, index) {
+      const object = Props.getObject(card.id);
+      const cardRef = document.getElementById(card.id);
       object.disabled = false;
       cardRef.classList.remove('actions-locked');  
     });  
   },
 
-  removeCardFromDeckById: function(cardId) {
-    this.removeCardFromDeck(this.getCardById(cardId));
+  removeCard: function(cardId) {
+    const object = Props.getObject(cardId);
+    object.removed = true;
   },
 
+  showActionFeedback: function(cardId, text, actionId) {
+
+    const object = Props.getObject(cardId);
+    const cardRef = this.getCardById(cardId);
+
+    /* hide actions and show feedback */
+    cardRef.querySelector('div.banner')?.classList.add('is--hidden');
+    cardRef.querySelector('ul.actions')?.classList.add('is--hidden');
+    cardRef.querySelector('p.activity').textContent = text;
+    cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
+
+    /* optional: hide 1-time actions */
+    if (actionId) {
+      for (let i = object.actions.length - 1; i >= 0; i--) {
+        if (object.actions[i].id === actionId) {
+          // should be more decoupled
+          cardRef.querySelector('li.' + actionId).remove();
+          object.actions.splice(i, 1);
+        }
+      }
+    }
+  },  
+  
+  hideActionFeedback: function(cardId) {
+    const cardRef = this.getCardById(cardId);
+    if (cardRef) {
+      if (cardRef.querySelector('p.activity')) {
+        cardRef.querySelector('p.activity').textContent = '';
+        cardRef.querySelector('p.activity').classList.add('is--hidden');  
+      }
+      cardRef.querySelector('ul.actions')?.classList.remove('is--hidden');
+      if (cardRef.querySelector('ul.items')?.classList.contains('is--hidden')) {
+        cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
+      }  
+    } else {
+      console.log('no cardRef for cardId: ', cardId);
+    }
+  },
+
+  /*
   removeCardFromDeck: function(removeCard, noUpdate) {
     const name = removeCard.dataset.name;
     const x = parseInt(removeCard.dataset.x); 
@@ -357,19 +433,19 @@ export default {
       }
     }
     if (!noUpdate) {
-      this.updateCardDeck();
+      this.renderCardDeck();
     }
   },
 
   getCardDeck: function() {
     return cardDeck;
-  },
+  },*/
 
   compare: function( a, b ) {
-    if ( a.dist < b.dist ){
+    if ( a.distance < b.distance ){
       return -1;
     }
-    if ( a.dist > b.dist ){
+    if ( a.distance > b.distance ){
       return 1;
     }
     return 0;

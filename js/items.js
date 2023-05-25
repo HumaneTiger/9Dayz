@@ -117,7 +117,7 @@ export default {
         let success = Props.setupBuilding(here.x, here.y, ['fireplace']);
         if (success) {
           //Player.handleFoundBuildings(here.x, here.y);
-          Cards.updateCardDeck();
+          Cards.renderCardDeck();
           Props.addToInventory('stone', -1);
           Props.addToInventory('stump', -1);
           Props.addToInventory('straw-wheet', -1);
@@ -134,7 +134,7 @@ export default {
           Props.addToInventory('improvised-axe', 1, 3);
           this.inventoryChangeFeedback();
           this.fillInventorySlots();
-          Cards.updateCardDeck();
+          Cards.renderCardDeck();
         }
       } else if (item === 'wooden-club') {
         if (inventory.items['wooden-club'] === undefined || inventory.items['wooden-club'].amount === 0) {
@@ -147,7 +147,7 @@ export default {
           Props.addToInventory('wooden-club', 1, 3);
           this.inventoryChangeFeedback();
           this.fillInventorySlots();
-          Cards.updateCardDeck();
+          Cards.renderCardDeck();
         }
       }
     }

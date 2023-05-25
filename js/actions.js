@@ -39,48 +39,48 @@ export default {
         if (action && !object.actions.find(singleAction => singleAction.name === action)?.locked) {
           Audio.sfx('click');
           if (action === 'search') {
-            this.showActionFeedback(cardId, "Searching...", 'li.search');
+            Cards.showActionFeedback(cardId, "Searching...", action);
             //implement in cards.js ?
             //clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
             this.goToAndAction(x, y, this.simulateGathering, cardId, time, energy, 0);
           } else if (action === 'gather') {
-            this.showActionFeedback(cardId, "Gathering...", 'li.gather');
+            Cards.showActionFeedback(cardId, "Gathering...", action);
             //implement in cards.js ?
             //clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
             this.goToAndAction(x, y, this.simulateGathering, cardId, time, energy, 0);
           } else if (action === 'scout-area') {
-            this.showActionFeedback(cardId, 'Scouting...', 'li.scout-area');
+            Cards.showActionFeedback(cardId, 'Scouting...', action);
             this.goToAndAction(x, y, this.simulateScouting, cardId, time, energy);
           } else if (action === 'rest') {
-            this.showActionFeedback(cardId, 'Resting...', false);
+            Cards.showActionFeedback(cardId, 'Resting...', false);
             this.goToAndAction(x, y, this.simulateResting, cardId, time, energy);
           } else if (action === 'sleep') {
-            this.showActionFeedback(cardId, 'Sleeping...', false);
+            Cards.showActionFeedback(cardId, 'Sleeping...', false);
             this.goToAndAction(x, y, this.simulateSleeping, cardId, time, energy);
           } else if (action === 'cook') {
             this.simulateCooking();
           } else if (action === 'cut-down') {
-            this.showActionFeedback(cardId, 'Cutting down...', false);
+            Cards.showActionFeedback(cardId, 'Cutting down...', false);
             this.goToAndAction(x, y, this.simulateCuttingDown, cardId, time, energy);
           } else if (action === 'smash-window') {
-            this.showActionFeedback(cardId, 'Smashing Window', 'li.smash-window');
+            Cards.showActionFeedback(cardId, 'Smashing Window', action);
             this.goToAndAction(x, y, this.simulateSmashing, cardId, time, energy);
           } else if (action === 'break-door') {
-            this.showActionFeedback(cardId, 'Breaking Door...', 'li.break-door');
+            Cards.showActionFeedback(cardId, 'Breaking Door...', action);
             this.goToAndAction(x, y, this.simulateBreaking, cardId, time, energy);
           } else if (action === 'attack') {
-            this.showActionFeedback(cardId, 'Attacking...', 'li.attackz');
+            Cards.showActionFeedback(cardId, 'Attacking...', 'attackz');
             this.goToAndAction(x, y, this.simulateAttacking, cardId, time, energy);
           } else if (action === 'lure') {
-            this.showActionFeedback(cardId, 'Luring...', 'li.lure');
+            Cards.showActionFeedback(cardId, 'Luring...', action);
             this.simulateLuring(cardId, time, energy);
           } else if (action === 'got-it') {
             this.gotIt(cardId);
           } else if (action === 'read') {
-            this.showActionFeedback(cardId, 'Reading...', 'li.read');
+            Cards.showActionFeedback(cardId, 'Reading...', action);
             this.goToAndAction(x, y, this.reading, cardId, time, energy);
           } else if (action === 'drink') {
-            this.showActionFeedback(cardId, 'Drinking...', false);
+            Cards.showActionFeedback(cardId, 'Drinking...', false);
             this.goToAndAction(x, y, this.drinking, cardId, time, energy);
           } else {
             console.log('Unknown action: ' + action);
@@ -104,7 +104,7 @@ export default {
               clickCard.querySelector('div.banner')?.classList.remove('is--hidden');
               clickCard.classList.add('looted');
               // check if card can be removed (no actions left)
-              Cards.updateCardDeck();
+              Cards.renderCardDeck();
             }
           }, 400, grabItem, clickCard);
         }
@@ -155,21 +155,6 @@ export default {
     }
   },
 
-  showActionFeedback: function(cardId, text, removeSelector) {
-
-    const cardRef = Cards.getCardById(cardId);
-
-    /* remove selected action */
-    if (removeSelector) {
-      cardRef.querySelector(removeSelector).remove();
-    }
-    /* hide actions and show feedback */
-    cardRef.querySelector('div.banner')?.classList.add('is--hidden');
-    cardRef.querySelector('ul.actions')?.classList.add('is--hidden');
-    cardRef.querySelector('p.activity').textContent = text;
-    cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
-  },  
-  
   goToAndAction: function(x, y, actionfunction, cardId, time, energy, delay) {
     Player.lockMovement(true);
     Cards.disableActions();
@@ -188,19 +173,7 @@ export default {
   },
 
   endAction: function(cardId) {
-    const cardRef = Cards.getCardById(cardId);
-    if (cardRef) {
-      if (cardRef.querySelector('p.activity')) {
-        cardRef.querySelector('p.activity').textContent = '';
-        cardRef.querySelector('p.activity').classList.add('is--hidden');  
-      }
-      cardRef.querySelector('ul.actions')?.classList.remove('is--hidden');
-      if (cardRef.querySelector('ul.items')?.classList.contains('is--hidden')) {
-        cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
-      }  
-    } else {
-      console.log('no cardRef for cardId: ', cardId);
-    }
+    Cards.hideActionFeedback(cardId);
   },
 
   fastForward: function(callbackfunction, cardId, time, newSpeedOpt, energy) {
@@ -248,7 +221,7 @@ export default {
             cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
             cardRef.classList.add('looted');
             // check if card can be removed (no actions left)
-            Cards.updateCardDeck();
+            Cards.renderCardDeck();
           }
         }
       }.bind(this), i * timeout, i, allPreviews, allItems, cardId, energy);
@@ -348,7 +321,7 @@ export default {
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);
-      Cards.removeCardFromDeckById(cardId);
+      Cards.removeCard(cardId);
     }, cardId, time, 800, energy);
   },
 
@@ -388,7 +361,7 @@ export default {
         Player.lockMovement(false);
         Player.changeProps('energy', energy);
         Audio.sfx('nope');
-        Cards.updateCardDeck();
+        Cards.renderCardDeck();
       }
     }, cardId, time, 1600, energy);
   },
@@ -398,7 +371,7 @@ export default {
     const x = parseInt(document.getElementById(cardId)?.dataset.x);
     const y = parseInt(document.getElementById(cardId)?.dataset.y);
     Player.findZeds(x, y);
-    Cards.updateCardDeck();
+    Cards.renderCardDeck();
 
     window.setTimeout(function() {
       this.endAction(cardId);
@@ -408,11 +381,13 @@ export default {
   },
 
   gotIt: function(cardId) {
+    /*
     const cardRef = Cards.getCardById(cardId);
     if (cardRef.dataset.x === "30" && cardRef.dataset.y === "7") {
       Player.checkForWin();
-    }
-    Cards.removeCardFromDeckById(cardId);
+    }*/
+    Cards.removeCard(cardId);
+    Cards.renderCardDeck();
   },
 
   simulateBreaking: function(cardId, time, energy) {
