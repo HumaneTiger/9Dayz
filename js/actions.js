@@ -210,7 +210,7 @@ export default {
           allPreviews[index].querySelector('.searching').classList.remove('is--hidden');        
         }
         if (allItems[index-1]) {
-          allItems[index-1].classList.remove('is--hidden');     
+          allItems[index-1].classList.remove('is--hidden');
         }
         if (index === allPreviews.length) {
           this.goBackFromAction(cardId); // go back before any new DOM nodes will be added to Card deck
@@ -230,71 +230,43 @@ export default {
 
   simulateScouting: function(cardId, time, energy) {
 
-    const cardRef = Cards.getCardById(cardId);
-
-    const x = parseInt(cardRef.dataset.x);
-    const y = parseInt(cardRef.dataset.y);
-    const scoutMarker = document.getElementById('scoutmarker');
-
-    scoutMarker.style.left = Math.round(x * 44.4) + 'px';
-    scoutMarker.style.top = Math.round(y * 44.4) + 'px';
-    scoutMarker.classList.remove('is--hidden');
+    Map.showScoutMarkerFor(cardId);
 
     this.fastForward(function(cardId, energy) {
-      const cardRef = Cards.getCardById(cardId);
-      const x = parseInt(cardRef.dataset.x);
-      const y = parseInt(cardRef.dataset.y);
-      if (x % 4 === 0 || y % 4 === 0) {
-        Map.mapUncoverAt(x, y);
-      }
+      const object = Props.getObject(cardId);
+      /* if (object.x % 4 === 0 || object.y % 4 === 0) { Map.mapUncoverAt(x, y); } */
       this.goBackFromAction(cardId);
-      Player.findBuildings(x, y);
-      Player.findZeds(x, y);
-      document.getElementById('scoutmarker').classList.add('is--hidden');
+      const allFoundObjectIds = Player.findObjects(object.x, object.y);
+      Player.handleFoundObjectIds(allFoundObjectIds);
+      Map.hideScoutMarker();
       Player.changeProps('energy', energy); 
     }, cardId, time, 800, energy);
   },
 
   simulateResting: function(cardId, time, energy) {
 
-    const cardRef = Cards.getCardById(cardId);
-
-    const x = parseInt(cardRef.dataset.x);
-    const y = parseInt(cardRef.dataset.y);
-    const scoutMarker = document.getElementById('scoutmarker');
-
-    scoutMarker.style.left = Math.round(x * 44.4) + 'px';
-    scoutMarker.style.top = Math.round(y * 44.4) + 'px';
-    scoutMarker.classList.remove('is--hidden');
+    Map.showScoutMarkerFor(cardId);
 
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
       Player.changeProps('health', Math.floor(energy / 2));
       Player.changeProps('food', -10);
       Player.changeProps('thirst', -14);
-      document.getElementById('scoutmarker').classList.add('is--hidden');
+      Map.hideScoutMarker();
       this.goBackFromAction(cardId);
     }, cardId, time, 800, energy);
   },
 
   simulateSleeping: function(cardId, time, energy) {
 
-    const cardRef = Cards.getCardById(cardId);
-
-    const x = parseInt(cardRef.dataset.x);
-    const y = parseInt(cardRef.dataset.y);
-    const scoutMarker = document.getElementById('scoutmarker');
-
-    scoutMarker.style.left = Math.round(x * 44.4) + 'px';
-    scoutMarker.style.top = Math.round(y * 44.4) + 'px';
-    scoutMarker.classList.remove('is--hidden');
+    Map.showScoutMarkerFor(cardId);
 
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
       Player.changeProps('health', Math.floor(energy / 2));
       Player.changeProps('food', -45);
       Player.changeProps('thirst', -55);
-      document.getElementById('scoutmarker').classList.add('is--hidden');
+      Map.hideScoutMarker();
       this.goBackFromAction(cardId);
     }, cardId, time, 100, energy);
 
@@ -330,20 +302,13 @@ export default {
     Player.lockMovement(true);
     Cards.disableActions();
 
-    const cardRef = Cards.getCardById(cardId);
-    const x = parseInt(cardRef.dataset.x);
-    const y = parseInt(cardRef.dataset.y);
-    const scoutMarker = document.getElementById('scoutmarker');
-
-    scoutMarker.style.left = Math.round(x * 44.4) + 'px';
-    scoutMarker.style.top = Math.round(y * 44.4) + 'px';
-    scoutMarker.classList.remove('is--hidden');
+    Map.showScoutMarkerFor(cardId);
 
     this.fastForward(function(cardId, energy) {
 
       this.endAction(cardId);
 
-      document.getElementById('scoutmarker').classList.add('is--hidden');
+      Map.hideScoutMarker();
 
       // 60:40 chance it works
       if (Math.random() >= 0.4) {
@@ -397,11 +362,12 @@ export default {
     Audio.sfx('chop-wood', 1600);
 
     this.fastForward(function(cardId, energy) {
+      const object = Props.getObject(cardId);
+      object.locked = false;
       if (Props.getGameMode() === 'real') {
         Props.addToInventory('improvised-axe', 0, -1);
         Items.fillInventorySlots();
       }
-      Cards.getCardById(cardId).classList.remove('locked');
       Player.changeProps('energy', energy);
       this.goBackFromAction(cardId);
     }, cardId, time, 800, energy);
@@ -412,8 +378,9 @@ export default {
     Audio.sfx('chop-wood');
 
     this.fastForward(function(cardId, energy) {
+      const object = Props.getObject(cardId);
+      object.locked = false;
       Player.changeProps('energy', energy);
-      Cards.getCardById(cardId).classList.remove('locked');
       this.goBackFromAction(cardId);
     }, cardId, time, 800, energy);
   },
@@ -430,7 +397,7 @@ export default {
 
   reading: function(cardId) {
     window.setTimeout(function(cardId) {
-      const targetLocationName = Cards.getCardById(cardId).dataset.name;
+      const targetLocationName = Props.getObject(cardId).name;
       if (targetLocationName === 'signpost-1') {
         Map.showTargetLocation('Lakeside Camp Resort');
         Map.showTargetLocation('Rocksprings');

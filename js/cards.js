@@ -125,10 +125,11 @@ export default {
     const cardConsole = document.getElementById('card-console');
     cardConsole.innerHTML = '';
     cardDeck?.forEach(card => {  
+      cardConsole.innerHTML += '<p>';
       const object = Props.getObject(card.id);
       cardConsole.innerHTML = cardConsole.innerHTML + card.id + ': ';
-      cardConsole.innerHTML = cardConsole.innerHTML + JSON.stringify(object).replaceAll('","', '", "').replaceAll('":"', '": "').replaceAll('":', '": ') + '<br>';
-      cardConsole.innerHTML += '<br>';
+      cardConsole.innerHTML = cardConsole.innerHTML + JSON.stringify(object).replaceAll('","', '", "').replaceAll('":"', '": "').replaceAll('":', '": ').replaceAll('<img', '') + ' ';
+      cardConsole.innerHTML += '</p>';
     });
   },
 

@@ -35,6 +35,19 @@ export default {
     }
   },
 
+  showScoutMarkerFor: function(cardId) {
+    const object = Props.getObject(cardId);
+    const scoutMarker = document.getElementById('scoutmarker');
+
+    scoutMarker.style.left = Math.round(object.x * 44.4) + 'px';
+    scoutMarker.style.top = Math.round(object.y * 44.4) + 'px';
+    scoutMarker.classList.remove('is--hidden');
+  },
+
+  hideScoutMarker: function() {
+    document.getElementById('scoutmarker').classList.add('is--hidden');
+  },
+
   showObjectIconsByIds: function(objectIds) {
     objectIds?.forEach(objectId => {
       let object = Props.getObject(objectId);
