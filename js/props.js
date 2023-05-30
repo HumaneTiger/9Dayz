@@ -578,28 +578,31 @@ export default {
     this.setZedAt(35, 18, 1);
   },
 
+  createLootItemList: function(spawn, allItems, probability) {
+    let lootItemList = [];
+    for (var i = 0; i < spawn; i += 1) {
+      let randomItem = Math.floor(Math.random() * allItems.length);
+      if ((Math.random() * 10) < probability) {
+        lootItemList.push({
+          name: JSON.parse(JSON.stringify(allItems[randomItem])),
+          amount: 1
+        });
+        probability = 6;
+      } else {
+        lootItemList.push({
+          name: JSON.parse(JSON.stringify(allItems[randomItem])),
+          amount: 0
+        });        
+      }
+      allItems.splice(randomItem, 1);
+    }
+    return lootItemList;
+  },
+
   setupBuilding: function(x, y, buildingNamesArray) {
     buildingNamesArray.forEach(buildingName => {
-      let lootItemList = [];
       let props = buildingProps[buildingName];
-      let allItems = JSON.parse(JSON.stringify(props.items));
-      let probability = 9;
-      for (var i = 0; i < props.spawn; i += 1) {
-        let randomItem = Math.floor(Math.random() * allItems.length);
-        if ((Math.random() * 10) < probability) {
-          lootItemList.push({
-            name: JSON.parse(JSON.stringify(allItems[randomItem])),
-            amount: 1
-          });
-          probability = 6;
-        } else {
-          lootItemList.push({
-            name: JSON.parse(JSON.stringify(allItems[randomItem])),
-            amount: 0
-          });        
-        }
-        allItems.splice(randomItem, 1);
-      }
+      let lootItemList = this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9);
 
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
@@ -621,7 +624,7 @@ export default {
         distance: null,
         attack: undefined,
         defense: undefined, // use later for building cards in battle
-        dead: false,
+        dead: undefined,
         disabled: false,
         removed: false
       });  
@@ -631,8 +634,9 @@ export default {
 
   setZedAt: function(x, y, amount) {
     for (var i = 0; i < amount; i += 1) {
-
+      let lootItemList = this.createLootItemList(3, ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'tape', 'snack-1', 'drink-1'], 10);
       let name = 'zombie-' + zedCounter;
+
       zedCounter += 1;
       zedCounter > 3 ? zedCounter = 1 : false;
 
@@ -650,7 +654,7 @@ export default {
           { id: 'attack', label: 'Attack!', time: 5, energy: -20 },
           { id: 'search', label: 'Search', time: 20, energy: -5 }
         ],
-        items: [],
+        items: lootItemList,
         locked: undefined,
         looted: false,
         zednearby: null,
@@ -661,6 +665,7 @@ export default {
         attack: Math.floor(Math.random()*6+4),
         defense: Math.floor(Math.random()*10+6),
         dead: false,
+        fighting: false,
         disabled: false,
         removed: false
       });  
@@ -696,7 +701,7 @@ export default {
         distance: null,
         attack: undefined,
         defense: undefined, // use later for building cards in battle
-        dead: false,
+        dead: undefined,
         disabled: false,
         removed: false
       });  

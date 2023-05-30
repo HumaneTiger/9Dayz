@@ -121,13 +121,13 @@ export default {
     return document.getElementById(cardId);
   },
 
-  getAllZeds: function(cardId) {
+  getAllZeds: function() {
     let allZeds = [];
-    cardDeck?.forEach(function(card, index) {
+    cardDeck?.forEach(card => {
       const id = card.id;
       let object = Props.getObject(id);
       if (object.group === 'zombie' && object.distance < 2.9 && !object.dead) {
-        allZeds.push(object);
+        allZeds.push(id);
       }
     });
     return allZeds;
@@ -338,7 +338,7 @@ export default {
                 cardRef.style.opacity = 1;
               }
             }, 300, cardRef, object);
-          }, 300, card.id);  
+          }.bind(this), 300, card.id);  
         }
       }
 
@@ -397,6 +397,7 @@ export default {
     let actionList = '';
     object.actions?.forEach(action => {
       let additionInfo = '';
+      let showAction = true;
       if (action.time || action.energy) {
         additionInfo = '<span class="additional">';
         if (action.time) {
@@ -421,10 +422,15 @@ export default {
       if (action.locked && object.zednearby) {
         additionLockedInfo = '<span class="additional-locked">Zombies nearby</span>';
       }
+      if (action.id === 'search' && object.dead === false) {
+        showAction = false;
+      }
 
-      actionList += '<li class="' + action.id + (action.locked ? ' locked ' : '') + '"><div data-action="' + action.id + '" class="action-button">' +
-                    '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
-                    additionInfo + additionLockedInfo + '</div></li>';
+      if (showAction) {
+        actionList += '<li class="' + action.id + (action.locked ? ' locked ' : '') + '"><div data-action="' + action.id + '" class="action-button">' +
+        '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
+        additionInfo + additionLockedInfo + '</div></li>';
+      }
     });
 
     // generate item markup
@@ -496,8 +502,10 @@ export default {
     /* hide actions and show feedback */
     cardRef.querySelector('div.banner')?.classList.add('is--hidden');
     cardRef.querySelector('ul.actions')?.classList.add('is--hidden');
-    cardRef.querySelector('p.activity').textContent = text;
-    cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
+    if (cardRef.querySelector('p.activity') !== null) {
+      cardRef.querySelector('p.activity').textContent = text;
+      cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
+    }
   },  
   
   hideActionFeedback: function(cardId) {

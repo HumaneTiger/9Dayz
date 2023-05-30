@@ -153,7 +153,7 @@ export default {
       // check if player walked into a zed
       // make sure zed isn't already dead
       // dead / looted zeds have to be removed from allZeds[] in the future!
-      // window.setTimeout(function() { Items.startBattle(true); }.bind(this), 800);
+      // window.setTimeout(function() { Battle.startBattle(true); }.bind(this), 800);
       
     }.bind(this), 0);
 

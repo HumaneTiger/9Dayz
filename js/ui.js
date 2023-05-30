@@ -1,4 +1,4 @@
-import Items from './items.js'
+import Battle from './battle.js'
 import Audio from './audio.js'
 import Player from './player.js'
 import Props from './props.js'
@@ -92,7 +92,7 @@ export default {
       let dragTarget = this.getDragTarget(e);
       if (dragTarget) {
         if (dragTarget.classList.contains('zombie')) {
-          Items.resolveAttack(dragEl, dragTarget);
+          Battle.resolveAttack(dragEl, dragTarget);
         }
       } else {
         this.resetDraggedElement(dragEl);

@@ -4,6 +4,7 @@ import Player from './player.js'
 import Cards from './cards.js'
 import Map from './map.js'
 import Items from './items.js'
+import Battle from './battle.js'
 
 export default {
   
@@ -59,7 +60,7 @@ export default {
           }
         }
       }
-    }.bind(this), (action === 'gather' || action === 'search') ? 0 : 1000, cardId, action);
+    }.bind(this), (action === 'got-it' || action === 'gather' || action === 'search') ? 0 : 1000, cardId, action);
   },
 
   goBackFromAction: function(cardId) {
@@ -214,8 +215,7 @@ export default {
       // 60:40 chance it works
       if (Math.random() >= 0.4) {
         Player.lockMovement(true);
-        Cards.hideActionFeedback(cardId);
-        Items.startBattle(false, Cards.getObject(cardId));
+        Battle.startBattle(false, cardId);
       } else {
         Cards.enableActions();
         Player.lockMovement(false);
@@ -237,7 +237,7 @@ export default {
 
     window.setTimeout(function() {
       this.endAction(cardId);
-      Items.startBattle();
+      Battle.startBattle();
     }.bind(this), 800);
 
   },
@@ -249,6 +249,8 @@ export default {
       Player.checkForWin();
     }*/
     Cards.removeCard(cardId);
+    Player.lockMovement(false);
+    Player.updatePlayer(true);
     Cards.renderCardDeck();
   },
 
