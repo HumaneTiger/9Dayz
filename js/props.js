@@ -37,15 +37,6 @@ var objects = [];
 var objectsIdCounter = 0;
 var zedCounter = 1;
 
-var quadrant = new Array(mapSize.width);
-for (var i = 0; i < quadrant.length; i += 1) { quadrant[i] = new Array(mapSize.height); }
-
-var zeds = new Array(mapSize.width);
-for (var i = 0; i < zeds.length; i += 1) { zeds[i] = new Array(mapSize.height); }
-
-var buildings = new Array(mapSize.width);
-for (var i = 0; i < buildings.length; i += 1) { buildings[i] = new Array(mapSize.height); }
-
 var paths = new Array(mapSize.width);
 for (var i = 0; i < paths.length; i += 1) { paths[i] = new Array(mapSize.height); }
 
@@ -316,32 +307,6 @@ export default {
     objects[id] = data;
   },
 
-  /* ==================== the bad ones ==================== */
-
-  getAllBuildings: function() {
-    return buildings;
-  },
-
-  getAllQuadrants: function() {
-    return quadrant;
-  },
-
-  getAllBuildings: function() {
-    return buildings;
-  },
-  
-  getAllZeds: function() {
-    return zeds;
-  },
-
-  getAllEvents: function() {
-    return events;
-  },
-  
-  getWeaponProps: function() {
-    return weapons;
-  },
-  
   getAllPaths: function() {
     return paths;
   },
@@ -376,10 +341,6 @@ export default {
         inventory.itemNumbers += inventory.items[item].amount;
       }
     }
-  },
-  
-  getMapSize: function() {
-    return mapSize;
   },
   
   setupAllBuildings: function() {
@@ -618,8 +579,6 @@ export default {
   },
 
   setupBuilding: function(x, y, buildingNamesArray) {
-
-    /* the good ones */
     buildingNamesArray.forEach(buildingName => {
       let lootItemList = [];
       let props = buildingProps[buildingName];
@@ -668,16 +627,9 @@ export default {
       });  
       objectsIdCounter += 1;
     });
-    /* the bad ones */
-    if (quadrant[x][y] === undefined) {
-      quadrant[x][y] = buildingNamesArray;
-      return true;
-    }
-    return false;
   },
 
   setZedAt: function(x, y, amount) {
-    /* the good ones */
     for (var i = 0; i < amount; i += 1) {
 
       let name = 'zombie-' + zedCounter;
@@ -694,9 +646,9 @@ export default {
         group: 'zombie',
         text: false,
         actions: [
-          { id: 'lure', label: 'Lure' },
-          { id: 'attack', label: 'Attack!' },
-          { id: 'search', label: 'Search' }
+          { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+          { id: 'attack', label: 'Attack!', time: 5, energy: -20 },
+          { id: 'search', label: 'Search', time: 20, energy: -5 }
         ],
         items: [],
         locked: undefined,
@@ -716,13 +668,9 @@ export default {
       objectsIdCounter += 1;
 
     }
-
-    /* the bad ones */
-    zeds[x][y] = amount;
   },
 
   setupAllEvents: function() {
-    /* the good ones */
     for (var event in events) {
       const x = event.split('-')[0];
       const y = event.split('-')[1];
@@ -754,17 +702,6 @@ export default {
       });  
       objectsIdCounter += 1;
     };
-  },
-
-  addZedAt: function(x, y, name) {
-    if (zeds[x][y] === 1 || zeds[x][y] === 2 || zeds[x][y] === 3) {
-      zeds[x][y] = [];
-    }
-    zeds[x][y].push(name);
-  },
-
-  getZedAt: function(x, y) {
-    return zeds[x][y];
   },
 
   setupAllPaths: function() {

@@ -8,160 +8,58 @@ import Items from './items.js'
 export default {
   
   init() {
-
-    document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
-    document.body.addEventListener('mouseout', this.checkForCardUnHover.bind(this));
-    document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
-  checkForCardClick: function(ev) {
-
-    const target = ev.target;
-    const cardId = target.closest('div.card')?.id;
-    const clickButton = target.closest('div.action-button');
-    const grabItem = target.closest('li.item:not(.is--hidden)');
-
-    if (cardId) {
-
+  goToAndAction: function(cardId, action) {
+    window.setTimeout(function(cardId, action) {
       const object = Props.getObject(cardId);
-
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      if (clickButton && !object.disabled) {
-
-        const action = clickButton.dataset.action;
-        const time = parseInt(clickButton.dataset.time);
-        const energy = parseInt(clickButton.dataset.energy) || 0;
-        const x = object.x,
-              y = object.y;
-
-        if (action && !object.actions.find(singleAction => singleAction.name === action)?.locked) {
-          Audio.sfx('click');
-          if (action === 'search') {
-            Cards.showActionFeedback(cardId, "Searching...", action);
-            //implement in cards.js ?
-            //clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
-            this.goToAndAction(x, y, this.simulateGathering, cardId, time, energy, 0);
-          } else if (action === 'gather') {
-            Cards.showActionFeedback(cardId, "Gathering...", action);
-            //implement in cards.js ?
-            //clickCard.querySelector('ul.items')?.classList.remove('is--hidden');
-            this.goToAndAction(x, y, this.simulateGathering, cardId, time, energy, 0);
-          } else if (action === 'scout-area') {
-            Cards.showActionFeedback(cardId, 'Scouting...', action);
-            this.goToAndAction(x, y, this.simulateScouting, cardId, time, energy);
-          } else if (action === 'rest') {
-            Cards.showActionFeedback(cardId, 'Resting...', false);
-            this.goToAndAction(x, y, this.simulateResting, cardId, time, energy);
-          } else if (action === 'sleep') {
-            Cards.showActionFeedback(cardId, 'Sleeping...', false);
-            this.goToAndAction(x, y, this.simulateSleeping, cardId, time, energy);
-          } else if (action === 'cook') {
-            this.simulateCooking();
-          } else if (action === 'cut-down') {
-            Cards.showActionFeedback(cardId, 'Cutting down...', false);
-            this.goToAndAction(x, y, this.simulateCuttingDown, cardId, time, energy);
-          } else if (action === 'smash-window') {
-            Cards.showActionFeedback(cardId, 'Smashing Window', action);
-            this.goToAndAction(x, y, this.simulateSmashing, cardId, time, energy);
-          } else if (action === 'break-door') {
-            Cards.showActionFeedback(cardId, 'Breaking Door...', action);
-            this.goToAndAction(x, y, this.simulateBreaking, cardId, time, energy);
-          } else if (action === 'attack') {
-            Cards.showActionFeedback(cardId, 'Attacking...', 'attackz');
-            this.goToAndAction(x, y, this.simulateAttacking, cardId, time, energy);
-          } else if (action === 'lure') {
-            Cards.showActionFeedback(cardId, 'Luring...', action);
-            this.simulateLuring(cardId, time, energy);
-          } else if (action === 'got-it') {
-            this.gotIt(cardId);
-          } else if (action === 'read') {
-            Cards.showActionFeedback(cardId, 'Reading...', action);
-            this.goToAndAction(x, y, this.reading, cardId, time, energy);
-          } else if (action === 'drink') {
-            Cards.showActionFeedback(cardId, 'Drinking...', false);
-            this.goToAndAction(x, y, this.drinking, cardId, time, energy);
-          } else {
-            console.log('Unknown action: ' + action);
-          }
+      const actionObject = object.actions.filter(singleAction => singleAction.id === action)[0];
+      if (actionObject) {
+        if (action === 'search') {
+          this.simulateGathering(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'gather') {
+          this.simulateGathering(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'scout-area') {
+          this.simulateScouting(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'rest') {
+          this.simulateResting(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'sleep') {
+          this.simulateSleeping(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'cook') {
+          this.simulateCooking();
+        } else if (action === 'cut-down') {
+          this.simulateCuttingDown(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'smash-window') {
+          this.simulateSmashing(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'break-door') {
+          this.simulateBreaking(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'attack') {
+          this.simulateAttacking(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'lure') {
+          this.simulateLuring(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'got-it') {
+          this.gotIt(cardId);
+        } else if (action === 'read') {
+          this.reading(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'drink') {
+          this.drinking(cardId, actionObject.time, actionObject.energy);
         } else {
-          Audio.sfx('nope');
+          console.log('Unknown action: ' + action);
         }
-      }
-      if (grabItem) {
-        if (grabItem.dataset.item && grabItem.dataset.amount) {
-          Props.addToInventory(grabItem.dataset.item, grabItem.dataset.amount);
-          grabItem.dataset.item = '';
-          grabItem.classList.add('transfer');
-          Items.inventoryChangeFeedback();
-          Items.fillInventorySlots();
-          Audio.sfx('pick',0,0.1);
-          window.setTimeout(function(grabItem, clickCard) {
-            grabItem.remove();
-            if (clickCard.querySelector('ul.items li.preview') === null && clickCard.querySelector('ul.items li.item') === null) {
-              clickCard.querySelector('ul.items').remove();
-              clickCard.querySelector('div.banner')?.classList.remove('is--hidden');
-              clickCard.classList.add('looted');
-              // check if card can be removed (no actions left)
-              Cards.renderCardDeck();
-            }
-          }, 400, grabItem, clickCard);
-        }
-      }
-    }
-  },
-
-  checkForCardHover: function(ev) {
-
-    const target = ev.target;
-    const hoverCard = target.closest('div.card');
-    const hoverButton = target.closest('a.action-button');
-
-    if (hoverCard && !hoverCard.classList.contains('fight')) {
-      hoverCard.dataset.oldZindex = hoverCard.style.zIndex;
-      hoverCard.style.zIndex = 200;
-      if (hoverButton) {
-        hoverCard.classList.add('hover-button');
       } else {
-        hoverCard.classList.remove('hover-button');
-      }  
-
-      let buildingIcon = document.querySelector('#maximap .building-icon.at-' + hoverCard.dataset.x + '-' + hoverCard.dataset.y);
-      let zedIcon = document.querySelector('#maximap .zed-icon.at-' + hoverCard.dataset.x + '-' + hoverCard.dataset.y);
-      
-      if (buildingIcon && !hoverCard.classList.contains('zombie')) {
-        buildingIcon.classList.add('highlight');
-      } else if (zedIcon) {
-        zedIcon.classList.add('highlight');
+        console.log('Unknown action: ' + action);
       }
-    }
-  },
-
-  checkForCardUnHover: function(ev) {
-
-    const target = ev.target;
-    const hoverCard = target.closest('div.card');
-
-    if (hoverCard && !hoverCard.classList.contains('fight')) {
-      hoverCard.style.zIndex = hoverCard.dataset.oldZindex;
-      let buildingIcon = document.querySelector('#maximap .building-icon.at-' + hoverCard.dataset.x + '-' + hoverCard.dataset.y);
-      let zedIcon = document.querySelector('#maximap .zed-icon.at-' + hoverCard.dataset.x + '-' + hoverCard.dataset.y);      
-      if (buildingIcon && !hoverCard.classList.contains('zombie')) {
-        buildingIcon.classList.remove('highlight');
-      } else if (zedIcon) {
-        zedIcon.classList.remove('highlight');
+      /* optional: hide 1-time actions */
+      if (action) {
+        for (let i = object.actions.length - 1; i >= 0; i--) {
+          if (object.actions[i].id === action) {
+            const cardRef = Cards.getCardById(cardId);
+            cardRef.querySelector('li.' + action).remove();
+            object.actions.splice(i, 1);
+          }
+        }
       }
-    }
-  },
-
-  goToAndAction: function(x, y, actionfunction, cardId, time, energy, delay) {
-    Player.lockMovement(true);
-    Cards.disableActions();
-    Player.movePlayerTo(x, y);
-    window.setTimeout(function() {
-      actionfunction.call(this, cardId, time, energy);
-    }.bind(this), delay !== undefined ? delay : 1000);
+    }.bind(this), (action === 'gather' || action === 'search') ? 0 : 1000, cardId, action);
   },
 
   goBackFromAction: function(cardId) {
@@ -204,6 +102,7 @@ export default {
 
     for (var i = 1; i <= allPreviews.length; i += 1) {
       window.setTimeout(function(index, allPreviews, allItems, cardId, energy) {
+        allPreviews[index - 1].classList.add('is--hidden');
         allPreviews[index - 1].remove();
         if (allPreviews[index]) {
           allPreviews[index].querySelector('.unknown').classList.add('is--hidden');
@@ -283,6 +182,9 @@ export default {
     Audio.sfx('chop-wood', 800);
     Audio.sfx('chop-wood', 1600);
 
+    const object = Props.getObject(cardId);
+    object.removed = true;
+
     this.fastForward(function(cardId, energy) {
       this.goBackFromAction(cardId);
       if (Props.getGameMode() === 'real') {
@@ -293,7 +195,6 @@ export default {
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);
-      Cards.removeCard(cardId);
     }, cardId, time, 800, energy);
   },
 
@@ -303,7 +204,7 @@ export default {
     Cards.disableActions();
 
     Map.showScoutMarkerFor(cardId);
-
+    
     this.fastForward(function(cardId, energy) {
 
       this.endAction(cardId);
@@ -313,15 +214,9 @@ export default {
       // 60:40 chance it works
       if (Math.random() >= 0.4) {
         Player.lockMovement(true);
-        // das geht jetzt sicher einfacher
-        const cardRef = Cards.getCardById(cardId);
-        if (cardRef.querySelector('p.activity')) {
-          cardRef.querySelector('p.activity').textContent = '';
-          cardRef.querySelector('p.activity').classList.add('is--hidden');  
-        }
-        Items.startBattle(false, cardRef);
+        Cards.hideActionFeedback(cardId);
+        Items.startBattle(false, Cards.getObject(cardId));
       } else {
-        // das auch :-)
         Cards.enableActions();
         Player.lockMovement(false);
         Player.changeProps('energy', energy);
@@ -333,9 +228,11 @@ export default {
 
   simulateAttacking: function(cardId) {
 
-    const x = parseInt(document.getElementById(cardId)?.dataset.x);
-    const y = parseInt(document.getElementById(cardId)?.dataset.y);
-    Player.findZeds(x, y);
+    const object = Props.getObject(cardId);
+    const allFoundObjectIds = Player.findObjects(object.x, object.y);
+
+    const zedsOnly = allFoundObjectIds.filter(singleObject => singleObject.group === 'zombie');
+    Player.handleFoundObjectIds(zedsOnly);
     Cards.renderCardDeck();
 
     window.setTimeout(function() {

@@ -1,12 +1,7 @@
 import Props from './props.js'
 
-const allQuadrants = Props.getAllQuadrants();
-
 const buidingsContainer = document.querySelector('.map .map-buildings');
 const highlightsContainer = document.querySelector('.map .map-highlights');
-const allBuildings = Props.getAllBuildings();
-const allPaths = Props.getAllPaths();
-const allZeds = Props.getAllZeds();
 
 const map = document.querySelector('#maximap .map');
 const mapCover = map.querySelector('.map-cover .cover');
@@ -20,18 +15,8 @@ for (var i = 0; i < uncoverMatrix.length; i += 1) { uncoverMatrix[i] = new Array
 export default {
   
   init() {
-    // fix missing mask implementation in chrome
     if (isChromium) {
       mapCover.style.background = 'initial';
-    }
-  },
-
-  placeBuildingsAt: function(x, y) {
-    if (allQuadrants[x][y] !== undefined) {
-      if (allBuildings[x][y] === undefined) {
-        buidingsContainer.innerHTML += "<span class='building-icon at-" + x + "-" + y + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'><img src='./img/icons/buildings/" + Props.getBuildingTypeOf(allQuadrants[x][y][0]) + ".png'></span>";
-        allBuildings[x][y] = allQuadrants[x][y];
-      }
     }
   },
 
@@ -53,63 +38,37 @@ export default {
       let object = Props.getObject(objectId);
       const x = object.x,
             y = object.y,
-            type = object.type;
-    
-      if (type !== undefined && !object.discovered) {
-        buidingsContainer.innerHTML += "<span class='building-icon at-" + x + "-" + y + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
-                                      "<img src='./img/icons/buildings/" + type + ".png'></span>";  
+            group = object.group;
+
+      if (!object.discovered) {
+        if (group === 'building') {
+          buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
+                                         "<img src='./img/icons/buildings/" + object.type + ".png'></span>";
+        } else if (group === 'zombie') {
+          highlightsContainer.innerHTML += "<span class='danger-area area-" + objectId + "' style='top: " + Math.round(y * 44.4 + 8) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>";
+          buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
+                                         "<img src='./img/icons/buildings/" + group + ".png'></span>";
+        }
       }
     });
   },
 
-  placeZedsAt: function(x, y) {
-    if (allZeds[x][y] === 1 || allZeds[x][y] === 2 || allZeds[x][y] === 3) {
-      highlightsContainer.innerHTML += "<span class='zed-area at-" + x + "-" + y + "' style='top: " + Math.round(y * 44.4 + 8) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>";
-      buidingsContainer.innerHTML += "<span class='zed-icon at-" + x + "-" + y + "' style='top: " + Math.round(y * 44.4 + 8) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'><img src='./img/icons/buildings/zombie.png'></span>";
+  removeObjectIconById: function(objectId) {
+    buidingsContainer.querySelector(".icon.icon-" + objectId)?.remove();
+  },
+
+  highlightObject: function(objectId) {
+    let objectIcon = document.querySelector('#maximap .icon-' + objectId);
+    if (objectIcon) {
+      objectIcon.classList.add('highlight');
     }
   },
 
-  removeZedsAt: function(x, y) {
-    let highlight = highlightsContainer.querySelector('span.zed-area.at-' + x + '-' + y);
-    let buiding = buidingsContainer.querySelector('span.zed-icon.at-' + x + '-' + y);
-    if (highlight !== null) {
-      highlight.remove();
+  noHighlightObject: function(objectId) {
+    let objectIcon = document.querySelector('#maximap .icon-' + objectId);
+    if (objectIcon) {
+      objectIcon.classList.remove('highlight');
     }
-    if (buiding !== null) {
-      buiding.remove();
-    }
-  },
-
-  removeBuildingsAt: function(x, y) {
-    let buiding = buidingsContainer.querySelector('span.building-icon.at-' + x + '-' + y);
-    if (buiding !== null) {
-      buiding.remove();
-    }
-  },
-
-  getBuildingsAt: function(x, y) {
-    return allBuildings[x][y];
-  },
-
-  numberQuadrants: function() {
-    window.setTimeout(function() {
-      var quadrantContainer = document.querySelector('#maximap .inner .map-quadrant');
-      for (var x = 0; x < allQuadrants.length; x += 1) {
-        for (var y = 0; y < allQuadrants[x].length; y += 1) {
-          if (allZeds[x][y] !== undefined) {
-            quadrantContainer.innerHTML += "<span class='quadrant i-zed' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" + allZeds[x][y] + " Zed</span>";
-          } else if (allQuadrants[x][y] !== undefined || allPaths[x][y] !== undefined) {
-            if (allQuadrants[x][y] !== undefined) {
-              quadrantContainer.innerHTML += "<span class='quadrant i-building' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" + allQuadrants[x][y][0] + "<br>+" + (allQuadrants[x][y].length - 1) + "</span>";
-            } else {
-              quadrantContainer.innerHTML += "<span class='quadrant i-path' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>PA<br>TH</span>";
-            }
-          } else {
-            quadrantContainer.innerHTML += "<span class='quadrant' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" + x + ",<br>" + y + "</span>";
-          }
-        }
-      }
-    }, 800);
   },
 
   moveMapYTo: function(y) {

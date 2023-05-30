@@ -2,6 +2,8 @@ import Audio from './audio.js'
 import Props from './props.js'
 import Player from './player.js'
 import Items from './items.js'
+import Map from './map.js'
+import Actions from './actions.js'
 
 const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
@@ -12,10 +14,123 @@ var cardDeck = [];
 export default {
   
   init() {
+    document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
+    document.body.addEventListener('mouseout', this.checkForCardUnHover.bind(this));
+    document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
+  },
+
+  checkForCardClick: function(ev) {
+
+    const target = ev.target;
+    const cardId = target.closest('div.card')?.id;
+    const clickButton = target.closest('div.action-button');
+    const itemContainer = target.closest('li.item:not(.is--hidden)');
+
+    if (cardId) {
+      const object = Props.getObject(cardId);
+
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      if (clickButton && !object.disabled) {
+        const action = clickButton.dataset.action;
+
+        if (action && !object.actions.find(singleAction => singleAction.id === action)?.locked) {
+          Audio.sfx('click');
+          Player.lockMovement(true);
+          this.disableActions();
+          Player.movePlayerTo(object.x, object.y);      
+          this.showActionFeedback(cardId, action);
+          Actions.goToAndAction(cardId, action);
+        } else {
+          Audio.sfx('nope');
+        }
+      }
+      if (itemContainer) {
+        const itemName = itemContainer?.dataset.item;
+        const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
+        if (itemAmount) {
+          Props.addToInventory(itemName, itemAmount);
+          const cardRef = this.getCardById(cardId);
+          object.items.find(singleItem => singleItem.name === itemName).amount = 0;
+          object.items.forEach(singleItem => {
+            if (singleItem.amount === 0) {
+              cardRef.querySelector('li[data-item="'+itemName+'"]').classList.add('transfer');
+            }
+          });
+          Items.inventoryChangeFeedback();
+          Items.fillInventorySlots();
+          Audio.sfx('pick',0,0.1);
+          window.setTimeout(function(cardId) {
+            const cardRef = this.getCardById(cardId);
+            const object = Props.getObject(cardId);
+            if (cardRef) {
+              object.items.forEach(singleItem => {
+                if (singleItem.amount === 0) {
+                  cardRef.querySelector('li[data-item="'+itemName+'"]')?.remove();
+                }
+              });
+              if (object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
+                this.renderCardDeck();
+              }
+            } else {
+              console.log('No Card found for ' + cardId);
+            }
+          }.bind(this), 400, cardId);
+        }
+      }
+    }
+  },
+
+  checkForCardHover: function(ev) {
+
+    const target = ev.target;
+    const cardId = target.closest('div.card')?.id;
+    const hoverButton = target.closest('div.action-button');
+
+    if (cardId) {
+      const cardRef = this.getCardById(cardId);
+
+      cardRef.dataset.oldZindex = cardRef.style.zIndex;
+      cardRef.style.zIndex = 200;
+
+      if (hoverButton) {
+        cardRef.classList.add('hover-button');
+      } else {
+        cardRef.classList.remove('hover-button');
+      }  
+
+      Map.highlightObject(cardId);
+    }
+  },
+
+  checkForCardUnHover: function(ev) {
+    const target = ev.target;
+    const cardId = target.closest('div.card')?.id;
+    const object = Props.getObject(cardId);
+
+    if (cardId && !object.fight) {
+      const cardRef = this.getCardById(cardId);
+      cardRef.style.zIndex = cardRef.dataset.oldZindex;
+      cardRef.dataset.oldZindex = '';
+      Map.noHighlightObject(cardId);
+    }
   },
 
   getCardById: function(cardId) {
     return document.getElementById(cardId);
+  },
+
+  getAllZeds: function(cardId) {
+    let allZeds = [];
+    cardDeck?.forEach(function(card, index) {
+      const id = card.id;
+      let object = Props.getObject(id);
+      if (object.group === 'zombie' && object.distance < 2.9 && !object.dead) {
+        allZeds.push(object);
+      }
+    });
+    return allZeds;
   },
 
   addObjectsByIds: function(objectIds) {
@@ -94,8 +209,12 @@ export default {
         }
       });
 
+      if (object.group !== 'event' && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
+        object.looted = true;
+      }
+
       // no actions and items left: remove Card
-      if (!object.actions?.length && !object.items?.length) {
+      if (!object.actions?.length && object.looted) {
         object.removed = true;
       }
 
@@ -181,6 +300,8 @@ export default {
             cardRef.classList.remove('locked');
           }
           if (object.looted) {
+            cardRef.querySelector('ul.items')?.remove();
+            cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
             cardRef.classList.add('looted');
           } else {
             cardRef.classList.remove('looted');
@@ -202,7 +323,7 @@ export default {
         if (!object.active) {
           window.setTimeout(function(cardId) {
             const object = Props.getObject(cardId);
-            const cardRef = document.getElementById(cardId);
+            const cardRef = this.getCardById(cardId);
 
             cardRef.style.left = Math.round(parseInt(object.x) * 44.4 - 120) + 'px';
             cardRef.style.top = '600px';
@@ -224,14 +345,7 @@ export default {
       if (object.removed) {
         if (cardRef) {
           cardRef.classList.add('remove');
-          /*
-          if (removeCard.classList.contains('zombie')) {
-            Map.removeZedsAt(x, y);
-          } else if (removeCard.classList.contains('event')) {
-            // do nothing
-          } else {
-            Map.removeBuildingsAt(x, y);
-          }*/
+          Map.removeObjectIconById(card.id);
           window.setTimeout(function(removeCard) {
             removeCard.remove();
           }, 300, cardRef);
@@ -308,7 +422,7 @@ export default {
         additionLockedInfo = '<span class="additional-locked">Zombies nearby</span>';
       }
 
-      actionList += '<li class="' + action.id + (action.locked ? ' locked ' : '') + '"><div data-time="'+ action.time + '" data-energy="' + action.energy + '" data-action="' + action.id + '" class="action-button">' +
+      actionList += '<li class="' + action.id + (action.locked ? ' locked ' : '') + '"><div data-action="' + action.id + '" class="action-button">' +
                     '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
                     additionInfo + additionLockedInfo + '</div></li>';
     });
@@ -373,27 +487,17 @@ export default {
     object.removed = true;
   },
 
-  showActionFeedback: function(cardId, text, actionId) {
+  showActionFeedback: function(cardId, actionId) {
 
     const object = Props.getObject(cardId);
     const cardRef = this.getCardById(cardId);
+    const text = actionId.split('-')[0] + 'ing...';
 
     /* hide actions and show feedback */
     cardRef.querySelector('div.banner')?.classList.add('is--hidden');
     cardRef.querySelector('ul.actions')?.classList.add('is--hidden');
     cardRef.querySelector('p.activity').textContent = text;
     cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
-
-    /* optional: hide 1-time actions */
-    if (actionId) {
-      for (let i = object.actions.length - 1; i >= 0; i--) {
-        if (object.actions[i].id === actionId) {
-          // should be more decoupled
-          cardRef.querySelector('li.' + actionId).remove();
-          object.actions.splice(i, 1);
-        }
-      }
-    }
   },  
   
   hideActionFeedback: function(cardId) {
@@ -411,36 +515,6 @@ export default {
       console.log('no cardRef for cardId: ', cardId);
     }
   },
-
-  /*
-  removeCardFromDeck: function(removeCard, noUpdate) {
-    const name = removeCard.dataset.name;
-    const x = parseInt(removeCard.dataset.x); 
-    const y = parseInt(removeCard.dataset.y);
-    for (const [index, card] of cardDeck.entries()) {
-      if (card.name === name && card.x === x && card.y === y) {
-        cardDeck.splice(index, 1);
-        removeCard.classList.add('remove');
-        if (removeCard.classList.contains('zombie')) {
-          Map.removeZedsAt(x, y);
-        } else if (removeCard.classList.contains('event')) {
-          // do nothing
-        } else {
-          Map.removeBuildingsAt(x, y);
-        }
-        window.setTimeout(function(removeCard) {
-          removeCard.remove();
-        }, 300, removeCard);
-      }
-    }
-    if (!noUpdate) {
-      this.renderCardDeck();
-    }
-  },
-
-  getCardDeck: function() {
-    return cardDeck;
-  },*/
 
   compare: function( a, b ) {
     if ( a.distance < b.distance ){

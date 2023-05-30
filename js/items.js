@@ -28,14 +28,14 @@ export default {
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
-    /*
+    
     Props.addToInventory('stone', 2);
     Props.addToInventory('tape', 2);
     Props.addToInventory('branch', 2);
     Props.addToInventory('stump', 4);
     Props.addToInventory('straw-wheet', 1);
     Props.addToInventory('pepper', 1);
-    */
+    
 
     this.generateInventorySlots();
     this.fillInventorySlots();
@@ -172,27 +172,19 @@ export default {
   },
 
   startBattle(surprised, singleZed) {
-    let cardDeck = Cards.getCardDeck();
+    let cardZedDeck = [];
     let fightingZombies = [];
     const spaceX = 400;
 
     if (singleZed) {
-      let zombieCandidate = document.querySelector('#cards .card.zombie.' + (singleZed.dataset.name +'-'+ singleZed.dataset.x +'-'+ singleZed.dataset.y));
-      if (zombieCandidate && !zombieCandidate.classList.contains('dead')) {
-        fightingZombies.push(zombieCandidate);
-      }
+      // result of successful luring
+      cardZedDeck = singleZed;
     } else {
-      for (const card in cardDeck) {
-        if (cardDeck[card].type === 'zombie' && cardDeck[card].dist < 2.9) {
-          let zombieCandidate = document.querySelector('#cards .card.zombie.' + (cardDeck[card].name +'-'+ cardDeck[card].x +'-'+ cardDeck[card].y));
-          if (zombieCandidate && !zombieCandidate.classList.contains('dead')) {
-            fightingZombies.push(zombieCandidate);
-          }
-        }
-      }  
+      cardZedDeck = Cards.getAllZeds();
     }
 
-    if (fightingZombies.length > 0) {
+    if (cardZedDeck.length > 0) {
+      // continue here!
       for (var i = 0; i < fightingZombies.length; i += 1)  {
         let zombie = fightingZombies[i];
         zombie.classList.add('fight');
@@ -467,7 +459,8 @@ export default {
 
   checkCraftPrereq: function() {
     const here = Player.getPlayerPosition();
-    const buildingsHere = Map.getBuildingsAt(here.x, here.y);
+    //in Props
+    //const buildingsHere = Map.getBuildingsAt(here.x, here.y);
     craftContainer.querySelectorAll('.button-craft').forEach((el) => {
       el.classList.remove('active');
       el.classList.remove('only1');
@@ -502,10 +495,12 @@ export default {
       totalCrafting++;
     }
     // roast
+    //in Props
+    /*
     if (buildingsHere && buildingsHere.includes('fireplace') && (inventory.items['meat']?.amount > 0 || inventory.items['pepper']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0)) {
       craftContainer.querySelector('.button-craft[data-item="roast"]').classList.add('active');
       totalCrafting++;
-    }
+    }*/
     if (totalCrafting !== crafting.total) {
       crafting.total = totalCrafting;
       this.craftingChangeFeedback();

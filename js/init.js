@@ -31,8 +31,7 @@ function init() {
   Cards.init();
   Items.init();
   Actions.init();
-  //Map.numberQuadrants();
-
+  
   bind();
 
   Ui.resizeViewport();
