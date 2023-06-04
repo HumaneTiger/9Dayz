@@ -38,9 +38,11 @@ export default {
         if (action && !object.actions.find(singleAction => singleAction.id === action)?.locked) {
           Audio.sfx('click');
           Player.lockMovement(true);
-          this.disableActions();
-          Player.movePlayerTo(object.x, object.y);      
+          this.disableActions();  
           this.showActionFeedback(cardId, action);
+          if (action !== 'lure') {
+            Player.movePlayerTo(object.x, object.y);
+          }
           Actions.goToAndAction(cardId, action);
         } else {
           Audio.sfx('nope');
@@ -61,7 +63,7 @@ export default {
           Items.inventoryChangeFeedback();
           Items.fillInventorySlots();
           Audio.sfx('pick',0,0.1);
-          window.setTimeout(function(cardId) {
+          window.setTimeout((cardId) => {
             const cardRef = this.getCardById(cardId);
             const object = Props.getObject(cardId);
             if (cardRef) {
@@ -76,7 +78,7 @@ export default {
             } else {
               console.log('No Card found for ' + cardId);
             }
-          }.bind(this), 400, cardId);
+          }, 400, cardId);
         }
       }
     }
@@ -89,10 +91,13 @@ export default {
     const hoverButton = target.closest('div.action-button');
 
     if (cardId) {
+      const object = Props.getObject(cardId);
       const cardRef = this.getCardById(cardId);
 
-      cardRef.dataset.oldZindex = cardRef.style.zIndex;
-      cardRef.style.zIndex = 200;
+      if (!object.fighting) {
+        cardRef.dataset.oldZindex = cardRef.style.zIndex;
+        cardRef.style.zIndex = 200;  
+      }
 
       if (hoverButton) {
         cardRef.classList.add('hover-button');
@@ -109,10 +114,10 @@ export default {
     const cardId = target.closest('div.card')?.id;
     const object = Props.getObject(cardId);
 
-    if (cardId && !object.fight) {
+    if (cardId && !object.fighting) {
       const cardRef = this.getCardById(cardId);
       cardRef.style.zIndex = cardRef.dataset.oldZindex;
-      cardRef.dataset.oldZindex = '';
+      delete cardRef.dataset.oldZindex;
       Map.noHighlightObject(cardId);
     }
   },
@@ -121,7 +126,7 @@ export default {
     return document.getElementById(cardId);
   },
 
-  getAllZeds: function() {
+  getAllZedIds: function() {
     let allZeds = [];
     cardDeck?.forEach(card => {
       const id = card.id;
@@ -141,7 +146,7 @@ export default {
           cardDeck.push({
             id: objectId,
             distance: 0
-          });
+          })
         }
       });
     }
@@ -152,7 +157,7 @@ export default {
 
     const playerPosition = Player.getPlayerPosition();
 
-    cardDeck?.forEach(function(card, index) {
+    cardDeck?.forEach((card, index) => {
 
       const id = card.id;
       let object = Props.getObject(id);
@@ -164,9 +169,10 @@ export default {
       cardDeck[index].distance = distance;
 
       // active
-      if (object.distance > 4.5) {
+      if (object.distance > 4.2) {
         object.active = false;
-      } else {
+      }
+      if (object.distance < 1.5) {
         object.active = true;
       }
 
@@ -178,12 +184,14 @@ export default {
       }
 
       // zedNearby
-      const allFoundObjectIds = Player.findObjects(object.x, object.y);
-      allFoundObjectIds.forEach(id => {
-        if (Props.getObject(id).group === 'zombie' && !Props.getObject(id).dead) {
-          object.zednearby = true;
-        }
-      });
+      if (object.type !== 'signpost') {
+        const allFoundObjectIds = Player.findObjects(object.x, object.y);
+        object.zednearby = allFoundObjectIds.some(function(id) {
+          return (Props.getObject(id).group === 'zombie' && !Props.getObject(id).dead);
+        });
+      } else {
+        object.zednearby = false;
+      }
 
       // set action states
       object.actions?.forEach(action => {
@@ -209,12 +217,12 @@ export default {
         }
       });
 
-      if (object.group !== 'event' && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
+      if (object.actions.filter(singleAction => (singleAction.id === 'search' || singleAction.id === 'gather')).length === 0 && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
         object.looted = true;
       }
 
       // no actions and items left: remove Card
-      if (!object.actions?.length && object.looted) {
+      if (!object.actions?.length && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
         object.removed = true;
       }
 
@@ -241,6 +249,7 @@ export default {
   },
 
   logDeck: function() {
+    /*
     const cardConsole = document.getElementById('card-console');
     cardConsole.innerHTML = '';
     cardDeck?.forEach(card => {  
@@ -250,6 +259,7 @@ export default {
       cardConsole.innerHTML = cardConsole.innerHTML + JSON.stringify(object).replaceAll('","', '", "').replaceAll('":"', '": "').replaceAll('":', '": ').replaceAll('<img', '') + ' ';
       cardConsole.innerHTML += '</p>';
     });
+    */
   },
 
   refreshCardDeck: function() {
@@ -264,36 +274,42 @@ export default {
       cardsContainer.classList.remove('cards-at-bottom');
     }
 
-    cardDeck?.forEach(function(card, index) {
+    cardDeck?.forEach((card, index) => {
 
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
 
       if (!object.removed) {
 
-        // move new cards into place
-        window.setTimeout(function(cardRef) {
-                  
-          if (cardRef.style.top === '600px') {
-            cardRef.style.top = '';
-            Audio.sfx('deal-card');
-          }
-          cardRef.style.transform = '';
 
-          if (!cardRef.classList.contains('fight')) {
-            cardRef.style.left = cardLeftPosition + 'px';
-            cardRef.style.zIndex = zIndexBase - index;  
-          }
-
-          if (cardDeck.length < 7 || index < 3) {
-            cardLeftPosition += cardWidth;
-          } else {
-            cardLeftPosition += cardWidth / (index - 1.95);
-          }
-
-        }, 300 + 100 * index, cardRef);
 
         if (object.active) {
+
+          // move new cards into place
+          window.setTimeout((cardRef) => {
+                    
+            if (cardRef.style.top === '600px') {
+              cardRef.style.top = '';
+              Audio.sfx('deal-card');
+            }
+
+            if (!cardRef.classList.contains('fight')) {
+              if (cardRef.style.left !== cardLeftPosition + 'px') {
+                cardRef.style.transform = '';
+                cardRef.style.left = cardLeftPosition + 'px';
+                cardRef.style.zIndex = zIndexBase - index;
+                delete cardRef.dataset.oldZindex;
+              }
+            }
+
+            if (cardDeck.length < 7 || index < 3) {
+              cardLeftPosition += Math.floor(cardWidth);
+            } else {
+              cardLeftPosition += Math.floor(cardWidth / (index - 1.95));
+            }
+
+          }, 300 + 100 * index, cardRef);
+
           if (object.locked) {
             cardRef.classList.add('locked');
           } else {
@@ -317,11 +333,12 @@ export default {
             cardRef.classList.remove('zombieshere');
           }
           cardRef.querySelector('.distance').textContent = (object.distance > 1 ? Math.round(object.distance * 4.4) + ' min' : 'Here');
+          cardRef.classList.remove('is--hidden');
         }
 
         // deactivate cards
         if (!object.active) {
-          window.setTimeout(function(cardId) {
+          window.setTimeout((cardId) => {
             const object = Props.getObject(cardId);
             const cardRef = this.getCardById(cardId);
 
@@ -338,9 +355,38 @@ export default {
                 cardRef.style.opacity = 1;
               }
             }, 300, cardRef, object);
-          }.bind(this), 300, card.id);  
+          }, 300, card.id);
         }
       }
+
+      object.actions?.forEach(action => {
+        let actionRef = cardRef.querySelector('ul.actions li.' + action.id);
+        if (action.locked) {
+          if (!object.inreach) {
+            actionRef.querySelector('.additional-locked').textContent = 'Too far away';
+          } else if (object.zednearby) {
+            actionRef.querySelector('.additional-locked').textContent = 'Zombies nearby';
+          } else if (action.id === 'cut-down' || action.id === 'break-door') {
+            actionRef.querySelector('.additional-locked').textContent = 'Axe needed';        
+          } else if (action.id === 'smash-window') {
+            actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
+          } else {
+            actionRef.querySelector('.additional-locked').textContent = 'Locked';
+          }
+          actionRef.classList.add('locked');
+        } else {
+          actionRef.classList.remove('locked');
+        }
+        if (action.id === 'search' && object.dead === false) {
+          actionRef.classList.add('is--hidden');
+        } else {
+          actionRef.classList.remove('is--hidden');
+        }
+        if (action.critical) {
+          actionRef.classList.add('critical');
+          actionRef.querySelector('span.text').innerHTML = '<span class="material-symbols-outlined">release_alert</span> ' + action.label;
+        }
+      });
 
       if (object.removed) {
         if (cardRef) {
@@ -365,10 +411,6 @@ export default {
 
   },
 
-  updateCardMarkup: function(id) {
-
-  },
-
   createCardMarkup: function(id) {
     let object = Props.getObject(id);
 
@@ -381,7 +423,7 @@ export default {
                              '<img class="motive" src="./img/buildings/' + (object.name.startsWith('signpost-') ? 'signpost' : object.name) + '.png">' +
                              '<div class="banner"><img src="./img/icons/buildings/' + object.type + '.png"></div>';
 
-    let cardMarkupZombie =   '<div class="attack">' + Math.floor(Math.random()*6+4) + '</div><div class="health">' + Math.floor(Math.random()*10+6) + '</div>' +
+    let cardMarkupZombie =   '<div class="attack">' + object.attack + '</div><div class="health">' + object.defense + '</div>' +
                              '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/zombies/' + object.name + '.png">' +
                              '<div class="dead"><img src="./img/zombies/undead.png"></div>';
@@ -397,7 +439,7 @@ export default {
     let actionList = '';
     object.actions?.forEach(action => {
       let additionInfo = '';
-      let showAction = true;
+
       if (action.time || action.energy) {
         additionInfo = '<span class="additional">';
         if (action.time) {
@@ -409,32 +451,14 @@ export default {
         additionInfo += '</span>';
       }
 
-      let additionLockedInfo = '';
-      if (action.locked && (action.id === 'cut-down' || action.id === 'break-door')) {
-        additionLockedInfo = '<span class="additional-locked">Axe needed</span>';        
-      }
-      if (action.locked && action.id === 'smash-window') {
-        additionLockedInfo = '<span class="additional-locked">Axe or Stone needed</span>';
-      }
-      if (action.locked && !object.inreach) {
-        additionLockedInfo = '<span class="additional-locked">Too far away</span>';
-      }
-      if (action.locked && object.zednearby) {
-        additionLockedInfo = '<span class="additional-locked">Zombies nearby</span>';
-      }
-      if (action.id === 'search' && object.dead === false) {
-        showAction = false;
-      }
-
-      if (showAction) {
-        actionList += '<li class="' + action.id + (action.locked ? ' locked ' : '') + '"><div data-action="' + action.id + '" class="action-button">' +
-        '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
-        additionInfo + additionLockedInfo + '</div></li>';
-      }
+      actionList += '<li class="' + action.id + '"><div data-action="' + action.id + '" class="action-button">' +
+      '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
+      additionInfo + '<span class="additional-locked"></span></div></li>';
     });
 
     // generate item markup
     let itemMarkup = '';
+    
     for (var i = 0; i < object.items.length; i += 1) {
       itemMarkup += '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>';
       if (object.items[i] && object.items[i].amount) {

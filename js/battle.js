@@ -4,6 +4,7 @@ import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
 import Actions from './actions.js'
+import Items from './items.js'
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -12,6 +13,7 @@ const battleHealthMeter = document.querySelector('#properties li.health');
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
 
+let cardZedDeck = [];
 let battleDeck = [];
 let battleDeckProps = {
   number: 0
@@ -50,14 +52,13 @@ export default {
     return array;
   },
 
-  startBattle(surprised, singleZed) {
-    let cardZedDeck = [];
+  startBattle(surprised, singleZedId) {
 
-    if (singleZed) {
+    if (singleZedId) {
       // result of successful luring
-      cardZedDeck = singleZed;
+      cardZedDeck.push(singleZedId);
     } else {
-      cardZedDeck = Cards.getAllZeds();
+      cardZedDeck = Cards.getAllZedIds();
     }
 
     if (cardZedDeck.length > 0) {
@@ -68,7 +69,7 @@ export default {
         const zedObject = Props.getObject(zedId);
         zedObject.fighting = true;
         zedCardRef.classList.add('fight');
-        zedCardRef.style.zIndex = 220;
+        zedCardRef.style.zIndex = null;
         zedCardRef.style.left = (2135/2) - (cardZedDeck.length * spaceX / 2) + (index * spaceX) + 'px';
       });
       document.getElementById('inventory').classList.remove('active');
@@ -131,15 +132,28 @@ export default {
 
     window.setTimeout(function() {
       Player.changeProps('energy', -15);
-      const allAttackingZeds = document.querySelectorAll('#cards .card.zombie.fight');
       document.querySelector('#cards .cards-blocker').classList.add('is--hidden');
-      allAttackingZeds.forEach(zed => {
-        zed.classList.remove('fight');
-        zed.querySelector('.actions li.lure')?.remove();
-        zed.querySelector('.actions li.attackz')?.remove();
-        zed.querySelector('.actions li.search')?.classList.remove('is--hidden');
+      
+      cardZedDeck.forEach(function(zedId) {
+        let zedCardRef = Cards.getCardById(zedId);
+        const zedObject = Props.getObject(zedId);
+        zedObject.fighting = false;
+        zedCardRef.classList.remove('fight');
+        for (let i = zedObject.actions.length - 1; i >= 0; i--) {
+          if (zedObject.actions[i].id === 'lure' || zedObject.actions[i].id === 'attack') {
+            zedCardRef.querySelector('li.' + zedObject.actions[i].id).remove();
+            zedObject.actions.splice(i, 1);
+          } else {
+            // search
+            zedCardRef.querySelector('li.' + zedObject.actions[i].id)?.classList.remove('is--hidden');
+          }
+        }
+        Cards.hideActionFeedback(zedId);
+        Player.updatePlayer();
+        Actions.goBackFromAction(zedId);
+        Player.lockMovement(false);
       });
-      Actions.goBackFromAction(); // go back before any new DOM nodes will be added to Card deck
+      cardZedDeck = [];
     }.bind(this), 100);
   },
 
@@ -161,6 +175,7 @@ export default {
       document.querySelector('#action-points-warning .low')?.classList.remove('is--hidden');
       document.querySelector('#action-points')?.classList.add('low-energy');
     }
+
     this.shuffle(battleDeck);
     battlePlayContainer.innerHTML = '';
     let maxItems = 5;
@@ -198,10 +213,13 @@ export default {
   },
 
   resolveAttack: function(dragEl, dragTarget) {
-    var item = dragEl.dataset.item;
+    const zedId = dragTarget.id;
+    const zedObject = Props.getObject(zedId);
+    let zedCardRef = Cards.getCardById(zedId);
+
+    var item = dragEl.dataset.item; // can be used for a data-driven approach
     var attack = parseInt(dragEl.querySelector('.attack').textContent);
     var defense = parseInt(dragEl.querySelector('.shield').textContent);
-    var zHealth = parseInt(dragTarget.querySelector('.health').textContent);
     let scratch = document.querySelector('.scratch');
 
     Player.changeProps('protection', defense);
@@ -209,50 +227,46 @@ export default {
     this.showBattleStats('+'+defense, 'blue');
     Audio.sfx('punch');
 
-    zHealth -= attack;
-    if (zHealth <= 0) {
-      dragTarget.classList.add('dead');
+    zedObject.defense -= attack;
+    if (zedObject.defense <= 0) {
+      zedCardRef.classList.add('dead');
+      zedObject.dead = true;
     } else {
-      dragTarget.querySelector('.health').textContent = zHealth;
+      zedCardRef.querySelector('.health').textContent = zedObject.defense;
     }
 
-    // REAL mode
-    if (Props.getGameMode() === 'real') {
-      if (inventory.items[item].durability && inventory.items[item].durability > 0) {
-        inventory.items[item].durability -= 1;
-      }
-      if (!inventory.items[item].durability) {
-        //remove item from inventory
-        Props.addToInventory(item, -1);
-        //remove item from battle deck
-        for (var i = 0; i < battleDeck.length; i += 1) {
-          if (battleDeck[i].name === inventory.items[item].name) {
-            battleDeck.splice(i, 1);
-            break;
-          }
+    if (inventory.items[item].durability && inventory.items[item].durability > 0) {
+      inventory.items[item].durability -= 1;
+    }
+    if (!inventory.items[item].durability) {
+      //remove item from inventory
+      Props.addToInventory(item, -1);
+      //remove item from battle deck
+      for (var i = 0; i < battleDeck.length; i += 1) {
+        if (battleDeck[i].name === inventory.items[item].name) {
+          battleDeck.splice(i, 1);
+          break;
         }
       }
-      // check if any items are left
-      if (battleDeck.length === 0) {
-        this.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
-      }
-      this.fillInventorySlots();
-    } else {
-      battleDeckProps.number += 1;
     }
+    // check if any items are left
+    if (battleDeck.length === 0) {
+      this.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
+    }
+    Items.fillInventorySlots();
 
     // play "hit" animation, resolve item card
-    scratch.style.left = dragTarget.style.left;
+    scratch.style.left = zedCardRef.style.left;
     scratch.classList.add('anim-scratch');
-    dragTarget.classList.add('shake');
+    zedCardRef.classList.add('shake');
     dragEl.classList.add('resolve');
 
     // cleanup
-    window.setTimeout(function(scratch, dragEl, dragTarget) {
+    window.setTimeout(function(scratch, dragEl, zedCardRef) {
       scratch.classList.remove('anim-scratch');
       dragEl.remove();
-      dragTarget.classList.remove('shake');
-    }.bind(this), 200, scratch, dragEl, dragTarget);
+      zedCardRef.classList.remove('shake');
+    }.bind(this), 200, scratch, dragEl, zedCardRef);
 
     if (this.zedIsDead()) {
       window.setTimeout(function() {
@@ -264,8 +278,14 @@ export default {
   },
 
   zedIsDead: function() {
-    const allAttackingZeds = document.querySelectorAll('#cards .zombie.fight:not(.dead)');
-    return allAttackingZeds.length === 0;
+    let allUndeadZeds = 0;
+    cardZedDeck.forEach(function(zedId) {
+      const zedObject = Props.getObject(zedId);
+      if (!zedObject.dead) {
+        allUndeadZeds += 1;
+      }
+    });
+    return allUndeadZeds === 0;
   },
 
   endTurn: function() {

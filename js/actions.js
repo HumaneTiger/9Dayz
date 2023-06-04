@@ -51,7 +51,7 @@ export default {
         console.log('Unknown action: ' + action);
       }
       /* optional: hide 1-time actions */
-      if (action) {
+      if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook') {
         for (let i = object.actions.length - 1; i >= 0; i--) {
           if (object.actions[i].id === action) {
             const cardRef = Cards.getCardById(cardId);
@@ -90,41 +90,42 @@ export default {
 
   simulateGathering: function(cardId, time, energy) {
 
+    const object = Props.getObject(cardId);
     const cardRef = Cards.getCardById(cardId);
+    const allItems = object.items;
     let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
-    let allItems = cardRef.querySelectorAll('ul.items li.item');
 
     let timeout = 2000;
+    let delay = 2000;
 
-    cardRef.querySelector('ul.items').classList.remove('is--hidden');
-    
-    allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
-    allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
-
-    for (var i = 1; i <= allPreviews.length; i += 1) {
-      window.setTimeout(function(index, allPreviews, allItems, cardId, energy) {
-        allPreviews[index - 1].classList.add('is--hidden');
-        allPreviews[index - 1].remove();
-        if (allPreviews[index]) {
-          allPreviews[index].querySelector('.unknown').classList.add('is--hidden');
-          allPreviews[index].querySelector('.searching').classList.remove('is--hidden');        
-        }
-        if (allItems[index-1]) {
-          allItems[index-1].classList.remove('is--hidden');
-        }
-        if (index === allPreviews.length) {
-          this.goBackFromAction(cardId); // go back before any new DOM nodes will be added to Card deck
-          const cardRef = Cards.getCardById(cardId);
-          Player.changeProps('energy', energy);
-          if (cardRef.querySelector('ul.items li.item') === null) {
-            cardRef.querySelector('ul.items').remove();
-            cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
-            cardRef.classList.add('looted');
-            // check if card can be removed (no actions left)
-            Cards.renderCardDeck();
+    if (allPreviews) {
+      cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
+      allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
+      allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
+      
+      for (let i = 0; i < allItems.length; i += 1) {
+        window.setTimeout(function(index, item, cardId, energy) {
+          allPreviews[index].classList.add('is--hidden');
+          if (item.amount > 0) {
+            cardRef.querySelector('ul.items li[data-item="' + item.name + '"]').classList.remove('is--hidden');
           }
-        }
-      }.bind(this), i * timeout, i, allPreviews, allItems, cardId, energy);
+          if (index + 1 < allItems.length) {
+            allPreviews[index + 1].querySelector('.unknown').classList.add('is--hidden');
+            allPreviews[index + 1].querySelector('.searching').classList.remove('is--hidden');        
+          }
+          if (index + 1 === allItems.length) {
+            this.goBackFromAction(cardId);
+            Player.changeProps('energy', energy);
+            if (!allItems.some(function(item) { return (item.amount > 0); })) {
+              cardRef.querySelector('ul.items').remove();
+              cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
+              cardRef.classList.add('looted');
+              // check if card can be removed (no actions left)
+              Cards.renderCardDeck();
+            }
+          }
+        }.bind(this), i * timeout + delay, i, allItems[i], cardId, energy);
+      }
     }
   },
 
@@ -188,9 +189,7 @@ export default {
 
     this.fastForward(function(cardId, energy) {
       this.goBackFromAction(cardId);
-      if (Props.getGameMode() === 'real') {
-        Props.addToInventory('improvised-axe', 0, -1);
-      }
+      Props.addToInventory('improvised-axe', 0, -1);
       Props.addToInventory('stump', 1); 
       Props.addToInventory('branch', 2);
       Items.inventoryChangeFeedback();
@@ -204,7 +203,11 @@ export default {
     Player.lockMovement(true);
     Cards.disableActions();
 
-    Map.showScoutMarkerFor(cardId);
+    const scoutMarker = document.getElementById('scoutmarker');
+
+    scoutMarker.style.left = Math.round(Player.getPlayerPosition().x * 44.4) + 'px';
+    scoutMarker.style.top = Math.round(Player.getPlayerPosition().y * 44.4) + 'px';
+    scoutMarker.classList.remove('is--hidden');
     
     this.fastForward(function(cardId, energy) {
 
@@ -214,7 +217,6 @@ export default {
 
       // 60:40 chance it works
       if (Math.random() >= 0.4) {
-        Player.lockMovement(true);
         Battle.startBattle(false, cardId);
       } else {
         Cards.enableActions();
@@ -263,10 +265,8 @@ export default {
     this.fastForward(function(cardId, energy) {
       const object = Props.getObject(cardId);
       object.locked = false;
-      if (Props.getGameMode() === 'real') {
-        Props.addToInventory('improvised-axe', 0, -1);
-        Items.fillInventorySlots();
-      }
+      Props.addToInventory('improvised-axe', 0, -1);
+      Items.fillInventorySlots();
       Player.changeProps('energy', energy);
       this.goBackFromAction(cardId);
     }, cardId, time, 800, energy);

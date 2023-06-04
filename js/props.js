@@ -14,7 +14,7 @@ var crafting = {
   total: 0
 };
 
-var gameMode = 'easy';
+var gameMode = 'real';
 
 // all generated ids go in here
 var objectIdsAt = new Array(mapSize.width);
@@ -603,6 +603,7 @@ export default {
     buildingNamesArray.forEach(buildingName => {
       let props = buildingProps[buildingName];
       let lootItemList = this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9);
+      const locked = (Math.random() * props.locked > 1) ? true : false;
 
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
@@ -613,9 +614,9 @@ export default {
         type: this.getBuildingTypeOf(buildingName),
         group: 'building',
         text: false,
-        actions: this.getBuildingActionsFor(buildingName),
+        actions: this.getBuildingActionsFor(buildingName, locked),
         items: lootItemList,
-        locked: (Math.random() * props.locked > 1) ? true : false,
+        locked: locked,
         looted: false,
         zednearby: null,
         active: false,
@@ -651,7 +652,7 @@ export default {
         text: false,
         actions: [
           { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-          { id: 'attack', label: 'Attack!', time: 5, energy: -20 },
+          { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
           { id: 'search', label: 'Search', time: 20, energy: -5 }
         ],
         items: lootItemList,
@@ -770,11 +771,11 @@ export default {
     }  
   },
 
-  getBuildingActionsFor: function(buildingName) {
+  getBuildingActionsFor: function(buildingName, locked) {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
     let actionSet = [];
-    if (buildingName === 'fireplace') actionSet.push({name: 'cook', time: 30});
+    if (buildingName === 'fireplace') actionSet.push({id: 'cook', label: 'cook', time: 30});
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
@@ -795,6 +796,9 @@ export default {
             (buildingName === 'well' && singleAction.id === 'gather') ||
             (buildingName === 'well' && singleAction.id === 'fish')) {
           // these are exceptions for certain building <-> action combos that make no sense
+        } else if ((!locked && singleAction.id === 'smash-window') ||
+                   (!locked && singleAction.id === 'break-door')) {
+          // these are exceptions for certain stats <-> action combos that make no sense
         } else {
           singleAction.time = action.split("|")[1];
           singleAction.energy = action.split("|")[2] || 0;
@@ -803,7 +807,6 @@ export default {
 
         if (singleAction.id === 'gather' ||
             singleAction.id === 'search' ||
-            singleAction.id === 'scout-area' ||
             singleAction.id === 'rest' ||
             singleAction.id === 'sleep' ||
             singleAction.id === 'cut-down' ||

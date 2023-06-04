@@ -61,7 +61,7 @@ export default {
   },
 
   changeProps: function(prop, change) {
-    playerProps[prop] += change;
+    playerProps[prop] += parseInt(change);
     playerProps[prop] < 0 ? playerProps[prop] = 0 : false;
     playerProps[prop] > 100 ? playerProps[prop] = 100 : false;
     const propMeter = document.querySelector('#properties li.' + prop + ' span.meter:not(.preview)');
@@ -276,10 +276,7 @@ export default {
   },
 
   handleFoundObjectIds: function(allFoundObjectIds) {
-    if (allFoundObjectIds.length) {
-      Map.showObjectIconsByIds(allFoundObjectIds);
-      Cards.addObjectsByIds(allFoundObjectIds);
-    }
+    Map.showObjectIconsByIds(allFoundObjectIds);
+    Cards.addObjectsByIds(allFoundObjectIds);
   }
-
 }

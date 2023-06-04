@@ -55,6 +55,7 @@ export default {
 
   removeObjectIconById: function(objectId) {
     buidingsContainer.querySelector(".icon.icon-" + objectId)?.remove();
+    highlightsContainer.querySelector(".danger-area.area-" + objectId)?.remove();
   },
 
   highlightObject: function(objectId) {

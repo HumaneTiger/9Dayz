@@ -2,6 +2,7 @@ import Battle from './battle.js'
 import Audio from './audio.js'
 import Player from './player.js'
 import Props from './props.js'
+import Items from './items.js'
 
 var viewport = document.getElementById("viewport");
 var mapHigh = document.querySelector('.map-high img');
@@ -14,6 +15,9 @@ let newPosX = 0, newPosY = 0, startPosX = 0, startPosY = 0, initialStyleLeft = 0
 let dragMode = false;
 let dragEl = null;
 let topIndex = 1;
+
+let squareX = 0, squareY = 0;
+let squareFreeze = true;
 
 let amientLoopStarted = false;
 
@@ -29,6 +33,8 @@ export default {
     document.addEventListener('mouseup', this.mouseUp.bind(this));
 
     this.bind();
+
+    this.initDevConsole();
 
   },
 
@@ -134,7 +140,6 @@ export default {
     return targetCandidateFound;
 
   },
-
   
   isGamePaused: function() {
     return false;
@@ -171,11 +176,8 @@ export default {
       const action = target.closest('.button');
       if (action) {
         Audio.sfx('click');
-        if (action.classList.contains('start') || action.classList.contains('start-real')) {
+        if (action.classList.contains('start-real')) {
           document.getElementById('startscreen').style.opacity = 0;
-          if (action.classList.contains('start-real')) {
-            Props.setGameMode('real');
-          }
           window.setTimeout(function() {
             document.getElementById('startscreen').classList.add('is--hidden');
           }, 1500);
@@ -186,8 +188,88 @@ export default {
         }  
       }
     }
+
+    if (target.closest('#card-console')) {
+      if (target.classList.contains('handle')) {
+        document.getElementById('card-console').classList.toggle('out');
+      } else if (target.classList.contains('select-square')) {
+        squareFreeze = false;
+        squareX = 0;
+        squareY = 0;
+        document.querySelector('#card-console .selected-square').textContent = '';
+        document.getElementById('square-marker').classList.remove('freeze');
+        document.getElementById('square-marker').classList.remove('is--hidden');
+      } else if (target.classList.contains('place-object')) {
+        if (squareX || squareY) {
+          let selectedObject = document.querySelector('#card-console .select-object').value;
+          if (selectedObject === 'zombie') {
+            Props.setZedAt(squareX, squareY, 1);
+          } else {
+            Props.setupBuilding(squareX, squareY, new Array(selectedObject));
+          }
+          Player.updatePlayer();
+          squareFreeze = true;
+          squareX = 0;
+          squareY = 0;
+          document.querySelector('#card-console .selected-square').textContent = '';
+          document.getElementById('square-marker').classList.remove('freeze');
+          document.getElementById('square-marker').classList.add('is--hidden');
+        }
+      }
+    }
   },
+
+  initDevConsole: function() {
+    const selectObject = document.querySelector('#card-console .select-object');
+    const allBuildings = Props.getBuildingProps();
+
+    document.getElementById('viewport').addEventListener('mousemove', this.showSquare.bind(this));
+    document.getElementById('viewport').addEventListener('mousedown', this.selectSquare.bind(this));
+
+    var opt = document.createElement('option');
+    opt.value = 'zombie';
+    opt.innerHTML = 'Zombie';
+    selectObject.appendChild(opt);
+
+    for (const building in allBuildings) {
+      var opt = document.createElement('option');
+      opt.value = building;
+      opt.innerHTML = Items.capitalizeFirstLetter(building.replaceAll('-', ' '));
+      selectObject.appendChild(opt);
+    }
+  },
+
+  showSquare: function(ev) {
+    const scale = window.innerHeight / 1200;
+    const viewportRect = document.getElementById('viewport').getBoundingClientRect();
+    const playerPosition = Player.getPlayerPosition();
+    let mouseX, mouseY;
+
+    if (!squareFreeze) {
+      mouseX = Math.floor(((ev.clientX - viewportRect.left) / scale) / 44.4);
+      mouseY = Math.floor(((ev.clientY - 23 - viewportRect.top) / scale) / 44.4);
   
+      squareX = mouseX;
+      if (playerPosition.y < 20) {
+        squareY = mouseY;
+      } else if (playerPosition.y > 40) {
+        squareY = mouseY + 21;
+      } else {
+        squareY = mouseY + (21 - (40 - playerPosition.y));
+      }
+      document.querySelector('#card-console .selected-square').textContent = '('+squareX+', '+squareY+')';
+      document.getElementById('square-marker').style.left = (mouseX * 44.4) + 'px';
+      document.getElementById('square-marker').style.top = (mouseY * 44.4 + 23) + 'px';
+    }
+  },
+
+  selectSquare: function(ev) {
+    if (squareX || squareY) {
+      squareFreeze = true;
+      document.getElementById('square-marker').classList.add('freeze');
+    }
+  },
+
   resizeViewport: function() {
     const scaleFactor = window.innerHeight / 1200;
     viewport.style.transform = 'scale3d('+scaleFactor+','+scaleFactor+','+scaleFactor+') translate3d(-50%,0,0)';
