@@ -53,32 +53,24 @@ export default {
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
         if (itemAmount) {
           Props.addToInventory(itemName, itemAmount);
-          const cardRef = this.getCardById(cardId);
           object.items.find(singleItem => singleItem.name === itemName).amount = 0;
-          object.items.forEach(singleItem => {
-            if (singleItem.amount === 0) {
-              cardRef.querySelector('li[data-item="'+itemName+'"]').classList.add('transfer');
-            }
-          });
+          itemContainer.classList.add('transfer');
           Items.inventoryChangeFeedback();
           Items.fillInventorySlots();
-          Audio.sfx('pick',0,0.1);
-          window.setTimeout((cardId) => {
+          Audio.sfx('pick', 0, 0.1);
+          window.setTimeout((itemContainer, cardId) => {
             const cardRef = this.getCardById(cardId);
             const object = Props.getObject(cardId);
             if (cardRef) {
-              object.items.forEach(singleItem => {
-                if (singleItem.amount === 0) {
-                  cardRef.querySelector('li[data-item="'+itemName+'"]')?.remove();
-                }
-              });
-              if (object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
+              itemContainer.classList.add('is--hidden');
+              if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
+                  !cardRef.querySelectorAll('li.item:not(.is--hidden)')) {
                 this.renderCardDeck();
               }
             } else {
               console.log('No Card found for ' + cardId);
             }
-          }, 400, cardId);
+          }, 400, itemContainer, cardId);
         }
       }
     }
@@ -241,6 +233,9 @@ export default {
       if (!object.discovered) {
         object.discovered = true;
         this.createCardMarkup(card.id);
+        if (object.group === 'zombie') {
+          Audio.sfx('zed-appears');
+        }
       }
     });
 
