@@ -14,7 +14,7 @@ export default {
   goToAndAction: function(cardId, action) {
     window.setTimeout(function(cardId, action) {
       const object = Props.getObject(cardId);
-      const actionObject = object.actions.filter(singleAction => singleAction.id === action)[0];
+      const actionObject = object.actions.find(singleAction => singleAction.id === action);
       if (actionObject) {
         if (action === 'search') {
           this.simulateGathering(cardId, actionObject.time, actionObject.energy);
@@ -27,7 +27,7 @@ export default {
         } else if (action === 'sleep') {
           this.simulateSleeping(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'cook') {
-          this.simulateCooking();
+          this.simulateCooking(cardId);
         } else if (action === 'cut-down') {
           this.simulateCuttingDown(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'smash-window') {
@@ -46,7 +46,7 @@ export default {
           this.drinking(cardId, actionObject.time, actionObject.energy);
         } else {
           console.log('Unknown action: ' + action);
-        }
+        }        
       } else {
         console.log('Unknown action: ' + action);
       }
@@ -173,9 +173,12 @@ export default {
 
   },
 
-  simulateCooking: function() {
-    document.getElementById('craft').classList.toggle('active');
+  simulateCooking: function(cardId) {
     document.getElementById('inventory').classList.remove('active');
+    document.getElementById('craft').classList.add('active');
+    window.setTimeout(function(cardId) {
+      this.goBackFromAction(cardId);
+    }.bind(this), 800, cardId);
   },
 
   simulateCuttingDown: function(cardId, time, energy) {
@@ -233,7 +236,7 @@ export default {
     const object = Props.getObject(cardId);
     const allFoundObjectIds = Player.findObjects(object.x, object.y);
 
-    const zedsOnly = allFoundObjectIds.filter(singleObject => singleObject.group === 'zombie');
+    const zedsOnly = allFoundObjectIds.filter(singleObject => Props.getObject(singleObject).group === 'zombie');
     Player.handleFoundObjectIds(zedsOnly);
     Cards.renderCardDeck();
 
@@ -259,8 +262,7 @@ export default {
   simulateBreaking: function(cardId, time, energy) {
 
     Audio.sfx('chop-wood');
-    Audio.sfx('chop-wood', 800);
-    Audio.sfx('chop-wood', 1600);
+    Audio.sfx('chop-wood', 800);  
 
     this.fastForward(function(cardId, energy) {
       const object = Props.getObject(cardId);
@@ -274,7 +276,7 @@ export default {
 
   simulateSmashing: function(cardId, time, energy) {
 
-    Audio.sfx('chop-wood');
+    Audio.sfx('break-glass', 350);
 
     this.fastForward(function(cardId, energy) {
       const object = Props.getObject(cardId);

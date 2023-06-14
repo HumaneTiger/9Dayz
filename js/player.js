@@ -85,6 +85,7 @@ export default {
     if (this.getProp('health') < lowest) lowest = this.getProp('health');
     if (this.getProp('thirst') < lowest) lowest = this.getProp('thirst');
     if (this.getProp('food') < lowest) lowest = this.getProp('food');
+    if (this.getProp('energy') < lowest) lowest = this.getProp('energy');
     if (lowest < 20) {
       document.getElementById('damage-cover').style.opacity = (100 - lowest*4) / 100;
     } else {

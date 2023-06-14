@@ -547,7 +547,7 @@ export default {
     this.setZedAt(32, 41, 1);
     this.setZedAt(36, 41, 1);
     this.setZedAt(17, 38, 1);
-    this.setZedAt(16, 38, 1);
+    //this.setZedAt(16, 38, 1);
     this.setZedAt(35, 37, 2);
     this.setZedAt(33, 31, 2);
     this.setZedAt(33, 30, 1);
@@ -800,8 +800,8 @@ export default {
                    (!locked && singleAction.id === 'break-door')) {
           // these are exceptions for certain stats <-> action combos that make no sense
         } else {
-          singleAction.time = action.split("|")[1];
-          singleAction.energy = action.split("|")[2] || 0;
+          singleAction.time = parseInt(action.split("|")[1]);
+          singleAction.energy = parseInt(action.split("|")[2] || 0);
           actionSet.push(singleAction);
         }
 

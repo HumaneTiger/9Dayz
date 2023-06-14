@@ -34,8 +34,12 @@ export default {
 
       if (clickButton && !object.disabled) {
         const action = clickButton.dataset.action;
-
-        if (action && !object.actions.find(singleAction => singleAction.id === action)?.locked) {
+        const actionObject = object.actions.find(singleAction => singleAction.id === action);
+  
+        if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
+          // shake energy meter
+          Audio.sfx('nope');
+        } else if (actionObject && !actionObject.locked) {
           Audio.sfx('click');
           Player.lockMovement(true);
           this.disableActions();  
@@ -64,7 +68,7 @@ export default {
             if (cardRef) {
               itemContainer.classList.add('is--hidden');
               if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
-                  !cardRef.querySelectorAll('li.item:not(.is--hidden)')) {
+                  !cardRef.querySelectorAll('li.item:not(.is--hidden)')?.length) {
                 this.renderCardDeck();
               }
             } else {
@@ -310,7 +314,8 @@ export default {
           } else {
             cardRef.classList.remove('locked');
           }
-          if (object.looted) {
+          // need object prop for 'lootable', can also be used in props.js for action combos that make no sense */
+          if (object.looted && !(object.name.startsWith('signpost') || object.name === 'pump' || object.name === 'fireplace' || object.name === 'well')) {
             cardRef.querySelector('ul.items')?.remove();
             cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
             cardRef.classList.add('looted');
