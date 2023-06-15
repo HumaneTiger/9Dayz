@@ -109,13 +109,15 @@ var buildingActions = {
   'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ]
 };
 
-var weapons = {
-  'axe': [0, 8],
+var weaponProps = {
+  /*'axe': [0, 8],
   'baseball-bat': [25, 4],
   'hammer': [0, 5],
   'saw': [0, 1],
   'wooden-club': [25, 2],
-  'wrench': [0, 7]
+  'wrench': [0, 7]*/
+  'improvised-axe': {attack: 8, defense: 4, durability: 3},
+  'wooden-club': {attack: 6, defense: 3, durability: 3}
 };
 
 var events = {
@@ -619,7 +621,7 @@ export default {
         locked: locked,
         looted: false,
         zednearby: null,
-        active: false,
+        active: true,
         inreach: false,
         discovered: false,
         distance: null,
@@ -659,7 +661,7 @@ export default {
         locked: undefined,
         looted: false,
         zednearby: null,
-        active: false,
+        active: true,
         inreach: false,
         discovered: false,
         distance: null,
@@ -696,7 +698,7 @@ export default {
         locked: undefined,
         looted: false,
         zednearby: null,
-        active: false,
+        active: true,
         inreach: false,
         discovered: false,
         distance: null,
@@ -708,6 +710,38 @@ export default {
       });  
       objectsIdCounter += 1;
     };
+  },
+
+  setupWeapon: function(x, y, weaponName) {
+    let props = weaponProps[weaponName];
+    this.addObjectIdAt(objectsIdCounter, x, y);
+    this.setObject(objectsIdCounter, {
+      x: x,
+      y: y,
+      name: weaponName,
+      title: weaponName.replace('-', ' '),
+      type: undefined,
+      group: 'weapon',
+      text: false,
+      actions: [{
+        id: 'grab', label: 'Grab'
+      }],
+      items: [],
+      locked: undefined,
+      looted: false,
+      zednearby: null,
+      active: true,
+      inreach: false,
+      discovered: false,
+      distance: null,
+      attack: props.attack,
+      defense: props.defense,
+      durability: props.durability,
+      dead: undefined,
+      disabled: false,
+      removed: false
+    });
+    objectsIdCounter += 1;
   },
 
   setupAllPaths: function() {

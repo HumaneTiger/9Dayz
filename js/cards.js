@@ -68,7 +68,7 @@ export default {
             if (cardRef) {
               itemContainer.classList.add('is--hidden');
               if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
-                  !cardRef.querySelectorAll('li.item:not(.is--hidden)')?.length) {
+                  !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
                 this.renderCardDeck();
               }
             } else {
@@ -235,6 +235,7 @@ export default {
     cardDeck?.forEach(card => {  
       const object = Props.getObject(card.id);
       if (!object.discovered) {
+        console.log(object.name, object.active);
         object.discovered = true;
         this.createCardMarkup(card.id);
         if (object.group === 'zombie') {
@@ -279,8 +280,6 @@ export default {
       const cardRef = document.getElementById(card.id);
 
       if (!object.removed) {
-
-
 
         if (object.active) {
 
@@ -461,9 +460,9 @@ export default {
     
     for (var i = 0; i < object.items.length; i += 1) {
       itemMarkup += '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>';
-      if (object.items[i] && object.items[i].amount) {
+      //if (object.items[i] && object.items[i].amount) {
         itemMarkup += '<li class="item is--hidden" data-item="'+object.items[i].name+'" data-amount="'+object.items[i].amount+'"><span class="img"><img src="./img/items/' + object.items[i].name + '.PNG"></span><span class="amount">' + (object.items[i].amount > 1 ? itemList[i].amount : '') + '</span><span class="grab">Grab</span></li>';
-      }
+      //}
     }
 
     // compile card markup
@@ -521,7 +520,10 @@ export default {
 
     const object = Props.getObject(cardId);
     const cardRef = this.getCardById(cardId);
-    const text = actionId.split('-')[0] + 'ing...';
+    let text = actionId.split('-')[0];
+
+    if (text.slice(-1) === 'e') text = text.slice(0, -1);
+    text += 'ing...';
 
     /* hide actions and show feedback */
     cardRef.querySelector('div.banner')?.classList.add('is--hidden');
