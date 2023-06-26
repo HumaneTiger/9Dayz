@@ -1,3 +1,5 @@
+import Ui from './ui.js'
+
 let allAudio = document.getElementById("all-audio");
 let ambientIndex = 1;
 let ambientTimes = [60, 110, 145, 145];
@@ -27,7 +29,7 @@ export default {
 
             audio.volume = volume;
             
-            audio.play();
+            if (Ui.userHasInteracted()) audio.play();
 
         }.bind(this), delay || 0);
 
@@ -41,8 +43,7 @@ export default {
             let volume = vol || 0.2;
 
             audio.volume = volume;
-            
-            audio.play();
+            if (Ui.userHasInteracted()) audio.play();
 
         }, delay || 0);
 
@@ -57,8 +58,7 @@ export default {
             let volume = vol || 0.3;
 
             audio.volume = volume;
-            
-            audio.play();
+            if (Ui.userHasInteracted()) audio.play();
 
         }.bind(this), delay || 0);
 

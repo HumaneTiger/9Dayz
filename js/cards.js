@@ -235,7 +235,6 @@ export default {
     cardDeck?.forEach(card => {  
       const object = Props.getObject(card.id);
       if (!object.discovered) {
-        console.log(object.name, object.active);
         object.discovered = true;
         this.createCardMarkup(card.id);
         if (object.group === 'zombie') {
@@ -376,7 +375,7 @@ export default {
         } else {
           actionRef.classList.remove('locked');
         }
-        if (action.id === 'search' && object.dead === false) {
+        if ((action.id === 'search' || action.id === 'cut') && object.dead === false) {
           actionRef.classList.add('is--hidden');
         } else {
           actionRef.classList.remove('is--hidden');
@@ -427,6 +426,11 @@ export default {
                              '<img class="motive" src="./img/zombies/' + object.name + '.png">' +
                              '<div class="dead"><img src="./img/zombies/undead.png"></div>';
 
+    let cardMarkupWeapon =   '<div class="attack">' + object.attack + '</div><div class="shield">' + object.defense + '</div>' +
+                             '<p class="activity glow is--hidden"></p>' +
+                             '<img class="motive" src="./img/weapons/' + object.name + '.png">' +
+                             '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>';
+
     let cardMarkupEvent =    '<h2>' + object.title + '</h2>' +
                              '<p class="text">' + object.text + '</p>';
                  
@@ -475,6 +479,8 @@ export default {
       cardMarkup += cardMarkupZombie;
     } else if (object.group === 'event') {
       cardMarkup += cardMarkupEvent;
+    } else if (object.group === 'weapon') {
+      cardMarkup += cardMarkupWeapon;
     }
 
     if (object.actions.length) {
@@ -523,6 +529,7 @@ export default {
     let text = actionId.split('-')[0];
 
     if (text.slice(-1) === 'e') text = text.slice(0, -1);
+    if (text.slice(-1) === 't') text += 't';
     text += 'ing...';
 
     /* hide actions and show feedback */

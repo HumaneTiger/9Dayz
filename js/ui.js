@@ -19,7 +19,7 @@ let topIndex = 1;
 let squareX = 0, squareY = 0;
 let squareFreeze = true;
 
-let amientLoopStarted = false;
+let firstUserInteraction = false;
 
 export default {
   
@@ -145,14 +145,18 @@ export default {
     return false;
   },
 
+  userHasInteracted: function() {
+    return firstUserInteraction;
+  },
+
   handleClick: function(ev) {
 
     const target = ev.target;
     const clickAction = target.closest('#actions');
     const startscreenAction = target.closest('#startscreen');
 
-    if (!amientLoopStarted) {
-      amientLoopStarted = true;
+    if (!firstUserInteraction) {
+      firstUserInteraction = true;
       Audio.init();
     }
 
@@ -181,6 +185,13 @@ export default {
           window.setTimeout(function() {
             document.getElementById('startscreen').classList.add('is--hidden');
           }, 1500);
+        } else if (action.classList.contains('start-tutorial')) {
+          document.getElementById('startscreen').style.opacity = 0;
+          Props.setupAllEvents();
+          Player.findAndHandleObjects();
+          window.setTimeout(function() {
+            document.getElementById('startscreen').classList.add('is--hidden');
+          }, 1500);          
         } else if (action.classList.contains('restart')) {
           window.setTimeout(function() {
             document.location.reload();
@@ -204,6 +215,8 @@ export default {
           let selectedObject = document.querySelector('#card-console .select-object').value;
           if (selectedObject === 'zombie') {
             Props.setZedAt(squareX, squareY, 1);
+          } else if (selectedObject === 'improvised-axe' || selectedObject === 'wooden-club') {
+            Props.setupWeapon(squareX, squareY, selectedObject);
           } else {
             Props.setupBuilding(squareX, squareY, new Array(selectedObject));
           }
@@ -222,6 +235,7 @@ export default {
   initDevConsole: function() {
     const selectObject = document.querySelector('#card-console .select-object');
     const allBuildings = Props.getBuildingProps();
+    const allWeapons = Props.getWeaponProps();
 
     document.getElementById('viewport').addEventListener('mousemove', this.showSquare.bind(this));
     document.getElementById('viewport').addEventListener('mousedown', this.selectSquare.bind(this));
@@ -230,6 +244,13 @@ export default {
     opt.value = 'zombie';
     opt.innerHTML = 'Zombie';
     selectObject.appendChild(opt);
+
+    for (const weapon in allWeapons) {
+      var opt = document.createElement('option');
+      opt.value = weapon;
+      opt.innerHTML = Items.capitalizeFirstLetter(weapon.replaceAll('-', ' '));
+      selectObject.appendChild(opt);
+    }
 
     for (const building in allBuildings) {
       var opt = document.createElement('option');

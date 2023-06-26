@@ -1,7 +1,6 @@
 import Binding from './binding.js'
 
 const mapSize = { width: 45, height: 45 };
-var gameSpeedDefault = 4000;
 
 var inventory = {
   items: new Array(),
@@ -14,7 +13,11 @@ var crafting = {
   total: 0
 };
 
-var gameMode = 'real';
+var game = {
+  mode: 'real',
+  tutorial: false,
+  speed: 4000
+}
 
 // all generated ids go in here
 var objectIdsAt = new Array(mapSize.width);
@@ -213,7 +216,6 @@ export default {
   init() {
     this.setupAllBuildings();
     this.setupAllZeds();
-    this.setupAllEvents();
     this.setupAllPaths();
     this.bind();
     this.preloadBuidlings();
@@ -262,20 +264,11 @@ export default {
     images[4].src = '../img/zombies/scratch.png';
   },
 
-  getGameMode: function() {
-    return gameMode;
+  getGameProp: function(prop) {
+    return game[prop];
   },
-
-  setGameSpeedDefault: function(speed) {
-    gameSpeedDefault = speed;
-  },
-
-  getGameSpeedDefault: function() {
-    return gameSpeedDefault;
-  },
-
-  setGameMode: function(mode) {
-    gameMode = mode;
+  setGameProp: function(prop, value) {
+    game[prop] = value;
   },
 
   /* inventory */
@@ -580,14 +573,15 @@ export default {
     this.setZedAt(35, 18, 1);
   },
 
-  createLootItemList: function(spawn, allItems, probability) {
+  createLootItemList: function(spawn, allItems, probability, amount) {
+    const maxAmount = amount || 1;
     let lootItemList = [];
     for (var i = 0; i < spawn; i += 1) {
       let randomItem = Math.floor(Math.random() * allItems.length);
       if ((Math.random() * 10) < probability) {
         lootItemList.push({
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
-          amount: 1
+          amount: Math.round(Math.random() * maxAmount) || 1
         });
         probability = 6;
       } else {
@@ -603,9 +597,11 @@ export default {
 
   setupBuilding: function(x, y, buildingNamesArray) {
     buildingNamesArray.forEach(buildingName => {
-      let props = buildingProps[buildingName];
-      let lootItemList = this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9);
+      const props = buildingProps[buildingName];
+      const lootItemList = this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9);
       const locked = (Math.random() * props.locked > 1) ? true : false;
+      const type = this.getBuildingTypeOf(buildingName);
+      const infested = (type === 'house') ? true : false; //type === 'house' && (Math.random() < 0.35) ? true : false;
 
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
@@ -613,13 +609,14 @@ export default {
         y: y,
         name: buildingName,
         title: buildingName.startsWith('signpost-') ? 'signpost' : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
-        type: this.getBuildingTypeOf(buildingName),
+        type: type,
         group: 'building',
         text: false,
-        actions: this.getBuildingActionsFor(buildingName, locked),
+        actions: this.getBuildingActionsFor(buildingName, locked, infested),
         items: lootItemList,
         locked: locked,
         looted: false,
+        infested: infested,
         zednearby: null,
         active: true,
         inreach: false,
@@ -660,6 +657,7 @@ export default {
         items: lootItemList,
         locked: undefined,
         looted: false,
+        infested: false,
         zednearby: null,
         active: true,
         inreach: false,
@@ -676,6 +674,53 @@ export default {
       objectsIdCounter += 1;
 
     }
+  },
+
+  setRatAt: function(x, y, amount) {
+    let lootItemList = this.createLootItemList(2, ['meat', 'bone'], 11, 3);
+    let name = 'rat';
+
+    this.addObjectIdAt(objectsIdCounter, x, y);
+    this.setObject(objectsIdCounter, {
+      x: x,
+      y: y,
+      name: name,
+      title: '',
+      type: undefined,
+      group: 'zombie',
+      text: false,
+      actions: [
+        { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+        { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 }
+      ],
+      items: lootItemList,
+      locked: undefined,
+      looted: false,
+      infested: false,
+      zednearby: null,
+      active: true,
+      inreach: false,
+      discovered: false,
+      distance: null,
+      attack: Math.floor(Math.random()*3+1),
+      defense: Math.floor(Math.random()*4+2),
+      dead: false,
+      fighting: false,
+      disabled: false,
+      removed: false
+    });  
+  },
+
+  spawnRatsAt: function(x, y) {
+    const amount = Math.round(Math.random() * 5) || 3;
+    let spawnedRatIds = [];
+    for (var i = 0; i < amount; i += 1) {
+      this.setRatAt(x, y);
+      spawnedRatIds.push(objectsIdCounter);
+      objectsIdCounter += 1;
+    }
+    return spawnedRatIds;
   },
 
   setupAllEvents: function() {
@@ -697,6 +742,7 @@ export default {
         items: [],
         locked: undefined,
         looted: false,
+        infested: false,
         zednearby: null,
         active: true,
         inreach: false,
@@ -724,7 +770,7 @@ export default {
       group: 'weapon',
       text: false,
       actions: [{
-        id: 'grab', label: 'Grab'
+        id: 'equip', label: 'Equip'
       }],
       items: [],
       locked: undefined,
@@ -793,6 +839,10 @@ export default {
     paths[x][y] = undefined;
   },
 
+  getWeaponProps: function() {
+    return weaponProps;
+  },
+
   getBuildingProps: function() {
     return buildingProps;
   },
@@ -805,7 +855,7 @@ export default {
     }  
   },
 
-  getBuildingActionsFor: function(buildingName, locked) {
+  getBuildingActionsFor: function(buildingName, locked, infested) {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
     let actionSet = [];
@@ -850,6 +900,9 @@ export default {
           singleAction.needsUnlock = true;
         } else {
           singleAction.needsUnlock = false;
+        }
+        if (infested && singleAction.id === 'search') {
+          singleAction.critical = true;
         }
         singleAction.locked = undefined;
       });

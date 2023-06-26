@@ -18,6 +18,8 @@ export default {
       if (actionObject) {
         if (action === 'search') {
           this.simulateGathering(cardId, actionObject.time, actionObject.energy);
+        } if (action === 'cut') {
+          this.simulateGathering(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'gather') {
           this.simulateGathering(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'scout-area') {
@@ -28,6 +30,8 @@ export default {
           this.simulateSleeping(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'cook') {
           this.simulateCooking(cardId);
+        } else if (action === 'equip') {
+          this.simulateEquipping(cardId);
         } else if (action === 'cut-down') {
           this.simulateCuttingDown(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'smash-window') {
@@ -76,13 +80,13 @@ export default {
   },
 
   fastForward: function(callbackfunction, cardId, time, newSpeedOpt, energy) {
-    const defaultSpeed = Props.getGameSpeedDefault();
+    const defaultSpeed = Props.getGameProp('speed');
     const newSpeed = newSpeedOpt || 400;
     if (time) {
       let ticks = parseInt(time) / 10;
-      Props.setGameSpeedDefault(newSpeed);
+      Props.setGameProp('speed', newSpeed);
       window.setTimeout(function(defaultSpeed, cardId) {
-        Props.setGameSpeedDefault(defaultSpeed);
+        Props.setGameProp('speed', defaultSpeed);
         callbackfunction.call(this, cardId, energy);
       }.bind(this), ticks * newSpeed, defaultSpeed, cardId);  
     }
@@ -98,7 +102,12 @@ export default {
     let timeout = 2000;
     let delay = 2000;
 
-    if (allPreviews) {
+    if (object.infested) {
+      const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
+      cardRef.classList.remove('infested');
+      object.infested = false;
+      Player.handleFoundObjectIds(ratObjectIds);
+    } else if (allPreviews) {
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
       allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
@@ -107,7 +116,7 @@ export default {
         window.setTimeout(function(index, item, cardId, energy) {
           allPreviews[index].classList.add('is--hidden');
           if (item.amount > 0) {
-            cardRef.querySelector('ul.items li[data-item="' + item.name + '"]').classList.remove('is--hidden');
+            cardRef.querySelector('ul.items li[data-item="' + item.name + '"].is--hidden').classList.remove('is--hidden');
           }
           if (index + 1 < allItems.length) {
             allPreviews[index + 1].querySelector('.unknown').classList.add('is--hidden');
@@ -174,9 +183,22 @@ export default {
   },
 
   simulateCooking: function(cardId) {
+    /* simulate cooking inside Card */
     document.getElementById('inventory').classList.remove('active');
     document.getElementById('craft').classList.add('active');
     window.setTimeout(function(cardId) {
+      this.goBackFromAction(cardId);
+    }.bind(this), 800, cardId);
+  },
+
+  simulateEquipping: function(cardId) {
+    const object = Props.getObject(cardId);
+    if (object.group === 'weapon' && object.name) {
+      Props.addToInventory(object.name, 1, 3);
+    }
+    window.setTimeout(function(cardId) {
+      Items.inventoryChangeFeedback();
+      Items.fillInventorySlots();
       this.goBackFromAction(cardId);
     }.bind(this), 800, cardId);
   },

@@ -90,7 +90,7 @@ function initiateMainGameLoop() {
         /* go foreward in time */
         tickCurrent += tickInterval;
 
-        if (tickCurrent >= Props.getGameSpeedDefault()) {
+        if (tickCurrent >= Props.getGameProp('speed')) {
             tickCurrent = 0;
             triggerGameTick();
         }

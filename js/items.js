@@ -16,16 +16,16 @@ export default {
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
-
     Props.addToInventory('pepper', 1);
-    /*
+    
     Props.addToInventory('stone', 2);
+    Props.addToInventory('hacksaw', 2);
     Props.addToInventory('tape', 2);
     Props.addToInventory('branch', 2);
     Props.addToInventory('stump', 4);
     Props.addToInventory('straw-wheet', 1);
     Props.addToInventory('pepper', 1);
-    */
+    
     this.generateInventorySlots();
     this.fillInventorySlots();
 
@@ -97,41 +97,38 @@ export default {
         this.fillInventorySlots();
       } else if (item === 'fireplace') {
         const here = Player.getPlayerPosition();
-        let success = Props.setupBuilding(here.x, here.y, ['fireplace']);
-        if (success) {
-          //Player.handleFoundBuildings(here.x, here.y);
-          Cards.renderCardDeck();
-          Props.addToInventory('stone', -1);
-          Props.addToInventory('stump', -1);
-          Props.addToInventory('straw-wheet', -1);
-          this.inventoryChangeFeedback();
-          this.fillInventorySlots();
-        } else {
-          craftContainer.querySelector('p.info').textContent = "Place occupied. Can't build here!";
-        }
+        Props.setupBuilding(here.x, here.y, ['fireplace']);
+        Cards.renderCardDeck();
+        Props.addToInventory('stone', -1);
+        Props.addToInventory('stump', -1);
+        Props.addToInventory('straw-wheet', -1);
+        this.inventoryChangeFeedback();
+        this.fillInventorySlots();
+        craftContainer.classList.remove('active');
+        Player.findAndHandleObjects();
       } else if (item === 'improvised-axe') {
-        if (inventory.items['improvised-axe'] === undefined || inventory.items['improvised-axe'].amount === 0) {
-          Props.addToInventory('stone', -1);
-          Props.addToInventory('branch', -1);
-          Props.addToInventory('tape', -1);
-          Props.addToInventory('improvised-axe', 1, 3);
-          this.inventoryChangeFeedback();
-          this.fillInventorySlots();
-          Cards.renderCardDeck();
-        }
+        const here = Player.getPlayerPosition();
+        Props.setupWeapon(here.x, here.y, 'improvised-axe');
+        Props.addToInventory('stone', -1);
+        Props.addToInventory('branch', -1);
+        Props.addToInventory('tape', -1);
+        this.inventoryChangeFeedback();
+        this.fillInventorySlots();
+        craftContainer.classList.remove('active');
+        Player.findAndHandleObjects();
       } else if (item === 'wooden-club') {
-        if (inventory.items['wooden-club'] === undefined || inventory.items['wooden-club'].amount === 0) {
-          if (inventory.items['fail']?.amount > 0) {
-            Props.addToInventory('fail', -1);
-          } else {
-            Props.addToInventory('hacksaw', -1);
-          }
-          Props.addToInventory('stump', -1);
-          Props.addToInventory('wooden-club', 1, 3);
-          this.inventoryChangeFeedback();
-          this.fillInventorySlots();
-          Cards.renderCardDeck();
+        const here = Player.getPlayerPosition();
+        Props.setupWeapon(here.x, here.y, 'wooden-club');
+        if (inventory.items['fail']?.amount > 0) {
+          Props.addToInventory('fail', -1);
+        } else {
+          Props.addToInventory('hacksaw', -1);
         }
+        Props.addToInventory('stump', -1);
+        this.inventoryChangeFeedback();
+        this.fillInventorySlots();
+        craftContainer.classList.remove('active');
+        Player.findAndHandleObjects();
       }
     }
   },

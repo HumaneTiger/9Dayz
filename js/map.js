@@ -44,6 +44,9 @@ export default {
         if (group === 'building') {
           buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
                                          "<img src='./img/icons/buildings/" + object.type + ".png'></span>";
+        } else if (group === 'weapon') {
+          buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
+                                         "<img src='./img/icons/weapons/" + group + ".png'></span>";
         } else if (group === 'zombie') {
           highlightsContainer.innerHTML += "<span class='danger-area area-" + objectId + "' style='top: " + Math.round(y * 44.4 + 8) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>";
           buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +

@@ -70,7 +70,7 @@ body * {
 }
 #startscreen .button small {
     font-size: 1.5vh;
-    line-height: 2em;
+    line-height: 1.6em;
     display: block;
 }
 #startscreen .button:hover {

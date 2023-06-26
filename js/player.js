@@ -6,7 +6,7 @@ import Map from './map.js'
 const allPaths = Props.getAllPaths();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 18, y: 44 }; //{ x: 10, y: 32 };
+var playerPosition = { x: 10, y: 42 }; //{ x: 18, y: 44 };
 var playerProps = {
   health: 100,
   food: 65,
@@ -148,8 +148,7 @@ export default {
 
       Cards.enableActions();
 
-      const allFoundObjectIds = this.findObjects(playerPosition.x, playerPosition.y);
-      this.handleFoundObjectIds(allFoundObjectIds);
+      this.findAndHandleObjects();
 
       // check if player walked into a zed
       // make sure zed isn't already dead
@@ -168,6 +167,11 @@ export default {
     if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
     if (this.getProp('energy') <= 0) this.changeProps('energy', -5);
 
+  },
+
+  findAndHandleObjects: function() {
+    const allFoundObjectIds = this.findObjects(playerPosition.x, playerPosition.y);
+    this.handleFoundObjectIds(allFoundObjectIds);
   },
 
   movePlayerTo: function(x, y) {

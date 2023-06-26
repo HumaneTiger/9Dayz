@@ -70,6 +70,7 @@
   box-shadow: 0 0 5px 4px #dc6452, 0 0 12px 8px #dc6452;
 }
 .card div.attack,
+.card div.shield,
 .card div.health {
   position: absolute;
   width: 70px;
@@ -80,6 +81,13 @@
   font-size: 52px;
   line-height: 1.55em;
   font-weight: 300;
+}
+.card .shield {
+  right: 30px;
+  bottom: 30px;
+  color: white;
+  background-color: rgba(145, 211, 242, 0.9);
+  border: 1px rgba(75, 153, 190, 0.25) solid;
 }
 .card div.attack {
   left: 30px;
