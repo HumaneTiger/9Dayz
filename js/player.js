@@ -6,7 +6,7 @@ import Map from './map.js'
 const allPaths = Props.getAllPaths();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 10, y: 42 }; //{ x: 18, y: 44 };
+var playerPosition = { x: 18, y: 44 };
 var playerProps = {
   health: 100,
   food: 65,
@@ -67,6 +67,13 @@ export default {
     const propMeter = document.querySelector('#properties li.' + prop + ' span.meter:not(.preview)');
     if (propMeter) {
       propMeter.style.width = playerProps[prop] > 9 ? playerProps[prop] + '%' : '9%';
+      propMeter.parentNode.classList.remove('low');
+      propMeter.parentNode.classList.remove('very-low');
+      if (playerProps[prop] < 10)  {
+        propMeter.parentNode.classList.add('very-low');
+      } else if (playerProps[prop] < 33)  {
+        propMeter.parentNode.classList.add('low');
+      }
     }
     this.checkForDamage();
     return playerProps[prop];

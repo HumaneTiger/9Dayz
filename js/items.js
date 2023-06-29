@@ -17,15 +17,15 @@ export default {
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
     Props.addToInventory('pepper', 1);
-    
-    Props.addToInventory('stone', 2);
+    /*
+    Props.addToInventory('bones', 2);
     Props.addToInventory('hacksaw', 2);
     Props.addToInventory('tape', 2);
     Props.addToInventory('branch', 2);
     Props.addToInventory('stump', 4);
     Props.addToInventory('straw-wheet', 1);
     Props.addToInventory('pepper', 1);
-    
+    */
     this.generateInventorySlots();
     this.fillInventorySlots();
 

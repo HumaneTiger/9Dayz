@@ -16,7 +16,13 @@ var crafting = {
 var game = {
   mode: 'real',
   tutorial: false,
-  speed: 4000
+  speed: 4000,
+  firstInfestation: false,
+  firstLocked: false,
+  firstZedNearby: false,
+  firstRatFight: false, // later
+  firstRatKill: false,
+  firstCraft: false
 }
 
 // all generated ids go in here
@@ -107,7 +113,7 @@ var buildingActions = {
   'place': [ 'head toward|0', 'quick travel|0' ],
   'train': [ 'search|20|-5', 'scout area|30' ],
   'shop': [ 'break door|30|-20', 'search|20|-10', 'scout area|30' ],
-  'industrial': [ 'break door|45|-30', 'search|20|-20', 'scout area|30' ],
+  'industrial': [ 'break door|30|-20', 'search|20|-15', 'scout area|30' ],
   'water': [ 'gather|15|-5', 'drink|10' ],
   'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ]
 };
@@ -132,11 +138,11 @@ var events = {
     title: 'Gather',
     text: 'There are some trees growing here. You should look around them for useful things and pick everything up. Watch your stats - hunger and thirst are a constant threat in this broken world.'
   },
-  '18-41': {
+  '18-40': {
     title: 'Zombies!',
     text: 'The road in front of you is blocked. Apparently, some unfortunates "survived" this accident, and now walk around as undead.<br>Be careful! They are really dangerous.'
   },
-  '17-41': {
+  '17-40': {
     title: 'Zombie 101',
     text: 'Try to lure single Zeds towards you. Attacking them will cause other Zeds in the area join the fight. When you walk right into them, they  will attack you first.'
   },
@@ -148,6 +154,38 @@ var events = {
     title: 'The Horde!',
     text: 'You see a huge horde of Zombies slowly shambling across the street. At this speed it will take days before they are gone. You better turn around and search for an alternative route!'
   },
+};
+
+var specialEvents = {
+  'infestation': {
+    title: 'Infestation',
+    text: 'The building is invested by giant rats! Scout the place before searching to avoid an immediate confrontation.<br><img src="./img/card/status-infested.png">'
+  },
+  'locked-building': {
+    title: 'Locked Building',
+    text: 'The building is locked. You need an axe to break the door.<br><img src="./img/card/status-locked.png">'
+  },
+  'locked-car': {
+    title: 'Locked Car',
+    text: 'The owners of the car left it locked. You need to smash the windows with an axe or stone to get in.<br><img src="./img/card/status-locked.png">'
+  },
+  'hostiles-nearby': {
+    title: 'Hostiles nearby',
+    text: 'You won\'t be able to enter many place until you\'ve taken care of all hostiles nearby.<br><img src="./img/card/status-zombies.png">'
+  },
+  'crafting': {
+    title: 'Hammer Time!',
+    text: 'You collected the right resources to craft an item. Open the Crafting menu to see all options.<br><br><img src="./img/actions/craft.png">'
+  },
+  /* not ready */
+  'rat-fight': {
+    title: 'Taking a bite',
+    text: 'If a rat got hurt, it won\'t attack you. Instead it will steel food from your inventory and eat it to heal its wounds.'
+  },
+  'rat-kill': {
+    title: 'Beggars aren\'t choosers',
+    text: 'Rats give some good meal, when cutted into pieces and roasted over fire. Just get over the disgust.<br><img src="./img/items/meat.PNG">'
+  }
 };
 
 var targetLocations = {
@@ -163,6 +201,7 @@ var targetLocations = {
 
 var items = {
   'acorn': ['eat', 1, 0, 0],
+  'bones': ['craft', 0, 0, 0, 2, 0],
   'branch': ['craft', 0, 0, 0, 1, 1],
   'bread-1': ['eat', 45, 0, 20],
   'bread-2': ['eat', 40, 0, 20],
@@ -210,6 +249,25 @@ var items = {
   'improvised-axe': ['extra', 0, 0, 0, 8, 4],
   'wooden-club': ['extra', 0, 0, 0, 6, 3]
 };
+
+const actionTextMapping = {
+  'break-door': 'breaking',
+  'search': 'searching',
+  'scout-area': 'scouting',
+  'rest': 'resting',
+  'sleep': 'sleeping',
+  'smash-window': 'smashing',
+  'gather': 'gathering',
+  'read': 'reading',
+  'drink': 'drinking',
+  'fish': 'fishing',
+  'cook': 'cooking',
+  'attack': 'attacking',
+  'lure': 'luring',
+  'craft': 'crafting',
+  'cut': 'cutting',
+  'equip': 'equipping'  
+}
 
 export default {
   
@@ -601,7 +659,7 @@ export default {
       const lootItemList = this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9);
       const locked = (Math.random() * props.locked > 1) ? true : false;
       const type = this.getBuildingTypeOf(buildingName);
-      const infested = (type === 'house') ? true : false; //type === 'house' && (Math.random() < 0.35) ? true : false;
+      const infested = (type === 'house' && (Math.random() < 0.5)) ? true : false;
 
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
@@ -677,7 +735,7 @@ export default {
   },
 
   setRatAt: function(x, y, amount) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bone'], 11, 3);
+    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 2);
     let name = 'rat';
 
     this.addObjectIdAt(objectsIdCounter, x, y);
@@ -725,37 +783,53 @@ export default {
 
   setupAllEvents: function() {
     for (var event in events) {
-      const x = event.split('-')[0];
-      const y = event.split('-')[1];
+      if (this.getGameProp('tutorial')) {
+        const x = event.split('-')[0];
+        const y = event.split('-')[1];
+        this.addObjectIdAt(objectsIdCounter, x, y);
+        this.setObject(objectsIdCounter, {
+          x: x,
+          y: y,
+          name: 'event',
+          title: events[event].title,
+          type: undefined,
+          group: 'event',
+          text: events[event].text,
+          actions: [{
+            id: 'got-it', label: 'Got it!'
+          }],
+          items: [],
+          active: true,
+          discovered: false,
+          removed: false
+        });  
+        objectsIdCounter += 1;  
+      }
+    };
+  },
+
+  setupSpecialEvent: function(event, x, y) {
+    if (this.getGameProp('tutorial')) {
       this.addObjectIdAt(objectsIdCounter, x, y);
       this.setObject(objectsIdCounter, {
         x: x,
         y: y,
         name: 'event',
-        title: events[event].title,
+        title: specialEvents[event].title,
         type: undefined,
         group: 'event',
-        text: events[event].text,
+        text: specialEvents[event].text,
         actions: [{
           id: 'got-it', label: 'Got it!'
         }],
         items: [],
-        locked: undefined,
-        looted: false,
-        infested: false,
-        zednearby: null,
         active: true,
-        inreach: false,
         discovered: false,
-        distance: null,
-        attack: undefined,
-        defense: undefined, // use later for building cards in battle
-        dead: undefined,
-        disabled: false,
         removed: false
       });  
-      objectsIdCounter += 1;
-    };
+      objectsIdCounter += 1;  
+      return objectsIdCounter - 1;
+    }
   },
 
   setupWeapon: function(x, y, weaponName) {
@@ -855,6 +929,10 @@ export default {
     }  
   },
 
+  mapActionsToText: function(action) {
+    return actionTextMapping[action];
+  },
+    
   getBuildingActionsFor: function(buildingName, locked, infested) {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];

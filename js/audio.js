@@ -8,7 +8,7 @@ let ambientDelay = 10;
 export default {
 
     init() {
-      //this.playAmbientLoop();
+      this.playAmbientLoop();
     },
 
     playAmbientLoop: function() {

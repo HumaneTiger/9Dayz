@@ -149,6 +149,10 @@ ul.actions .action-button span.additional {
   z-index: 1;
 }
 
+.card p.activity:after {
+  content: '...';
+}
+
 .glow {
   animation: glow 1s ease-in-out infinite alternate;
 }

@@ -165,7 +165,7 @@ export default {
       cardDeck[index].distance = distance;
 
       // active
-      if (object.distance > 4.2) {
+      if (object.distance > 4) {
         object.active = false;
       }
       if (object.distance < 1.5) {
@@ -231,6 +231,7 @@ export default {
   renderCardDeck: function() {
    
     this.calculateCardDeckProperties();
+    this.checkForSpecialEvents();
 
     cardDeck?.forEach(card => {  
       const object = Props.getObject(card.id);
@@ -238,13 +239,78 @@ export default {
         object.discovered = true;
         this.createCardMarkup(card.id);
         if (object.group === 'zombie') {
-          Audio.sfx('zed-appears');
+          if (object.name === 'rat') {
+            Audio.sfx('rat-squeaks');
+          } else {
+            Audio.sfx('zed-appears');
+          }
         }
       }
     });
 
     this.refreshCardDeck();
     this.logDeck();
+  },
+
+  checkForSpecialEvents: function() {
+
+    if (Props.getGameProp('tutorial')) {
+
+      const playerPosition = Player.getPlayerPosition();
+      const crafting = Props.getCrafting();
+      let specialEventObjectIds = [];
+
+      cardDeck?.forEach((card, index) => {
+
+        const id = card.id;
+        let object = Props.getObject(id);
+
+        if (object.infested && !Props.getGameProp('firstInfestation')) {
+          Props.setGameProp('firstInfestation', true);
+          let objectId = Props.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (object.locked && !Props.getGameProp('firstLocked')) {
+          Props.setGameProp('firstLocked', true);
+          if (object.type === 'car') {
+            let objectId = Props.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
+            specialEventObjectIds.push(objectId);
+          } else {
+            let objectId = Props.setupSpecialEvent('locked-building', playerPosition.x, playerPosition.y);
+            specialEventObjectIds.push(objectId);
+          }
+        }
+        if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
+          Props.setGameProp('firstZedNearby', true);
+          let objectId = Props.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (crafting.total && !Props.getGameProp('firstCraft')) {
+          Props.setGameProp('firstCraft', true);
+          let objectId = Props.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        /*if (object.toBeImplented && !Props.getGameProp('firstRatFight')) {
+          Props.setGameProp('firstRatFight', true);
+          console.log('firstRatFight');
+        }
+        if (object.toBeImplented && !Props.getGameProp('firstRatKill')) {
+          Props.setGameProp('firstRatKill', true);
+          console.log('firstRatKill');
+        }*/
+
+      });
+
+      specialEventObjectIds?.forEach(objectId => {
+        let object = Props.getObject(objectId);
+        if (!object.discovered && !object.removed) {
+          cardDeck.push({
+            id: objectId,
+            distance: 0
+          })
+        }
+      });
+    }
   },
 
   logDeck: function() {
@@ -363,7 +429,7 @@ export default {
           if (!object.inreach) {
             actionRef.querySelector('.additional-locked').textContent = 'Too far away';
           } else if (object.zednearby) {
-            actionRef.querySelector('.additional-locked').textContent = 'Zombies nearby';
+            actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
           } else if (action.id === 'cut-down' || action.id === 'break-door') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe needed';        
           } else if (action.id === 'smash-window') {
@@ -383,6 +449,9 @@ export default {
         if (action.critical) {
           actionRef.classList.add('critical');
           actionRef.querySelector('span.text').innerHTML = '<span class="material-symbols-outlined">release_alert</span> ' + action.label;
+        } else {
+          actionRef.classList.remove('critical');
+          actionRef.querySelector('span.text span.material-symbols-outlined').classList.add('is--hidden');
         }
       });
 
@@ -465,7 +534,7 @@ export default {
     for (var i = 0; i < object.items.length; i += 1) {
       itemMarkup += '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>';
       //if (object.items[i] && object.items[i].amount) {
-        itemMarkup += '<li class="item is--hidden" data-item="'+object.items[i].name+'" data-amount="'+object.items[i].amount+'"><span class="img"><img src="./img/items/' + object.items[i].name + '.PNG"></span><span class="amount">' + (object.items[i].amount > 1 ? itemList[i].amount : '') + '</span><span class="grab">Grab</span></li>';
+        itemMarkup += '<li class="item is--hidden" data-item="'+object.items[i].name+'" data-amount="'+object.items[i].amount+'"><span class="img"><img src="./img/items/' + object.items[i].name + '.PNG"></span><span class="amount">' + (object.items[i].amount > 1 ? object.items[i].amount : '') + '</span><span class="grab">Grab</span></li>';
       //}
     }
 
@@ -524,13 +593,8 @@ export default {
 
   showActionFeedback: function(cardId, actionId) {
 
-    const object = Props.getObject(cardId);
     const cardRef = this.getCardById(cardId);
-    let text = actionId.split('-')[0];
-
-    if (text.slice(-1) === 'e') text = text.slice(0, -1);
-    if (text.slice(-1) === 't') text += 't';
-    text += 'ing...';
+    let text = Props.mapActionsToText(actionId);
 
     /* hide actions and show feedback */
     cardRef.querySelector('div.banner')?.classList.add('is--hidden');

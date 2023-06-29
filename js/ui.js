@@ -187,6 +187,7 @@ export default {
           }, 1500);
         } else if (action.classList.contains('start-tutorial')) {
           document.getElementById('startscreen').style.opacity = 0;
+          Props.setGameProp('tutorial', true);
           Props.setupAllEvents();
           Player.findAndHandleObjects();
           window.setTimeout(function() {

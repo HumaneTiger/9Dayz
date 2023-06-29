@@ -308,6 +308,7 @@ export default {
     const delay = 1200;
 
     for (const [index, zed] of allAttackingZeds.entries()) {
+      const object = Props.getObject(zed.id);
       zed.classList.add('attack');
       window.setTimeout(function() {
         var attack = parseInt(zed.querySelector('.attack').textContent);
@@ -325,7 +326,12 @@ export default {
       window.setTimeout(function() {
         zed.classList.add('anim-punch');
         battleHealthMeter.classList.remove('shake');
-        Audio.sfx('zed-attacks');
+        //Audio.sfx('zed-attacks');
+        if (object.name === 'rat') {
+          Audio.sfx('rat-attacks');
+        } else {
+          Audio.sfx('zed-attacks');
+        }
       }.bind(this), (delay / 4) + index * delay, zed);
     }
     // players turn after all zeds attacked

@@ -58,9 +58,11 @@ export default {
       if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook') {
         for (let i = object.actions.length - 1; i >= 0; i--) {
           if (object.actions[i].id === action) {
-            const cardRef = Cards.getCardById(cardId);
-            cardRef.querySelector('li.' + action).remove();
-            object.actions.splice(i, 1);
+            if (!(object.infested && action === 'search')) {
+              const cardRef = Cards.getCardById(cardId);
+              cardRef.querySelector('li.' + action).remove();
+              object.actions.splice(i, 1);  
+            }
           }
         }
       }
@@ -105,8 +107,18 @@ export default {
     if (object.infested) {
       const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
       cardRef.classList.remove('infested');
-      object.infested = false;
+      object.actions?.forEach(action => {
+        // search action not critical any more
+        if (action.name === 'search') {
+          action.critical = false;
+        }
+      });
       Player.handleFoundObjectIds(ratObjectIds);
+      window.setTimeout(function() {
+        object.infested = false;
+        this.endAction(cardId);
+        Battle.startBattle();
+      }.bind(this), 1200);
     } else if (allPreviews) {
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
@@ -150,6 +162,7 @@ export default {
       Player.handleFoundObjectIds(allFoundObjectIds);
       Map.hideScoutMarker();
       Player.changeProps('energy', energy); 
+      this.checkForInfested(cardId);
     }, cardId, time, 800, energy);
   },
 
@@ -293,7 +306,25 @@ export default {
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);
       this.goBackFromAction(cardId);
+      this.checkForInfested(cardId);
     }, cardId, time, 800, energy);
+  },
+
+  checkForInfested: function(cardId) {
+    const cardRef = Cards.getCardById(cardId);
+    const object = Props.getObject(cardId);
+    if (object.infested && !object.locked) {
+      const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
+      cardRef.classList.remove('infested');
+      object.infested = false;
+      object.actions?.forEach(action => {
+        // search action not critical any more
+        if (action.name === 'search') {
+          action.critical = false;
+        }
+      });
+      Player.handleFoundObjectIds(ratObjectIds);
+    }
   },
 
   simulateSmashing: function(cardId, time, energy) {

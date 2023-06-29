@@ -133,6 +133,30 @@ ul#properties span.meter em {
   padding: 10px 0 0 10px;
   display: inline-block;
 }
+ul#properties li.low span.meter {
+  border: 3px #fc9f71 solid;
+  box-shadow: 0 0 6px #fc9f71;
+}
+ul#properties li.very-low span.meter {
+  border: 4px red solid;
+  box-shadow: 0 0 7px red;
+}
+ul#properties li.low:after,
+ul#properties li.very-low:after {
+  font-size: 28px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 20px 32px;
+}
+ul#properties li.energy.low:after {
+  content: 'Battle Penalty -1 AP';
+  color: #fc9f71;
+}
+ul#properties li.energy.very-low:after {
+  content: 'Battle Penalty -2 AP';
+  color: red;
+}
 #protection {
   width: 120px;
   height: 130px;
@@ -201,15 +225,16 @@ ul#properties li.time {
   z-index: 6; /* 1 more than cards container */
   bottom: 90px;
   left: 30px;
-  width: 800px;
+  width: 880px;
   height: 540px;
-  transform: translateX(-830px);
+  transform: translateX(-910px);
   background: url(../img/ui/inventory.png) 0 0 no-repeat;
   transition: transform 0.3s ease-in-out;
 }
 #craft .inner {
   position: absolute;
-  width: 100%;
+  left: 3%;
+  width: 97%;
   height: 100%;
   background: url(../img/ui/crafting.png) 0 0 no-repeat;
 }
