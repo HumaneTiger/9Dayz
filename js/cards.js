@@ -493,7 +493,7 @@ export default {
     let cardMarkupZombie =   '<div class="attack">' + object.attack + '</div><div class="health">' + object.defense + '</div>' +
                              '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/zombies/' + object.name + '.png">' +
-                             '<div class="dead"><img src="./img/zombies/undead.png"></div>';
+                             '<div class="dead"><img src="./img/zombies/' + (object.name === 'rat' ? 'dead' : 'undead') + '.png"></div>';
 
     let cardMarkupWeapon =   '<div class="attack">' + object.attack + '</div><div class="shield">' + object.defense + '</div>' +
                              '<p class="activity glow is--hidden"></p>' +

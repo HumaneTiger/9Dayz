@@ -285,16 +285,6 @@ export default {
     return cardZedDeck.every(function(id) {
       return zedIsDead(id);
     });
-    /*
-    let allUndeadZeds = 0;
-    cardZedDeck.forEach(function(zedId) {
-      const zedObject = Props.getObject(zedId);
-      if (!zedObject.dead) {
-        allUndeadZeds += 1;
-      }
-    });
-    return allUndeadZeds === 0;
-    */
   },
 
   endTurn: function() {
@@ -340,7 +330,6 @@ export default {
         window.setTimeout(() => {
           zedCardRef.classList.add('anim-punch');
           battleHealthMeter.classList.remove('shake');
-          //Audio.sfx('zed-attacks');
           if (zedObject.name === 'rat') {
             Audio.sfx('rat-attacks');
           } else {
