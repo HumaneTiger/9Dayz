@@ -58,11 +58,11 @@ export default {
       // result of successful luring
       cardZedDeck.push(singleZedId);
     } else {
-      cardZedDeck = Cards.getAllZedIds();
+      cardZedDeck = Cards.getAllZedsNearbyIds();
     }
 
     if (cardZedDeck.length > 0) {
-      const spaceX = 400 - (cardZedDeck.length * 10);
+      const spaceX = 400 - (cardZedDeck.length * 15);
 
       cardZedDeck.forEach(function(zedId, index) {
         let zedCardRef = Cards.getCardById(zedId);
@@ -75,6 +75,7 @@ export default {
       document.getElementById('inventory').classList.remove('active');
       document.getElementById('craft').classList.remove('active');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
+
       window.setTimeout(function(surprised) {
         document.getElementById('properties').classList.remove('active');
         document.getElementById('actions').classList.remove('active');
@@ -117,14 +118,14 @@ export default {
 
     battleDeck = [];
 
-    // Battle UI
+    // Hide Battle UI
     document.getElementById('battle-cards').classList.add('is--hidden');
     battleDrawContainer.innerHTML = '';
     battlePlayContainer.innerHTML = '';
     document.getElementById('draw-amount').style.left = '0';
     battleDrawContainer.style.width = '';
 
-    // UI
+    // Show UI
     battleHealthMeter.classList.remove('in-battle');
     document.getElementById('properties').classList.add('active');
     document.getElementById('actions').classList.add('active');
@@ -144,7 +145,7 @@ export default {
             zedCardRef.querySelector('li.' + zedObject.actions[i].id).remove();
             zedObject.actions.splice(i, 1);
           } else {
-            // search
+            // show search action
             zedCardRef.querySelector('li.' + zedObject.actions[i].id)?.classList.remove('is--hidden');
           }
         }
@@ -166,6 +167,7 @@ export default {
     document.querySelector('#action-points-warning .low')?.classList.add('is--hidden');
     document.querySelector('#action-points')?.classList.remove('low-energy');
 
+    // AP buffs when energy is low
     if (Player.getProp('energy') < 10) {
       Player.changeProps('actions', -2);
       document.querySelector('#action-points-warning .very-low')?.classList.remove('is--hidden');
@@ -179,7 +181,7 @@ export default {
     this.shuffle(battleDeck);
     battlePlayContainer.innerHTML = '';
     let maxItems = 5;
-    if (battleDeck.length < 5) maxItems = battleDeck.length;
+    if (battleDeck.length < maxItems) maxItems = battleDeck.length;
     if (maxItems > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (var i = 0; i < maxItems; i += 1) {
@@ -231,6 +233,7 @@ export default {
     if (zedObject.defense <= 0) {
       zedCardRef.classList.add('dead');
       zedObject.dead = true;
+      zedObject.fighting = false;
     } else {
       zedCardRef.querySelector('.health').textContent = zedObject.defense;
     }
@@ -278,6 +281,11 @@ export default {
   },
 
   zedIsDead: function() {
+    const zedIsDead = (id) => Props.getObject(id).dead;
+    return cardZedDeck.every(function(id) {
+      return zedIsDead(id);
+    });
+    /*
     let allUndeadZeds = 0;
     cardZedDeck.forEach(function(zedId) {
       const zedObject = Props.getObject(zedId);
@@ -286,6 +294,7 @@ export default {
       }
     });
     return allUndeadZeds === 0;
+    */
   },
 
   endTurn: function() {
@@ -304,6 +313,18 @@ export default {
   },
 
   zedAttack: function() {
+
+    /*
+          cardZedDeck.forEach(function(zedId, index) {
+        let zedCardRef = Cards.getCardById(zedId);
+        const zedObject = Props.getObject(zedId);
+        zedObject.fighting = true;
+        zedCardRef.classList.add('fight');
+        zedCardRef.style.zIndex = null;
+        zedCardRef.style.left = (2135/2) - (cardZedDeck.length * spaceX / 2) + (index * spaceX) + 'px';
+      });
+*/
+
     const allAttackingZeds = document.querySelectorAll('#cards .zombie.fight:not(.dead)');
     const delay = 1200;
 

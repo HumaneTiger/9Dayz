@@ -2,6 +2,7 @@ import Binding from './binding.js'
 import Props from './props.js'
 import Cards from './cards.js'
 import Map from './map.js'
+import Battle from './battle.js'
 
 const allPaths = Props.getAllPaths();
 
@@ -152,16 +153,12 @@ export default {
     this.movePlayerTo(playerPosition.x, playerPosition.y);
 
     window.setTimeout(function() {
-
+      const objectsHere = Props.getObjectsAt(playerPosition.x, playerPosition.y);
       Cards.enableActions();
-
       this.findAndHandleObjects();
-
-      // check if player walked into a zed
-      // make sure zed isn't already dead
-      // dead / looted zeds have to be removed from allZeds[] in the future!
-      // window.setTimeout(function() { Battle.startBattle(true); }.bind(this), 800);
-      
+      if (objectsHere?.some(obj => (obj.group === 'zombie' && !obj.dead))) {
+        window.setTimeout(function() { Battle.startBattle(true); }.bind(this), 800);
+      }
     }.bind(this), 0);
 
     if (!noPenalty) {

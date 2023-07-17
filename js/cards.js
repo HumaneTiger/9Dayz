@@ -122,7 +122,7 @@ export default {
     return document.getElementById(cardId);
   },
 
-  getAllZedIds: function() {
+  getAllZedsNearbyIds: function() {
     let allZeds = [];
     cardDeck?.forEach(card => {
       const id = card.id;

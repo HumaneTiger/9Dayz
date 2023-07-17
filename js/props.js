@@ -343,6 +343,14 @@ export default {
     return objectIdsAt[x][y];
   },
 
+  getObjectsAt: function(x, y) {
+    let allObjectsAt = [];
+    this.getObjectIdsAt(x, y)?.forEach(id => {
+      allObjectsAt.push(this.getObject(id));
+    });
+    return allObjectsAt;
+  },
+
   addObjectIdAt: function(id, x, y) {
     if (objectIdsAt[x][y] !== undefined) {
       objectIdsAt[x][y].push(id);
