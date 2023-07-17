@@ -106,9 +106,9 @@ export default {
       document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
       document.getElementById('battle-cards').classList.remove('is--hidden');
       this.showBattleMessage('Oh no! You walked into them!', 2000);
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         this.zedAttack();
-      }.bind(this), 600);  
+      }, 600);  
     } else {
       this.nextTurn();
     }
@@ -307,64 +307,61 @@ export default {
     }
     document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
     this.showBattleMessage('Zombies Turn', 800);
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       this.zedAttack();
-    }.bind(this), 400);
+    }, 400);
   },
 
   zedAttack: function() {
 
-    /*
-          cardZedDeck.forEach(function(zedId, index) {
-        let zedCardRef = Cards.getCardById(zedId);
-        const zedObject = Props.getObject(zedId);
-        zedObject.fighting = true;
-        zedCardRef.classList.add('fight');
-        zedCardRef.style.zIndex = null;
-        zedCardRef.style.left = (2135/2) - (cardZedDeck.length * spaceX / 2) + (index * spaceX) + 'px';
-      });
-*/
-
-    const allAttackingZeds = document.querySelectorAll('#cards .zombie.fight:not(.dead)');
     const delay = 1200;
+    const allAttackingZeds = cardZedDeck.filter(zed => Props.getObject(zed).fighting);
 
-    for (const [index, zed] of allAttackingZeds.entries()) {
-      const object = Props.getObject(zed.id);
-      zed.classList.add('attack');
-      window.setTimeout(function() {
-        var attack = parseInt(zed.querySelector('.attack').textContent);
-        const dmg = Player.getProp('protection') - attack;
-        if (dmg < 0) {
-          Player.changeProps('health', dmg);  
-          this.showBattleStats(dmg, 'red');
-        } else {
-          this.showBattleStats(-1 * attack, 'blue');
-        }
-        Player.changeProps('protection', -1 * attack);
-        battleHealthMeter.classList.add('shake');
-      }.bind(this), (delay / 3) + index * delay, zed);
-      // single zed attacks
-      window.setTimeout(function() {
-        zed.classList.add('anim-punch');
-        battleHealthMeter.classList.remove('shake');
-        //Audio.sfx('zed-attacks');
-        if (object.name === 'rat') {
-          Audio.sfx('rat-attacks');
-        } else {
-          Audio.sfx('zed-attacks');
-        }
-      }.bind(this), (delay / 4) + index * delay, zed);
-    }
-    // players turn after all zeds attacked
-    window.setTimeout(function() {
-      for (const [index, zed] of allAttackingZeds.entries()) {
-        zed.classList.remove('attack');
-        zed.classList.remove('anim-punch');
+    for (let index = 0; index < allAttackingZeds.length; index += 1) {
+      const zedId = allAttackingZeds[index];
+      let zedCardRef = Cards.getCardById(zedId);
+      const zedObject = Props.getObject(zedId);
+
+      if (zedObject.fighting) {
+        zedCardRef.classList.add('attack');
+        window.setTimeout(() => {
+          const attack = zedObject.attack;
+          const dmg = Player.getProp('protection') - attack;
+          if (dmg < 0) {
+            Player.changeProps('health', dmg);  
+            this.showBattleStats(dmg, 'red');
+          } else {
+            this.showBattleStats(-1 * attack, 'blue');
+          }
+          Player.changeProps('protection', -1 * attack);
+          battleHealthMeter.classList.add('shake');
+        }, (delay / 3) + index * delay);
+        // single zed attacks
+        window.setTimeout(() => {
+          zedCardRef.classList.add('anim-punch');
+          battleHealthMeter.classList.remove('shake');
+          //Audio.sfx('zed-attacks');
+          if (zedObject.name === 'rat') {
+            Audio.sfx('rat-attacks');
+          } else {
+            Audio.sfx('zed-attacks');
+          }
+        }, (delay / 4) + index * delay);
       }
+    };
+
+    // players turn after all zeds attacked
+    window.setTimeout(() => {
+      allAttackingZeds.forEach(function(zedId) {
+        let zedCardRef = Cards.getCardById(zedId);
+        zedCardRef.classList.remove('attack');
+        zedCardRef.classList.remove('anim-punch');
+      });
       if (!Player.checkForDeath(false)) {
         this.nextTurn();
       }
-    }.bind(this), (delay / 4) + allAttackingZeds.length * delay);
+    }, (delay / 4) + allAttackingZeds.length * delay);
+
   },
 
   showBattleStats: function(stat, color) {
