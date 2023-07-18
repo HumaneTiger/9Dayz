@@ -51,11 +51,16 @@ export default {
     return false;
   },
 
-  pickFirstFoodFromInventory: function() {
-    if (inventory.items[item]?.amount > 0) {
-      return true;
+  getFirstItemOfType: function(type) {
+    for (var item in inventory.items) {
+      if (inventory.items[item].type === type && inventory.items[item].amount) {
+        return inventory.items[item];
+      }
     }
-    return false;
+  },
+
+  getItemByName: function(name) {
+    return inventory.items[name];
   },
 
   checkCraftButtonHover: function(ev) {
@@ -275,7 +280,7 @@ export default {
       document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
       document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
       document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
-  }
+    }
   },
 
   generateInventorySlots: function() {

@@ -383,6 +383,7 @@ export default {
   
   addToInventory: function(item, amount, durability) {
     amount = parseInt(amount);
+    const itemProps = items[item];
     if (inventory.items[item] !== undefined) {
       inventory.items[item].amount += amount;
       inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
@@ -392,9 +393,16 @@ export default {
       }
     } else {
       inventory.items[item] = {
+        type: itemProps[0],
         name: item,
         amount: amount,
+        damage: itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10),
         durability: durability
+      }
+      if (itemProps[5]) {
+        inventory.items[item].protection = itemProps[5];
+      } else {
+        inventory.items[item].protection = itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10);
       }
     }
     inventory.itemNumbers = 0;

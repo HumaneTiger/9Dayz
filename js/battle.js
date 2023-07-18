@@ -185,22 +185,11 @@ export default {
     if (maxItems > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (var i = 0; i < maxItems; i += 1) {
-        let dmg, prot;
-        /////
-        const item = items[battleDeck[i].name];
-        if (item) {
-          dmg = item[4] ? item[4] : 1 + Math.round(item[3] / 10);
-          if (item[5]) {
-            prot = item[5];
-          } else {
-            prot = item[1] > item[2] ? Math.round(item[1] / 10) : Math.round(item[2] / 10);
-          }
-        /////
-          battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="'+battleDeck[i].name+'"><div class="inner">' +
-                                          '<img class="item-pic" src="./img/items/'+battleDeck[i].name+'.PNG">' +
-                                          '<div class="attack">'+dmg+'</div><div class="shield">'+prot+'</div>' +
-                                          '</div></div>';
-        }
+        const item = Items.getItemByName(battleDeck[i].name);
+        battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +
+                                        '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' +
+                                        '<div class="attack">' + item.damage + '</div><div class="shield">' + item.protection + '</div>' +
+                                        '</div></div>';        
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (var i = 0; i < battlePlayContainer.children.length; i += 1) {
@@ -218,19 +207,16 @@ export default {
   resolveAttack: function(dragEl, dragTarget) {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
-    let zedCardRef = Cards.getCardById(zedId);
+    const zedCardRef = Cards.getCardById(zedId);
+    const item = Items.getItemByName(dragEl.dataset.item);
+    const scratch = document.querySelector('.scratch');
 
-    var item = dragEl.dataset.item; // can be used for a data-driven approach
-    var attack = parseInt(dragEl.querySelector('.attack').textContent);
-    var defense = parseInt(dragEl.querySelector('.shield').textContent);
-    let scratch = document.querySelector('.scratch');
-
-    Player.changeProps('protection', defense);
+    Player.changeProps('protection', item.protection);
     Player.changeProps('actions', -1);
-    this.showBattleStats('+'+defense, 'blue');
+    this.showBattleStats('+' + item.protection, 'blue');
     Audio.sfx('punch');
 
-    zedObject.defense -= attack;
+    zedObject.defense -= item.damage;
     if (zedObject.defense <= 0) {
       zedCardRef.classList.add('dead');
       zedObject.dead = true;
@@ -239,15 +225,15 @@ export default {
       zedCardRef.querySelector('.health').textContent = zedObject.defense;
     }
 
-    if (inventory.items[item].durability && inventory.items[item].durability > 0) {
-      inventory.items[item].durability -= 1;
+    if (item.durability && item.durability > 0) {
+      item.durability -= 1;
     }
-    if (!inventory.items[item].durability) {
+    if (!item.durability) {
       //remove item from inventory
-      Props.addToInventory(item, -1);
+      Props.addToInventory(item.name, -1);
       //remove item from battle deck
       for (var i = 0; i < battleDeck.length; i += 1) {
-        if (battleDeck[i].name === inventory.items[item].name) {
+        if (battleDeck[i].name === item.name) {
           battleDeck.splice(i, 1);
           break;
         }
@@ -315,16 +301,28 @@ export default {
 
       zedCardRef.classList.add('attack');
 
-      // add rat condition here
-      // IF attacker is a rat
-        // IF player has food item(s) in inventory
-        // THEN pick random food item, add its defense value to rats health and remove the item, as feedback show the image of the food
-        // ELSE rat attacks like zombie
-
       window.setTimeout(() => {
+        let ratAteFood = false;
         if (zedObject.name === 'rat') {
-
-        } else {
+          let foodItem = Items.getFirstItemOfType('eat');
+          if (foodItem !== undefined) {
+            ratAteFood = true;
+            zedObject.defense += foodItem.protection;
+            zedCardRef.querySelector('.health').textContent = zedObject.defense;
+            //remove item from inventory
+            Props.addToInventory(foodItem.name, -1);
+            //remove item from battle deck
+            for (var i = 0; i < battleDeck.length; i += 1) {
+              if (battleDeck[i].name === foodItem.name) {
+                battleDeck.splice(i, 1);
+                break;
+              }
+            }
+            battleDeckProps.number = battleDeck.length;
+            this.showBattleStats(foodItem.name, 'image');
+          }
+        }
+        if (!ratAteFood) {
           const attack = zedObject.attack;
           const dmg = Player.getProp('protection') - attack;
           if (dmg < 0) {
@@ -364,9 +362,13 @@ export default {
 
   },
 
-  showBattleStats: function(stat, color) {
-    const battleStats = document.querySelector('#battle-stats span.' + color);
-    battleStats.textContent = stat;    
+  showBattleStats: function(stat, type) {
+    const battleStats = document.querySelector('#battle-stats span.' + type);
+    if (type === 'image') {
+      battleStats.innerHTML = '<img width="60" height="auto" src="./img/items/' + stat + '.PNG">';
+    } else {
+      battleStats.innerHTML = stat;    
+    }
     battleStats.classList.add('active');
     window.setTimeout(function(battleStats) {
       battleStats.classList.remove('active');

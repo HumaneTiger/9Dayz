@@ -250,6 +250,9 @@
 #battle-stats span.blue {
   color: rgba(145, 211, 255, 1);
 }
+#battle-stats span.image {
+  margin-left: 20px;
+}
 
 #draw-amount {
   position: absolute;
