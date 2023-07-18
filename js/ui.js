@@ -216,6 +216,8 @@ export default {
           let selectedObject = document.querySelector('#card-console .select-object').value;
           if (selectedObject === 'zombie') {
             Props.setZedAt(squareX, squareY, 1);
+          } else if (selectedObject === 'rats') {
+            Props.spawnRatsAt(squareX, squareY);
           } else if (selectedObject === 'improvised-axe' || selectedObject === 'wooden-club') {
             Props.setupWeapon(squareX, squareY, selectedObject);
           } else {
@@ -223,9 +225,9 @@ export default {
           }
           Player.updatePlayer();
           squareFreeze = true;
-          squareX = 0;
-          squareY = 0;
-          document.querySelector('#card-console .selected-square').textContent = '';
+          //squareX = 0;
+          //squareY = 0;
+          //document.querySelector('#card-console .selected-square').textContent = '';
           document.getElementById('square-marker').classList.remove('freeze');
           document.getElementById('square-marker').classList.add('is--hidden');
         }
@@ -244,6 +246,11 @@ export default {
     var opt = document.createElement('option');
     opt.value = 'zombie';
     opt.innerHTML = 'Zombie';
+    selectObject.appendChild(opt);
+
+    var opt = document.createElement('option');
+    opt.value = 'rats';
+    opt.innerHTML = 'Rats';
     selectObject.appendChild(opt);
 
     for (const weapon in allWeapons) {

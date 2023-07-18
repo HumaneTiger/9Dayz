@@ -51,6 +51,13 @@ export default {
     return false;
   },
 
+  pickFirstFoodFromInventory: function() {
+    if (inventory.items[item]?.amount > 0) {
+      return true;
+    }
+    return false;
+  },
+
   checkCraftButtonHover: function(ev) {
 
     const target = ev.target;
@@ -76,11 +83,13 @@ export default {
     if (clickButton && clickButton.classList.contains('active')) {
       const item = clickButton.dataset.item;
       if (item === 'meat') {
+        // move to Cooking / Fireplace Card
         Props.addToInventory('meat', 3);
         Props.addToInventory('duck', -1);
         this.inventoryChangeFeedback();
         this.fillInventorySlots();
       } else if (item === 'roast') {
+        // move to Cooking / Fireplace Card
         if (inventory.items['meat']?.amount > 0) {
           Props.addToInventory('roasted-meat', 1);
           Props.addToInventory('meat', -1);

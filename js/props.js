@@ -199,6 +199,7 @@ var targetLocations = {
   'Harbor Gas Station': [34, 16]
 };
 
+/* ['type', hunger, thirst, energy, attack, defense] */
 var items = {
   'acorn': ['eat', 1, 0, 0],
   'bones': ['craft', 0, 0, 0, 2, 0],
@@ -742,7 +743,7 @@ export default {
     }
   },
 
-  setRatAt: function(x, y, amount) {
+  setRatAt: function(x, y) {
     let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 2);
     let name = 'rat';
 

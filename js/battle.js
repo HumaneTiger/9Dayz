@@ -186,6 +186,7 @@ export default {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (var i = 0; i < maxItems; i += 1) {
         let dmg, prot;
+        /////
         const item = items[battleDeck[i].name];
         if (item) {
           dmg = item[4] ? item[4] : 1 + Math.round(item[3] / 10);
@@ -194,7 +195,7 @@ export default {
           } else {
             prot = item[1] > item[2] ? Math.round(item[1] / 10) : Math.round(item[2] / 10);
           }
-  
+        /////
           battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="'+battleDeck[i].name+'"><div class="inner">' +
                                           '<img class="item-pic" src="./img/items/'+battleDeck[i].name+'.PNG">' +
                                           '<div class="attack">'+dmg+'</div><div class="shield">'+prot+'</div>' +
@@ -312,9 +313,18 @@ export default {
       let zedCardRef = Cards.getCardById(zedId);
       const zedObject = Props.getObject(zedId);
 
-      if (zedObject.fighting) {
-        zedCardRef.classList.add('attack');
-        window.setTimeout(() => {
+      zedCardRef.classList.add('attack');
+
+      // add rat condition here
+      // IF attacker is a rat
+        // IF player has food item(s) in inventory
+        // THEN pick random food item, add its defense value to rats health and remove the item, as feedback show the image of the food
+        // ELSE rat attacks like zombie
+
+      window.setTimeout(() => {
+        if (zedObject.name === 'rat') {
+
+        } else {
           const attack = zedObject.attack;
           const dmg = Player.getProp('protection') - attack;
           if (dmg < 0) {
@@ -324,19 +334,20 @@ export default {
             this.showBattleStats(-1 * attack, 'blue');
           }
           Player.changeProps('protection', -1 * attack);
-          battleHealthMeter.classList.add('shake');
-        }, (delay / 3) + index * delay);
-        // single zed attacks
-        window.setTimeout(() => {
-          zedCardRef.classList.add('anim-punch');
-          battleHealthMeter.classList.remove('shake');
-          if (zedObject.name === 'rat') {
-            Audio.sfx('rat-attacks');
-          } else {
-            Audio.sfx('zed-attacks');
-          }
-        }, (delay / 4) + index * delay);
-      }
+          battleHealthMeter.classList.add('shake');  
+        }
+      }, (delay / 3) + index * delay);
+
+      // single zed attacks
+      window.setTimeout(() => {
+        zedCardRef.classList.add('anim-punch');
+        battleHealthMeter.classList.remove('shake');
+        if (zedObject.name === 'rat') {
+          Audio.sfx('rat-attacks');
+        } else {
+          Audio.sfx('zed-attacks');
+        }
+      }, (delay / 4) + index * delay);
     };
 
     // players turn after all zeds attacked
