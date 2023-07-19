@@ -54,6 +54,7 @@ export default {
 
   startBattle(surprised, singleZedId) {
 
+    Props.setGameProp('battle', true);
     if (singleZedId) {
       // result of successful luring
       cardZedDeck.push(singleZedId);
@@ -149,6 +150,7 @@ export default {
             zedCardRef.querySelector('li.' + zedObject.actions[i].id)?.classList.remove('is--hidden');
           }
         }
+        Props.setGameProp('battle', false);
         Cards.hideActionFeedback(zedId);
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);

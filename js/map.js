@@ -38,8 +38,7 @@ export default {
       let object = Props.getObject(objectId);
       const x = object.x,
             y = object.y,
-            group = object.group,
-            dead = object.dead;
+            group = object.group;
 
       if (!object.discovered) {
         if (group === 'building') {
@@ -49,16 +48,17 @@ export default {
           buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
                                          "<img src='./img/icons/weapons/" + group + ".png'></span>";
         } else if (group === 'zombie') {
-          if (!dead) {
+          if (!object.dead) {
             highlightsContainer.innerHTML += "<span class='danger-area area-" + objectId + "' style='top: " + Math.round(y * 44.4 + 8) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>";
             buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
                                            "<img src='./img/icons/buildings/" + group + ".png'></span>";  
           }
         }
       } else {
-        if (group === 'zombie' && dead) {
-          // maybe show some "harmless" icon in that case
+        if (group === 'zombie' && object.dead && !object.removed) {
           this.removeObjectIconById(objectId);
+          buidingsContainer.innerHTML += "<span class='icon icon-" + objectId + "' style='top: " + Math.round(y * 44.4 + 3) + "px; left: " + Math.round(x * 44.4 + 12) + "px;'>" +
+                                         "<img src='./img/icons/buildings/" + group + "-dead" + ".png'></span>";  
         }
       }
     });

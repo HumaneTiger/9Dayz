@@ -90,7 +90,7 @@ export default {
       const object = Props.getObject(cardId);
       const cardRef = this.getCardById(cardId);
 
-      if (!object.fighting) {
+      if (!Props.getGameProp('battle')) {
         cardRef.dataset.oldZindex = cardRef.style.zIndex;
         cardRef.style.zIndex = 200;  
       }
@@ -127,7 +127,7 @@ export default {
     cardDeck?.forEach(card => {
       const id = card.id;
       let object = Props.getObject(id);
-      if (object.group === 'zombie' && object.distance < 2.9 && !object.dead) {
+      if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
         allZeds.push(id);
       }
     });
@@ -532,10 +532,7 @@ export default {
     let itemMarkup = '';
     
     for (var i = 0; i < object.items.length; i += 1) {
-      itemMarkup += '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>';
-      //if (object.items[i] && object.items[i].amount) {
-        itemMarkup += '<li class="item is--hidden" data-item="'+object.items[i].name+'" data-amount="'+object.items[i].amount+'"><span class="img"><img src="./img/items/' + object.items[i].name + '.PNG"></span><span class="amount">' + (object.items[i].amount > 1 ? object.items[i].amount : '') + '</span><span class="grab">Grab</span></li>';
-      //}
+      itemMarkup += this.generateItemMarkup(object.items[i].name, object.items[i].amount);
     }
 
     // compile card markup
@@ -564,6 +561,11 @@ export default {
 
     cardsContainer.innerHTML += cardMarkup;
 
+  },
+
+  generateItemMarkup: function(name, amount) {
+      return '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>' +
+             '<li class="item is--hidden" data-item="'+name+'" data-amount="'+amount+'"><span class="img"><img src="./img/items/'+name+'.PNG"></span><span class="amount">' + (amount > 1 ? amount : '') + '</span><span class="grab">Grab</span></li>';
   },
 
   disableActions: function() {

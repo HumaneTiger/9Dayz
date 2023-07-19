@@ -16,9 +16,11 @@ var crafting = {
 var game = {
   mode: 'real',
   tutorial: false,
+  battle: false,
   speed: 4000,
   firstInfestation: false,
   firstLocked: false,
+  firstSearch: false,
   firstZedNearby: false,
   firstRatFight: false, // later
   firstRatKill: false,
@@ -85,7 +87,7 @@ var buildingProps = {
   'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'] },
   'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'] },
   'scarecrow': { locked: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin'] },
-  'small-tree': { locked: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone'] },
+  'small-tree': { locked: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone', 'straw-wheet'] },
   'church': { locked: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
   'milton': { locked: 0, spawn: 0, items: [] },
   'sobor': { locked: 0, spawn: 0, items: [] },

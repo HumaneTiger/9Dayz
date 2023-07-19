@@ -99,6 +99,15 @@ export default {
     const object = Props.getObject(cardId);
     const cardRef = Cards.getCardById(cardId);
     const allItems = object.items;
+    // first car/house/train always has a tape
+    if (!Props.getGameProp('firstSearch') && (object.type === 'car' || object.type === 'house' || object.type === 'train') && cardRef.querySelector('ul.items')) {
+      Props.setGameProp('firstSearch', true);
+      // replace first item in data and markup
+      allItems[0] = {name: 'tape', amount: 1};
+      cardRef.querySelector('ul.items li.preview').remove();
+      cardRef.querySelector('ul.items li.item').remove();
+      cardRef.querySelector('ul.items').innerHTML = Cards.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;
+    }
     let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
 
     let timeout = 2000;
