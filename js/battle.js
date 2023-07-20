@@ -64,7 +64,6 @@ export default {
 
     if (cardZedDeck.length > 0) {
       const spaceX = 400 - (cardZedDeck.length * 15);
-
       cardZedDeck.forEach(function(zedId, index) {
         let zedCardRef = Cards.getCardById(zedId);
         const zedObject = Props.getObject(zedId);
@@ -73,16 +72,21 @@ export default {
         zedCardRef.style.zIndex = null;
         zedCardRef.style.left = (2135/2) - (cardZedDeck.length * spaceX / 2) + (index * spaceX) + 'px';
       });
+
       document.getElementById('inventory').classList.remove('active');
       document.getElementById('craft').classList.remove('active');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
 
-      window.setTimeout(function(surprised) {
+      window.setTimeout(() => {
+        document.querySelector('#cards .cards-blocker').classList.add('active');
+      }, 100);
+
+      window.setTimeout(() => {
         document.getElementById('properties').classList.remove('active');
         document.getElementById('actions').classList.remove('active');
         document.querySelector('#cards .cards-blocker').classList.add('active');
         this.spawnBattleDeck(surprised);
-      }.bind(this), 100, surprised);  
+      }, 600);
     } else {
       this.endBattle();
     }
