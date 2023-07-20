@@ -747,9 +747,7 @@ export default {
         disabled: false,
         removed: false
       });  
-
       objectsIdCounter += 1;
-
     }
   },
 
@@ -798,6 +796,40 @@ export default {
       objectsIdCounter += 1;
     }
     return spawnedRatIds;
+  },
+
+  spawnAnimalAt: function(name, x, y) {
+    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 3);
+    this.addObjectIdAt(objectsIdCounter, x, y);
+    this.setObject(objectsIdCounter, {
+      x: x,
+      y: y,
+      name: name,
+      title: '',
+      type: undefined,
+      group: 'animal',
+      text: false,
+      actions: [
+        //{ id: 'catch', label: 'Catch', time: 20, energy: -20 },
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 }
+      ],
+      items: lootItemList,
+      locked: undefined,
+      looted: false,
+      infested: false,
+      zednearby: null,
+      active: true,
+      inreach: false,
+      discovered: false,
+      distance: null,
+      attack: false,
+      defense: false,
+      dead: true,
+      fighting: false,
+      disabled: false,
+      removed: false
+    });  
+    objectsIdCounter += 1;
   },
 
   setupAllEvents: function() {

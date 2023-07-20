@@ -211,6 +211,11 @@ export default {
             action.locked = true;
           }
         }
+        if (action.id === 'cut') {
+          if (!Items.inventoryContains('knife')) {
+            action.locked = true;
+          }
+        }
       });
 
       if (object.actions.filter(singleAction => (singleAction.id === 'search' || singleAction.id === 'gather')).length === 0 && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
@@ -432,6 +437,8 @@ export default {
             actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
           } else if (action.id === 'cut-down' || action.id === 'break-door') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe needed';        
+          } else if (action.id === 'cut') {
+            actionRef.querySelector('.additional-locked').textContent = 'Knife needed';        
           } else if (action.id === 'smash-window') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
           } else {
@@ -481,7 +488,7 @@ export default {
   createCardMarkup: function(id) {
     let object = Props.getObject(id);
 
-    let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
+    let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + (object.dead ? 'dead ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                           '<div class="inner">';
 
     let cardMarkupBuilding = '<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested"></div></div>' +
@@ -499,6 +506,11 @@ export default {
                              '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/weapons/' + object.name + '.png">' +
                              '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>';
+
+    let cardMarkupAnimal =   '<p class="activity glow is--hidden"></p>' +
+                             '<img class="motive" src="./img/items/' + object.name + '.PNG">' +
+                             '<div class="banner"><img src="./img/icons/animals/animal.png"></div>' +
+                             '<div class="dead"><img src="./img/zombies/dead.png"></div>';
 
     let cardMarkupEvent =    '<h2>' + object.title + '</h2>' +
                              '<p class="text">' + object.text + '</p>';
@@ -547,6 +559,8 @@ export default {
       cardMarkup += cardMarkupEvent;
     } else if (object.group === 'weapon') {
       cardMarkup += cardMarkupWeapon;
+    } else if (object.group === 'animal') {
+      cardMarkup += cardMarkupAnimal;
     }
 
     if (object.actions.length) {

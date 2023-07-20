@@ -137,7 +137,11 @@ export default {
         window.setTimeout(function(index, item, cardId, energy) {
           allPreviews[index].classList.add('is--hidden');
           if (item.amount > 0) {
-            cardRef.querySelector('ul.items li[data-item="' + item.name + '"].is--hidden').classList.remove('is--hidden');
+            if (item.name === 'duck') {
+              Props.spawnAnimalAt(item.name, object.x, object.y);
+            } else {
+              cardRef.querySelector('ul.items li[data-item="' + item.name + '"].is--hidden').classList.remove('is--hidden');
+            }
           }
           if (index + 1 < allItems.length) {
             allPreviews[index + 1].querySelector('.unknown').classList.add('is--hidden');
