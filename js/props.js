@@ -120,6 +120,14 @@ var buildingActions = {
   'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ]
 };
 
+var cookingRecipes = {
+  'roasted-meat': [ 'meat','sharp-stick', 1, 'roast' ],
+  'roasted-pepper': [ 'pepper','sharp-stick', 1, 'roast' ],
+  'roasted-mushroom': [ 'mushroom-1-2','sharp-stick', 1, 'roast' ],
+  'roasted-pumpkin': [ 'pumpkin','knife', 4, 'roast' ],
+  'glue': [ 'bones','drink-1-2', 1, 'cook' ],
+};
+
 var weaponProps = {
   /*'axe': [0, 8],
   'baseball-bat': [25, 4],
@@ -209,6 +217,7 @@ var items = {
   'bread-1': ['eat', 45, 0, 20],
   'bread-2': ['eat', 40, 0, 20],
   'brush': ['craft', 0, 0, 0, 2, 2],
+  'books': ['craft', 0, 0, 0, 0, 2],
   'carrot': ['eat', 6, 4, 0],
   'claw': ['craft', 0, 0, 0, 4, 2],
   'drink-1': ['drink', 0, 30, 0],
@@ -219,8 +228,7 @@ var items = {
   'fruit-1': ['eat', 2, 8, 2],
   'fruit-2': ['eat', 4, 8, 2],
   'fruit-3': ['eat', 3, 8, 2],
-  'books': ['craft', 0, 0, 0, 0, 2],
-  'duck': ['craft', 0, 0, 0, 2, 2],
+  'glue': ['craft', 0, 0, 0, 5, 2],
   'energy-pills': ['eat', 0, 0, 50, 1, 1],
   'exodus': ['craft', 0, 0, 0, 4, 2],
   'fail': ['craft', 0, 0, 0, 3, 2],
@@ -234,12 +242,14 @@ var items = {
   'roasted-pepper': ['eat', 22, 5, 20],
   'physalis': ['eat', 2, 2, 0],
   'pincers': ['craft', 0, 0, 0, 3, 2],
-  'pumpkin': ['eat', 30, 15, 10],
+  'pumpkin': ['eat', 15, 15, 10],
+  'roasted-pumpkin': ['eat', 8, 6, 7],
   'reef': ['craft', 0, 0, 0, 1, 1],
   'rosehip': ['eat', 2, 2, 0],
   'mushroom-1': ['eat', 2, 2, 0],
   'mushroom-2': ['eat', 4, 3, 0],
   'roasted-mushroom': ['eat', 11, 5, 10],
+  'sharp-stick': ['craft', 0, 0, 0, 3, 3],
   'snack-1': ['eat', 25, 0, 10],
   'snack-2': ['eat', 25, 0, 10],
   'spanner': ['craft', 0, 0, 0, 3, 1],
@@ -340,6 +350,10 @@ export default {
   /* active crafting number */
   getCrafting: function() {
     return crafting;
+  },
+
+  getCookingRecipes: function() {
+    return cookingRecipes;
   },
 
   getObjectIdsAt: function(x, y) {
@@ -602,6 +616,7 @@ export default {
     this.setupBuilding(27, 7, ['small-tree', 'big-tree']);
     this.setupBuilding(28, 8, ['small-tree']);
     this.setupBuilding(28, 6, ['small-tree', 'big-tree']);
+    this.setupBuilding(18, 43, ['fireplace']);
   },
 
   setupAllZeds: function() {

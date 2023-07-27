@@ -23,8 +23,9 @@ export default {
 
     const target = ev.target;
     const cardId = target.closest('div.card')?.id;
-    const clickButton = target.closest('div.action-button');
+    const actionButton = target.closest('div.action-button');
     const itemContainer = target.closest('li.item:not(.is--hidden)');
+    const cookingContainer = target.closest('.card.cooking-mode');
 
     if (cardId) {
       const object = Props.getObject(cardId);
@@ -32,24 +33,26 @@ export default {
       ev.preventDefault();
       ev.stopPropagation();
 
-      if (clickButton && !object.disabled) {
-        const action = clickButton.dataset.action;
+      if (actionButton && !object.disabled) {
+        const action = actionButton.dataset.action;
         const actionObject = object.actions.find(singleAction => singleAction.id === action);
   
-        if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
-          // shake energy meter
-          Audio.sfx('nope');
-        } else if (actionObject && !actionObject.locked) {
-          Audio.sfx('click');
-          Player.lockMovement(true);
-          this.disableActions();  
-          this.showActionFeedback(cardId, action);
-          if (action !== 'lure') {
-            Player.movePlayerTo(object.x, object.y);
-          }
-          Actions.goToAndAction(cardId, action);
-        } else {
-          Audio.sfx('nope');
+        if (actionObject) {
+          if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
+            // shake energy meter
+            Audio.sfx('nope');
+          } else if (actionObject && !actionObject.locked) {
+            Audio.sfx('click');
+            Player.lockMovement(true);
+            this.disableActions();  
+            this.showActionFeedback(cardId, action);
+            if (action !== 'lure') {
+              Player.movePlayerTo(object.x, object.y);
+            }
+            Actions.goToAndAction(cardId, action);
+          } else {
+            Audio.sfx('nope');
+          }  
         }
       }
       if (itemContainer) {
@@ -75,6 +78,12 @@ export default {
               console.log('No Card found for ' + cardId);
             }
           }, 400, itemContainer, cardId);
+        }
+      }
+      if (cookingContainer) {
+        if (actionButton && actionButton.dataset.action === 'close-cooking') {
+          cookingContainer.classList.remove('full');
+          window.setTimeout(() => {cookingContainer.classList.remove('cooking-mode');}, 100);
         }
       }
     }
@@ -487,6 +496,7 @@ export default {
 
   createCardMarkup: function(id) {
     let object = Props.getObject(id);
+    let cardMarkupExtension;
 
     let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + (object.dead ? 'dead ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                           '<div class="inner">';
@@ -518,6 +528,22 @@ export default {
     let cardMarkupPost =  '</div>' +
                         '<span class="distance">' + (object.distance > 1 ? Math.round(object.distance * 4.4) + ' min' : 'Here') + '</span>' +
                       '</div>';
+
+    if (object.name === 'fireplace') {
+      cardMarkupExtension = '<ul class="cooking">';
+      let cookingRecipes = Props.getCookingRecipes();
+      for (const recipe in cookingRecipes) {
+        cardMarkupExtension += '<li>'
+        cardMarkupExtension += '<div class="slot unknown item-'+cookingRecipes[recipe][0]+'" data-item="'+cookingRecipes[recipe][0]+'"><img src="./img/items/'+cookingRecipes[recipe][0]+'.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span></div>';
+        cardMarkupExtension += '<div class="slot operator"><span class="sign">+</span></div>';
+        cardMarkupExtension += '<div class="slot unknown item-'+cookingRecipes[recipe][1]+'" data-item="'+cookingRecipes[recipe][1]+'"><img src="./img/items/'+cookingRecipes[recipe][1]+'.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span></div>';
+        cardMarkupExtension += '<div class="slot operator"><span class="sign">=</span></div>';
+        cardMarkupExtension += '<div class="slot action unknown item-'+recipe+'" data-item="'+recipe+'"><img src="./img/items/'+recipe+'.PNG" class="bg"><span class="unknown">?</span><span class="amount">'+cookingRecipes[recipe][2]+'</span><span class="action">'+cookingRecipes[recipe][3]+'</span></div>';
+        cardMarkupExtension += '</li>'
+      }
+      cardMarkupExtension += '<li class="action"><div class="action-button" data-action="close-cooking"><span class="text">Back</span></div></li>'
+      cardMarkupExtension += '</ul>'
+    }
 
     // generate action markup
     let actionList = '';
@@ -565,6 +591,11 @@ export default {
 
     if (object.actions.length) {
       cardMarkup = cardMarkup + '<ul class="actions">' + actionList + '</ul>';
+    }
+
+    // only cooking for now
+    if (cardMarkupExtension) {
+      cardMarkup += cardMarkupExtension;
     }
 
     if (object.items.length) {

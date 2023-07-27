@@ -1,6 +1,7 @@
 import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
+import Cooking from './cooking.js'
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -17,6 +18,9 @@ export default {
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
     Props.addToInventory('pepper', 1);
+
+    Props.addToInventory('mushroom-1', 1);
+    Props.addToInventory('sharp-stick', 1);
     //Props.addToInventory('tape', 1);
     /*
     Props.addToInventory('bones', 2);
@@ -47,8 +51,41 @@ export default {
   inventoryContains: function(item) {
     if (inventory.items[item]?.amount > 0) {
       return true;
+    } else if (item === 'drink-1-2') {
+      if (inventory.items['drink-1']?.amount > 0 || inventory.items['drink-2']?.amount > 0) {
+        return true;
+      }  
+    } else  if (item === 'mushroom-1-2') {
+      if (inventory.items['mushroom-1']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0) {
+        return true;
+      }        
     }
     return false;
+  },
+
+  inventoryKnows: function(item) {
+    if (inventory.items[item]) {
+      return true;
+    } else if (item === 'drink-1-2') {
+      if (inventory.items['drink-1'] || inventory.items['drink-2'] > 0) {
+        return true;
+      }  
+    } else  if (item === 'mushroom-1-2') {
+      if (inventory.items['mushroom-1'] || inventory.items['mushroom-2']) {
+        return true;
+      }        
+    }
+    return false;
+  },
+
+  inventoryItemAmount: function(item) {
+    if (inventory.items[item]) {
+      return inventory.items[item].amount;
+    } else if (item === 'drink-1-2') {
+      return (inventory.items['drink-1']?.amount || 0) + (inventory.items['drink-2']?.amount || 0);
+    } else  if (item === 'mushroom-1-2') {
+      return (inventory.items['mushroom-1']?.amount || 0) + (inventory.items['mushroom-2']?.amount || 0);
+    }
   },
 
   getFirstItemOfType: function(type) {
@@ -87,26 +124,9 @@ export default {
 
     if (clickButton && clickButton.classList.contains('active')) {
       const item = clickButton.dataset.item;
-      if (item === 'meat') {
-        // move to Cooking / Fireplace Card
-        Props.addToInventory('meat', 3);
-        Props.addToInventory('duck', -1);
-        this.inventoryChangeFeedback();
-        this.fillInventorySlots();
-      } else if (item === 'roast') {
-        // move to Cooking / Fireplace Card
-        if (inventory.items['meat']?.amount > 0) {
-          Props.addToInventory('roasted-meat', 1);
-          Props.addToInventory('meat', -1);
-        }
-        if (inventory.items['pepper']?.amount > 0) {
-          Props.addToInventory('roasted-pepper', 1);
-          Props.addToInventory('pepper', -1);
-        }
-        if (inventory.items['mushroom-2']?.amount > 0) {
-          Props.addToInventory('roasted-mushroom', 1);
-          Props.addToInventory('mushroom-2', -1);
-        }
+      if (item === 'sharp-stick') {
+        Props.addToInventory('sharp-stick', 1);
+        Props.addToInventory('branch', -1);
         this.inventoryChangeFeedback();
         this.fillInventorySlots();
       } else if (item === 'fireplace') {
@@ -154,11 +174,6 @@ export default {
       el.classList.remove('only1');
     });
     let totalCrafting = 0;
-    // meat
-    if (inventory.items['duck']?.amount > 0 && inventory.items['knife']?.amount > 0) {
-      craftContainer.querySelector('.button-craft[data-item="meat"]').classList.add('active');
-      totalCrafting++;
-    }
     // wooden club
     if ((inventory.items['fail']?.amount > 0 || inventory.items['hacksaw']?.amount > 0) && inventory.items['stump']?.amount > 0) {
       if (inventory.items['wooden-club']?.amount) {
@@ -182,11 +197,9 @@ export default {
       craftContainer.querySelector('.button-craft[data-item="fireplace"]').classList.add('active');
       totalCrafting++;
     }
-    // roast
-    const allFoundObjectIds = Player.findObjects(here.x, here.y);
-    const fireplaceHere = allFoundObjectIds.filter(singleObject => Props.getObject(singleObject).name === 'fireplace').length;
-    if (fireplaceHere && (inventory.items['meat']?.amount > 0 || inventory.items['pepper']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0)) {
-      craftContainer.querySelector('.button-craft[data-item="roast"]').classList.add('active');
+    // carve
+    if (inventory.items['branch']?.amount > 0 && inventory.items['knife']?.amount > 0) {
+      craftContainer.querySelector('.button-craft[data-item="sharp-stick"]').classList.add('active');
       totalCrafting++;
     }
     if (totalCrafting !== crafting.total) {
@@ -291,6 +304,24 @@ export default {
     }
   },
 
+  fillItemSlot: function(itemSlots, amount) {
+    if (itemSlots) {
+      for (let i = 0; i < itemSlots.length; i += 1) {
+        const itemSlot = itemSlots[i];
+        itemSlot.classList.remove('unknown');
+        if (amount > 0) {
+          itemSlot.classList.remove('inactive');
+          itemSlot.classList.add('active');
+          itemSlot.querySelector('.amount').textContent = amount;
+        } else {
+          itemSlot.querySelector('.amount').textContent = '';
+          itemSlot.classList.remove('active');
+          itemSlot.classList.add('inactive');
+        }
+      }
+    }
+  },
+
   fillInventorySlots: function() {
     for (var item in inventory.items) {
       if (inventory.items[item].name === 'improvised-axe' || inventory.items[item].name === 'wooden-club') {
@@ -302,20 +333,9 @@ export default {
           inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.add('is--hidden');
         }
       } else {
-        const itemSlot = inventoryContainer.querySelector('.slot.item-' + inventory.items[item].name);
-        if (itemSlot) {
-          itemSlot.classList.remove('unknown');
-          if (inventory.items[item].amount > 0) {
-            itemSlot.classList.remove('inactive');
-            itemSlot.classList.add('active');
-            itemSlot.querySelector('.amount').textContent = inventory.items[item].amount;
-          } else {
-            itemSlot.querySelector('.amount').textContent = '';
-            itemSlot.classList.remove('active');
-            itemSlot.classList.add('inactive');
-          }  
-        }
+        this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount);
       }
     }
+    Cooking.checkAllCookingModeCards();
   }
 }

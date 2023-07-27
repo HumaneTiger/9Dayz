@@ -184,6 +184,7 @@
   text-align: center;
   text-transform: capitalize;
 }
+#cards .card li.close,
 #cards .card li.got-it {
   margin-top: 340px;
 }

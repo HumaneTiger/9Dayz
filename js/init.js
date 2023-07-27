@@ -7,6 +7,7 @@ import Cards from './cards.js'
 import Items from './items.js'
 import Actions from './actions.js'
 import Battle from './battle.js'
+import Cooking from './cooking.js'
 
 let startHour = 7; // 7
 let tick = 0;
@@ -33,6 +34,7 @@ function init() {
   Items.init();
   Actions.init();
   Battle.init();
+  Cooking.init();
   
   bind();
 

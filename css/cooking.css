@@ -1,0 +1,162 @@
+.card.cooking-mode {
+  transform: rotateY(180deg) scale(0.8);
+}
+.card.cooking-mode:hover {
+  transform: rotateY(180deg) scale(0.9);
+}
+.card.cooking-mode.full {
+  transform: rotateY(360deg) scale(0.8);
+}
+.card.cooking-mode.full:hover {
+  transform: rotateY(360deg) scale(0.9);
+}
+.card.cooking-mode ul.cooking {
+  display: block;
+}
+.card.cooking-mode img.motive,
+#cards .card.cooking-mode:hover img.motive {
+  opacity: 0.15;
+  filter: blur(2px);
+}
+.card.cooking-mode h2,
+.card.cooking-mode ul.actions,
+.card.cooking-mode div.banner {
+  display: none;
+}
+
+ul.cooking {
+  position: absolute;
+  top: 50%;
+  left: 48px;
+  transform: translateY(-49%);
+  display: none;
+}
+
+ul.cooking img.motive {
+  filter: blur(4px);
+  opacity: 0.3;
+}
+#cards .card.cooking:hover img.motive {
+  opacity: 0.5;
+}
+ul.cooking .slot:not(.operator) {
+  border: 1px rgba(53, 35, 26, 0.5) dashed;
+  border-radius: 8px;
+  background-color: rgba(255, 254, 251, 0.95);
+  display: inline-block;
+  margin: 0;
+  position: relative;
+  width: 72px;
+  height: 70px;
+  transition: background-color 0.1s ease-out;
+}
+ul.cooking .slot.operator {
+  display: inline-block;
+  padding: 0 14px;
+  position: relative;
+  width: 16px;
+  height: 70px;
+}
+ul.cooking .slot.operator .sign,
+ul.cooking .slot span.unknown {
+  position: absolute;
+  font-size: 32px;
+  color: rgba(53, 35, 26, 0.8);
+  text-align: center;
+  top: 13px;
+  left: 0;
+  width: 100%;
+  font-weight: 300;
+}
+ul.cooking .slot img.bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 0.2;
+}
+ul.cooking .slot.inactive img.bg {
+  opacity: 0.2;
+}
+ul.cooking .slot.inactive .unknown,
+ul.cooking .slot.unknown .amount,
+ul.cooking .slot.unknown img.bg {
+  display: none;
+}
+ul.cooking .slot.active img.bg {
+  opacity: 1;
+}
+ul.cooking .slot.active .unknown {
+  display: none;
+}
+ul.cooking .slot span.amount {
+  color: rgba(53, 35, 26, 0.8);
+  text-shadow: 0 0 5px#fffefb, 0 0 3px #fffefb;
+  font-size: 18px;
+  position: absolute;
+  top: 2px;
+  left: 4px;
+}
+ul.cooking .slot.locked {
+  opacity: 0.75;
+  color: #dc6452;
+}
+ul.cooking span.locked {
+  position: absolute;
+  font-size: 32px;
+  top: 16px;
+  text-align: center;
+  width: 100%;
+}
+
+ul.cooking p.info {
+  color: rgba(53, 35, 26, 0.6);
+  font-weight: 300;
+  font-size: 24px;
+  position: absolute;
+  bottom: 34px;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+ul.cooking .slot span.action {
+  text-shadow: 0 0 5px rgb(53, 35, 26), 0 0 3px rgb(53, 35, 26);
+  text-transform: capitalize;
+  display: inline-block;
+  padding: 3px 6px 2px;
+  border-radius: 3px;
+  line-height: 1em;
+  color: white;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+}
+ul.cooking .slot.action {
+  box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
+  border: 1.5px rgba(53, 35, 26, 0.5) solid;
+}
+ul.cooking .slot.active.action {
+  cursor: pointer;
+  transition: transform 0.1s ease-out;
+}
+ul.cooking .slot.active.action:hover {
+  transform: scale(1.2);
+}
+ul.cooking .slot.active.action:hover span.action {
+  opacity: 1;
+}
+ul.cooking li.action {
+  text-align: center;
+  margin-top: -6px;
+}
+#cards ul.cooking .action-button {
+  min-width: initial;
+  font-size: 24px;
+  padding: 14px 20px 10px;
+}

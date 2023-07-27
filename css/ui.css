@@ -313,12 +313,12 @@ ul#properties li.time {
   top: 130px;
 }
 .button-craft[data-item="fireplace"] {
-  left: 330px;
-  top: 280px;
+  left: 438px;
+  top: 320px;
 }
-.button-craft[data-item="roast"] {
-  left: 520px;
-  top: 340px;
+.button-craft[data-item="sharp-stick"] {
+  left: 25px;
+  top: 300px;
 }
 #inventory .inner {
   padding: 45px 40px;

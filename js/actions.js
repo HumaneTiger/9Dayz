@@ -5,6 +5,7 @@ import Cards from './cards.js'
 import Map from './map.js'
 import Items from './items.js'
 import Battle from './battle.js'
+import Cooking from './cooking.js'
 
 export default {
   
@@ -209,9 +210,9 @@ export default {
   },
 
   simulateCooking: function(cardId) {
-    /* simulate cooking inside Card */
-    document.getElementById('inventory').classList.remove('active');
-    document.getElementById('craft').classList.add('active');
+    /* simulate cooking inside Fireplace Card */
+    const cardRef = Cards.getCardById(cardId);
+    Cooking.start(cardRef);
     window.setTimeout(function(cardId) {
       this.goBackFromAction(cardId);
     }.bind(this), 800, cardId);
