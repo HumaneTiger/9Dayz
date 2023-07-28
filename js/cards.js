@@ -4,6 +4,7 @@ import Player from './player.js'
 import Items from './items.js'
 import Map from './map.js'
 import Actions from './actions.js'
+import Cooking from './cooking.js'
 
 const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
@@ -25,7 +26,6 @@ export default {
     const cardId = target.closest('div.card')?.id;
     const actionButton = target.closest('div.action-button');
     const itemContainer = target.closest('li.item:not(.is--hidden)');
-    const cookingContainer = target.closest('.card.cooking-mode');
 
     if (cardId) {
       const object = Props.getObject(cardId);
@@ -78,12 +78,6 @@ export default {
               console.log('No Card found for ' + cardId);
             }
           }, 400, itemContainer, cardId);
-        }
-      }
-      if (cookingContainer) {
-        if (actionButton && actionButton.dataset.action === 'close-cooking') {
-          cookingContainer.classList.remove('full');
-          window.setTimeout(() => {cookingContainer.classList.remove('cooking-mode');}, 100);
         }
       }
     }
@@ -410,7 +404,13 @@ export default {
           } else {
             cardRef.classList.remove('zombieshere');
           }
-          cardRef.querySelector('.distance').textContent = (object.distance > 1 ? Math.round(object.distance * 4.4) + ' min' : 'Here');
+          if (object.distance > 1) {
+            cardRef.querySelector('.distance').textContent = Math.round(object.distance * 4.4) + ' min';
+            if (!object.inreach) Cooking.end(cardRef);
+          } else {
+            cardRef.querySelector('.distance').textContent = 'Here';
+          }
+
           cardRef.classList.remove('is--hidden');
         }
 

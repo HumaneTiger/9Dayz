@@ -68,7 +68,9 @@ export default {
         let zedCardRef = Cards.getCardById(zedId);
         const zedObject = Props.getObject(zedId);
         zedObject.fighting = true;
+        zedObject.active = true;
         zedCardRef.classList.add('fight');
+        zedCardRef.style.transform = '';
         zedCardRef.style.zIndex = null;
         zedCardRef.style.left = (2135/2) - (cardZedDeck.length * spaceX / 2) + (index * spaceX) + 'px';
       });

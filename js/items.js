@@ -19,9 +19,13 @@ export default {
     Props.addToInventory('energy-pills', 1);
     Props.addToInventory('pepper', 1);
 
+    /*
     Props.addToInventory('mushroom-1', 1);
     Props.addToInventory('sharp-stick', 1);
-    //Props.addToInventory('tape', 1);
+    Props.addToInventory('bones', 1);
+    Props.addToInventory('pumpkin', 1);
+    Props.addToInventory('meat', 1);
+    */
     /*
     Props.addToInventory('bones', 2);
     Props.addToInventory('hacksaw', 2);

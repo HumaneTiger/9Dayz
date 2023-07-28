@@ -106,11 +106,11 @@ var buildingProps = {
 };
 
 var buildingActions = {
-  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|360|+100' ],
+  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+80' ],
   'car': [ 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20' ],
   'farm': [ 'gather|15|-10','scout area|30' ],
-  'tree': [ 'gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+10' ],
-  'church': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ],
+  'tree': [ 'gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15' ],
+  'church': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30' ],
   'signpost': [ 'read|1' ],
   'place': [ 'head toward|0', 'quick travel|0' ],
   'train': [ 'search|20|-5', 'scout area|30' ],
@@ -616,7 +616,6 @@ export default {
     this.setupBuilding(27, 7, ['small-tree', 'big-tree']);
     this.setupBuilding(28, 8, ['small-tree']);
     this.setupBuilding(28, 6, ['small-tree', 'big-tree']);
-    this.setupBuilding(18, 43, ['fireplace']);
   },
 
   setupAllZeds: function() {

@@ -201,8 +201,8 @@ export default {
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
       Player.changeProps('health', Math.floor(energy / 2));
-      Player.changeProps('food', -45);
-      Player.changeProps('thirst', -55);
+      Player.changeProps('food', -20);
+      Player.changeProps('thirst', -25);
       Map.hideScoutMarker();
       this.goBackFromAction(cardId);
     }, cardId, time, 100, energy);
@@ -212,10 +212,10 @@ export default {
   simulateCooking: function(cardId) {
     /* simulate cooking inside Fireplace Card */
     const cardRef = Cards.getCardById(cardId);
-    Cooking.start(cardRef);
-    window.setTimeout(function(cardId) {
+    window.setTimeout(() => {
+      Cooking.start(cardRef);
       this.goBackFromAction(cardId);
-    }.bind(this), 800, cardId);
+    }, 800);
   },
 
   simulateEquipping: function(cardId) {
@@ -243,7 +243,7 @@ export default {
       this.goBackFromAction(cardId);
       Props.addToInventory('improvised-axe', 0, -1);
       Props.addToInventory('stump', 1); 
-      Props.addToInventory('branch', 2);
+      Props.addToInventory('branch', 3);
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);
@@ -288,6 +288,7 @@ export default {
     const zedsOnly = allFoundObjectIds.filter(singleObject => Props.getObject(singleObject).group === 'zombie');
     Player.handleFoundObjectIds(zedsOnly);
     Cards.renderCardDeck();
+    Cards.disableActions();
 
     window.setTimeout(function() {
       this.endAction(cardId);
