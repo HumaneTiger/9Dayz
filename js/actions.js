@@ -243,7 +243,7 @@ export default {
       this.goBackFromAction(cardId);
       Props.addToInventory('improvised-axe', 0, -1);
       Props.addToInventory('stump', 1); 
-      Props.addToInventory('branch', 3);
+      Props.addToInventory('branch', 2 + Math.round(Math.random() - 0.25));
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);

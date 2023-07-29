@@ -565,7 +565,7 @@ ul#actions li.map span {
   position: absolute;
   width: 70px;
   height: 70px;
-  background-image: url(/img/ui/mobile-touch.png);
+  background-image: url(../img/ui/mobile-touch.png);
   background-size: 100%;
   opacity: 0.3;
   transition: transform 0.1s ease-out, opacity 0.1s ease-out;

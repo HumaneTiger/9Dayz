@@ -201,7 +201,7 @@ export default {
         if (!object.inreach && object.group !== 'event') {
           action.locked = true;
         }
-        if (object.zednearby && object.group !== 'event' && object.group !== 'zombie' && action.id !== 'scout-area' && action.id !== 'read') {
+        if (object.zednearby && object.group !== 'event' && object.group !== 'zombie' && action.id !== 'scout-area' && action.id !== 'read' && action.id !== 'equip') {
           action.locked = true;
         }
         if (action.id === 'smash-window') {

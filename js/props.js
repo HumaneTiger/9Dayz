@@ -106,7 +106,7 @@ var buildingProps = {
 };
 
 var buildingActions = {
-  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+80' ],
+  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+70' ],
   'car': [ 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20' ],
   'farm': [ 'gather|15|-10','scout area|30' ],
   'tree': [ 'gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15' ],
@@ -221,7 +221,7 @@ var items = {
   'carrot': ['eat', 6, 4, 0],
   'claw': ['craft', 0, 0, 0, 4, 2],
   'drink-1': ['drink', 0, 30, 0],
-  'drink-2': ['drink', 0, 30, 0],
+  'drink-2': ['drink', 0, 35, 0],
   'drink-3': ['drink', 5, 25, 5],
   'drink-4': ['drink', 5, 25, 5],
   'drink-5': ['drink', 10, 30, 10],
@@ -278,7 +278,7 @@ const actionTextMapping = {
   'attack': 'attacking',
   'lure': 'luring',
   'craft': 'crafting',
-  'cut': 'cutting',
+  'cut-down': 'cutting',
   'equip': 'equipping'  
 }
 

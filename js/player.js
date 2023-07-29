@@ -208,7 +208,7 @@ export default {
 
     const posXBefore = playerPosition.x,
           posYBefore = playerPosition.y;
-console.log(ev);
+
     if (!moving && !moveLocked) {
       if (ev.key && (ev.key.toLowerCase() === 'w' || ev.key === 'ArrowUp')) {
         ev.preventDefault();
