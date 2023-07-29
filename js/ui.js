@@ -178,6 +178,7 @@ export default {
       ev.preventDefault();
       ev.stopPropagation();
       const action = target.closest('.button');
+      const slider = target.closest('.slider');
       if (action) {
         Audio.sfx('click');
         if (action.classList.contains('start-real')) {
@@ -197,7 +198,14 @@ export default {
           window.setTimeout(function() {
             document.location.reload();
           }, 300);
-        }  
+        }
+        if (document.getElementById('touchsupport').classList.contains('on')) {
+          document.getElementById('touchcontrols').classList.remove('is--hidden');
+        }
+      }
+      if (slider) {
+        Audio.sfx('click');
+        slider.classList.toggle('on');
       }
     }
 

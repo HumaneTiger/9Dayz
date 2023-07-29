@@ -76,6 +76,10 @@
         <p>
           <span class="button start-tutorial"><small>Start with Tutorial</small></span>
         </p>
+        <div class="options">
+          <div id="touchsupport" class="slider"><div class="knob"></div></div>
+          <div class="label">Touch Support</div>
+        </div>
       </div>
       <div class="you-win is--hidden">
         <p style="font-size: 56px; line-height: 0.3;">You win the game!</p>
@@ -181,113 +185,13 @@
           <p id="battle-message">Zombies Turn</p>
         </div>
         <div id="cards">
-          <!--
-          <div id="117" class="card" style="left: 608px; z-index: 198;">
-            <div class="inner">
-              <p class="activity glow is--hidden"></p>
-              <ul class="cooking">
-                <li>
-                  <div class="slot unknown item-meat" data-item="meat">
-                    <span class="unknown">?</span>
-                    <span class="amount"></span>
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">+</span>
-                  </div>
-                  <div class="slot active item-branch" data-item="branch">
-                    <img src="./img/items/branch.PNG" class="bg">
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">=</span>
-                  </div>
-                  <div class="slot item-roasted-meat" data-item="roasted-meat">
-                    <span class="unknown">?</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="slot active item-pepper" data-item="pepper">
-                    <img src="./img/items/pepper.PNG" class="bg">
-                    <span class="unknown">?</span>
-                    <span class="amount"></span>
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">+</span>
-                  </div>
-                  <div class="slot active item-branch" data-item="branch">
-                    <img src="./img/items/branch.PNG" class="bg">
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">=</span>
-                  </div>
-                  <div class="slot active item-roasted-pepper" data-item="roasted-pepper">
-                    <img src="./img/items/roasted-pepper.PNG" class="bg">
-                  </div>
-                </li>
-                <li>
-                  <div class="slot active item-mushroom-1-2" data-item="mushroom-1-2">
-                    <img src="./img/items/mushroom-1-2.PNG" class="bg">
-                    <span class="unknown">?</span>
-                    <span class="amount">2</span>
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">+</span>
-                  </div>
-                  <div class="slot active item-branch" data-item="branch">
-                    <img src="./img/items/branch.PNG" class="bg">
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">=</span>
-                  </div>
-                  <div class="slot active item-roasted-pepper" data-item="roasted-pepper">
-                    <img src="./img/items/roasted-mushroom.PNG" class="bg">
-                  </div>
-                </li>
-                <li>
-                  <div class="slot active item-pumkin" data-item="pumkin">
-                    <img src="./img/items/pumpkin.PNG" class="bg">
-                    <span class="unknown">?</span>
-                    <span class="amount"></span>
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">+</span>
-                  </div>
-                  <div class="slot item-knife" data-item="knife">
-                    <img src="./img/items/knife.PNG" class="bg">
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">=</span>
-                  </div>
-                  <div class="slot locked item-roasted-pumkin" data-item="roasted-pumkin">
-                    <img src="./img/items/roasted-pumpkin.PNG" class="bg">
-                    <span class="material-symbols-outlined locked">lock</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="slot active item-glue" data-item="glue">
-                    <img src="./img/items/drink-1-2.PNG" class="bg">
-                    <span class="unknown">?</span>
-                    <span class="amount">3</span>
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">+</span>
-                  </div>
-                  <div class="slot active item-knife" data-item="knife">
-                    <img src="./img/items/bones.PNG" class="bg">
-                    <span class="amount">5</span>
-                  </div>
-                  <div class="slot operator">
-                    <span class="sign">=</span>
-                  </div>
-                  <div class="slot active item-roasted-pumkin" data-item="roasted-pumkin">
-                    <img src="./img/items/glue.PNG" class="bg">
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <span class="distance">6 min</span>
-          </div>
-          -->
           <div class="cards-blocker is--hidden"></div>
+        </div>
+        <div id="touchcontrols" class="is--hidden">
+          <div class="move up"></div>
+          <div class="move left"></div>
+          <div class="move down"></div>
+          <div class="move right"></div>
         </div>
       </main>
     </div>

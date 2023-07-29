@@ -53,7 +53,7 @@ body * {
     background-color: rgba(255, 254, 251, 1);
     box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
     border: 2px rgba(53, 35, 26, 0.5) solid;
-    text-transform: capitalize;
+    text-transform: uppercase;
     color: rgba(53, 35, 26, 0.66);
     padding: 20px 48px 16px;
     border-radius: 8px;
@@ -77,6 +77,43 @@ body * {
   transform: scale(1.1);
   opacity: 1;
   box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
+}
+#startscreen div.options {
+  text-align: center;
+}
+#startscreen div.options div {
+  display: inline-block;
+  height: 40px;
+  color: rgba(53, 35, 26, 0.45);
+}
+#startscreen div.options .slider {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px rgba(0, 0, 0, 0.2) solid;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 80px;
+  height: 42px;
+  text-align: left;
+}
+#startscreen div.options .slider .knob {
+  background-color: rgba(255, 254, 251, 1);
+  border: 1px rgba(0, 0, 0, 0.2) solid;
+  border-radius: 50%;
+  width: 37px;
+  height: 37px;
+  margin: 1px;
+  opacity: 0.5;
+  transition: margin 0.1s ease-out, opacity 0.1s ease-out;
+}
+#startscreen div.options .slider.on .knob {
+  opacity: 1;
+  margin-left: 40px;
+}
+#startscreen div.options .label {
+    vertical-align: top;
+    text-transform: uppercase;
+    padding-top: 10px;
+    font-size: 16px;
 }
 #viewport {
     position: fixed;

@@ -552,3 +552,41 @@ ul#actions li.map span {
   background-image: url(../img/actions/map.png);
 }
 
+#touchcontrols {
+  position: fixed;
+  right: 100px;
+  bottom: 150px;
+  width: 200px;
+  height: 200px;
+  z-index: 51;
+}
+
+#touchcontrols .move {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background-image: url(/img/ui/mobile-touch.png);
+  background-size: 100%;
+  opacity: 0.3;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+}
+
+#touchcontrols .move:active {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+#touchcontrols .left,
+#touchcontrols .right {
+  top: 65px;
+}
+#touchcontrols .right {
+  right: 0;
+}
+#touchcontrols .up,
+#touchcontrols .down {
+  left: 65px;
+}
+#touchcontrols .down {
+  bottom: 0;
+}

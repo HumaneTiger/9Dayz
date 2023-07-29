@@ -201,13 +201,14 @@ export default {
 
   initMovement: function() {
     document.body.addEventListener("keydown", this.handleKeydown.bind(this));
+    document.getElementById('touchcontrols').addEventListener("pointerdown", this.handlePointerdown.bind(this));
   },
 
   handleKeydown: function(ev) {
 
     const posXBefore = playerPosition.x,
           posYBefore = playerPosition.y;
-
+console.log(ev);
     if (!moving && !moveLocked) {
       if (ev.key && (ev.key.toLowerCase() === 'w' || ev.key === 'ArrowUp')) {
         ev.preventDefault();
@@ -255,6 +256,23 @@ export default {
         window.setTimeout(function() { moving = false; }, 1000);
       }  
     }
+  },
+
+  handlePointerdown: function(ev) {
+    let target = ev.target;
+    let synthKey = '';
+
+    if (target.classList.contains('up')) {
+      synthKey = 'w';
+    } else if (target.classList.contains('down')) {
+      synthKey = 's';
+    } else if (target.classList.contains('left')) {
+      synthKey = 'a';
+    } else if (target.classList.contains('right')) {
+      synthKey = 'd';
+    }
+
+    document.body.dispatchEvent(new KeyboardEvent('keydown', {'key': synthKey}));
   },
 
   getPlayerPosition: function() {
