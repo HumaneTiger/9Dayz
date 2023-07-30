@@ -158,11 +158,13 @@ var events = {
   },
   '30-7': {
     title: 'You found it!',
-    text: 'After all the hardships you made it to the ship in time! You take your beloved in your arms and together you look over the devastated land while the ship is heading towards a hopefully safe future.'
+    text: 'After all the hardships you made it to the ship in time! You take your beloved in your arms and together you look over the devastated land while the ship is heading towards a hopefully safe future.',
+    showAlways: true
   },
   '18-29': {
     title: 'The Horde!',
-    text: 'You see a huge horde of Zombies slowly shambling across the street. At this speed it will take days before they are gone. You better turn around and search for an alternative route!'
+    text: 'You see a huge horde of Zombies slowly shambling across the street. At this speed it will take days before they are gone. You better turn around and search for an alternative route!',
+    showAlways: true
   },
 };
 
@@ -657,10 +659,10 @@ export default {
     this.setZedAt(18, 27, 2);
     this.setZedAt(19, 27, 2);
     this.setZedAt(18, 28, 1);
-    // HORDE 2
-    this.setZedAt(34, 17, 2);
+    // HORDE 2 (5 should be painfully enough)
+    this.setZedAt(34, 17, 1);
     this.setZedAt(35, 17, 2);
-    this.setZedAt(36, 17, 2);
+    this.setZedAt(36, 17, 1);
     this.setZedAt(35, 18, 1);
   },
 
@@ -848,7 +850,8 @@ export default {
 
   setupAllEvents: function() {
     for (var event in events) {
-      if (this.getGameProp('tutorial')) {
+      console.log(events[event]);
+      if (this.getGameProp('tutorial') || events[event].showAlways) {
         const x = event.split('-')[0];
         const y = event.split('-')[1];
         this.addObjectIdAt(objectsIdCounter, x, y);

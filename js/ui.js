@@ -28,9 +28,9 @@ export default {
     window.addEventListener('resize', this.resizeViewport);
     document.body.addEventListener('click', this.handleClick.bind(this));
 
-    document.addEventListener('mousedown', this.mouseDown);
-    document.addEventListener('mousemove', this.mouseMove.bind(this));
-    document.addEventListener('mouseup', this.mouseUp.bind(this));
+    document.body.addEventListener('pointerdown', this.mouseDown);
+    document.body.addEventListener('pointermove', this.mouseMove.bind(this));
+    document.body.addEventListener('pointerup', this.mouseUp.bind(this));
 
     this.bind();
 
@@ -97,7 +97,7 @@ export default {
     if (dragMode) {
       let dragTarget = this.getDragTarget(e);
       if (dragTarget) {
-        if (dragTarget.classList.contains('zombie')) {
+        if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
           Battle.resolveAttack(dragEl, dragTarget);
         }
       } else {
@@ -183,6 +183,8 @@ export default {
         Audio.sfx('click');
         if (action.classList.contains('start-real')) {
           document.getElementById('startscreen').style.opacity = 0;
+          Props.setupAllEvents();
+          Player.findAndHandleObjects();
           window.setTimeout(function() {
             document.getElementById('startscreen').classList.add('is--hidden');
           }, 1500);
@@ -228,6 +230,18 @@ export default {
             Props.spawnRatsAt(squareX, squareY);
           } else if (selectedObject === 'improvised-axe' || selectedObject === 'wooden-club') {
             Props.setupWeapon(squareX, squareY, selectedObject);
+          } else if (selectedObject === 'care-package') {
+            Props.addToInventory('tomato', 1);
+            Props.addToInventory('carrot', 1);
+            Props.addToInventory('pepper', 1);
+            Props.addToInventory('tape', 1);
+            Props.addToInventory('drink-2', 2);
+            Props.addToInventory('snack-1', 2);
+            Props.addToInventory('snack-2', 2);
+            Props.addToInventory('knife', 1);
+            Props.addToInventory('energy-pills', 1);
+            Items.inventoryChangeFeedback();
+            Items.fillInventorySlots();
           } else {
             Props.setupBuilding(squareX, squareY, new Array(selectedObject));
           }
@@ -250,6 +264,11 @@ export default {
 
     document.getElementById('viewport').addEventListener('mousemove', this.showSquare.bind(this));
     document.getElementById('viewport').addEventListener('mousedown', this.selectSquare.bind(this));
+
+    var opt = document.createElement('option');
+    opt.value = 'care-package';
+    opt.innerHTML = 'Care Package';
+    selectObject.appendChild(opt);
 
     var opt = document.createElement('option');
     opt.value = 'zombie';
