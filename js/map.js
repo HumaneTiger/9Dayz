@@ -70,16 +70,30 @@ export default {
   },
 
   highlightObject: function(objectId) {
-    let objectIcon = document.querySelector('#maximap .icon-' + objectId);
+    const object = Props.getObject(objectId);
+    const objectIcon = document.querySelector('#maximap .icon-' + objectId);
     if (objectIcon) {
       objectIcon.classList.add('highlight');
+    } else if (object.group === 'event') {
+      // this needs a proper register mechanic: each event card registeres one or many iconIds it is connected to
+      if (object.title === 'Waking Up') {
+        document.getElementById('player').classList.add('highlight');
+        document.getElementById('player-hint').classList.remove('is--hidden');        
+      }
     }
   },
 
   noHighlightObject: function(objectId) {
-    let objectIcon = document.querySelector('#maximap .icon-' + objectId);
+    const object = Props.getObject(objectId);
+    const objectIcon = document.querySelector('#maximap .icon-' + objectId);
     if (objectIcon) {
       objectIcon.classList.remove('highlight');
+    } else if (object.group === 'event') {
+      // this needs a proper register mechanic: each event card registeres one or many iconIds it is connected to
+      if (object.title === 'Waking Up') {
+        document.getElementById('player').classList.remove('highlight');
+        document.getElementById('player-hint').classList.add('is--hidden');
+      }
     }
   },
 
