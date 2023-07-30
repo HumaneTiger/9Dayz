@@ -7,5 +7,39 @@
   border-radius: 5px;
   background-color: #ffbc97;
   border: 1px rgba(255, 140, 0, 1) solid;
-  transition: left 1s linear, top 1s linear;
+  transition: left 1s linear, top 1s linear, transform 0.1s ease-out;
 }
+#player.highlight {
+  transform: scale(2);
+}
+#player-hint {
+  position: fixed;
+  margin-top: -120px;
+  margin-left: -12px;
+  z-index: 100;
+  width: 150px;
+  height: 150px;
+  background-image: url(../img/ui/you.png);
+  background-size: 100% auto;
+  transition: left 1s linear, top 1s linear, transform 0.1s ease-out;
+}
+.horde-warning-1,
+.horde-warning-2 {
+  position: fixed;
+  transform: scale(0.7);
+  width: 120px;
+  height: 120px;
+  background-image: url(../img/ui/horde-warning.png);
+  z-index: 98;
+}
+.horde-warning-1 {
+  position: fixed;
+  left: 760px;
+  top: 560px;
+}
+.horde-warning-2 {
+  position: fixed;
+  left: 1494px;
+  top: 134px;
+}
+
