@@ -298,11 +298,13 @@ export default {
   },
 
   gotIt: function(cardId) {
-    /*
-    const cardRef = Cards.getCardById(cardId);
-    if (cardRef.dataset.x === "30" && cardRef.dataset.y === "7") {
+    const object = Props.getObject(cardId);
+    if (object && object.title === 'You found it!') {
       Player.checkForWin();
-    }*/
+    } else if (object.title === 'Waking Up') {
+      document.getElementById('player').classList.remove('highlight');
+      document.getElementById('player-hint').classList.add('is--hidden');
+    }
     Cards.removeCard(cardId);
     Player.lockMovement(false);
     Player.updatePlayer(true);

@@ -193,6 +193,8 @@ export default {
     if (x % 4 === 0 || y % 4 === 0) {
       Map.mapUncoverAt(x, y);
     }
+    document.getElementById('player-hint').style.left = player.style.left;
+    document.getElementById('player-hint').style.top = player.style.top;
   },
 
   lockMovement: function(moveable) {
