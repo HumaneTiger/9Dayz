@@ -11,12 +11,13 @@ const cardWidth = 380 * 0.8;
 const zIndexBase = 200;
 
 var cardDeck = [];
+var lastHoverTarget;
 
 export default {
   
   init() {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
-    document.body.addEventListener('mouseout', this.checkForCardUnHover.bind(this));
+    //document.body.addEventListener('mouseout', this.checkForCardUnHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
@@ -89,36 +90,36 @@ export default {
     const cardId = target.closest('div.card')?.id;
     const hoverButton = target.closest('div.action-button');
 
-    if (cardId) {
-      const object = Props.getObject(cardId);
-      const cardRef = this.getCardById(cardId);
-
-      if (!Props.getGameProp('battle')) {
-        cardRef.dataset.oldZindex = cardRef.style.zIndex;
-        cardRef.style.zIndex = 200;  
+    if (!cardId || cardId !== lastHoverTarget) {
+      const cardRef = this.getCardById(lastHoverTarget);
+      if (cardRef) {
+        if (!Props.getGameProp('battle')) {
+          cardRef.style.zIndex = cardRef.dataset.oldZindex;
+        }
+        delete cardRef.dataset.oldZindex;
+        Map.noHighlightObject(lastHoverTarget);
+        lastHoverTarget = undefined;  
       }
-
-      if (hoverButton) {
-        cardRef.classList.add('hover-button');
-      } else {
-        cardRef.classList.remove('hover-button');
-      }  
-
-      Map.highlightObject(cardId);
+    }
+    if (cardId) {
+      if (lastHoverTarget !== cardId) {
+        lastHoverTarget = cardId;
+        const cardRef = this.getCardById(cardId);
+        if (!Props.getGameProp('battle')) {
+          cardRef.dataset.oldZindex = cardRef.style.zIndex;
+          cardRef.style.zIndex = 200;  
+        }
+        if (hoverButton) {
+          cardRef.classList.add('hover-button');
+        } else {
+          cardRef.classList.remove('hover-button');
+        }  
+        Map.highlightObject(cardId);
+      }
     }
   },
 
   checkForCardUnHover: function(ev) {
-    const target = ev.target;
-    const cardId = target.closest('div.card')?.id;
-    const object = Props.getObject(cardId);
-
-    if (cardId && !object.fighting) {
-      const cardRef = this.getCardById(cardId);
-      cardRef.style.zIndex = cardRef.dataset.oldZindex;
-      delete cardRef.dataset.oldZindex;
-      Map.noHighlightObject(cardId);
-    }
   },
 
   getCardById: function(cardId) {
@@ -319,6 +320,7 @@ export default {
         }
       });
     }
+    
   },
 
   logDeck: function() {
