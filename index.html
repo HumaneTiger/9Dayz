@@ -129,7 +129,6 @@
         </div>
         <div id="craft">
           <div class="inner">
-            <!--<div class="button-craft active" data-item="meat" data-action="prepare meat"><span class="material-symbols-outlined locked">lock</span>Prepare</div>-->
             <div class="button-craft" data-item="wooden-club" data-action="craft wooden club"><span class="material-symbols-outlined locked">lock</span>Craft</div>
             <div class="button-craft" data-item="improvised-axe" data-action="improvise an axe"><span class="material-symbols-outlined locked">lock</span>Craft</div>
             <div class="button-craft" data-item="fireplace" data-action="build a fireplace"><span class="material-symbols-outlined locked">lock</span>Build</div>
@@ -151,7 +150,8 @@
               </div>
               <div class="map-cover">
                 <div class="cover"></div>
-                <img src="./img/ui/map-blank.jpg" width="2135" height="2135">
+                <img src="./img/ui/map-blank.jpg" width="0" height="0">
+                <canvas id="map-fog" width="2135" height="2135"></canvas>
               </div>
               <div class="map-high">
                 <img src="./img/ui/map-high.png" width="2135" height="2135">

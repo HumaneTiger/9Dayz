@@ -5,9 +5,10 @@ const highlightsContainer = document.querySelector('.map .map-highlights');
 
 const map = document.querySelector('#maximap .map');
 const mapCover = map.querySelector('.map-cover .cover');
-// deactivate this fow feature, as it causes hefty performance issues
-// will try to solve the non-interactive map parts with canvas later
-const isChromium = true; // window.chrome;
+
+const fogImage = map.querySelector('.map-cover img');
+const mapFog2dCtx = document.getElementById('map-fog').getContext('2d');
+var canvasPrimed = false;
 
 var uncoverMatrix = new Array(15);
 for (var i = 0; i < uncoverMatrix.length; i += 1) { uncoverMatrix[i] = new Array(30); }
@@ -15,9 +16,6 @@ for (var i = 0; i < uncoverMatrix.length; i += 1) { uncoverMatrix[i] = new Array
 export default {
   
   init() {
-    if (isChromium) {
-      mapCover.style.background = 'initial';
-    }
   },
 
   showScoutMarkerFor: function(cardId) {
@@ -113,29 +111,42 @@ export default {
   },
 
   mapUncoverAt: function(x, y) {
-
     const uncoverX = Math.floor(x / 4);
     const uncoverY = Math.floor(y / 4);
-    var mask = '';
-
-    // solution for chrome? https://blog.logrocket.com/css-mask-image-property/
-    if (!isChromium && mapCover && uncoverMatrix[uncoverX][uncoverY] === undefined) {
+    if (mapFog2dCtx && uncoverMatrix[uncoverX][uncoverY] === undefined) {
       uncoverMatrix[uncoverX][uncoverY] = true;
-      // create new Mask
-      for (var i = 0; i < uncoverMatrix.length; i += 1) {
-        for (var j = 0; j < uncoverMatrix[i].length; j += 1) {
-          if (uncoverMatrix[i][j] === true) {
-            mask += 'radial-gradient(at ' + (i * 44.4 * 4 ) + 'px ' + (j * 44.4 * 4 ) + 'px ' + ', transparent 4%, black 12%, black),';
-          }
+      if (canvasPrimed) {
+        this.addNewMask(uncoverX, uncoverY);
+      } else {
+        if (fogImage.complete) {
+          this.primeCanvas();
+          this.addNewMask(uncoverX, uncoverY);
+        } else {
+          fogImage.addEventListener('load', () => {
+            this.primeCanvas();
+            this.addNewMask(uncoverX, uncoverY);  
+          });
         }
       }
-      if (mask !== '') {
-        mask = mask.slice(0, -1); // remove last comma
-        mapCover.style.mask = mask;
-        mapCover.style.webkitMask = mask;
-        mapCover.style.maskComposite = 'intersect';
-        mapCover.style.webkitMaskComposite = 'intersect';
-      }
     }
+  },
+
+  primeCanvas: function() {
+    mapFog2dCtx.drawImage(fogImage, 0, 0);
+    mapFog2dCtx.globalCompositeOperation = 'destination-out';
+    canvasPrimed = true;
+  },
+
+  addNewMask: function(x, y) {
+    const maskX = x * 44.4 * 4;
+    const maskY = y * 44.4 * 4;
+    let fogGradient = mapFog2dCtx.createRadialGradient(maskX, maskY, 300, maskX, maskY, 100);
+    fogGradient.addColorStop(0, 'rgba(0,0,0,0)');
+    fogGradient.addColorStop(1, 'rgba(0,0,0,1)');
+    mapFog2dCtx.fillStyle = fogGradient;
+    mapFog2dCtx.beginPath();
+    mapFog2dCtx.arc(maskX, maskY, 300, 0, 2 * Math.PI);
+    mapFog2dCtx.closePath();
+    mapFog2dCtx.fill();
   }
 }

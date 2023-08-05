@@ -146,7 +146,13 @@
 }
 
 #maximap .inner .map-cover img {
-  visibility: hidden;
+  /*visibility: hidden;*/
+}
+
+#map-fog {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #maximap .inner .map-cover .cover {
@@ -154,11 +160,6 @@
   top: 0;
   width: 100%;
   bottom: 0;
-  background-image: url(../img/ui/map-blank-grid.jpg);
-  background-size: 100% auto;
-  mask-size: 100% 100%;
-  mask-composite: intersect;
-  mask-repeat: no-repeat; /* don't forget this */
 }
 
 #maximap .inner .map-cover .cover .location {
