@@ -53,7 +53,7 @@ export default {
           console.log('Unknown action: ' + action);
         }        
       } else {
-        console.log('Unknown action: ' + action);
+        console.log('No action object for: ' + action);
       }
       /* optional: hide 1-time actions */
       if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook') {
@@ -104,10 +104,13 @@ export default {
     if (!Props.getGameProp('firstSearch') && (object.type === 'car' || object.type === 'house' || object.type === 'train') && cardRef.querySelector('ul.items')) {
       Props.setGameProp('firstSearch', true);
       // replace first item in data and markup
-      allItems[0] = {name: 'tape', amount: 1};
-      cardRef.querySelector('ul.items li.preview').remove();
-      cardRef.querySelector('ul.items li.item').remove();
-      cardRef.querySelector('ul.items').innerHTML = Cards.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;
+      // but only if the item isn't already there
+      if (!allItems.some(el => (el.name === 'tape' && el.amount > 0))) {
+        allItems[0] = {name: 'tape', amount: 1};
+        cardRef.querySelector('ul.items li.preview').remove();
+        cardRef.querySelector('ul.items li.item').remove();
+        cardRef.querySelector('ul.items').innerHTML = Cards.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;  
+      }
     }
     let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
 
@@ -369,6 +372,7 @@ export default {
   reading: function(cardId) {
     window.setTimeout(function(cardId) {
       const targetLocationName = Props.getObject(cardId).name;
+      Audio.sfx('note');
       if (targetLocationName === 'signpost-1') {
         Map.showTargetLocation('Lakeside Camp Resort');
         Map.showTargetLocation('Rocksprings');
