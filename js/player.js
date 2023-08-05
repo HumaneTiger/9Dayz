@@ -3,6 +3,7 @@ import Props from './props.js'
 import Cards from './cards.js'
 import Map from './map.js'
 import Battle from './battle.js'
+import Ui from './ui.js'
 
 const allPaths = Props.getAllPaths();
 
@@ -150,6 +151,7 @@ export default {
 
   updatePlayer: function(noPenalty) {
 
+    Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
 
     window.setTimeout(function() {

@@ -30,7 +30,7 @@
 
   <body>
     <div id="card-console" class="out">
-      <div class="handle">Game Editor</div>
+      <!--<div class="handle">Game Editor</div>-->
       <img class="logo" src="./img/ui/logo.png">
       <p>
         <strong>1.</strong> Select a square in the game world
@@ -112,8 +112,8 @@
           <li class="inventory"><span>Inventory (<em id="inventory-numbers">0</em>)</span></li>
           <li class="craft"><span>Craft (<em id="crafting-total">0</em>)</span></li>
           <li class="mixed"><span class="countdown">Day <em id="gametime-days">1</em></span><span class="seperator">⬦</span><span class="time" id="gametime-hours"></span></li>
-          <li class="explore"><span>Explore</span></li>
           <li class="map"><span>Map</span></li>
+          <li class="settings"><span>Game Editor<!--Settings--></span></li>
         </ul>
         <div id="inventory">
           <div class="inner"></div>
@@ -187,7 +187,7 @@
           </div>
           <p id="battle-message">Zombies Turn</p>
         </div>
-        <div id="cards">
+        <div id="cards" class="active">
           <div class="cards-blocker is--hidden"></div>
         </div>
         <div id="touchcontrols" class="is--hidden">
@@ -225,6 +225,11 @@
       <audio class="sfx-break-glass" src="./audio/fx/break-glass.mp3" preload></audio>
       <audio class="sfx-rat-squeaks" src="./audio/fx/rat-squeaks.mp3" preload></audio>
       <audio class="sfx-rat-attacks" src="./audio/fx/rat-attacks.mp3" preload></audio>
+      <audio class="sfx-note" src="./audio/fx/note.wav" preload></audio>
+      <audio class="sfx-eat-1" src="./audio/fx/eat-1.wav" preload></audio>
+      <audio class="sfx-eat-2" src="./audio/fx/eat-2.wav" preload></audio>
+      <audio class="sfx-drink" src="./audio/fx/drink.mp3" preload></audio>
+      <audio class="sfx-roast" src="./audio/fx/roast.wav" preload></audio>
     </div>
   
     <script src="js/init.js" type="module" defer async></script>

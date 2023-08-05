@@ -1,9 +1,18 @@
 #cards {
   position: fixed;
   width: 100%;
-  height: 50%;
+  height: 0%; /* was 50% before, but why? */
+  transform: translateY(-600px);
   z-index: 5;
+  transition: transform 0.8s ease-out;
 }
+#cards.active {
+  transform: translateY(0);
+}
+#cards.battle-mode {
+  height: 100%;
+}
+
 #cards .cards-blocker {
   z-index: 210;
   background-color: rgba(77, 60, 72, 0.9);

@@ -2,6 +2,7 @@ import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
 import Cooking from './cooking.js'
+import Audio from './audio.js'
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -246,6 +247,11 @@ export default {
       }
       if (energy > 0) {        
         Player.changeProps('energy', energy);
+      }
+      if (items[item][0] === 'drink') {
+        Audio.sfx('drink', 0, 0.7);
+      } else if (items[item][0] === 'eat') {
+        Audio.sfx('eat-' + Math.floor(Math.random() * (2) + 1), 0, 0.7);
       }
       if (food || drink || energy) {
         Props.addToInventory(item, -1);

@@ -138,7 +138,7 @@ export default {
   },
 
   addNewMask: function(x, y) {
-    const maskX = x * 44.4 * 4;
+    const maskX = x * 44.4 * 4 + 40;
     const maskY = y * 44.4 * 4;
     let fogGradient = mapFog2dCtx.createRadialGradient(maskX, maskY, 300, maskX, maskY, 100);
     fogGradient.addColorStop(0, 'rgba(0,0,0,0)');

@@ -154,6 +154,7 @@ export default {
     const target = ev.target;
     const clickAction = target.closest('#actions');
     const startscreenAction = target.closest('#startscreen');
+    const mapClick = target.closest('#maximap');
 
     if (!firstUserInteraction) {
       firstUserInteraction = true;
@@ -171,6 +172,10 @@ export default {
       } else if (action.classList.contains('craft')) {
         document.getElementById('craft').classList.toggle('active');
         document.getElementById('inventory').classList.remove('active');
+      } else if (action.classList.contains('settings')) {
+        document.getElementById('card-console').classList.toggle('out');
+      } else if (action.classList.contains('map')) {
+        this.hideUI();
       }
     }
 
@@ -209,6 +214,12 @@ export default {
         Audio.sfx('click');
         slider.classList.toggle('on');
       }
+    }
+
+    if (mapClick) {
+      document.getElementById('craft').classList.remove('active');
+      document.getElementById('inventory').classList.remove('active');
+      this.showUI();
     }
 
     if (target.closest('#card-console')) {
@@ -255,6 +266,21 @@ export default {
         }
       }
     }
+  },
+
+  hideUI: function() {
+    document.getElementById('craft').classList.remove('active');
+    document.getElementById('inventory').classList.remove('active');
+    document.getElementById('properties').classList.remove('active');
+    document.getElementById('actions').classList.remove('active');
+    document.getElementById('cards').classList.remove('active');
+    document.getElementById('card-console').classList.add('out');
+  },
+
+  showUI: function() {
+    document.getElementById('properties').classList.add('active');
+    document.getElementById('actions').classList.add('active');
+    document.getElementById('cards').classList.add('active');
   },
 
   initDevConsole: function() {

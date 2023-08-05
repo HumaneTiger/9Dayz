@@ -77,6 +77,7 @@ export default {
 
       document.getElementById('inventory').classList.remove('active');
       document.getElementById('craft').classList.remove('active');
+      document.getElementById('cards').classList.add('battle-mode');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
 
       window.setTimeout(() => {
@@ -136,6 +137,7 @@ export default {
     battleHealthMeter.classList.remove('in-battle');
     document.getElementById('properties').classList.add('active');
     document.getElementById('actions').classList.add('active');
+    document.getElementById('cards').classList.remove('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('active');
 
     window.setTimeout(function() {

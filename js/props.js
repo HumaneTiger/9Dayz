@@ -850,7 +850,6 @@ export default {
 
   setupAllEvents: function() {
     for (var event in events) {
-      console.log(events[event]);
       if (this.getGameProp('tutorial') || events[event].showAlways) {
         const x = event.split('-')[0];
         const y = event.split('-')[1];

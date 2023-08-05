@@ -98,7 +98,7 @@ ul#properties {
   list-style: none;
   z-index: 50;
   transform: translateY(-100px);
-  transition: transform 0.8s ease-out;
+  transition: transform 0.6s ease-out;
 }
 ul#properties.active {
   transform: translateY(0);
@@ -468,7 +468,7 @@ ul#actions {
   list-style: none;
   z-index: 50;
   transform: translateY(100px);
-  transition: transform 0.8s ease-out;
+  transition: transform 0.6s ease-out;
 }
 ul#actions.active {
   transform: translateY(0);
@@ -544,7 +544,7 @@ ul#actions li.craft span {
   background-image: url(../img/actions/craft.png);
 }
 
-ul#actions li.explore span {
+ul#actions li.settings span {
   background-image: url(../img/actions/explore.png);
 }
 
