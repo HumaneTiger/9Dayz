@@ -1,5 +1,6 @@
 import Props from './props.js'
 import Items from './items.js'
+import Audio from './audio.js'
 
 let cookingRecipes = Props.getCookingRecipes();
 
@@ -62,6 +63,7 @@ export default {
         const recipe = actionSlotActive.dataset?.item;
         if (recipe) {
           Props.addToInventory(recipe, cookingRecipes[recipe][2]);
+          Audio.sfx('roast');
           if (recipe === 'glue') {
             Props.addToInventory(cookingRecipes[recipe][0], -1);
             Items.inventoryContains('drink-1') ? Props.addToInventory('drink-1', -1) : Props.addToInventory('drink-2', -1);
