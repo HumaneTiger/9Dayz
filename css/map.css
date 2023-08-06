@@ -41,7 +41,7 @@
   opacity: 0;
   z-index: 21;
   pointer-events: none;
-  transition: opacity 4500ms linear;
+  transition: opacity 5000ms linear;
 }
 
 .morning-light.backlight,
