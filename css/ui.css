@@ -250,6 +250,10 @@ ul#properties li.time {
   top: 20px;
   right: -152px;
 }
+#inventory.the-end .wooden-club,
+#inventory.the-end .improvised-axe {
+  display: none;
+}
 #inventory .wooden-club {
   top: 270px;
 }

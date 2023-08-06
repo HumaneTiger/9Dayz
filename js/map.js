@@ -132,7 +132,7 @@ export default {
   },
 
   primeCanvas: function() {
-    mapFog2dCtx.drawImage(fogImage, 0, 0);
+    mapFog2dCtx.drawImage(fogImage, 0, 0, 2135, 2135);
     mapFog2dCtx.globalCompositeOperation = 'destination-out';
     canvasPrimed = true;
   },

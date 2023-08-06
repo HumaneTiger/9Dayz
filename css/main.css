@@ -8,7 +8,7 @@ html, body {
 body {
     font-family: 'Kalam', cursive;
     font-size: 24px;
-    background-color: black;
+    background: #4d4234 url(../img/ui/stretchground.jpg) 0 0 repeat-x;
 }
 
 body * {
@@ -122,7 +122,6 @@ body * {
     width: 2135px;
     height: 1200px;
     transform-origin: top left;
-    overflow: hidden;
     background-repeat: no-repeat;
     transform: translateX(-50%);
 }
@@ -136,6 +135,7 @@ main {
     height: 1200px;
     width: 100%;
     position: absolute;
+    overflow: hidden;
     z-index: 5;
 }
 
@@ -144,3 +144,20 @@ main ul {
     margin: 0;
     padding: 0;
 }
+
+#map-border {
+    height: 1417px;
+    width: auto;
+    position: absolute;
+    z-index: 4;
+    left: -111px;
+    top: -109px;
+}
+  
+#map-border img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+  
+  

@@ -293,7 +293,7 @@ export default {
       });
     }
     document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
-    this.showBattleMessage('Zombies Turn', 800);
+    this.showBattleMessage('Enemies Turn', 800);
     window.setTimeout(() => {
       this.zedAttack();
     }, 400);

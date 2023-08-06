@@ -6,9 +6,9 @@ import Items from './items.js'
 
 var viewport = document.getElementById("viewport");
 var mapHigh = document.querySelector('.map-high img');
-var morningLight = document.querySelector('.inner .morning');
-var eveningLight = document.querySelector('.inner .evening');
-var nightLight = document.querySelector('.inner .night');
+var morningLight = document.querySelector('.morning-light');
+var eveningLight = document.querySelector('.evening-light');
+var nightLight = document.querySelector('.night-light');
 var nightCover = document.getElementById('night-ui-cover');
 
 let newPosX = 0, newPosY = 0, startPosX = 0, startPosY = 0, initialStyleLeft = 0, initialStyleTop = 0;

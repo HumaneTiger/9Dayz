@@ -5,6 +5,7 @@ import Items from './items.js'
 import Map from './map.js'
 import Actions from './actions.js'
 import Cooking from './cooking.js'
+import Ui from './ui.js'
 
 const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
@@ -252,6 +253,12 @@ export default {
             Audio.sfx('rat-squeaks');
           } else {
             Audio.sfx('zed-appears');
+          }
+        }
+        if (object.group === 'event') {
+          if (object.title === 'You found it!') {
+            Ui.hideUI();
+            document.getElementById('inventory').classList.add('the-end'); // weapons cover last event card which is bad.
           }
         }
       }

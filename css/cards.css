@@ -18,8 +18,8 @@
   background-color: rgba(77, 60, 72, 0.9);
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: -50px;
+  right: -50px;
   height: 100%;
   opacity: 0;
   transition: opacity 0.8s ease-out;
@@ -43,7 +43,10 @@
   transform: scale(0.8);
   transition: transform 0.1s ease-out, top 0.3s ease-out, left 0.3s ease-out, opacity 0.4s ease-in;
 }
-.cards-at-bottom .card {
+#cards.cards-at-bottom {
+  transform: none;
+}
+#cards.cards-at-bottom .card {
   top: initial;
   bottom: 80px;
 }

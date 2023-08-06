@@ -173,6 +173,8 @@ export default {
     if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
     if (this.getProp('energy') <= 0) this.changeProps('energy', -5);
 
+    this.checkForDeath(true);
+
   },
 
   findAndHandleObjects: function() {
