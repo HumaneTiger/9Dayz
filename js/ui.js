@@ -6,10 +6,10 @@ import Items from './items.js'
 
 var viewport = document.getElementById("viewport");
 var mapHigh = document.querySelector('.map-high img');
-var morningLight = document.querySelector('.morning-light');
-var eveningLight = document.querySelector('.evening-light');
-var nightLight = document.querySelector('.night-light');
-var nightCover = document.getElementById('night-ui-cover');
+var morningLight = document.querySelectorAll('.morning-light');
+var eveningLight = document.querySelectorAll('.evening-light');
+var nightLight = document.querySelectorAll('.night-light');
+var nightCover = document.querySelectorAll('.night-ui-cover');
 
 let newPosX = 0, newPosY = 0, startPosX = 0, startPosY = 0, initialStyleLeft = 0, initialStyleTop = 0;
 let dragMode = false;
@@ -383,9 +383,13 @@ export default {
     if (hour >= 5 && hour <= 19) {        
       let timeTillNoon = (12 - hour) * -1;
       if (hour >= 5 && hour <= 9) {
-        morningLight.style.opacity = 0.9 - (hour - 5) / 4;
+        for (const light of morningLight) {
+          light.style.opacity = 0.9 - (hour - 5) / 4;
+        }
       } else if (hour >= 16 && hour <= 19) {
-        eveningLight.style.opacity = (hour - 16) / 3;
+        for (const light of eveningLight) {
+          light.style.opacity = (hour - 16) / 3;
+        }
       }
       shortShadowPos = Math.round(timeTillNoon * 0.7);
       shortShadowSize = Math.round(timeTillNoon * 1);
@@ -394,18 +398,34 @@ export default {
       mapHigh.style.filter = "drop-shadow(" + shortShadowPos + "px " + Math.abs(shortShadowPos / 2) + "px " + Math.abs(shortShadowSize) + "px rgba(0, 0, 0, 0.5)) drop-shadow(" + longShadowPos + "px " + Math.abs(longShadowPos / 2) + "px " + Math.abs(longShadowSize) + "px rgba(0, 0, 0, 0.4))";        
     }
     if (hour >= 20 && hour <= 22) {
-      nightLight.style.opacity = 1 - Math.round((23 - hour) / 2 * 10) / 10 + 0.3; // / 2 -> completely dark
-      nightCover.style.opacity = 1 - Math.round((21 - hour) / 2 * 10) / 10; // / 2 -> completely dark
+      for (const light of nightLight) {
+        light.style.opacity = 1 - Math.round((23 - hour) / 2 * 10) / 10 + 0.3; // / 2 -> completely dark
+      }
+      for (const light of nightCover) {
+        light.style.opacity = 1 - Math.round((21 - hour) / 2 * 10) / 10; // / 2 -> completely dark
+      }
     } else if (hour >= 4 && hour <= 7) {
-      nightLight.style.opacity = 0.9 - Math.round((hour - 4) / 3 * 10) / 10;
-      nightCover.style.opacity = 1 - Math.round((21 - hour) / 2 * 10) / 10;
+      for (const light of nightLight) {
+        light.style.opacity = 0.9 - Math.round((hour - 4) / 3 * 10) / 10;
+      }
+      for (const light of nightCover) {
+        light.style.opacity = 1 - Math.round((hour - 4) / 3 * 10) / 10;
+      }
     }
     if (hour === 23) {
       mapHigh.style.filter = "";
-      morningLight.style.opacity = 0;
-      eveningLight.style.opacity = 0;
-      nightLight.style.opacity = 0.8;
-      nightCover.style.opacity = 1;
+      for (const light of morningLight) {
+        light.style.opacity = 0;
+      }
+      for (const light of eveningLight) {
+        light.style.opacity = 0;
+      }
+      for (const light of nightLight) {
+        light.style.opacity = 0.8;
+      }
+      for (const light of nightCover) {
+        light.style.opacity = 1;
+      }
     }
   }
 }

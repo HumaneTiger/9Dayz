@@ -9,6 +9,7 @@ body {
     font-family: 'Kalam', cursive;
     font-size: 24px;
     background: #4d4234 url(../img/ui/stretchground.jpg) 0 0 repeat-x;
+    overflow:hidden;
 }
 
 body * {
@@ -27,7 +28,7 @@ body * {
     height: 100vh;
     background-color: rgba(255, 254, 251, 1);
     color: rgba(0, 0, 0, 0.6);  
-    z-index: 2;
+    z-index: 20;
     padding: 0 25vw;
     opacity: 1;
     transition: opacity 1.5s ease-out;
@@ -124,6 +125,7 @@ body * {
     transform-origin: top left;
     background-repeat: no-repeat;
     transform: translateX(-50%);
+    z-index: 10;
 }
 
 h1, h2, h3, h4 {
@@ -146,18 +148,13 @@ main ul {
 }
 
 #map-border {
-    height: 1417px;
+    height: 100vh;
     width: auto;
     position: absolute;
     z-index: 4;
-    left: -111px;
-    top: -109px;
-}
-  
-#map-border img {
-    position: absolute;
-    top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%) scale(1.181);
+    margin-left: -2px;
 }
   
   

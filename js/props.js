@@ -17,7 +17,7 @@ var game = {
   mode: 'real',
   tutorial: false,
   battle: false,
-  speed: 4000,
+  speed: 4000, // 4000
   firstInfestation: false,
   firstLocked: false,
   firstSearch: false,

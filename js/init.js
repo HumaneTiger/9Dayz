@@ -9,9 +9,9 @@ import Actions from './actions.js'
 import Battle from './battle.js'
 import Cooking from './cooking.js'
 
-let startHour = 19; // 7
+let startHour = 7; // 7
 let tick = 0;
-let ticksPerHour = 6;
+let ticksPerHour = 6; // 6
 let tickInterval = 100;
 let tickCurrent = 0;
 
@@ -105,54 +105,6 @@ function initiateMainGameLoop() {
 
     }, tickInterval);
 }
-
-/*
-function initiateMainGameLoop() {
-
-    window.setTimeout(function() {
-
-        // go foreward in time
-
-        tick += 1;
-
-        // TICKY TASKS
-
-        if (tick % ticksPerHour === 0) {
-    
-            timeIsUnity.gameHours += 1;
-
-            // HOURLY TASKS
-
-            Ui.hourlyTasks(timeIsUnity.todayHours);
-
-            //Day.updateBrightness(timeIsUnity.todayHours);
-
-            if (timeIsUnity.gameHours % 24 === 0) {
-
-                timeIsUnity.gameDays += 1;
-
-                // DAILY TASKS
-
-                Ui.dailyTasks(timeIsUnity.gameDays);
-
-            }
-    
-        }
-
-        timeIsUnity.todayHours = timeIsUnity.gameHours - timeIsUnity.gameDays * 24;    
-        timeIsUnity.todayTime = timeIsUnity.todayHours < 10 ? '0' + timeIsUnity.todayHours + ':' : timeIsUnity.todayHours + ':';
-        timeIsUnity.todayTime += (tick % 6) + '0';
-
-        if (!Ui.isGamePaused()) {
-          initiateMainGameLoop();
-        } else {
-          idleLoop();
-        }
-
-    }, tickInterval);
-
-}
-*/
 
 function idleLoop() {
     window.setTimeout(function() {
