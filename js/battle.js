@@ -5,6 +5,7 @@ import Player from './player.js'
 import Cards from './cards.js'
 import Actions from './actions.js'
 import Items from './items.js'
+import Ui from './ui.js'
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -55,6 +56,8 @@ export default {
   startBattle(surprised, singleZedId) {
 
     Props.setGameProp('battle', true);
+    Ui.setGamePaused(true);
+
     if (singleZedId) {
       // result of successful luring
       cardZedDeck.push(singleZedId);
@@ -163,6 +166,7 @@ export default {
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);
         Player.lockMovement(false);
+        Ui.setGamePaused(false);
       });
       cardZedDeck = [];
     }.bind(this), 100);

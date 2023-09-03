@@ -285,6 +285,11 @@ export default {
     return playerPosition;
   },
 
+  setPlayerPosition: function(x, y) {
+    playerPosition.x = x;
+    playerPosition.y = y;
+  },
+
   getProp: function(prop) {
     return playerProps[prop];
   },
