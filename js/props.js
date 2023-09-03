@@ -24,7 +24,8 @@ var game = {
   firstZedNearby: false,
   firstRatFight: false, // later
   firstRatKill: false,
-  firstCraft: false
+  firstCraft: false,
+  firstCorpse: false
 }
 
 // all generated ids go in here
@@ -63,7 +64,8 @@ var buildingTypes = {
   'shop': ['market', 'gas-station'],
   'industrial': ['tool-shed', 'garage'],
   'water': ['well', 'jetty', 'pump'],
-  'camping': ['seating', 'log-cabine', 'cottage', 'outhouse', 'fireplace']
+  'camping': ['seating', 'log-cabine', 'cottage', 'outhouse', 'fireplace'],
+  'corpse': ['human-corpse-1']
 };
 
 var buildingProps = {
@@ -102,7 +104,8 @@ var buildingProps = {
   'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
-  'fireplace': { locked: 0, spawn: 0, items: [] }
+  'fireplace': { locked: 0, spawn: 0, items: [] },
+  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'tape', 'wooden-club'] },
 };
 
 var buildingActions = {
@@ -117,7 +120,8 @@ var buildingActions = {
   'shop': [ 'break door|30|-20', 'search|20|-10', 'scout area|30' ],
   'industrial': [ 'break door|30|-20', 'search|20|-15', 'scout area|30' ],
   'water': [ 'gather|15|-5', 'drink|10' ],
-  'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ]
+  'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ],
+  'corpse': ['search|15|-5']
 };
 
 var cookingRecipes = {
@@ -188,6 +192,10 @@ var specialEvents = {
   'crafting': {
     title: 'Hammer Time!',
     text: 'You collected the right resources to craft an item. Open the Crafting menu to see all options.<br><br><img src="./img/actions/craft.png">'
+  },
+  'corpse': {
+    title: 'Blessing in disguise',
+    text: 'Not all were rising back from the dead.<br>When chaos broke out, those few who were lucky enough not to have been infected before dying, just stayed dead.'
   },
   /* not ready */
   'rat-fight': {

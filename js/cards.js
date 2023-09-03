@@ -299,6 +299,11 @@ export default {
           let objectId = Props.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
+        if (object.type === 'corpse' && !Props.getGameProp('firstCorpse')) {
+          Props.setGameProp('firstCorpse', true);
+          let objectId = Props.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
         if (object.locked && !Props.getGameProp('firstLocked')) {
           Props.setGameProp('firstLocked', true);
           if (object.type === 'car') {

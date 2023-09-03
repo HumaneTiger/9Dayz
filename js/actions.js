@@ -136,7 +136,9 @@ export default {
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
       allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
-      
+      if (object.type === 'house' && Math.random() < 0.25) {
+        Props.setupBuilding(object.x, object.y, ['human-corpse-1']);
+      }
       for (let i = 0; i < allItems.length; i += 1) {
         window.setTimeout(function(index, item, cardId, energy) {
           allPreviews[index].classList.add('is--hidden');
