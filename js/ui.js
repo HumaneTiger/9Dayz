@@ -3,6 +3,7 @@ import Audio from './audio.js'
 import Player from './player.js'
 import Props from './props.js'
 import Items from './items.js'
+import Map from './map.js'
 
 var viewport = document.getElementById("viewport");
 var mapHigh = document.querySelector('.map-high img');
@@ -20,6 +21,7 @@ let squareX = 0, squareY = 0;
 let squareFreeze = true;
 
 let firstUserInteraction = false;
+let gamePaused = true;
 
 export default {
   
@@ -142,7 +144,11 @@ export default {
   },
   
   isGamePaused: function() {
-    return false;
+    return gamePaused;
+  },
+
+  setGamePaused: function(paused) {
+    gamePaused = paused;
   },
 
   userHasInteracted: function() {
@@ -190,6 +196,7 @@ export default {
           document.getElementById('startscreen').style.opacity = 0;
           Props.setupAllEvents();
           Player.findAndHandleObjects();
+          this.setGamePaused(false);
           window.setTimeout(function() {
             document.getElementById('startscreen').classList.add('is--hidden');
           }, 1500);
@@ -198,6 +205,7 @@ export default {
           Props.setGameProp('tutorial', true);
           Props.setupAllEvents();
           Player.findAndHandleObjects();
+          this.setGamePaused(false);
           window.setTimeout(function() {
             document.getElementById('startscreen').classList.add('is--hidden');
           }, 1500);          
@@ -258,9 +266,14 @@ export default {
           }
           Player.updatePlayer();
           squareFreeze = true;
-          //squareX = 0;
-          //squareY = 0;
-          //document.querySelector('#card-console .selected-square').textContent = '';
+          document.getElementById('square-marker').classList.remove('freeze');
+          document.getElementById('square-marker').classList.add('is--hidden');
+        }
+      } else if (target.classList.contains('beam-character')) {
+        if (squareX || squareY) {
+          Player.setPlayerPosition(squareX, squareY);
+          Player.updatePlayer(true);
+          squareFreeze = true;
           document.getElementById('square-marker').classList.remove('freeze');
           document.getElementById('square-marker').classList.add('is--hidden');
         }
@@ -342,6 +355,7 @@ export default {
       document.querySelector('#card-console .selected-square').textContent = '('+squareX+', '+squareY+')';
       document.getElementById('square-marker').style.left = (mouseX * 44.4) + 'px';
       document.getElementById('square-marker').style.top = (mouseY * 44.4 + 23) + 'px';
+      Map.mapUncoverAt(squareX, squareY);
     }
   },
 
@@ -353,7 +367,16 @@ export default {
   },
 
   resizeViewport: function() {
-    const scaleFactor = window.innerHeight / 1200;
+    const viewWidth = window.innerWidth,
+          viewHeight = window.innerHeight;
+    let scaleFactor;
+
+    /*if (viewWidth / viewHeight < 1.78) {
+      scaleFactor = viewWidth / 2135;
+    } else {
+      scaleFactor = viewHeight / 1200;
+    }*/
+    scaleFactor = viewHeight / 1200;
     viewport.style.transform = 'scale3d('+scaleFactor+','+scaleFactor+','+scaleFactor+') translate3d(-50%,0,0)';
   },
 

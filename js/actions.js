@@ -289,10 +289,10 @@ export default {
     const allFoundObjectIds = Player.findObjects(object.x, object.y);
 
     const zedsOnly = allFoundObjectIds.filter(singleObject => Props.getObject(singleObject).group === 'zombie');
+    Cards.showAllZedsNearby();
     Player.handleFoundObjectIds(zedsOnly);
-    Cards.renderCardDeck();
     Cards.disableActions();
-
+    
     window.setTimeout(function() {
       this.endAction(cardId);
       Battle.startBattle();

@@ -139,6 +139,17 @@ export default {
     return allZeds;
   },
 
+  showAllZedsNearby: function() {
+    cardDeck?.forEach(card => {
+      let object = Props.getObject(card.id);
+      if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
+        const cardRef = this.getCardById(card.id);
+        object.active = true;
+        cardRef.classList.remove('is--hidden'); // not strictly needed, but becuase of timeout crazieness
+      }
+    });
+  },
+
   addObjectsByIds: function(objectIds) {
     if (objectIds !== undefined) {
       objectIds?.forEach(objectId => {
@@ -162,9 +173,12 @@ export default {
 
       const id = card.id;
       let object = Props.getObject(id);
+      let distance = Math.sqrt( Math.pow((playerPosition.x - object.x), 2) + Math.pow((playerPosition.y - object.y), 2) );
 
-      const distance = Math.sqrt( Math.pow((playerPosition.x - object.x), 2) + Math.pow((playerPosition.y - object.y), 2) );
-
+      // show event cards always first
+      if (object.group === 'event') {
+        distance = -1;
+      }
       // distance
       object.distance = distance;
       cardDeck[index].distance = distance;
@@ -234,15 +248,14 @@ export default {
 
     });
 
-    cardDeck.sort(this.compare);
-    
   },
 
   renderCardDeck: function() {
    
     this.calculateCardDeckProperties();
     this.checkForSpecialEvents();
-
+    cardDeck.sort(this.compare);
+    
     cardDeck?.forEach(card => {  
       const object = Props.getObject(card.id);
       if (!object.discovered) {
@@ -276,7 +289,7 @@ export default {
       const crafting = Props.getCrafting();
       let specialEventObjectIds = [];
 
-      cardDeck?.forEach((card, index) => {
+      cardDeck?.forEach((card) => {
 
         const id = card.id;
         let object = Props.getObject(id);
@@ -322,7 +335,7 @@ export default {
         if (!object.discovered && !object.removed) {
           cardDeck.push({
             id: objectId,
-            distance: 0
+            distance: -1
           })
         }
       });
