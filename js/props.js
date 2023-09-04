@@ -1,6 +1,6 @@
 import Binding from './binding.js'
 
-const mapSize = { width: 45, height: 45 };
+const mapSize = { width: 49, height: 45 };
 
 var inventory = {
   items: new Array(),
@@ -70,7 +70,7 @@ var buildingTypes = {
 
 var buildingProps = {
   'barn': { locked: 1.2, spawn: 2, items: ['claw', 'duck', 'straw-wheet', 'pumpkin'] },
-  'big-tree': { locked: 0, spawn: 3, items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'] },
+  'big-tree': { locked: 0, spawn: 3, items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'], amount: 2 },
   'outhouse': { locked: 0, spawn: 1, items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'] },
   'pump': { locked: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
   'house': { locked: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
@@ -86,9 +86,9 @@ var buildingProps = {
   'signpost-7': { locked: 0, spawn: 0, items: [] },
   'old-villa': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'wine', 'exodus', 'books'] },
   'car-2': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
-  'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'] },
-  'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'] },
-  'scarecrow': { locked: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin'] },
+  'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'], amount: 2 },
+  'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'], amount: 2 },
+  'scarecrow': { locked: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin'], amount: 2 },
   'small-tree': { locked: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone', 'straw-wheet'] },
   'church': { locked: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
   'milton': { locked: 0, spawn: 0, items: [] },
@@ -99,8 +99,8 @@ var buildingProps = {
   'gas-station': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
   'tool-shed': { locked: 2, spawn: 2, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
   'garage': { locked: 3, spawn: 3, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
-  'well': { locked: 0, spawn: 1, items: ['branch', 'rosehip', 'reef', 'stone'] },
-  'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck'] },
+  'well': { locked: 0, spawn: 1, items: ['branch', 'rosehip', 'reef', 'stone'], amount: 2 },
+  'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck'], amount: 2 },
   'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
@@ -154,7 +154,7 @@ var events = {
   },
   '18-40': {
     title: 'Zombies!',
-    text: 'The road in front of you is blocked. Apparently, some unfortunates "survived" this accident, and now walk around as undead.<br>Be careful! They are really dangerous.'
+    text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – better deal with them later.'
   },
   '17-40': {
     title: 'Zombie 101',
@@ -367,7 +367,9 @@ export default {
   },
 
   getObjectIdsAt: function(x, y) {
-    return objectIdsAt[x][y];
+    if (objectIdsAt[x] !== undefined) {
+      return objectIdsAt[x][y];
+    }
   },
 
   getObjectsAt: function(x, y) {
@@ -567,7 +569,7 @@ export default {
     this.setupBuilding(19, 40, ['train-wreck-1']);
     this.setupBuilding(20, 40, ['train-wreck-2']);
     // TREES
-    this.setupBuilding(17, 43, ['big-tree']);
+    this.setupBuilding(17, 43, ['big-tree'], ['stone', 'branch']);
     this.setupBuilding(17, 44, ['small-tree']);
     this.setupBuilding(19, 44, ['small-tree']);
     this.setupBuilding(30, 33, ['big-tree', 'small-tree']);
@@ -674,6 +676,17 @@ export default {
     this.setZedAt(35, 18, 1);
   },
 
+  forceLootItemList: function(forceItems, maxAmount) {
+    let lootItemList = [];
+    for (var i = 0; i < forceItems.length; i += 1) {
+      lootItemList.push({
+        name: JSON.parse(JSON.stringify(forceItems[i])),
+        amount: Math.round(Math.random() * maxAmount) || 1
+      });
+    }
+    return lootItemList;
+  },
+
   createLootItemList: function(spawn, allItems, probability, amount) {
     const maxAmount = amount || 1;
     let lootItemList = [];
@@ -696,10 +709,10 @@ export default {
     return lootItemList;
   },
 
-  setupBuilding: function(x, y, buildingNamesArray) {
+  setupBuilding: function(x, y, buildingNamesArray, forceItems) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
-      const lootItemList = this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9);
+      const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9, props.amount);
       const locked = (Math.random() * props.locked > 1) ? true : false;
       const type = this.getBuildingTypeOf(buildingName);
       const infested = (type === 'house' && (Math.random() < 0.5)) ? true : false;
