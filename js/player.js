@@ -90,13 +90,8 @@ export default {
   },
 
   checkForDamage: function() {
-    let lowest = 100;
-    if (this.getProp('health') < lowest) lowest = this.getProp('health');
-    if (this.getProp('thirst') < lowest) lowest = this.getProp('thirst');
-    if (this.getProp('food') < lowest) lowest = this.getProp('food');
-    if (this.getProp('energy') < lowest) lowest = this.getProp('energy');
-    if (lowest < 20) {
-      document.getElementById('damage-cover').style.opacity = (100 - lowest*4) / 100;
+    if (this.getProp('health') < 33) {
+      document.getElementById('damage-cover').style.opacity = (100 - this.getProp('health') * 3.3) / 100;
     } else {
       document.getElementById('damage-cover').style.opacity = 0;
     }

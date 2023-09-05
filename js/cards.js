@@ -145,7 +145,8 @@ export default {
       if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
         const cardRef = this.getCardById(card.id);
         object.active = true;
-        cardRef.classList.remove('is--hidden'); // not strictly needed, but becuase of timeout crazieness
+        cardRef.classList.remove('is--hidden'); // not strictly needed, but because of timeout crazieness
+        cardRef.classList.remove('out-of-queue');
       }
     });
   },
@@ -366,6 +367,8 @@ export default {
 
     const playerPosition = Player.getPlayerPosition();
     let cardLeftPosition = 0;
+    let activeCardDeckSize = 0;
+    let activeCardIndex = 0;
 
     // Position (top / bottom)
     if (playerPosition.y < 15) {
@@ -374,38 +377,53 @@ export default {
       cardsContainer.classList.remove('cards-at-bottom');
     }
 
+    cardDeck?.forEach((card) => {
+      const object = Props.getObject(card.id);
+      if (!object.removed && object.active) {
+        activeCardDeckSize += 1;
+      }
+    });
+
     cardDeck?.forEach((card, index) => {
 
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
 
       if (!object.removed) {
-
         if (object.active) {
-
           // move new cards into place
-          window.setTimeout((cardRef) => {
-                    
+          window.setTimeout((cardRef) => {       
+            activeCardIndex += 1;
             if (cardRef.style.top === '600px') {
               cardRef.style.top = '';
               Audio.sfx('deal-card');
             }
-
             if (!cardRef.classList.contains('fight')) {
               if (cardRef.style.left !== cardLeftPosition + 'px') {
                 cardRef.style.transform = '';
                 cardRef.style.left = cardLeftPosition + 'px';
-                cardRef.style.zIndex = zIndexBase - index;
+                cardRef.style.zIndex = zIndexBase - activeCardIndex;
                 delete cardRef.dataset.oldZindex;
               }
             }
-
-            if (cardDeck.length < 7 || index < 3) {
-              cardLeftPosition += Math.floor(cardWidth);
-            } else {
-              cardLeftPosition += Math.floor(cardWidth / (index - 1.95));
+            if (activeCardIndex < 13) {
+              cardRef.classList.remove('out-of-queue');
+              if (activeCardDeckSize < 7) {
+                cardLeftPosition += Math.floor(cardWidth);
+              } else if (activeCardDeckSize < 10) {
+                if (activeCardIndex < 3) {
+                  cardLeftPosition += Math.floor(cardWidth);
+                } else {
+                  cardLeftPosition += Math.floor(cardWidth - (activeCardIndex * 20));
+                }
+              } else {
+                let additionalLeft = Math.floor(cardWidth - ((activeCardIndex + 1.5) * 20));
+                if (additionalLeft < 100) { additionalLeft = 100 };
+                cardLeftPosition += additionalLeft;
+              }  
+            } else if (!cardRef.classList.contains('fight')) {
+              cardRef.classList.add('out-of-queue');
             }
-
           }, 300 + 100 * index, cardRef);
 
           if (object.locked) {
