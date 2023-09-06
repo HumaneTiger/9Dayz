@@ -51,6 +51,15 @@ export default {
     }
   },
 
+  isItemPartOfRecipe: function(item) {
+    for (const recipe in cookingRecipes) {
+      if (item === cookingRecipes[recipe][0] || item === cookingRecipes[recipe][1]) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   checkForCardClick: function(ev) {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');

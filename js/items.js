@@ -174,7 +174,6 @@ export default {
   },
 
   checkCraftPrereq: function() {
-    const here = Player.getPlayerPosition();
     craftContainer.querySelectorAll('.button-craft').forEach((el) => {
       el.classList.remove('active');
       el.classList.remove('only1');
@@ -214,6 +213,20 @@ export default {
     }
   },
 
+  isItemPartOfCrafting: function(item) {
+    if (item && (item === "fail" ||
+      item === "hacksaw" ||
+      item === "stump" ||
+      item === "tape" ||
+      item === "branch" ||
+      item === "stone" ||
+      item === "straw-wheet" ||
+      item === "knife")) {
+        return true;
+    }
+    return false;
+  },
+
   craftingChangeFeedback: function() {
     document.querySelector('#actions .craft').classList.add('transfer');
     window.setTimeout(function() {
@@ -233,8 +246,10 @@ export default {
 
     const target = ev.target;
     const hoverSlot = target.closest('.slot');
+    const leftMouseButton = (ev.button === 0);
+    const rightMouseButton = (ev.button === 2);
 
-    if (hoverSlot && hoverSlot.classList.contains('active')) {
+    if (hoverSlot && hoverSlot.classList.contains('active') && leftMouseButton) {
       const item = hoverSlot.dataset.item;
       let food = items[item][1];
       let drink = items[item][2];
@@ -259,6 +274,19 @@ export default {
         hoverSlot.parentNode.replaceChild(hoverSlot, hoverSlot);
       }
     }
+    if (hoverSlot && leftMouseButton &&
+        hoverSlot.classList.contains('active') &&
+        hoverSlot.classList.contains('craft') &&
+        hoverSlot.classList.contains('already')) {
+      Audio.sfx('click');
+      document.getElementById('craft').classList.toggle('active');
+      document.getElementById('inventory').classList.remove('active');
+      document.querySelector('#actions li.craft').classList.remove('transfer');
+    }
+
+    if (hoverSlot && hoverSlot.classList.contains('active') && rightMouseButton) {
+      const item = hoverSlot.dataset.item;
+    }
   },
 
   checkForSlotHover: function(ev) {
@@ -273,10 +301,19 @@ export default {
       let drink = items[item][2];
       let energy = items[item][3];
       let itemName = this.capitalizeFirstLetter(item.split('-')[0]);
-      if (action === 'craft') {
-        inventoryContainer.querySelector('p.info').textContent = 'Use for crafting and fighting';
+      inventoryContainer.querySelector('p.info').innerHTML = '<span class="name">' + itemName + '</span>';
+      if (action === 'craft' && hoverSlot.classList.contains('active')) {
+        if (hoverSlot.classList.contains('active')) {
+          inventoryContainer.querySelector('p.info').innerHTML += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
+          if (this.isItemPartOfCrafting(item)) {
+            inventoryContainer.querySelector('p.info').innerHTML += '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
+            document.querySelector('#actions li.craft').classList.add('transfer');
+          }
+          if (Cooking.isItemPartOfRecipe(item)) {
+            inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+          }
+        }
       } else {
-        inventoryContainer.querySelector('p.info').innerHTML = '<span class="name">' + itemName + '</span>';
         document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
@@ -295,12 +332,16 @@ export default {
           document.querySelector('#properties li.energy').classList.add('transfer');
           Player.previewProps('energy', energy);
         }
+        if (Cooking.isItemPartOfRecipe(item) && hoverSlot.classList.contains('active')) {
+          inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+        }
       }
     } else {
       inventoryContainer.querySelector('p.info').textContent = '';
       document.querySelector('#properties li.food').classList.remove('transfer');
       document.querySelector('#properties li.thirst').classList.remove('transfer');
       document.querySelector('#properties li.energy').classList.remove('transfer');
+      document.querySelector('#actions li.craft').classList.remove('transfer');
       document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
       document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
       document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
@@ -315,7 +356,7 @@ export default {
     }
   },
 
-  fillItemSlot: function(itemSlots, amount) {
+  fillItemSlot: function(itemSlots, amount, crafting) {
     if (itemSlots) {
       for (let i = 0; i < itemSlots.length; i += 1) {
         const itemSlot = itemSlots[i];
@@ -328,6 +369,11 @@ export default {
           itemSlot.querySelector('.amount').textContent = '';
           itemSlot.classList.remove('active');
           itemSlot.classList.add('inactive');
+        }
+        if (crafting) {
+          itemSlot.classList.add('already');
+        } else {
+          itemSlot.classList.remove('already');
         }
       }
     }
@@ -344,7 +390,7 @@ export default {
           inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.add('is--hidden');
         }
       } else {
-        this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount);
+        this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, this.isItemPartOfCrafting(item));
       }
     }
     Cooking.checkAllCookingModeCards();

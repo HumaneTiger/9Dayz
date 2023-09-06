@@ -18,7 +18,6 @@ export default {
   
   init() {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
-    //document.body.addEventListener('mouseout', this.checkForCardUnHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
@@ -28,8 +27,9 @@ export default {
     const cardId = target.closest('div.card')?.id;
     const actionButton = target.closest('div.action-button');
     const itemContainer = target.closest('li.item:not(.is--hidden)');
+    const leftMouseButton = (ev.button === 0);
 
-    if (cardId) {
+    if (cardId && leftMouseButton) {
       const object = Props.getObject(cardId);
 
       ev.preventDefault();

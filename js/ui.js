@@ -34,8 +34,9 @@ export default {
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
 
-    this.bind();
+    document.body.addEventListener("contextmenu", (ev) => { ev.preventDefault(); });
 
+    this.bind();
     this.initDevConsole();
 
   },
@@ -44,7 +45,7 @@ export default {
   },
 
   mouseDown(e) {
-
+    
     let target = e.target;
 
     if (target) {
@@ -161,121 +162,124 @@ export default {
     const clickAction = target.closest('#actions');
     const startscreenAction = target.closest('#startscreen');
     const mapClick = target.closest('#maximap');
+    const leftMouseButton = (ev.button === 0);
 
     if (!firstUserInteraction) {
       firstUserInteraction = true;
       Audio.init();
     }
 
-    if (clickAction) {
-      Audio.sfx('click');
-      ev.preventDefault();
-      ev.stopPropagation();
-      const action = target.closest('li');
-      if (action.classList.contains('inventory')) {
-        document.getElementById('inventory').classList.toggle('active');
-        document.getElementById('craft').classList.remove('active');
-      } else if (action.classList.contains('craft')) {
-        document.getElementById('craft').classList.toggle('active');
-        document.getElementById('inventory').classList.remove('active');
-      } else if (action.classList.contains('settings')) {
-        document.getElementById('card-console').classList.toggle('out');
-      } else if (action.classList.contains('map')) {
-        this.hideUI();
-      }
-    }
-
-    if (startscreenAction) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const action = target.closest('.button');
-      const slider = target.closest('.slider');
-      if (action) {
+    if (leftMouseButton) {
+      if (clickAction) {
         Audio.sfx('click');
-        if (action.classList.contains('start-real')) {
-          document.getElementById('startscreen').style.opacity = 0;
-          Props.setupAllEvents();
-          Player.findAndHandleObjects();
-          this.setGamePaused(false);
-          window.setTimeout(function() {
-            document.getElementById('startscreen').classList.add('is--hidden');
-          }, 1500);
-        } else if (action.classList.contains('start-tutorial')) {
-          document.getElementById('startscreen').style.opacity = 0;
-          Props.setGameProp('tutorial', true);
-          Props.setupAllEvents();
-          Player.findAndHandleObjects();
-          this.setGamePaused(false);
-          window.setTimeout(function() {
-            document.getElementById('startscreen').classList.add('is--hidden');
-          }, 1500);          
-        } else if (action.classList.contains('restart')) {
-          window.setTimeout(function() {
-            document.location.reload();
-          }, 300);
-        }
-        if (document.getElementById('touchsupport').classList.contains('on')) {
-          document.getElementById('touchcontrols').classList.remove('is--hidden');
+        ev.preventDefault();
+        ev.stopPropagation();
+        const action = target.closest('li');
+        if (action.classList.contains('inventory')) {
+          document.getElementById('inventory').classList.toggle('active');
+          document.getElementById('craft').classList.remove('active');
+        } else if (action.classList.contains('craft')) {
+          document.getElementById('craft').classList.toggle('active');
+          document.getElementById('inventory').classList.remove('active');
+        } else if (action.classList.contains('settings')) {
+          document.getElementById('card-console').classList.toggle('out');
+        } else if (action.classList.contains('map')) {
+          this.hideUI();
         }
       }
-      if (slider) {
-        Audio.sfx('click');
-        slider.classList.toggle('on');
-      }
-    }
-
-    if (mapClick) {
-      document.getElementById('craft').classList.remove('active');
-      document.getElementById('inventory').classList.remove('active');
-      this.showUI();
-    }
-
-    if (target.closest('#card-console')) {
-      if (target.classList.contains('handle')) {
-        document.getElementById('card-console').classList.toggle('out');
-      } else if (target.classList.contains('select-square')) {
-        squareFreeze = false;
-        squareX = 0;
-        squareY = 0;
-        document.querySelector('#card-console .selected-square').textContent = '';
-        document.getElementById('square-marker').classList.remove('freeze');
-        document.getElementById('square-marker').classList.remove('is--hidden');
-      } else if (target.classList.contains('place-object')) {
-        if (squareX || squareY) {
-          let selectedObject = document.querySelector('#card-console .select-object').value;
-          if (selectedObject === 'zombie') {
-            Props.setZedAt(squareX, squareY, 1);
-          } else if (selectedObject === 'rats') {
-            Props.spawnRatsAt(squareX, squareY);
-          } else if (selectedObject === 'improvised-axe' || selectedObject === 'wooden-club') {
-            Props.setupWeapon(squareX, squareY, selectedObject);
-          } else if (selectedObject === 'care-package') {
-            Props.addToInventory('tomato', 1);
-            Props.addToInventory('carrot', 1);
-            Props.addToInventory('pepper', 1);
-            Props.addToInventory('tape', 1);
-            Props.addToInventory('drink-2', 2);
-            Props.addToInventory('snack-1', 2);
-            Props.addToInventory('snack-2', 2);
-            Props.addToInventory('knife', 1);
-            Props.addToInventory('energy-pills', 1);
-            Items.inventoryChangeFeedback();
-            Items.fillInventorySlots();
-          } else {
-            Props.setupBuilding(squareX, squareY, new Array(selectedObject));
+  
+      if (startscreenAction) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const action = target.closest('.button');
+        const slider = target.closest('.slider');
+        if (action) {
+          Audio.sfx('click');
+          if (action.classList.contains('start-real')) {
+            document.getElementById('startscreen').style.opacity = 0;
+            Props.setupAllEvents();
+            Player.findAndHandleObjects();
+            this.setGamePaused(false);
+            window.setTimeout(function() {
+              document.getElementById('startscreen').classList.add('is--hidden');
+            }, 1500);
+          } else if (action.classList.contains('start-tutorial')) {
+            document.getElementById('startscreen').style.opacity = 0;
+            Props.setGameProp('tutorial', true);
+            Props.setupAllEvents();
+            Player.findAndHandleObjects();
+            this.setGamePaused(false);
+            window.setTimeout(function() {
+              document.getElementById('startscreen').classList.add('is--hidden');
+            }, 1500);          
+          } else if (action.classList.contains('restart')) {
+            window.setTimeout(function() {
+              document.location.reload();
+            }, 300);
           }
-          Player.updatePlayer();
-          squareFreeze = true;
-          document.getElementById('square-marker').classList.remove('freeze');
-          document.getElementById('square-marker').classList.add('is--hidden');
+          if (document.getElementById('touchsupport').classList.contains('on')) {
+            document.getElementById('touchcontrols').classList.remove('is--hidden');
+          }
         }
-      } else if (target.classList.contains('beam-character')) {
-        if (squareX || squareY) {
-          Player.setPlayerPosition(squareX, squareY);
-          Player.updatePlayer(true);
-          squareFreeze = true;
+        if (slider) {
+          Audio.sfx('click');
+          slider.classList.toggle('on');
+        }
+      }
+  
+      if (mapClick) {
+        document.getElementById('craft').classList.remove('active');
+        document.getElementById('inventory').classList.remove('active');
+        this.showUI();
+      }
+  
+      if (target.closest('#card-console')) {
+        if (target.classList.contains('handle')) {
+          document.getElementById('card-console').classList.toggle('out');
+        } else if (target.classList.contains('select-square')) {
+          squareFreeze = false;
+          squareX = 0;
+          squareY = 0;
+          document.querySelector('#card-console .selected-square').textContent = '';
           document.getElementById('square-marker').classList.remove('freeze');
-          document.getElementById('square-marker').classList.add('is--hidden');
+          document.getElementById('square-marker').classList.remove('is--hidden');
+        } else if (target.classList.contains('place-object')) {
+          if (squareX || squareY) {
+            let selectedObject = document.querySelector('#card-console .select-object').value;
+            if (selectedObject === 'zombie') {
+              Props.setZedAt(squareX, squareY, 1);
+            } else if (selectedObject === 'rats') {
+              Props.spawnRatsAt(squareX, squareY);
+            } else if (selectedObject === 'improvised-axe' || selectedObject === 'wooden-club') {
+              Props.setupWeapon(squareX, squareY, selectedObject);
+            } else if (selectedObject === 'care-package') {
+              Props.addToInventory('tomato', 1);
+              Props.addToInventory('carrot', 1);
+              Props.addToInventory('pepper', 1);
+              Props.addToInventory('tape', 1);
+              Props.addToInventory('drink-2', 2);
+              Props.addToInventory('snack-1', 2);
+              Props.addToInventory('snack-2', 2);
+              Props.addToInventory('knife', 1);
+              Props.addToInventory('energy-pills', 1);
+              Items.inventoryChangeFeedback();
+              Items.fillInventorySlots();
+            } else {
+              Props.setupBuilding(squareX, squareY, new Array(selectedObject));
+            }
+            Player.updatePlayer();
+            squareFreeze = true;
+            document.getElementById('square-marker').classList.remove('freeze');
+            document.getElementById('square-marker').classList.add('is--hidden');
+          }
+        } else if (target.classList.contains('beam-character')) {
+          if (squareX || squareY) {
+            Player.setPlayerPosition(squareX, squareY);
+            Player.updatePlayer(true);
+            squareFreeze = true;
+            document.getElementById('square-marker').classList.remove('freeze');
+            document.getElementById('square-marker').classList.add('is--hidden');
+          }
         }
       }
     }

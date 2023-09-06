@@ -377,6 +377,9 @@ ul#properties li.time {
   vertical-align: top;
 }
 #inventory p.info .name,
+#inventory p.info .fighting,
+#inventory p.info .cooking,
+#inventory p.info .crafting,
 #inventory p.info .food,
 #inventory p.info .drink,
 #inventory p.info .energy {
@@ -394,6 +397,18 @@ ul#properties li.time {
 #inventory p.info .energy {
   font-weight: 400;
   color: #ddaa30;
+}
+#inventory p.info .fighting {
+  font-weight: 400;
+  color: #ff808d;
+}
+#inventory p.info .cooking {
+  font-weight: 400;
+  color: #a0bf39;
+}
+#inventory p.info .crafting {
+  font-weight: 400;
+  color: #ac9fb0;
 }
 
 #inventory .slot.unknown img.bg {
@@ -442,6 +457,7 @@ ul#properties li.time {
   display: none;
 }
 #inventory .slot.active.eat,
+#inventory .slot.active.craft.already,
 #inventory .slot.active.drink {
   cursor: pointer;
 }
@@ -450,6 +466,7 @@ ul#properties li.time {
   background-color: rgba(255, 255, 255, 0.75);
 }
 #inventory .slot.active.eat:hover span.action,
+#inventory .slot.active.craft.already:hover span.action,
 #inventory .slot.active.drink:hover span.action {
   opacity: 1;
 }
