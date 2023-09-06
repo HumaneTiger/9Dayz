@@ -256,8 +256,6 @@ export default {
         }
       }
       if (posXBefore !== playerPosition.x || posYBefore !== playerPosition.y) {
-        console.log(playerPosition.x, playerPosition.y);
-
         this.updatePlayer();
         moving = true;
         window.setTimeout(function() { moving = false; }, 1000);
