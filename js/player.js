@@ -230,6 +230,10 @@ export default {
         } else if (allPaths[playerPosition.x + 1][playerPosition.y + 1] && !allPaths[playerPosition.x + 1][playerPosition.y]) {
           playerPosition.x += 1; playerPosition.y += 1;
         }
+        // bloody overrule sidecases caused by diagonals, else is important here!
+        else if (playerPosition.x === 6 && playerPosition.y === 38) {
+          playerPosition.x += 1; playerPosition.y += 1;
+        }
       }
       if (ev.key && (ev.key.toLowerCase() === 'a' || ev.key === 'ArrowLeft')) {
         ev.preventDefault();
@@ -252,6 +256,8 @@ export default {
         }
       }
       if (posXBefore !== playerPosition.x || posYBefore !== playerPosition.y) {
+        console.log(playerPosition.x, playerPosition.y);
+
         this.updatePlayer();
         moving = true;
         window.setTimeout(function() { moving = false; }, 1000);
