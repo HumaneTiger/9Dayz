@@ -18,8 +18,9 @@ var game = {
   tutorial: false,
   battle: false,
   gamePaused: true,
-  firstUserInteraction: false,
   speed: 4000, // 4000
+  firstUserInteraction: false,
+  firstFight: false,
   firstInfestation: false,
   firstLocked: false,
   firstSearch: false,

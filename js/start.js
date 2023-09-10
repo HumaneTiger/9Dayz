@@ -48,6 +48,8 @@ export default {
             Props.setGameProp('gamePaused', false);
             window.setTimeout(function() {
               document.getElementById('startscreen').classList.add('is--hidden');
+              Audio.sfx('shuffle-paper');
+              document.getElementById('tutorial-beginning').classList.remove('is--hidden');
             }, 1500);          
           } else if (action.classList.contains('restart')) {
             window.setTimeout(function() {
@@ -70,7 +72,9 @@ export default {
   },
 
   handleKeypress: function(ev) {
-    this.switchToScreen2();
+    if (startMode === 1) {
+      this.switchToScreen2();
+    }
   },
 
   switchToScreen2: function() {

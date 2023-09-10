@@ -95,6 +95,13 @@ export default {
     } else {
       this.endBattle();
     }
+
+    // temp solution
+    if (!Props.getGameProp('firstFight') && Props.getGameProp('tutorial')) {
+      Props.setGameProp('firstFight', true);
+      Audio.sfx('shuffle-paper');
+      document.getElementById('tutorial-fights').classList.remove('is--hidden');
+    }
   },
 
   spawnBattleDeck: function(surprised) {

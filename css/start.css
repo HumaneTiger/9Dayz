@@ -92,6 +92,7 @@
   margin: 1.4em 0;
 }
 
+.card-tutorial .button,
 #startscreen .button {
   cursor: pointer;
   background-color: rgba(255, 254, 251, 1);
@@ -121,11 +122,41 @@
   display: block;
   margin-bottom: -1em;
 }
+.card-tutorial .button:not(.inactive):hover,
 #startscreen .button:not(.inactive):hover {
   transform: scale(1.1);
   opacity: 1;
   box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
 }
+
+.card-tutorial {
+  z-index: 101;
+  background-image: url(../img/card/card-tutorial.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: 0 4px 14px rgba(53, 35, 26, 0.5);
+  border-radius: 32px;
+  font-family: Averia Serif;
+  font-size: 20px;
+  font-weight: 300;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 814px;
+  padding: 30px 50px;
+}
+
+.card-tutorial .button {
+  display: inline-block;
+  width: 30%;
+}
+
+.card-tutorial .text--smedium {
+  line-height: 0.6em;
+}
+
 /*
 #startscreen div.options {
   text-align: center;
