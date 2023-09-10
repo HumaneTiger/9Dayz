@@ -6,7 +6,7 @@ let startMode = 1;
 
 export default {
   
-  init() {
+  init: function() {
     document.body.addEventListener('click', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
     this.bind();

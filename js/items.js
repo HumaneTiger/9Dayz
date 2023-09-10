@@ -12,7 +12,7 @@ const craftContainer = document.getElementById('craft');
 
 export default {
   
-  init() {
+  init: function() {
     Props.addToInventory('tomato', 2);
     Props.addToInventory('drink-2', 1);
     Props.addToInventory('snack-1', 1);

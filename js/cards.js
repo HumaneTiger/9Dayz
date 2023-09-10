@@ -16,7 +16,7 @@ var lastHoverTarget;
 
 export default {
   
-  init() {
+  init: function() {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },

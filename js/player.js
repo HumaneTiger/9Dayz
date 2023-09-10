@@ -23,7 +23,7 @@ var moving = false;
 
 export default {
   
-  init() {
+  init: function() {
     this.initPlayer();
     this.initMovement();
     this.bind();
@@ -133,7 +133,8 @@ export default {
   },
 
   initPlayer: function() {
-    this.updatePlayer();
+    Ui.showUI();
+    this.movePlayerTo(playerPosition.x, playerPosition.y);
     if (playerPosition.y < 20) {
       Map.moveMapYTo(20);
     } else if (playerPosition.y > 40) {

@@ -9,7 +9,7 @@ let squareFreeze = true;
 
 export default {
   
-  init() {
+  init: function() {
     document.body.addEventListener('click', this.handleClick.bind(this));
     this.bind();
     this.initDevConsole();

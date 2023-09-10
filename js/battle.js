@@ -21,7 +21,7 @@ let battleDeckProps = {
 
 export default {
   
-  init() {
+  init: function() {
     this.bind();
     document.querySelector('#battle-cards .end-turn').addEventListener('click', this.endTurn.bind(this));
   },

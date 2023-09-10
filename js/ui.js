@@ -16,7 +16,7 @@ let topIndex = 1;
 
 export default {
   
-  init() {
+  init: function() {
 
     window.addEventListener('resize', this.resizeViewport);
     document.body.addEventListener('click', this.handleClick.bind(this));

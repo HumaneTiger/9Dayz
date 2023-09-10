@@ -24,10 +24,8 @@ let timeIsUnity = {
     todayTime: '0' + startHour + ':00'
 }
 
-init();
-
-function init() {
-
+// initialize everything
+{
   Props.init();
   Start.init();
   Ui.init();
@@ -38,14 +36,10 @@ function init() {
   Items.init();
   Actions.init();
   Battle.init();
-  Cooking.init();
-  
+  Cooking.init(); 
   bind();
-
   Ui.resizeViewport();
-    
   initiateMainGameLoop();
-
 }
 
 function bind() {

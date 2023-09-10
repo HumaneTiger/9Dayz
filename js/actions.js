@@ -9,7 +9,7 @@ import Cooking from './cooking.js'
 
 export default {
   
-  init() {
+  init: function() {
   },
 
   goToAndAction: function(cardId, action) {

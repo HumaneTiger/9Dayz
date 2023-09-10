@@ -296,7 +296,7 @@ const actionTextMapping = {
 
 export default {
   
-  init() {
+  init: function() {
     this.setupAllBuildings();
     this.setupAllZeds();
     this.setupAllPaths();
@@ -1077,5 +1077,4 @@ export default {
     }
     return actionSet;
   }
-
 }

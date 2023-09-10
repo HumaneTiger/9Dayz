@@ -15,7 +15,7 @@ for (var i = 0; i < uncoverMatrix.length; i += 1) { uncoverMatrix[i] = new Array
 
 export default {
   
-  init() {
+  init: function() {
   },
 
   showScoutMarkerFor: function(cardId) {

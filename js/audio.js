@@ -5,8 +5,8 @@ let ambientDelay = 10;
 
 export default {
 
-    init() {
-      //this.playAmbientLoop();
+    init: function() {
+        //this.playAmbientLoop();
     },
 
     playAmbientLoop: function() {
@@ -18,7 +18,7 @@ export default {
       }.bind(this), (ambientTimes[ambientIndex-1] + ambientDelay) * 1000);
     },
 
-    music(name, delay, vol) {
+    music: function(name, delay, vol) {
 
         window.setTimeout(function() {
 
@@ -33,7 +33,7 @@ export default {
 
     },
 
-    voice(name, delay, vol) {
+    voice: function(name, delay, vol) {
 
         window.setTimeout(function() {
 
@@ -48,7 +48,7 @@ export default {
 
     },
 
-    sfx(name, delay, vol) {
+    sfx: function(name, delay, vol) {
 
         window.setTimeout(function() {
 
@@ -64,7 +64,7 @@ export default {
 
     },
 
-    sfxStop(name) {
+    sfxStop: function(name) {
 
       let audio = allAudio.querySelector('.sfx-' + name);
       audio.volume = 0;
@@ -73,7 +73,7 @@ export default {
 
     },
 
-    stop(name, delay) {
+    stop: function(name, delay) {
 
         window.setTimeout(function() {
 
