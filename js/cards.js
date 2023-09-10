@@ -320,8 +320,12 @@ export default {
           let objectId = Props.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
-        if (crafting.total && !Props.getGameProp('firstCraft')) {
-          Props.setGameProp('firstCraft', true);
+        if (crafting.total &&
+            !Props.getGameProp('firstAxeCraft') &&
+            Items.inventoryContains('tape') &&
+            Items.inventoryContains('branch') &&
+            Items.inventoryContains('stone')) {
+          Props.setGameProp('firstAxeCraft', true);
           let objectId = Props.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }

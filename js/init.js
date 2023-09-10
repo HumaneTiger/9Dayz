@@ -1,6 +1,7 @@
 import Binding from './binding.js'
 import Start from './start.js'
 import Ui from './ui.js'
+import Editor from './editor.js'
 import Props from './props.js'
 import Map from './map.js'
 import Player from './player.js'
@@ -30,6 +31,7 @@ function init() {
   Props.init();
   Start.init();
   Ui.init();
+  Editor.init();
   Map.init();
   Player.init();
   Cards.init();
@@ -99,7 +101,7 @@ function initiateMainGameLoop() {
             triggerGameTick();
         }
 
-        if (!Start.isGamePaused()) {
+        if (!Props.getGameProp('gamePaused')) {
             initiateMainGameLoop();
         } else {
             idleLoop();
@@ -110,7 +112,7 @@ function initiateMainGameLoop() {
 
 function idleLoop() {
     window.setTimeout(function() {
-        if (!Start.isGamePaused()) {
+        if (!Props.getGameProp('gamePaused')) {
             initiateMainGameLoop();
         } else {
             idleLoop();

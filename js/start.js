@@ -2,13 +2,13 @@ import Audio from './audio.js'
 import Player from './player.js'
 import Props from './props.js'
 
-let firstUserInteraction = false;
-let gamePaused = true;
+let startMode = 1;
 
 export default {
   
   init() {
     document.body.addEventListener('click', this.handleClick.bind(this));
+    document.body.addEventListener('keypress', this.handleKeypress.bind(this));
     this.bind();
   },
 
@@ -21,25 +21,23 @@ export default {
     const startscreenAction = target.closest('#startscreen');
     const leftMouseButton = (ev.button === 0);
 
-    if (!firstUserInteraction) {
-      firstUserInteraction = true;
-      Audio.init();
-    }
-
-    if (leftMouseButton) {
+    if (startMode === 1) {
+      this.switchToScreen2();
+      Audio.playAmbientLoop();
+    } else if (leftMouseButton) {
       if (startscreenAction) {
         ev.preventDefault();
         ev.stopPropagation();
         const action = target.closest('.button');
         const slider = target.closest('.slider');
-        const href = target.getAttribute('href');
+        const href = target.getAttribute('data-href');
         if (action) {
           Audio.sfx('click');
           if (action.classList.contains('start-real')) {
             document.getElementById('startscreen').style.opacity = 0;
             Props.setupAllEvents();
             Player.findAndHandleObjects();
-            this.setGamePaused(false);
+            Props.setGameProp('gamePaused', false);
             window.setTimeout(function() {
               document.getElementById('startscreen').classList.add('is--hidden');
             }, 1500);
@@ -48,7 +46,7 @@ export default {
             Props.setGameProp('tutorial', true);
             Props.setupAllEvents();
             Player.findAndHandleObjects();
-            this.setGamePaused(false);
+            Props.setGameProp('gamePaused', false);
             window.setTimeout(function() {
               document.getElementById('startscreen').classList.add('is--hidden');
             }, 1500);          
@@ -72,16 +70,14 @@ export default {
     }
   },
 
-  isGamePaused: function() {
-    return gamePaused;
+  handleKeypress: function(ev) {
+    this.switchToScreen2();
   },
 
-  setGamePaused: function(paused) {
-    gamePaused = paused;
-  },
-
-  userHasInteracted: function() {
-    return firstUserInteraction;
+  switchToScreen2: function() {
+    startMode = 2;
+    document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
   }
 
 }

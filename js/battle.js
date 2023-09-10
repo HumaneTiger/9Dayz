@@ -1,12 +1,10 @@
 import Audio from './audio.js'
-import Start from './start.js'
 import Binding from './binding.js'
 import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
 import Actions from './actions.js'
 import Items from './items.js'
-import Ui from './ui.js'
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -57,7 +55,7 @@ export default {
   startBattle(surprised, singleZedId) {
 
     Props.setGameProp('battle', true);
-    Start.setGamePaused(true);
+    Props.setGameProp('gamePaused', true);
 
     if (singleZedId) {
       // result of successful luring
@@ -167,7 +165,7 @@ export default {
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);
         Player.lockMovement(false);
-        Start.setGamePaused(false);
+        Props.setGameProp('gamePaused', false);
       });
       cardZedDeck = [];
     }.bind(this), 100);

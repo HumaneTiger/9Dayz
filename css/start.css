@@ -15,9 +15,12 @@
   transition: opacity 1.5s ease-out;
 }
 #startscreen p.screen__logo {
-  width: auto;
   text-align: center;
   margin-bottom: 1.6em;
+}
+#startscreen p.screen__logo img {
+  width: 300px;
+  height: auto;
 }
 #startscreen p.screen__paragraph {
   text-align: justify;
@@ -41,7 +44,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-#startscreen .screen__1 p {
+#startscreen .screen__1 p:not(.screen__logo) {
   margin: 0.66em 0;
 }
 #startscreen .screen__1 p.screen__press_key {
@@ -65,7 +68,7 @@
   }
 }
 #startscreen .screen__2 {
-  background: rgba(42, 40, 42, 0.3);
+  background: rgba(40, 40, 42, 0.5);
   border-left: 1px rgba(97, 97, 97, 0.9) solid;
   border-right: 1px rgba(97, 97, 97, 0.9) solid;
   box-shadow: 0 0 15px rgba(0, 0, 0, 1);
@@ -105,6 +108,7 @@
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.2s ease-out;
 }
 #startscreen .button.inactive {
+  cursor: default;
   color: rgba(42, 40, 42, 0.3);
 }
 #startscreen .button small {

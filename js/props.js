@@ -17,6 +17,8 @@ var game = {
   mode: 'real',
   tutorial: false,
   battle: false,
+  gamePaused: true,
+  firstUserInteraction: false,
   speed: 4000, // 4000
   firstInfestation: false,
   firstLocked: false,
@@ -24,7 +26,7 @@ var game = {
   firstZedNearby: false,
   firstRatFight: false, // later
   firstRatKill: false,
-  firstCraft: false,
+  firstAxeCraft: false,
   firstCorpse: false
 }
 
@@ -190,8 +192,8 @@ var specialEvents = {
     text: 'You won\'t be able to enter many place until you\'ve taken care of all hostiles nearby.<br><img src="./img/card/status-zombies.png">'
   },
   'crafting': {
-    title: 'Hammer Time!',
-    text: 'You collected the right resources to craft an item. Open the Crafting menu to see all options.<br><br><img src="./img/actions/craft.png">'
+    title: 'Crafting',
+    text: 'You collected the right resources to craft an Improvised Axe. The Axe is an extremely versatile, useful tool and weapon.<br><br><img src="./img/actions/craft.png">'
   },
   'corpse': {
     title: 'Blessing in disguise',

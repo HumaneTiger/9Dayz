@@ -8,9 +8,10 @@
       <link rel="icon" type="image/png" href="favicon.png">
 
       <link rel="stylesheet" href="css/main.css">
-      <link rel="stylesheet" href="css/start.css">
       <link rel="stylesheet" href="css/basics.css">
       <link rel="stylesheet" href="css/ui.css">
+      <link rel="stylesheet" href="css/start.css">
+      <link rel="stylesheet" href="css/editor.css">
       <link rel="stylesheet" href="css/map.css">
       <link rel="stylesheet" href="css/player.css">
       <link rel="stylesheet" href="css/cards.css">
@@ -30,7 +31,6 @@
 
   <body>
     <div id="card-console" class="out">
-      <!--<div class="handle">Game Editor</div>-->
       <img class="logo" src="./img/ui/logo.png">
       <p>
         <strong>1.</strong> Select a square in the game world
@@ -68,7 +68,6 @@
       </p>
     </div>
     <div id="startscreen">
-      <!--
       <div class="screen__1">
         <p class="screen__logo">
             <img src="./img/ui/logo.png" width="100%" height="auto">
@@ -82,21 +81,20 @@
         <p class="screen__paragraph">
           Your character will continuously walk on the edge of the abyss, and his death is almost inevitable during your first attempts. Despair, good and bad luck, relief and finally the successful escape are all part of the many experiences and feelings you will have in the following 9 Dayz.
         </p>  
-        <p class="screen__press_key pulsate">
+        <p class="screen__paragraph screen__press_key pulsate">
           Press any key to continue
         </p>  
       </div>
-      -->
-      <div class="screen__2">
+      <div class="screen__2 is--hidden">
         <div class="container">
           <p class="screen__logo">
             <img src="./img/ui/logo.png" width="100%" height="auto">
           </p>  
           <p class="screen__button">
-            <a href="#" class="button start-real">New Game</a>
+            <span data-href="#" class="button start-real">New Game</span>
           </p>
           <p class="screen__button">
-            <a href="#" class="button start-tutorial">Start with Tutorial</a>
+            <span data-href="#" class="button start-tutorial">Start with Tutorial<small>(recommended for new players)</small></span>
           </p>
           <p class="screen__button">
             <span class="button inactive">Resume<small>(under development)</small></span>
@@ -105,7 +103,7 @@
             <span class="button inactive">Settings<small>(under development)</small></span>
           </p>
           <p class="screen__button">
-            <a href="https://humane-tiger.itch.io/9-dayz" class="button">Give Feedback</a>
+            <span data-href="https://humane-tiger.itch.io/9-dayz" class="button">Give Feedback</span>
           </p>
         </div>
         <p class="screen__paragraph footer">

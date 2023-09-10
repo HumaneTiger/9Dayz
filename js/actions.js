@@ -1,5 +1,5 @@
-import Audio from './audio.js'
 import Props from './props.js'
+import Audio from './audio.js'
 import Player from './player.js'
 import Cards from './cards.js'
 import Map from './map.js'

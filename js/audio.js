@@ -1,6 +1,3 @@
-import Ui from './ui.js'
-import Start from './start.js'
-
 let allAudio = document.getElementById("all-audio");
 let ambientIndex = 1;
 let ambientTimes = [60, 110, 145, 145];
@@ -9,7 +6,7 @@ let ambientDelay = 10;
 export default {
 
     init() {
-      this.playAmbientLoop();
+      //this.playAmbientLoop();
     },
 
     playAmbientLoop: function() {
@@ -30,7 +27,7 @@ export default {
 
             audio.volume = volume;
             
-            if (Start.userHasInteracted()) audio.play();
+            audio.play().catch(() => {});
 
         }.bind(this), delay || 0);
 
@@ -44,7 +41,8 @@ export default {
             let volume = vol || 0.2;
 
             audio.volume = volume;
-            if (Start.userHasInteracted()) audio.play();
+
+            audio.play().catch(() => {});
 
         }, delay || 0);
 
@@ -59,7 +57,8 @@ export default {
             let volume = vol || 0.3;
 
             audio.volume = volume;
-            if (Start.userHasInteracted()) audio.play();
+
+            audio.play().catch(() => {});
 
         }.bind(this), delay || 0);
 
