@@ -23,7 +23,6 @@ export default {
 
     if (startMode === 1) {
       this.switchToScreen2();
-      Audio.playAmbientLoop();
     } else if (leftMouseButton) {
       if (startscreenAction) {
         ev.preventDefault();
@@ -76,6 +75,7 @@ export default {
 
   switchToScreen2: function() {
     startMode = 2;
+    Audio.playAmbientLoop(); 
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
   }

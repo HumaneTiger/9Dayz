@@ -134,6 +134,10 @@ export default {
 
   initPlayer: function() {
     Ui.showUI();
+    this.changeProps('health', 0); // triggers stats bar updates
+    this.changeProps('food', 0); // triggers stats bar updates
+    this.changeProps('thirst', 0); // triggers stats bar updates
+    this.changeProps('energy', 0); // triggers stats bar updates
     this.movePlayerTo(playerPosition.x, playerPosition.y);
     if (playerPosition.y < 20) {
       Map.moveMapYTo(20);
