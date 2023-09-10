@@ -1,4 +1,5 @@
 import Ui from './ui.js'
+import Start from './start.js'
 
 let allAudio = document.getElementById("all-audio");
 let ambientIndex = 1;
@@ -29,7 +30,7 @@ export default {
 
             audio.volume = volume;
             
-            if (Ui.userHasInteracted()) audio.play();
+            if (Start.userHasInteracted()) audio.play();
 
         }.bind(this), delay || 0);
 
@@ -43,7 +44,7 @@ export default {
             let volume = vol || 0.2;
 
             audio.volume = volume;
-            if (Ui.userHasInteracted()) audio.play();
+            if (Start.userHasInteracted()) audio.play();
 
         }, delay || 0);
 
@@ -58,7 +59,7 @@ export default {
             let volume = vol || 0.3;
 
             audio.volume = volume;
-            if (Ui.userHasInteracted()) audio.play();
+            if (Start.userHasInteracted()) audio.play();
 
         }.bind(this), delay || 0);
 

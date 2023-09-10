@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="EN">
 
   <head>
@@ -8,6 +8,7 @@
       <link rel="icon" type="image/png" href="favicon.png">
 
       <link rel="stylesheet" href="css/main.css">
+      <link rel="stylesheet" href="css/start.css">
       <link rel="stylesheet" href="css/basics.css">
       <link rel="stylesheet" href="css/ui.css">
       <link rel="stylesheet" href="css/map.css">
@@ -18,9 +19,8 @@
       <link rel="stylesheet" href="css/cooking.css">
 
       <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet"> 
-      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+      <link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@300;400&family=Kalam:wght@300;400;700&family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet"> 
       
   </head>
 
@@ -68,6 +68,51 @@
       </p>
     </div>
     <div id="startscreen">
+      <!--
+      <div class="screen__1">
+        <p class="screen__logo">
+            <img src="./img/ui/logo.png" width="100%" height="auto">
+        </p>  
+        <p class="screen__paragraph">
+          9 Dayz is a harsh und unforgiving survival game. Every action you take and every decision you make count – either instantly or in a longer term. This is not a game you can just rush into.
+        </p>
+        <p class="screen__paragraph">
+          If you are a new player, please make sure to prepare yourself by choosing the tutorial option.
+        </p>
+        <p class="screen__paragraph">
+          Your character will continuously walk on the edge of the abyss, and his death is almost inevitable during your first attempts. Despair, good and bad luck, relief and finally the successful escape are all part of the many experiences and feelings you will have in the following 9 Dayz.
+        </p>  
+        <p class="screen__press_key pulsate">
+          Press any key to continue
+        </p>  
+      </div>
+      -->
+      <div class="screen__2">
+        <div class="container">
+          <p class="screen__logo">
+            <img src="./img/ui/logo.png" width="100%" height="auto">
+          </p>  
+          <p class="screen__button">
+            <a href="#" class="button start-real">New Game</a>
+          </p>
+          <p class="screen__button">
+            <a href="#" class="button start-tutorial">Start with Tutorial</a>
+          </p>
+          <p class="screen__button">
+            <span class="button inactive">Resume<small>(under development)</small></span>
+          </p>
+          <p class="screen__button">
+            <span class="button inactive">Settings<small>(under development)</small></span>
+          </p>
+          <p class="screen__button">
+            <a href="https://humane-tiger.itch.io/9-dayz" class="button">Give Feedback</a>
+          </p>
+        </div>
+        <p class="screen__paragraph footer">
+          Development Build
+        </p>
+      </div>
+      <!--
       <p class="nospacing">
         <img class="logo" src="./img/ui/logo.png">
       </p>
@@ -102,6 +147,7 @@
           <span class="button restart">Play Again</span>
         </p>
       </div>
+      -->
     </div>
     <div id="damage-cover"></div>
     <img id="map-border" src="./img/ui/map-border.png">

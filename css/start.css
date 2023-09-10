@@ -1,0 +1,157 @@
+#startscreen {
+  background-image: url(../img/ui/startscreen-day.jpg);
+  background-repeat: no-repeat;
+  background-size: 100vw auto;
+  font-family: Averia Serif;
+  font-weight: 300;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 20;
+  opacity: 1;
+  transition: opacity 1.5s ease-out;
+}
+#startscreen p.screen__logo {
+  width: auto;
+  text-align: center;
+  margin-bottom: 1.6em;
+}
+#startscreen p.screen__paragraph {
+  text-align: justify;
+  font-size: 1em;
+  color: #fffefb;
+  text-shadow: 0 1px 2px black;
+  display: block;
+}
+#startscreen p.screen__paragraph.footer {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  bottom: 3%;
+  font-size: 0.6em;
+}
+
+#startscreen .screen__1 {
+  width: 700px;
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#startscreen .screen__1 p {
+  margin: 0.66em 0;
+}
+#startscreen .screen__1 p.screen__press_key {
+  text-align: center;
+  margin-top: 1.8em;
+}
+.pulsate {
+  animation: pulsate 4s ease-out;
+  animation-iteration-count: infinite; 
+  opacity: 0.5;
+}
+@keyframes pulsate {
+  0% { 
+      opacity: 0.2;
+  }
+  50% { 
+      opacity: 1.0;
+  }
+  100% { 
+      opacity: 0.2;
+  }
+}
+#startscreen .screen__2 {
+  background: rgba(42, 40, 42, 0.3);
+  border-left: 1px rgba(97, 97, 97, 0.9) solid;
+  border-right: 1px rgba(97, 97, 97, 0.9) solid;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+  width: 540px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+#startscreen .screen__2 .container {
+  position: absolute;
+  width: 100%;
+  top: 48%;
+  transform: translateY(-50%);
+  padding: 100px;
+}
+#startscreen .screen__2 p.screen__logo {
+  margin-bottom: 3em;
+}
+#startscreen .screen__2 p.screen__button {
+  margin: 1.4em 0;
+}
+
+#startscreen .button {
+  cursor: pointer;
+  background-color: rgba(255, 254, 251, 1);
+  box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
+  display: block;
+  font-size: 1em;
+  color: rgb(42, 40, 42);
+  padding: 24px 20px;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 0.9em;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.2s ease-out;
+}
+#startscreen .button.inactive {
+  color: rgba(42, 40, 42, 0.3);
+}
+#startscreen .button small {
+  display: block;
+  margin-bottom: -1em;
+}
+#startscreen .button:not(.inactive):hover {
+  transform: scale(1.1);
+  opacity: 1;
+  box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
+}
+/*
+#startscreen div.options {
+  text-align: center;
+}
+#startscreen div.options div {
+  display: inline-block;
+  height: 40px;
+  color: rgba(53, 35, 26, 0.45);
+}
+#startscreen div.options .slider {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px rgba(0, 0, 0, 0.2) solid;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 80px;
+  height: 42px;
+  text-align: left;
+}
+#startscreen div.options .slider .knob {
+  background-color: rgba(255, 254, 251, 1);
+  border: 1px rgba(0, 0, 0, 0.2) solid;
+  border-radius: 50%;
+  width: 37px;
+  height: 37px;
+  margin: 1px;
+  opacity: 0.5;
+  transition: margin 0.1s ease-out, opacity 0.1s ease-out;
+}
+#startscreen div.options .slider.on .knob {
+  opacity: 1;
+  margin-left: 40px;
+}
+#startscreen div.options .label {
+    vertical-align: top;
+    text-transform: uppercase;
+    padding-top: 10px;
+    font-size: 16px;
+}
+*/

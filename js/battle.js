@@ -1,4 +1,5 @@
 import Audio from './audio.js'
+import Start from './start.js'
 import Binding from './binding.js'
 import Props from './props.js'
 import Player from './player.js'
@@ -56,7 +57,7 @@ export default {
   startBattle(surprised, singleZedId) {
 
     Props.setGameProp('battle', true);
-    Ui.setGamePaused(true);
+    Start.setGamePaused(true);
 
     if (singleZedId) {
       // result of successful luring
@@ -166,7 +167,7 @@ export default {
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);
         Player.lockMovement(false);
-        Ui.setGamePaused(false);
+        Start.setGamePaused(false);
       });
       cardZedDeck = [];
     }.bind(this), 100);

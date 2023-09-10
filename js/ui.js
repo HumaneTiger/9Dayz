@@ -20,9 +20,6 @@ let topIndex = 1;
 let squareX = 0, squareY = 0;
 let squareFreeze = true;
 
-let firstUserInteraction = false;
-let gamePaused = true;
-
 export default {
   
   init() {
@@ -34,7 +31,7 @@ export default {
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
 
-    document.body.addEventListener("contextmenu", (ev) => { ev.preventDefault(); });
+    //document.body.addEventListener("contextmenu", (ev) => { ev.preventDefault(); });
 
     this.bind();
     this.initDevConsole();
@@ -144,30 +141,12 @@ export default {
 
   },
   
-  isGamePaused: function() {
-    return gamePaused;
-  },
-
-  setGamePaused: function(paused) {
-    gamePaused = paused;
-  },
-
-  userHasInteracted: function() {
-    return firstUserInteraction;
-  },
-
   handleClick: function(ev) {
 
     const target = ev.target;
     const clickAction = target.closest('#actions');
-    const startscreenAction = target.closest('#startscreen');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = (ev.button === 0);
-
-    if (!firstUserInteraction) {
-      firstUserInteraction = true;
-      Audio.init();
-    }
 
     if (leftMouseButton) {
       if (clickAction) {
@@ -185,45 +164,6 @@ export default {
           document.getElementById('card-console').classList.toggle('out');
         } else if (action.classList.contains('map')) {
           this.hideUI();
-        }
-      }
-  
-      if (startscreenAction) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        const action = target.closest('.button');
-        const slider = target.closest('.slider');
-        if (action) {
-          Audio.sfx('click');
-          if (action.classList.contains('start-real')) {
-            document.getElementById('startscreen').style.opacity = 0;
-            Props.setupAllEvents();
-            Player.findAndHandleObjects();
-            this.setGamePaused(false);
-            window.setTimeout(function() {
-              document.getElementById('startscreen').classList.add('is--hidden');
-            }, 1500);
-          } else if (action.classList.contains('start-tutorial')) {
-            document.getElementById('startscreen').style.opacity = 0;
-            Props.setGameProp('tutorial', true);
-            Props.setupAllEvents();
-            Player.findAndHandleObjects();
-            this.setGamePaused(false);
-            window.setTimeout(function() {
-              document.getElementById('startscreen').classList.add('is--hidden');
-            }, 1500);          
-          } else if (action.classList.contains('restart')) {
-            window.setTimeout(function() {
-              document.location.reload();
-            }, 300);
-          }
-          if (document.getElementById('touchsupport').classList.contains('on')) {
-            document.getElementById('touchcontrols').classList.remove('is--hidden');
-          }
-        }
-        if (slider) {
-          Audio.sfx('click');
-          slider.classList.toggle('on');
         }
       }
   
