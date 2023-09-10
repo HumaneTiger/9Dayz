@@ -1,6 +1,6 @@
-import Audio from './audio.js'
-import Player from './player.js'
-import Props from './props.js'
+import { default as Audio } from './audio.js'
+import { default as Player } from './player.js'
+import { default as Props } from './props.js'
 
 let startMode = 1;
 

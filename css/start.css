@@ -23,21 +23,20 @@
   height: auto;
 }
 #startscreen p.screen__paragraph {
-  text-align: justify;
-  font-size: 1em;
   color: #fffefb;
   text-shadow: 0 1px 2px black;
   display: block;
 }
 #startscreen p.screen__paragraph.footer {
-  text-align: center;
   position: absolute;
   width: 100%;
   bottom: 3%;
   font-size: 0.6em;
 }
 
-#startscreen .screen__1 {
+#startscreen .screen__1,
+#startscreen .screen__win,
+#startscreen .screen__dead {
   width: 700px;
   position: absolute;
   top: 48%;
@@ -97,7 +96,7 @@
   cursor: pointer;
   background-color: rgba(255, 254, 251, 1);
   box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
-  display: block;
+  text-shadow: none;
   font-size: 1em;
   color: rgb(42, 40, 42);
   padding: 24px 20px;
@@ -106,6 +105,13 @@
   text-decoration: none;
   line-height: 0.9em;
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.2s ease-out;
+}
+#startscreen .button.full-width {
+  display: block;
+}
+#startscreen .button.half--width {
+  display: inline-block;
+  width: 50%;
 }
 #startscreen .button.inactive {
   cursor: default;

@@ -3,7 +3,7 @@
 }
 
 .spacing--top {
-    margin-top: 8px;
+    margin-top: 2em;
 }
 
 .align--center {
@@ -12,6 +12,10 @@
 
 .align--right {
     text-align: right;
+}
+
+.align--block {
+    text-align: justify;
 }
 
 .text--tiny {
@@ -24,7 +28,7 @@
 }
 
 .text--ssmedium {
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 .text--smedium {

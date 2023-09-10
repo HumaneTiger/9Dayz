@@ -113,9 +113,10 @@ export default {
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
     window.setTimeout(function() {
-      startScreen.querySelector('.start').classList.add('is--hidden');
-      startScreen.querySelector('.you-win').classList.add('is--hidden');
-      startScreen.querySelector('.you-died').classList.remove('is--hidden');
+      startScreen.querySelector('.screen__1').classList.add('is--hidden');
+      startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__win').classList.add('is--hidden');
+      startScreen.querySelector('.screen__dead').classList.remove('is--hidden');
       startScreen.style.opacity = 1;
     }, 100);
   },
@@ -125,9 +126,10 @@ export default {
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
     window.setTimeout(function() {
-      startScreen.querySelector('.start').classList.add('is--hidden');
-      startScreen.querySelector('.you-win').classList.remove('is--hidden');
-      startScreen.querySelector('.you-died').classList.add('is--hidden');
+      startScreen.querySelector('.screen__1').classList.add('is--hidden');
+      startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__dead').classList.add('is--hidden');
+      startScreen.querySelector('.screen__win').classList.remove('is--hidden');
       startScreen.style.opacity = 1;
     }, 300);
   },

@@ -72,16 +72,16 @@
         <p class="screen__logo">
             <img src="./img/ui/logo.png" width="100%" height="auto">
         </p>  
-        <p class="screen__paragraph">
+        <p class="screen__paragraph align--block text--ssmedium">
           9 Dayz is a harsh und unforgiving survival game. Every action you take and every decision you make count – either instantly or in a longer term. This is not a game you can just rush into.
         </p>
-        <p class="screen__paragraph">
+        <p class="screen__paragraph align--block text--ssmedium">
           If you are a new player, please make sure to prepare yourself by choosing the tutorial option.
         </p>
-        <p class="screen__paragraph">
+        <p class="screen__paragraph align--block text--ssmedium">
           Your character will continuously walk on the edge of the abyss, and his death is almost inevitable during your first attempts. Despair, good and bad luck, relief and finally the successful escape are all part of the many experiences and feelings you will have in the following 9 Dayz.
         </p>  
-        <p class="screen__paragraph screen__press_key pulsate">
+        <p class="screen__paragraph screen__press_key text--ssmedium align--center pulsate">
           Press any key to continue
         </p>  
       </div>
@@ -91,23 +91,48 @@
             <img src="./img/ui/logo.png" width="100%" height="auto">
           </p>  
           <p class="screen__button">
-            <span data-href="#" class="button start-real">New Game</span>
+            <span data-href="#" class="button full-width start-real">New Game</span>
           </p>
           <p class="screen__button">
-            <span data-href="#" class="button start-tutorial">Start with Tutorial<small>(recommended for new players)</small></span>
+            <span data-href="#" class="button full-width start-tutorial">Start with Tutorial<small>(recommended for new players)</small></span>
           </p>
           <p class="screen__button">
-            <span class="button inactive">Resume<small>(under development)</small></span>
+            <span class="button full-width inactive">Resume<small>(under development)</small></span>
           </p>
           <p class="screen__button">
-            <span class="button inactive">Settings<small>(under development)</small></span>
+            <span class="button full-width inactive">Settings<small>(under development)</small></span>
           </p>
           <p class="screen__button">
-            <span data-href="https://humane-tiger.itch.io/9-dayz" class="button">Give Feedback</span>
+            <span data-href="https://humane-tiger.itch.io/9-dayz" class="button full-width">Give Feedback</span>
           </p>
         </div>
-        <p class="screen__paragraph footer">
+        <p class="screen__paragraph align--center footer">
           Development Build
+        </p>
+      </div>
+      <div class="screen__win is--hidden">
+        <p class="screen__paragraph align--center text--medium">
+          You win the game!
+        </p>
+        <p class="screen__paragraph align--center text--ssmedium">
+          Congratulations for getting that far!
+        </p>
+        <p class="screen__paragraph align--center text--ssmedium">
+          The ship will bring you to safety now.
+        </p>
+        <p class="screen__paragraph align--center text--ssmedium">
+          Thanks for playing! I am happy about any kind of ideas, thoughts, feedback or criticism.
+        </p>
+        <p class="screen__paragraph align--center spacing--top">
+          <span class="button half--width restart">Play Again</span>
+        </p>
+      </div>
+      <div class="screen__dead is--hidden">
+        <p class="screen__paragraph align--center text--medium">
+          You died.
+        </p>
+        <p class="screen__paragraph align--center spacing--top">
+          <span class="button half--width restart">Play Again</span>
         </p>
       </div>
       <!--
@@ -287,7 +312,7 @@
       <audio class="sfx-roast" src="./audio/fx/roast.wav" preload></audio>
     </div>
   
-    <script src="js/init.js" type="module" defer async></script>
+    <script src="js/init.js" type="module"></script>
     
   </body>
 
