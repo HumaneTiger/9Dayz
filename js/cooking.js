@@ -39,6 +39,7 @@ export default {
         Items.fillItemSlot(cardRef.querySelectorAll('.slot.item-' + cookingRecipes[recipe][1]), (Items.inventoryItemAmount(cookingRecipes[recipe][1]) || 0));
       }
       if (Items.inventoryKnows(cookingRecipes[recipe][0]) && Items.inventoryKnows(cookingRecipes[recipe][1])) {
+        console.log(recipe);
         cardRef.querySelector('.slot.action.item-' + recipe)?.classList.remove('unknown');
         if (!Items.inventoryContains(cookingRecipes[recipe][0]) || !Items.inventoryContains(cookingRecipes[recipe][1])) {
           cardRef.querySelector('.slot.action.item-' + recipe)?.classList.remove('active');

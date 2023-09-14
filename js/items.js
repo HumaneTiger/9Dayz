@@ -21,6 +21,8 @@ export default {
     Props.addToInventory('pepper', 1);
     Props.addToInventory('sharp-stick', 0);
 
+    Props.addToInventory('bones', 1);
+    Props.addToInventory('cloth', 1);
     /*
     Props.addToInventory('mushroom-1', 1);
     Props.addToInventory('sharp-stick', 1);
@@ -73,7 +75,7 @@ export default {
     if (inventory.items[item]) {
       return true;
     } else if (item === 'drink-1-2') {
-      if (inventory.items['drink-1'] || inventory.items['drink-2'] > 0) {
+      if (inventory.items['drink-1'] || inventory.items['drink-2']) {
         return true;
       }  
     } else  if (item === 'mushroom-1-2') {
@@ -133,6 +135,12 @@ export default {
       if (item === 'sharp-stick') {
         Props.addToInventory('sharp-stick', 1);
         Props.addToInventory('branch', -1);
+        this.inventoryChangeFeedback();
+        this.fillInventorySlots();
+      } else if (item === 'tape') {
+        Props.addToInventory('tape', 1);
+        Props.addToInventory('glue', -1);
+        Props.addToInventory('cloth', -1);
         this.inventoryChangeFeedback();
         this.fillInventorySlots();
       } else if (item === 'fireplace') {
@@ -207,6 +215,11 @@ export default {
       craftContainer.querySelector('.button-craft[data-item="sharp-stick"]').classList.add('active');
       totalCrafting++;
     }
+    // tape
+    if (inventory.items['cloth']?.amount > 0 && inventory.items['glue']?.amount > 0) {
+      craftContainer.querySelector('.button-craft[data-item="tape"]').classList.add('active');
+      totalCrafting++;
+    }
     if (totalCrafting !== crafting.total) {
       crafting.total = totalCrafting;
       this.craftingChangeFeedback();
@@ -218,6 +231,8 @@ export default {
       item === "hacksaw" ||
       item === "stump" ||
       item === "tape" ||
+      item === "glue" ||
+      item === "cloth" ||
       item === "branch" ||
       item === "stone" ||
       item === "straw-wheet" ||

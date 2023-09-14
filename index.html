@@ -191,7 +191,7 @@
         <ul id="actions" class="active">
           <li class="inventory"><span>Inventory (<em id="inventory-numbers">0</em>)</span></li>
           <li class="craft"><span>Craft (<em id="crafting-total">0</em>)</span></li>
-          <li class="mixed"><span class="countdown">Day <em id="gametime-days">1</em></span><span class="seperator">⬦</span><span class="time" id="gametime-hours"></span></li>
+          <li class="mixed day"><span class="countdown">Day <em id="gametime-days">1</em></span><span class="seperator">⬦</span><span class="time" id="gametime-hours"></span></li>
           <li class="map"><span>Map</span></li>
           <li class="settings"><span>Game Editor<!--Settings--></span></li>
         </ul>
@@ -213,6 +213,7 @@
             <div class="button-craft" data-item="improvised-axe" data-action="improvise an axe"><span class="material-symbols-outlined locked">lock</span>Craft</div>
             <div class="button-craft" data-item="fireplace" data-action="build a fireplace"><span class="material-symbols-outlined locked">lock</span>Build</div>
             <div class="button-craft" data-item="sharp-stick" data-action="carve sharp stick"><span class="material-symbols-outlined locked">lock</span>Carve</div>
+            <div class="button-craft" data-item="tape" data-action="craft tape"><span class="material-symbols-outlined locked">lock</span>Craft</div>
           </div>
           <p class="info"></p>
         </div>
@@ -285,23 +286,25 @@
       </p>
       <p class="screen__paragraph">
         When your character Attacks a zombie, other zombies in that area will join the battle.
-        <strong>Avoid fighting against more than one Zombie in the beginning of the game!</strong>
+        <strong>Avoid fighting against more than one Zombie in the beginning!</strong>
       </p>
       <p class="screen__paragraph">
-        Try to Lure single zombies into a fight (there is a dedicated action with a 50-50 chance), to make the battle easier. When you walk right into a Zombie, they will attack you first.
+        Lure single zombies into a fight (chance is 50:50), to make the battle easier. Zombie will attack you first, when you walk right into them.
       </p>
       <p class="screen__paragraph">
-        Once battle starts, <strong>all your inventory items turn into a Battle Card deck</strong>. The item properties change - each now has red Attack and blue Defense values.
-        Make sure you have enough items at hand that allow killing the Zombie.
+        Once the battle starts, <strong>all your inventory items turn into a Battle Card deck</strong>. Each item now has orange Attack and blue Defense values.
+        Make sure you have enough items at hand before starting a fight.
       </p>
       <p class="screen__paragraph">
-        Drag a Card over a Zombie to deal damage and to shield yourself. Each action consumes one Action Point and <strong>the used item will permanently be removed from your inventory</strong>.
+        Drag a Card over a Zombie to deal damage and to shield yourself. Each action consumes one Action Point. <strong>The item will permanently be removed from your inventory</strong>.
       </p>
       <p class="screen__paragraph">
-        Fighting rats comes with an extra challenge. They steal food items from your characters inventory to increase their health. Within very few rounds, rats can become pretty strong - fight them only when you can kill all of them in a few turns.
+          <!--
+          Fighting rats comes with an extra challenge. They steal food items from your characters inventory to increase their health. Within very few rounds, rats can become pretty strong - fight them only when you can kill all of them in a few turns.
+          -->
         <strong>Good luck!</strong>
       </p>
-      <p class="screen__paragraph align--center">
+      <p class="screen__paragraph align--center spacing--top">
         <span class="button half--width card-tutorial-confirm">Got it!</span>
       </p>
     </div>
