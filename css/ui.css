@@ -256,12 +256,16 @@ ul#properties li.time {
   top: 130px;
 }
 .button-craft[data-item="fireplace"] {
-  left: 438px;
-  top: 320px;
+  left: 332px;
+  top: 303px;
 }
 .button-craft[data-item="sharp-stick"] {
   left: 25px;
-  top: 300px;
+  top: 272px;
+}
+.button-craft[data-item="tape"] {
+  left: 588px;
+  top: 396px;
 }
 #inventory .inner {
   padding: 45px 40px;
@@ -477,11 +481,22 @@ ul#actions li span {
 ul#actions li.mixed {
   text-align: left;
   cursor: default;
+  padding-left: 88px;
+  background-position: 28px 8px;
+  background-size: 48px;
+  background-repeat: no-repeat;
+}
+
+ul#actions li.mixed.day {
+  background-image: url(../img/actions/sun.png);
+}
+ul#actions li.mixed.night {
+  background-image: url(../img/actions/moon.png);
 }
 
 ul#actions li span.countdown,
 ul#actions li span.time {
-  display: inline-block;
+  /*display: inline-block;*/
   width: 40%;
   padding-left: 0;
   margin: 0;

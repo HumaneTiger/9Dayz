@@ -10,6 +10,11 @@ export default {
     document.body.addEventListener('click', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
     this.bind();
+    if (Props.getGameProp('local')) {
+      startMode = 2;
+      document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
+      document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
+    }
   },
 
   bind: function() {
@@ -33,13 +38,7 @@ export default {
         if (action) {
           Audio.sfx('click');
           if (action.classList.contains('start-real')) {
-            document.getElementById('startscreen').style.opacity = 0;
-            Props.setupAllEvents();
-            Player.findAndHandleObjects();
-            Props.setGameProp('gamePaused', false);
-            window.setTimeout(function() {
-              document.getElementById('startscreen').classList.add('is--hidden');
-            }, 1500);
+            this.startReal();
           } else if (action.classList.contains('start-tutorial')) {
             document.getElementById('startscreen').style.opacity = 0;
             Props.setGameProp('tutorial', true);
@@ -69,6 +68,16 @@ export default {
         }
       }
     }
+  },
+
+  startReal: function() {
+    document.getElementById('startscreen').style.opacity = 0;
+    Props.setupAllEvents();
+    Player.findAndHandleObjects();
+    Props.setGameProp('gamePaused', false);
+    window.setTimeout(function() {
+      document.getElementById('startscreen').classList.add('is--hidden');
+    }, 1500);
   },
 
   handleKeypress: function(ev) {

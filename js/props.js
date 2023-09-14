@@ -15,9 +15,11 @@ var crafting = {
 
 var game = {
   mode: 'real',
+  timeMode: 'day',
   tutorial: false,
   battle: false,
   gamePaused: true,
+  local: location.href.startsWith('http://127'),
   speed: 4000, // 4000
   firstUserInteraction: false,
   firstFight: false,
@@ -76,10 +78,10 @@ var buildingProps = {
   'big-tree': { locked: 0, spawn: 3, items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'], amount: 2 },
   'outhouse': { locked: 0, spawn: 1, items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'] },
   'pump': { locked: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
-  'house': { locked: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
+  'house': { locked: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus', 'cloth'] },
   'farm-house': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'pumpkin', 'carrot', 'knife', 'pepper', 'tomato', 'exodus'] },
-  'town-house': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus'] },
-  'car-1': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
+  'town-house': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus', 'cloth'] },
+  'car-1': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner', 'cloth'] },
   'signpost-1': { locked: 0, spawn: 0, items: [] },
   'signpost-2': { locked: 0, spawn: 0, items: [] },
   'signpost-3': { locked: 0, spawn: 0, items: [] },
@@ -100,15 +102,15 @@ var buildingProps = {
   'train-wreck-1': { locked: 0, spawn: 3, items: ['snack-1', 'snack-2', 'drink-2', 'drink-5', 'wine'] },
   'market': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-3', 'drink-4', 'exodus'] },
   'gas-station': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
-  'tool-shed': { locked: 2, spawn: 2, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
-  'garage': { locked: 3, spawn: 3, items: ['brush', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
+  'tool-shed': { locked: 2, spawn: 2, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
+  'garage': { locked: 3, spawn: 3, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
   'well': { locked: 0, spawn: 1, items: ['branch', 'rosehip', 'reef', 'stone'], amount: 2 },
   'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck'], amount: 2 },
   'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
   'fireplace': { locked: 0, spawn: 0, items: [] },
-  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'tape', 'wooden-club'] },
+  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'wooden-club'] },
 };
 
 var buildingActions = {
@@ -229,7 +231,7 @@ var items = {
   'branch': ['craft', 0, 0, 0, 1, 1],
   'bread-1': ['eat', 45, 0, 20],
   'bread-2': ['eat', 40, 0, 20],
-  'brush': ['craft', 0, 0, 0, 2, 2],
+  'cloth': ['craft', 0, 0, 0, 4, 2],
   'books': ['craft', 0, 0, 0, 0, 2],
   'carrot': ['eat', 6, 4, 0],
   'claw': ['craft', 0, 0, 0, 4, 2],
