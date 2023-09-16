@@ -27,10 +27,11 @@ var game = {
   firstLocked: false,
   firstSearch: false,
   firstZedNearby: false,
-  firstRatFight: false, // later
-  firstRatKill: false,
+  firstRatFight: false,
   firstAxeCraft: false,
-  firstCorpse: false
+  firstCorpse: false,
+  firstLowEnergy: false,
+  firstDeadAnimal: false
 }
 
 // all generated ids go in here
@@ -58,7 +59,7 @@ var paths = new Array(mapSize.width);
 for (var i = 0; i < paths.length; i += 1) { paths[i] = new Array(mapSize.height); }
 
 var buildingTypes = {
-  'house': ['house', 'barn', 'old-villa', 'farm-house', 'town-house'],
+  'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house'],
   'car': ['car-1', 'car-2'],
   'farm': ['field', 'compost', 'scarecrow'],
   'tree': [ 'small-tree', 'big-tree'],
@@ -69,7 +70,7 @@ var buildingTypes = {
   'shop': ['market', 'gas-station'],
   'industrial': ['tool-shed', 'garage'],
   'water': ['well', 'jetty', 'pump'],
-  'camping': ['seating', 'log-cabine', 'cottage', 'outhouse', 'fireplace'],
+  'camping': ['seating', 'log-cabine', 'outhouse', 'fireplace'],
   'corpse': ['human-corpse-1']
 };
 
@@ -114,7 +115,7 @@ var buildingProps = {
 };
 
 var buildingActions = {
-  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+70' ],
+  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+60' ],
   'car': [ 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20' ],
   'farm': [ 'gather|15|-10','scout area|30' ],
   'tree': [ 'gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15' ],
@@ -202,14 +203,17 @@ var specialEvents = {
     title: 'Blessing in disguise',
     text: 'Not all were rising back from the dead.<br>When chaos broke out, those few who were lucky enough not to have been infected before dying, just stayed dead.'
   },
-  /* not ready */
   'rat-fight': {
     title: 'Taking a bite',
-    text: 'If a rat got hurt, it won\'t attack you. Instead it will steel food from your inventory and eat it to heal its wounds.'
+    text: 'When a rat attacks, it will steal food from your inventory to improve its defense. When there is no food left, it will attack you instead.'
   },
-  'rat-kill': {
-    title: 'Beggars aren\'t choosers',
-    text: 'Rats give some good meal, when cutted into pieces and roasted over fire. Just get over the disgust.<br><img src="./img/items/meat.PNG">'
+  'dead-animal': {
+    title: 'Bon Appétit',
+    text: 'Dead animals give some good meal, when being cutted into pieces and roasted over a fireplace. Just get over the disgust.<br><img src="./img/items/meat.PNG">'
+  },
+  'low-energy': {
+    title: 'Worn-out',
+    text: 'Most actions consume a certain amount of Energy. Make sure to eat high-quality food and find a place to rest or sleep. At night you get a bonus.<br><img class="double" src="./img/icons/energy.png">'
   }
 };
 
@@ -320,6 +324,15 @@ export default {
       property: 'total',
       element: document.getElementById('crafting-total')
     })
+  },
+
+  hourlyTasks: function(hour) {
+    if (hour === 21) {
+      this.setGameProp('timeMode', 'night');
+    }
+    if (hour === 5) {
+      this.setGameProp('timeMode', 'day');
+    }
   },
 
   /* ==================== the good ones ==================== */
@@ -803,7 +816,7 @@ export default {
       y: y,
       name: name,
       title: '',
-      type: undefined,
+      type: 'rat',
       group: 'zombie',
       text: false,
       actions: [

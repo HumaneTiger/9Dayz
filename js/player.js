@@ -13,7 +13,7 @@ var playerProps = {
   health: 100,
   food: 65,
   thirst: 70,
-  energy: 75,
+  energy: 75, // 75
   protection: 0,
   actions: 0
 }

@@ -21,6 +21,12 @@ export default {
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
+  hourlyTasks: function(hour) {
+    if (hour === 21 || hour === 5) {
+      this.switchDayNight();
+    }
+  },
+
   checkForCardClick: function(ev) {
 
     const target = ev.target;
@@ -279,6 +285,7 @@ export default {
     });
 
     this.refreshCardDeck();
+    this.switchDayNight();
     this.logDeck();
   },
 
@@ -320,25 +327,32 @@ export default {
           let objectId = Props.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
-        if (crafting.total &&
-            !Props.getGameProp('firstAxeCraft') &&
-            Items.inventoryContains('tape') &&
-            Items.inventoryContains('branch') &&
-            Items.inventoryContains('stone')) {
+        if (object.dead && (object.group === 'animal' || object.type === 'rat') && !Props.getGameProp('firstDeadAnimal')) {
+          Props.setGameProp('firstDeadAnimal', true);
+          let objectId = Props.setupSpecialEvent('dead-animal', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (!object.dead && object.type === 'rat' && !Props.getGameProp('firstRatFight')) {
+          Props.setGameProp('firstRatFight', true);
+          let objectId = Props.setupSpecialEvent('rat-fight', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+      });
+
+      if (crafting.total &&
+        !Props.getGameProp('firstAxeCraft') &&
+        Items.inventoryContains('tape') &&
+        Items.inventoryContains('branch') &&
+        Items.inventoryContains('stone')) {
           Props.setGameProp('firstAxeCraft', true);
           let objectId = Props.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
-        }
-        /*if (object.toBeImplented && !Props.getGameProp('firstRatFight')) {
-          Props.setGameProp('firstRatFight', true);
-          console.log('firstRatFight');
-        }
-        if (object.toBeImplented && !Props.getGameProp('firstRatKill')) {
-          Props.setGameProp('firstRatKill', true);
-          console.log('firstRatKill');
-        }*/
-
-      });
+      }
+      if (Player.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
+        Props.setGameProp('firstLowEnergy', true);
+        let objectId = Props.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
+        specialEventObjectIds.push(objectId);
+      }
 
       specialEventObjectIds?.forEach(objectId => {
         let object = Props.getObject(objectId);
@@ -365,6 +379,24 @@ export default {
       cardConsole.innerHTML += '</p>';
     });
     */
+  },
+
+  switchDayNight: function() {
+    cardDeck?.forEach((card) => {
+      const object = Props.getObject(card.id);
+      const cardRef = document.getElementById(card.id);
+      if (!object.removed) {
+        if (object.active) {
+          if (Props.getGameProp('timeMode') === 'day') {
+            cardRef.classList.remove('night');
+            cardRef.classList.add('day');
+          } else {
+            cardRef.classList.remove('day');
+            cardRef.classList.add('night');
+          }
+        }
+      }
+    });
   },
 
   refreshCardDeck: function() {
@@ -598,6 +630,7 @@ export default {
     let actionList = '';
     object.actions?.forEach(action => {
       let additionInfo = '';
+      let label = action.label;
 
       if (action.time || action.energy) {
         additionInfo = '<span class="additional">';
@@ -605,13 +638,22 @@ export default {
           additionInfo += action.time + ' min';
         }
         if (action.energy) {
-          additionInfo += ' | ' + action.energy + '<span class="material-symbols-outlined energy">flash_on</span>';
+          additionInfo += ' | ' + (action.energy > 0 ? '+' : '') + action.energy;
+          if (action.id === 'rest') {
+            additionInfo += '<span class="at-night">(+5)</span>';
+          } else if (action.id === 'sleep') {
+            additionInfo += '<span class="at-night">(+20)</span>';
+          }
+          additionInfo += '<span class="material-symbols-outlined energy">flash_on</span>';
         }
         additionInfo += '</span>';
       }
+      if (action.id === 'rest' || action.id === 'sleep') {
+        label = '<span class="material-symbols-outlined nightmode at-night">dark_mode</span>' + label;
+      }
 
       actionList += '<li class="' + action.id + '"><div data-action="' + action.id + '" class="action-button">' +
-      '<span class="text"><span class="material-symbols-outlined">lock</span> ' + action.label + '</span>' +
+      '<span class="text"><span class="material-symbols-outlined">lock</span> ' + label + '</span>' +
       additionInfo + '<span class="additional-locked"></span></div></li>';
     });
 

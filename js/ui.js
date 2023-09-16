@@ -207,6 +207,19 @@ export default {
   hourlyTasks: function(hour) {
 
     this.updateDayNightLayers(hour);
+    
+    if (hour === 21) {
+      // switch to night time
+      document.querySelector('#actions li.mixed').classList.remove('day');
+      document.querySelector('#actions li.mixed').classList.add('night');
+      Props.setGameProp('timeMode', 'night');
+    }
+    if (hour === 5) {
+      // switch to day time
+      document.querySelector('#actions li.mixed').classList.remove('night');
+      document.querySelector('#actions li.mixed').classList.add('day');
+      Props.setGameProp('timeMode', 'day');
+    }
 
   },
 
@@ -273,18 +286,6 @@ export default {
       for (const light of nightCover) {
         light.style.opacity = 1;
       }
-    }
-    if (hour === 21) {
-      // switch to night time
-      document.querySelector('#actions li.mixed').classList.remove('day');
-      document.querySelector('#actions li.mixed').classList.add('night');
-      Props.setGameProp('timeMode', 'night');
-    }
-    if (hour === 5) {
-      // switch to day time
-      document.querySelector('#actions li.mixed').classList.remove('night');
-      document.querySelector('#actions li.mixed').classList.add('day');
-      Props.setGameProp('timeMode', 'day');
     }
   }
 }

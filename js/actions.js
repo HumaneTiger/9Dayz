@@ -188,6 +188,7 @@ export default {
   simulateResting: function(cardId, time, energy) {
 
     Map.showScoutMarkerFor(cardId);
+    if (Props.getGameProp('timeMode') === 'night') { energy += 5 };
 
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
@@ -202,6 +203,7 @@ export default {
   simulateSleeping: function(cardId, time, energy) {
 
     Map.showScoutMarkerFor(cardId);
+    if (Props.getGameProp('timeMode') === 'night') { energy += 20 };
 
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);

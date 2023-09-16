@@ -63,6 +63,9 @@
 .card.fight {
   z-index: 220;
 }
+.card.day .at-night {
+  display: none;
+}
 .card .dead {
   width: 100%;
   position: absolute;
@@ -213,6 +216,11 @@
   color: rgba(137, 110, 102, 1);
   font-size: 26px;
   text-align: center;
+}
+.card p.text img.double {
+  width: 80px;
+  height: auto;
+  padding-top: 10px;
 }
 
 .card img.motive {

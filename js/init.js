@@ -65,7 +65,10 @@ function triggerGameTick() {
         timeIsUnity.gameHours += 1;
 
         /* HOURLY TASKS */
+        /* order matters */
+        Props.hourlyTasks(timeIsUnity.todayHours);
         Ui.hourlyTasks(timeIsUnity.todayHours);
+        Cards.hourlyTasks(timeIsUnity.todayHours);
 
         //Day.updateBrightness(timeIsUnity.todayHours);
 
