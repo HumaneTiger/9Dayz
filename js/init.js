@@ -11,7 +11,7 @@ import Actions from './actions.js'
 import Battle from './battle.js'
 import Cooking from './cooking.js'
 
-let startHour = 21; // 7
+let startHour = 7; // 7
 let tick = 0;
 let ticksPerHour = 6; // 6
 let tickInterval = 100;

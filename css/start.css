@@ -1,7 +1,7 @@
 #startscreen {
   background-image: url(../img/ui/startscreen-day.jpg);
   background-repeat: no-repeat;
-  background-size: 100vw auto;
+  background-size: cover;
   font-family: Averia Serif;
   font-weight: 300;
   position: fixed;
@@ -162,6 +162,50 @@
   line-height: 0.6em;
 }
 
+#startscreen .screen__option {
+  margin: 8px 0;
+}
+#startscreen .screen__option div {
+  color: rgba(255, 254, 251, 1);
+  font-size: 1em;
+  text-shadow: 0 1px 2px black;
+  display: inline-block;
+  height: 40px;
+}
+#startscreen .screen__option .slider {
+  background-color: rgba(255, 254, 251, 0.2);
+  border: 2px rgba(255, 254, 251, 0.6) solid;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 80px;
+  height: 42px;
+  text-align: left;
+}
+#startscreen .screen__option .slider .knob {
+  background-color: rgba(255, 254, 251, 1);
+  border: 1px rgba(255, 254, 251, 0.2) solid;
+  border-radius: 50%;
+  width: 37px;
+  height: 37px;
+  margin: 1px;
+  opacity: 0.5;
+  transition: margin 0.1s ease-out, opacity 0.1s ease-out;
+}
+#startscreen .screen__option .slider:hover .knob {
+  opacity: 0.65;
+}
+#startscreen .screen__option .slider.on .knob {
+  opacity: 1;
+  margin-left: 40px;
+}
+#startscreen .screen__option .label {
+    vertical-align: top;
+    padding: 6px 10px;
+}
+#startscreen .screen__option .label small {
+  line-height: 3em;
+  vertical-align: text-top;
+}
 /*
 #startscreen div.options {
   text-align: center;

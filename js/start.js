@@ -51,10 +51,23 @@ export default {
           if (document.getElementById('touchsupport')?.classList.contains('on')) {
             document.getElementById('touchcontrols')?.classList.remove('is--hidden');
           }
+          if (document.getElementById('fullscreen')?.classList.contains('on')) {
+            if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen();
+            }
+          }
         }
         if (slider) {
           Audio.sfx('click');
-          slider.classList.toggle('on');
+          if (slider.id && slider.id === 'fullscreen') {
+            if (slider.classList.contains('on')) {
+              slider.classList.remove('on');
+            } else {
+              slider.classList.add('on');
+            }
+          } else {
+            slider.classList.toggle('on');
+          }
         }
         if (href && href !== '#') {
           window.open( href, '_blank');
@@ -94,9 +107,6 @@ export default {
 
   switchToScreen2: function() {
     startMode = 2;
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    }
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
   },

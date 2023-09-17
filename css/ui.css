@@ -529,15 +529,15 @@ ul#actions li.map span {
   position: fixed;
   right: 100px;
   bottom: 150px;
-  width: 200px;
-  height: 200px;
-  z-index: 51;
+  width: 350px;
+  height: 350px;
+  z-index: 101;
 }
 
 #touchcontrols .move {
   position: absolute;
-  width: 70px;
-  height: 70px;
+  width: 120px;
+  height: 120px;
   background-image: url(../img/ui/mobile-touch.png);
   background-size: 100%;
   opacity: 0.3;
@@ -551,14 +551,14 @@ ul#actions li.map span {
 
 #touchcontrols .left,
 #touchcontrols .right {
-  top: 65px;
+  top: 115px;
 }
 #touchcontrols .right {
   right: 0;
 }
 #touchcontrols .up,
 #touchcontrols .down {
-  left: 65px;
+  left: 115px;
 }
 #touchcontrols .down {
   bottom: 0;
