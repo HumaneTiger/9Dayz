@@ -71,13 +71,24 @@ small {
     filter: brightness(85%);
 }
 
-@keyframes shake {
-    0% { transform: translateX(0); }
-    33% { transform: translateX(5px); }
-    66% { transform: translateX(-8px); }
-    100% { transform: translateX(0); }
+.shake {
+  animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-.shake {
-    animation: shake linear 0.2s 3 forwards;
+@keyframes shake {
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  
+  20%, 80% {
+    transform: translateX(10px);
+  }
+
+  30%, 50%, 70% {
+    transform: translateX(-20px);    
+  }
+
+  40%, 60% {
+    transform: translateX(20px);
+  }
 }

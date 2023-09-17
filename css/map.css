@@ -74,7 +74,7 @@
 
 #maximap .inner .map-highlights #scoutmarker {
   z-index: 1;
-  transform: translate(-12px, -14px) scale(1.5);
+  transform: translate(-13px, -10px) scale(1.5);
 }
 
 #maximap .inner .map-highlights .danger-area {

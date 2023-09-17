@@ -73,12 +73,10 @@ ul#properties span.meter em {
   display: inline-block;
 }
 ul#properties li.low span.meter {
-  border: 3px #fc9f71 solid;
-  box-shadow: 0 0 6px #fc9f71;
+  box-shadow: 0 0 6px #fc9f71, inset 0 0 0 3px #fc9f71;
 }
 ul#properties li.very-low span.meter {
-  border: 4px red solid;
-  box-shadow: 0 0 7px red;
+  box-shadow: 0 0 7px red, inset 0 0 0 4px red;
 }
 ul#properties li.low:after,
 ul#properties li.very-low:after {
@@ -122,7 +120,7 @@ ul#properties li.health span.meter {
 ul#properties li.health.in-battle {
   position: absolute;
   left: 50%;
-  transform: translate(-50%);
+  margin-left: -322px;
   top: 722px;
 }
 ul#properties li.health.in-battle #protection{

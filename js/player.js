@@ -11,8 +11,8 @@ var player = document.getElementById("player");
 var playerPosition = { x: 18, y: 44 };
 var playerProps = {
   health: 100,
-  food: 65,
-  thirst: 70,
+  food: 65, // 65
+  thirst: 70, // 70
   energy: 75, // 75
   protection: 0,
   actions: 0
@@ -76,6 +76,12 @@ export default {
       } else if (playerProps[prop] < 33)  {
         propMeter.parentNode.classList.add('low');
       }
+      if (prop === 'health' && change < 0) {
+        document.querySelector('#properties li.health').classList.add('shake');
+        window.setTimeout(() => {
+          document.querySelector('#properties li.health').classList.remove('shake');
+        }, 200);
+      }
     }
     this.checkForDamage();
     return playerProps[prop];
@@ -115,6 +121,7 @@ export default {
     window.setTimeout(function() {
       startScreen.querySelector('.screen__1').classList.add('is--hidden');
       startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__3').classList.add('is--hidden');
       startScreen.querySelector('.screen__win').classList.add('is--hidden');
       startScreen.querySelector('.screen__dead').classList.remove('is--hidden');
       startScreen.style.opacity = 1;
@@ -128,6 +135,7 @@ export default {
     window.setTimeout(function() {
       startScreen.querySelector('.screen__1').classList.add('is--hidden');
       startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__3').classList.add('is--hidden');
       startScreen.querySelector('.screen__dead').classList.add('is--hidden');
       startScreen.querySelector('.screen__win').classList.remove('is--hidden');
       startScreen.style.opacity = 1;

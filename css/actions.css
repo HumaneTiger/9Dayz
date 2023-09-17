@@ -35,9 +35,6 @@
   line-height: 0.9em;
   vertical-align: top;
 }
-#cards .actions li .material-symbols-outlined.nightmode {
-  padding-right: 8px;
-}
 
 #cards .card .action-button span.additional-locked,
 #cards .card li.locked .action-button,
@@ -45,12 +42,6 @@
 #cards .card.locked li.rest .action-button,
 #cards .card.locked li.sleep .action-button {
   color: #ed7d31;
-}
-#cards .card li.locked .material-symbols-outlined,
-#cards .card.locked li.search .material-symbols-outlined,
-#cards .card.locked li.rest .material-symbols-outlined,
-#cards .card.locked li.sleep .material-symbols-outlined {
-  display: inline-block;
 }
 ul.actions .action-button span.additional-locked {
   display: none;

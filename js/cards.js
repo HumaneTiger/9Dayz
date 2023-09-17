@@ -44,10 +44,14 @@ export default {
       if (actionButton && !object.disabled) {
         const action = actionButton.dataset.action;
         const actionObject = object.actions.find(singleAction => singleAction.id === action);
-  
+        const cardRef = this.getCardById(cardId);
+
         if (actionObject) {
           if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
-            // shake energy meter
+            document.querySelector('#properties li.energy')?.classList.add('shake');
+            window.setTimeout(() => {
+              document.querySelector('#properties li.energy')?.classList.remove('shake');
+            }, 200);    
             Audio.sfx('nope');
           } else if (actionObject && !actionObject.locked) {
             Audio.sfx('click');
@@ -59,6 +63,10 @@ export default {
             }
             Actions.goToAndAction(cardId, action);
           } else {
+            cardRef?.classList.add('shake');
+            window.setTimeout(() => {
+              cardRef?.classList.remove('shake');
+            }, 200);    
             Audio.sfx('nope');
           }  
         }
@@ -548,7 +556,6 @@ export default {
           actionRef.querySelector('span.text').innerHTML = '<span class="material-symbols-outlined">release_alert</span> ' + action.label;
         } else {
           actionRef.classList.remove('critical');
-          actionRef.querySelector('span.text span.material-symbols-outlined').classList.add('is--hidden');
         }
       });
 
@@ -649,11 +656,11 @@ export default {
         additionInfo += '</span>';
       }
       if (action.id === 'rest' || action.id === 'sleep') {
-        label = '<span class="material-symbols-outlined nightmode at-night">dark_mode</span>' + label;
+        label = '<span class="material-symbols-outlined nightmode at-night">dark_mode</span> ' + label;
       }
 
       actionList += '<li class="' + action.id + '"><div data-action="' + action.id + '" class="action-button">' +
-      '<span class="text"><span class="material-symbols-outlined">lock</span> ' + label + '</span>' +
+      '<span class="text">' + label + '</span>' +
       additionInfo + '<span class="additional-locked"></span></div></li>';
     });
 

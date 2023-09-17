@@ -21,9 +21,9 @@ export default {
     Props.addToInventory('pepper', 1);
     Props.addToInventory('sharp-stick', 0);
 
+    /*
     Props.addToInventory('bones', 1);
     Props.addToInventory('cloth', 1);
-    /*
     Props.addToInventory('mushroom-1', 1);
     Props.addToInventory('sharp-stick', 1);
     Props.addToInventory('bones', 1);
@@ -286,7 +286,9 @@ export default {
       if (food || drink || energy) {
         Props.addToInventory(item, -1);
         this.fillInventorySlots();
-        hoverSlot.parentNode.replaceChild(hoverSlot, hoverSlot);
+        if (!this.inventoryContains(item)) {
+          this.resetInventorySlotHoverEffect();
+        }
       }
     }
     if (hoverSlot && leftMouseButton &&
@@ -332,35 +334,40 @@ export default {
         document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
-        if (food > 0 && hoverSlot.classList.contains('active')) {
+        console.log(item, this.inventoryContains(item));
+        if (food > 0 && this.inventoryContains(item)) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="food">' + food + '<span class="material-symbols-outlined">lunch_dining</span></span>';
           document.querySelector('#properties li.food').classList.add('transfer');
           Player.previewProps('food', food);
         }
-        if (drink > 0 && hoverSlot.classList.contains('active')) {
+        if (drink > 0 && this.inventoryContains(item)) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="drink">' + drink + '<span class="material-symbols-outlined">water_medium</span></span>';
           document.querySelector('#properties li.thirst').classList.add('transfer');
           Player.previewProps('thirst', drink);
         }
-        if (energy > 0 && hoverSlot.classList.contains('active')) {
+        if (energy > 0 && this.inventoryContains(item)) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="energy">' + energy + '<span class="material-symbols-outlined">flash_on</span></span>';
           document.querySelector('#properties li.energy').classList.add('transfer');
           Player.previewProps('energy', energy);
         }
-        if (Cooking.isItemPartOfRecipe(item) && hoverSlot.classList.contains('active')) {
+        if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       }
     } else {
-      inventoryContainer.querySelector('p.info').textContent = '';
-      document.querySelector('#properties li.food').classList.remove('transfer');
-      document.querySelector('#properties li.thirst').classList.remove('transfer');
-      document.querySelector('#properties li.energy').classList.remove('transfer');
-      document.querySelector('#actions li.craft').classList.remove('transfer');
-      document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
-      document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
-      document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+      this.resetInventorySlotHoverEffect();
     }
+  },
+
+  resetInventorySlotHoverEffect: function() {
+    inventoryContainer.querySelector('p.info').textContent = '';
+    document.querySelector('#properties li.food').classList.remove('transfer');
+    document.querySelector('#properties li.thirst').classList.remove('transfer');
+    document.querySelector('#properties li.energy').classList.remove('transfer');
+    document.querySelector('#actions li.craft').classList.remove('transfer');
+    document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
   },
 
   generateInventorySlots: function() {

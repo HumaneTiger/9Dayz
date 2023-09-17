@@ -278,10 +278,15 @@ export default {
       if (Math.random() >= 0.4) {
         Battle.startBattle(false, cardId);
       } else {
+        const cardRef = Cards.getCardById(cardId);
         Cards.enableActions();
         Player.lockMovement(false);
         Player.changeProps('energy', energy);
         Audio.sfx('nope');
+        cardRef?.classList.add('shake');
+        window.setTimeout(() => {
+          cardRef?.classList.remove('shake');
+        }, 200);
         Cards.renderCardDeck();
       }
     }, cardId, time, 1600, energy);

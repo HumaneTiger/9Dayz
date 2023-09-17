@@ -36,24 +36,17 @@ export default {
         const slider = target.closest('.slider');
         const href = target.getAttribute('data-href');
         if (action) {
-          Audio.sfx('click');
           if (action.classList.contains('start-real')) {
+            Audio.sfx('click');
             this.startReal();
           } else if (action.classList.contains('start-tutorial')) {
-            document.getElementById('startscreen').style.opacity = 0;
-            Props.setGameProp('tutorial', true);
-            Props.setupAllEvents();
-            Player.findAndHandleObjects();
-            Props.setGameProp('gamePaused', false);
-            window.setTimeout(function() {
-              document.getElementById('startscreen').classList.add('is--hidden');
-              Audio.sfx('shuffle-paper');
-              document.getElementById('tutorial-beginning').classList.remove('is--hidden');
-            }, 1500);          
+            this.switchToScreen3();
           } else if (action.classList.contains('restart')) {
             window.setTimeout(function() {
               document.location.reload();
             }, 300);
+          } else if (action.classList.contains('card-tutorial-confirm')) {
+            this.startTutorial();
           }
           if (document.getElementById('touchsupport')?.classList.contains('on')) {
             document.getElementById('touchcontrols')?.classList.remove('is--hidden');
@@ -75,9 +68,22 @@ export default {
     Props.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
+    Audio.playAmbientLoop();
     window.setTimeout(function() {
       document.getElementById('startscreen').classList.add('is--hidden');
     }, 1500);
+  },
+
+  startTutorial: function() {
+    document.getElementById('startscreen').style.opacity = 0;
+    Props.setGameProp('tutorial', true);
+    Props.setupAllEvents();
+    Player.findAndHandleObjects();
+    Props.setGameProp('gamePaused', false);
+    Audio.playAmbientLoop();
+    window.setTimeout(function() {
+      document.getElementById('startscreen').classList.add('is--hidden');
+    }, 1500);          
   },
 
   handleKeypress: function(ev) {
@@ -88,9 +94,18 @@ export default {
 
   switchToScreen2: function() {
     startMode = 2;
-    Audio.playAmbientLoop(); 
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
+  },
+
+  switchToScreen3: function() {
+    Audio.sfx('shuffle-paper');
+    document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
+    document.getElementById('tutorial-beginning').classList.remove('is--hidden');
   }
 
 }
