@@ -269,7 +269,7 @@ export default {
   renderCardDeck: function() {
    
     this.calculateCardDeckProperties();
-    this.checkForSpecialEvents();
+    this.addSpecialEventCards();
     cardDeck.sort(this.compare);
     
     cardDeck?.forEach(card => {  
@@ -298,70 +298,11 @@ export default {
     this.logDeck();
   },
 
-  checkForSpecialEvents: function() {
+  addSpecialEventCards: function() {
 
     if (Props.getGameProp('tutorial')) {
 
-      const playerPosition = Player.getPlayerPosition();
-      const crafting = Props.getCrafting();
-      let specialEventObjectIds = [];
-
-      cardDeck?.forEach((card) => {
-
-        const id = card.id;
-        let object = Props.getObject(id);
-
-        if (object.infested && !Props.getGameProp('firstInfestation')) {
-          Props.setGameProp('firstInfestation', true);
-          let objectId = Tutorial.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
-          specialEventObjectIds.push(objectId);
-        }
-        if (object.type === 'corpse' && !Props.getGameProp('firstCorpse')) {
-          Props.setGameProp('firstCorpse', true);
-          let objectId = Tutorial.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
-          specialEventObjectIds.push(objectId);
-        }
-        if (object.locked && !Props.getGameProp('firstLocked')) {
-          Props.setGameProp('firstLocked', true);
-          if (object.type === 'car') {
-            let objectId = Tutorial.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
-            specialEventObjectIds.push(objectId);
-          } else {
-            let objectId = Tutorial.setupSpecialEvent('locked-building', playerPosition.x, playerPosition.y);
-            specialEventObjectIds.push(objectId);
-          }
-        }
-        if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
-          Props.setGameProp('firstZedNearby', true);
-          let objectId = Tutorial.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
-          specialEventObjectIds.push(objectId);
-        }
-        if (object.dead && (object.group === 'animal' || object.type === 'rat') && !Props.getGameProp('firstDeadAnimal')) {
-          Props.setGameProp('firstDeadAnimal', true);
-          let objectId = Tutorial.setupSpecialEvent('dead-animal', playerPosition.x, playerPosition.y);
-          specialEventObjectIds.push(objectId);
-        }
-        if (!object.dead && object.type === 'rat' && !Props.getGameProp('firstRatFight')) {
-          Props.setGameProp('firstRatFight', true);
-          let objectId = Tutorial.setupSpecialEvent('rat-fight', playerPosition.x, playerPosition.y);
-          specialEventObjectIds.push(objectId);
-        }
-      });
-
-      if (crafting.total &&
-        !Props.getGameProp('firstAxeCraft') &&
-        Items.inventoryContains('tape') &&
-        Items.inventoryContains('branch') &&
-        Items.inventoryContains('stone')) {
-          Props.setGameProp('firstAxeCraft', true);
-          let objectId = Tutorial.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
-          specialEventObjectIds.push(objectId);
-      }
-      if (Player.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
-        Props.setGameProp('firstLowEnergy', true);
-        let objectId = Tutorial.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
-        specialEventObjectIds.push(objectId);
-      }
+      const specialEventObjectIds = Tutorial.checkForSpecialEvents(cardDeck);
 
       specialEventObjectIds?.forEach(objectId => {
         let object = Props.getObject(objectId);
@@ -373,22 +314,9 @@ export default {
         }
       });
     }
-    
   },
 
-  logDeck: function() {
-    /*
-    const cardConsole = document.getElementById('card-console');
-    cardConsole.innerHTML = '';
-    cardDeck?.forEach(card => {  
-      cardConsole.innerHTML += '<p>';
-      const object = Props.getObject(card.id);
-      cardConsole.innerHTML = cardConsole.innerHTML + card.id + ': ';
-      cardConsole.innerHTML = cardConsole.innerHTML + JSON.stringify(object).replaceAll('","', '", "').replaceAll('":"', '": "').replaceAll('":', '": ').replaceAll('<img', '') + ' ';
-      cardConsole.innerHTML += '</p>';
-    });
-    */
-  },
+  logDeck: function() {},
 
   switchDayNight: function() {
     cardDeck?.forEach((card) => {

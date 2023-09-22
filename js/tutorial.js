@@ -1,4 +1,5 @@
 import { default as Props } from './props.js'
+import { default as Player } from './player.js'
 
 var events = {
   '18-44': {
@@ -103,25 +104,92 @@ export default {
   },
 
   setupSpecialEvent: function(event, x, y) {
+    const currentObjectsIdCounter = Props.addObjectIdAt(x, y);
+    Props.setObject(currentObjectsIdCounter, {
+      x: x,
+      y: y,
+      name: 'event',
+      title: specialEvents[event].title,
+      type: undefined,
+      group: 'event',
+      text: specialEvents[event].text,
+      actions: [{
+        id: 'got-it', label: 'Got it!'
+      }],
+      items: [],
+      active: true,
+      discovered: false,
+      removed: false
+    });  
+    return currentObjectsIdCounter;
+  },
+
+  checkForSpecialEvents: function(cardDeck) {
+
+    const playerPosition = Player.getPlayerPosition();
+    const crafting = Props.getCrafting();
+    let specialEventObjectIds = [];
+
     if (Props.getGameProp('tutorial')) {
-      const currentObjectsIdCounter = Props.addObjectIdAt(x, y);
-      Props.setObject(currentObjectsIdCounter, {
-        x: x,
-        y: y,
-        name: 'event',
-        title: specialEvents[event].title,
-        type: undefined,
-        group: 'event',
-        text: specialEvents[event].text,
-        actions: [{
-          id: 'got-it', label: 'Got it!'
-        }],
-        items: [],
-        active: true,
-        discovered: false,
-        removed: false
-      });  
-      return currentObjectsIdCounter;
+
+      cardDeck?.forEach((card) => {
+
+        const id = card.id;
+        let object = Props.getObject(id);
+
+        if (object.infested && !Props.getGameProp('firstInfestation')) {
+          Props.setGameProp('firstInfestation', true);
+          let objectId = this.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (object.type === 'corpse' && !Props.getGameProp('firstCorpse')) {
+          Props.setGameProp('firstCorpse', true);
+          let objectId = this.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (object.locked && !Props.getGameProp('firstLocked')) {
+          Props.setGameProp('firstLocked', true);
+          if (object.type === 'car') {
+            let objectId = this.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
+            specialEventObjectIds.push(objectId);
+          } else {
+            let objectId = this.setupSpecialEvent('locked-building', playerPosition.x, playerPosition.y);
+            specialEventObjectIds.push(objectId);
+          }
+        }
+        if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
+          Props.setGameProp('firstZedNearby', true);
+          let objectId = this.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (object.dead && (object.group === 'animal' || object.type === 'rat') && !Props.getGameProp('firstDeadAnimal')) {
+          Props.setGameProp('firstDeadAnimal', true);
+          let objectId = this.setupSpecialEvent('dead-animal', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+        if (!object.dead && object.type === 'rat' && !Props.getGameProp('firstRatFight')) {
+          Props.setGameProp('firstRatFight', true);
+          let objectId = this.setupSpecialEvent('rat-fight', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+        }
+      });
+
+      if (crafting.total &&
+        !Props.getGameProp('firstAxeCraft') &&
+        Items.inventoryContains('tape') &&
+        Items.inventoryContains('branch') &&
+        Items.inventoryContains('stone')) {
+          Props.setGameProp('firstAxeCraft', true);
+          let objectId = this.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
+      }
+
+      if (Player.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
+        Props.setGameProp('firstLowEnergy', true);
+        let objectId = this.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
+        specialEventObjectIds.push(objectId);
+      }      
     }
+    return specialEventObjectIds;
   }
 }
