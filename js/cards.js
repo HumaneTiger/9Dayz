@@ -5,6 +5,7 @@ import Items from './items.js'
 import Map from './map.js'
 import Actions from './actions.js'
 import Cooking from './cooking.js'
+import Tutorial from './tutorial.js'
 import Ui from './ui.js'
 
 const cardsContainer = document.getElementById('cards');
@@ -312,37 +313,37 @@ export default {
 
         if (object.infested && !Props.getGameProp('firstInfestation')) {
           Props.setGameProp('firstInfestation', true);
-          let objectId = Props.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
+          let objectId = Tutorial.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
         if (object.type === 'corpse' && !Props.getGameProp('firstCorpse')) {
           Props.setGameProp('firstCorpse', true);
-          let objectId = Props.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
+          let objectId = Tutorial.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
         if (object.locked && !Props.getGameProp('firstLocked')) {
           Props.setGameProp('firstLocked', true);
           if (object.type === 'car') {
-            let objectId = Props.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
+            let objectId = Tutorial.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
             specialEventObjectIds.push(objectId);
           } else {
-            let objectId = Props.setupSpecialEvent('locked-building', playerPosition.x, playerPosition.y);
+            let objectId = Tutorial.setupSpecialEvent('locked-building', playerPosition.x, playerPosition.y);
             specialEventObjectIds.push(objectId);
           }
         }
         if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
           Props.setGameProp('firstZedNearby', true);
-          let objectId = Props.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
+          let objectId = Tutorial.setupSpecialEvent('hostiles-nearby', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
         if (object.dead && (object.group === 'animal' || object.type === 'rat') && !Props.getGameProp('firstDeadAnimal')) {
           Props.setGameProp('firstDeadAnimal', true);
-          let objectId = Props.setupSpecialEvent('dead-animal', playerPosition.x, playerPosition.y);
+          let objectId = Tutorial.setupSpecialEvent('dead-animal', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
         if (!object.dead && object.type === 'rat' && !Props.getGameProp('firstRatFight')) {
           Props.setGameProp('firstRatFight', true);
-          let objectId = Props.setupSpecialEvent('rat-fight', playerPosition.x, playerPosition.y);
+          let objectId = Tutorial.setupSpecialEvent('rat-fight', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
       });
@@ -353,12 +354,12 @@ export default {
         Items.inventoryContains('branch') &&
         Items.inventoryContains('stone')) {
           Props.setGameProp('firstAxeCraft', true);
-          let objectId = Props.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
+          let objectId = Tutorial.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
       }
       if (Player.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
         Props.setGameProp('firstLowEnergy', true);
-        let objectId = Props.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
+        let objectId = Tutorial.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);
       }
 

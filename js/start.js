@@ -1,6 +1,7 @@
 import { default as Audio } from './audio.js'
 import { default as Player } from './player.js'
 import { default as Props } from './props.js'
+import { default as Tutorial } from './tutorial.js'
 
 let startMode = 1;
 
@@ -78,7 +79,7 @@ export default {
 
   startReal: function() {
     document.getElementById('startscreen').style.opacity = 0;
-    Props.setupAllEvents();
+    Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
     Audio.playAmbientLoop();
@@ -90,7 +91,7 @@ export default {
   startTutorial: function() {
     document.getElementById('startscreen').style.opacity = 0;
     Props.setGameProp('tutorial', true);
-    Props.setupAllEvents();
+    Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
     Audio.playAmbientLoop();
