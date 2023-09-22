@@ -3,6 +3,7 @@ import Binding from './binding.js'
 import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
+import CardsMarkup from './cards-markup.js'
 import Actions from './actions.js'
 import Items from './items.js'
 
@@ -168,7 +169,7 @@ export default {
           }
         }
         Props.setGameProp('battle', false);
-        Cards.hideActionFeedback(zedId);
+        CardsMarkup.hideActionFeedback(zedCardRef);
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);
         Player.lockMovement(false);

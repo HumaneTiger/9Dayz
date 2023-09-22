@@ -2,6 +2,7 @@ import Props from './props.js'
 import Audio from './audio.js'
 import Player from './player.js'
 import Cards from './cards.js'
+import CardsMarkup from './cards-markup.js'
 import Map from './map.js'
 import Items from './items.js'
 import Battle from './battle.js'
@@ -79,7 +80,8 @@ export default {
   },
 
   endAction: function(cardId) {
-    Cards.hideActionFeedback(cardId);
+    let cardRef = Cards.getCardById(cardId);
+    CardsMarkup.hideActionFeedback(cardRef);
   },
 
   fastForward: function(callbackfunction, cardId, time, newSpeedOpt, energy) {
@@ -109,7 +111,7 @@ export default {
         allItems[0] = {name: 'tape', amount: 1};
         cardRef.querySelector('ul.items li.preview').remove();
         cardRef.querySelector('ul.items li.item').remove();
-        cardRef.querySelector('ul.items').innerHTML = Cards.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;  
+        cardRef.querySelector('ul.items').innerHTML = CardsMarkup.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;  
       }
     }
     let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
