@@ -242,7 +242,7 @@ export default {
         if (!object.active) {
           window.setTimeout((cardId) => {
             const object = Props.getObject(cardId);
-            const cardRef = this.getCardById(cardId);
+            const cardRef = document.getElementById(cardId);
 
             cardRef.style.left = Math.round(parseInt(object.x) * 44.4 - 120) + 'px';
             cardRef.style.top = '600px';

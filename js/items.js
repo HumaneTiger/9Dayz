@@ -1,14 +1,13 @@
 import Props from './props.js'
 import Player from './player.js'
 import Cards from './cards.js'
+import Crafting from './crafting.js'
 import Cooking from './cooking.js'
 import Audio from './audio.js'
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
-const crafting = Props.getCrafting();
 const inventoryContainer = document.getElementById('inventory');
-const craftContainer = document.getElementById('craft');
 
 export default {
   
@@ -19,7 +18,6 @@ export default {
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
     Props.addToInventory('pepper', 1);
-    Props.addToInventory('sharp-stick', 0);
 
     /*
     Props.addToInventory('bones', 1);
@@ -44,9 +42,6 @@ export default {
     this.bind();
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
-    craftContainer.addEventListener('mouseover', this.checkCraftButtonHover.bind(this));
-    craftContainer.addEventListener('mousedown', this.checkCraftButtonClick.bind(this));
-    this.checkCraftPrereq();
   },
 
   bind: function() {
@@ -108,153 +103,14 @@ export default {
     return inventory.items[name];
   },
 
-  checkCraftButtonHover: function(ev) {
 
-    const target = ev.target;
-    const hoverButton = target.closest('.button-craft');
-
-    if (hoverButton) {
-      if (hoverButton.classList.contains('active')) {
-        craftContainer.querySelector('p.info').textContent = "Click to " + hoverButton.dataset.action;
-      } else if (hoverButton.classList.contains('only1')) {
-        craftContainer.querySelector('p.info').textContent = "Can't do - can carry only one";
-      } else {
-        craftContainer.querySelector('p.info').textContent = "Can't do - items missing";
-      }
-    } else {
-      craftContainer.querySelector('p.info').textContent = "";
-    }
-  },
-
-  checkCraftButtonClick: function(ev) {
-    const target = ev.target;
-    const clickButton = target.closest('.button-craft');
-
-    if (clickButton && clickButton.classList.contains('active')) {
-      const item = clickButton.dataset.item;
-      if (item === 'sharp-stick') {
-        Props.addToInventory('sharp-stick', 1);
-        Props.addToInventory('branch', -1);
-        this.inventoryChangeFeedback();
-        this.fillInventorySlots();
-      } else if (item === 'tape') {
-        Props.addToInventory('tape', 1);
-        Props.addToInventory('glue', -1);
-        Props.addToInventory('cloth', -1);
-        this.inventoryChangeFeedback();
-        this.fillInventorySlots();
-      } else if (item === 'fireplace') {
-        const here = Player.getPlayerPosition();
-        Props.setupBuilding(here.x, here.y, ['fireplace']);
-        Cards.renderCardDeck();
-        Props.addToInventory('stone', -1);
-        Props.addToInventory('stump', -1);
-        Props.addToInventory('straw-wheet', -1);
-        this.inventoryChangeFeedback();
-        this.fillInventorySlots();
-        craftContainer.classList.remove('active');
-        Player.findAndHandleObjects();
-      } else if (item === 'improvised-axe') {
-        const here = Player.getPlayerPosition();
-        Props.setupWeapon(here.x, here.y, 'improvised-axe');
-        Props.addToInventory('stone', -1);
-        Props.addToInventory('branch', -1);
-        Props.addToInventory('tape', -1);
-        this.inventoryChangeFeedback();
-        this.fillInventorySlots();
-        craftContainer.classList.remove('active');
-        Player.findAndHandleObjects();
-      } else if (item === 'wooden-club') {
-        const here = Player.getPlayerPosition();
-        Props.setupWeapon(here.x, here.y, 'wooden-club');
-        if (inventory.items['fail']?.amount > 0) {
-          Props.addToInventory('fail', -1);
-        } else {
-          Props.addToInventory('hacksaw', -1);
-        }
-        Props.addToInventory('stump', -1);
-        this.inventoryChangeFeedback();
-        this.fillInventorySlots();
-        craftContainer.classList.remove('active');
-        Player.findAndHandleObjects();
-      }
-    }
-  },
-
-  checkCraftPrereq: function() {
-    craftContainer.querySelectorAll('.button-craft').forEach((el) => {
-      el.classList.remove('active');
-      el.classList.remove('only1');
-    });
-    let totalCrafting = 0;
-    // wooden club
-    if ((inventory.items['fail']?.amount > 0 || inventory.items['hacksaw']?.amount > 0) && inventory.items['stump']?.amount > 0) {
-      if (inventory.items['wooden-club']?.amount) {
-        craftContainer.querySelector('.button-craft[data-item="wooden-club"]').classList.add('only1');
-      } else {
-        craftContainer.querySelector('.button-craft[data-item="wooden-club"]').classList.add('active');
-        totalCrafting++;  
-      }
-    }
-    // improvised axe
-    if (inventory.items['tape']?.amount > 0 && inventory.items['branch']?.amount > 0 && inventory.items['stone']?.amount > 0) {
-      if (inventory.items['improvised-axe']?.amount) {
-        craftContainer.querySelector('.button-craft[data-item="improvised-axe"]').classList.add('only1');
-      } else {
-        craftContainer.querySelector('.button-craft[data-item="improvised-axe"]').classList.add('active');
-        totalCrafting++;
-      }
-    }
-    // fireplace
-    if (inventory.items['stone']?.amount > 0 && inventory.items['stump']?.amount > 0 && inventory.items['straw-wheet']?.amount > 0) {
-      craftContainer.querySelector('.button-craft[data-item="fireplace"]').classList.add('active');
-      totalCrafting++;
-    }
-    // carve
-    if (inventory.items['branch']?.amount > 0 && inventory.items['knife']?.amount > 0) {
-      craftContainer.querySelector('.button-craft[data-item="sharp-stick"]').classList.add('active');
-      totalCrafting++;
-    }
-    // tape
-    if (inventory.items['cloth']?.amount > 0 && inventory.items['glue']?.amount > 0) {
-      craftContainer.querySelector('.button-craft[data-item="tape"]').classList.add('active');
-      totalCrafting++;
-    }
-    if (totalCrafting !== crafting.total) {
-      crafting.total = totalCrafting;
-      this.craftingChangeFeedback();
-    }
-  },
-
-  isItemPartOfCrafting: function(item) {
-    if (item && (item === "fail" ||
-      item === "hacksaw" ||
-      item === "stump" ||
-      item === "tape" ||
-      item === "glue" ||
-      item === "cloth" ||
-      item === "branch" ||
-      item === "stone" ||
-      item === "straw-wheet" ||
-      item === "knife")) {
-        return true;
-    }
-    return false;
-  },
-
-  craftingChangeFeedback: function() {
-    document.querySelector('#actions .craft').classList.add('transfer');
-    window.setTimeout(function() {
-      document.querySelector('#actions .craft').classList.remove('transfer');
-    }, 400);
-  },
 
   inventoryChangeFeedback: function() {
     document.querySelector('#actions .inventory').classList.add('transfer');
     window.setTimeout(function() {
       document.querySelector('#actions .inventory').classList.remove('transfer');
     }, 400);
-    this.checkCraftPrereq();
+    Crafting.checkCraftingPrerequisits();
   },
 
   checkForSlotClick: function(ev) {
@@ -322,7 +178,7 @@ export default {
       if (action === 'craft' && hoverSlot.classList.contains('active')) {
         if (hoverSlot.classList.contains('active')) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
-          if (this.isItemPartOfCrafting(item)) {
+          if (Crafting.isItemPartOfCrafting(item)) {
             inventoryContainer.querySelector('p.info').innerHTML += '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
             document.querySelector('#actions li.craft').classList.add('transfer');
           }
@@ -412,7 +268,7 @@ export default {
           inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.add('is--hidden');
         }
       } else {
-        this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, this.isItemPartOfCrafting(item));
+        this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, Crafting.isItemPartOfCrafting(item));
       }
     }
     Cooking.checkAllCookingModeCards();

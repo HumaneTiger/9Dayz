@@ -138,12 +138,39 @@ var cookingRecipes = {
   'glue': [ 'bones','drink-1-2', 1, 'cook' ],
 };
 
+var craftingRecipes = {
+  'wooden-club': { 
+    items: [ ['fail','hacksaw'], ['stump'] ],
+    exclusive: true,
+    result: 'weapon'
+  },
+  'improvised-axe': {
+    items: [ ['tape'], ['branch'], ['stone'] ],
+    exclusive: true,
+    result: 'weapon'
+  },
+  'fireplace': {
+    items: [ ['stone'], ['stump'], ['straw-wheet'] ],
+    exclusive: false,
+    result: 'building'
+  },
+  'tape': {
+    items: [ ['cloth'], ['glue'] ],
+    exclusive: false,
+    result: 'inventory'
+  },
+  'sharp-stick': {
+    items: [ ['branch'], ['knife'] ],
+    exclusive: false,
+    result: 'inventory'
+  }
+};
+
 var weaponProps = {
   /*'axe': [0, 8],
   'baseball-bat': [25, 4],
   'hammer': [0, 5],
   'saw': [0, 1],
-  'wooden-club': [25, 2],
   'wrench': [0, 7]*/
   'improvised-axe': {attack: 8, defense: 4, durability: 3},
   'wooden-club': {attack: 6, defense: 3, durability: 3}
@@ -316,6 +343,10 @@ export default {
     return cookingRecipes;
   },
 
+  getCraftingRecipes: function() {
+    return craftingRecipes;
+  },
+
   getObjectIdsAt: function(x, y) {
     if (objectIdsAt[x] !== undefined) {
       return objectIdsAt[x][y];
@@ -372,7 +403,7 @@ export default {
         inventory.items[item].durability += durability;
         if (inventory.items[item].durability === 0) { inventory.items[item].amount = 0 }
       }
-    } else {
+    } else if (itemProps !== undefined) {
       inventory.items[item] = {
         type: itemProps[0],
         name: item,
@@ -385,6 +416,8 @@ export default {
       } else {
         inventory.items[item].protection = itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10);
       }
+    } else {
+      console.log('adding item "' + item + '" to inventory failed');
     }
     inventory.itemNumbers = 0;
     for (item in inventory.items) {
