@@ -164,13 +164,14 @@ export default {
       if (mapClick) {
         document.getElementById('craft').classList.remove('active');
         document.getElementById('inventory').classList.remove('active');
+        document.getElementById('almanac').classList.add('out');
         this.showUI();
       }
 
       if (target && target.classList.contains('card-tutorial-confirm')) {
         Audio.sfx('shuffle-paper');
         document.getElementById('tutorial-fights').classList.add('is--hidden');
-        document.getElementById('tutorial-beginning').classList.add('is--hidden');        
+        document.getElementById('tutorial-beginning').classList.add('is--hidden');
       }
     }
   },
@@ -181,6 +182,7 @@ export default {
     document.getElementById('properties').classList.remove('active');
     document.getElementById('actions').classList.remove('active');
     document.getElementById('cards').classList.remove('active');
+    document.getElementById('almanac').classList.add('out');
     document.getElementById('card-console').classList.add('out');
   },
 

@@ -7,6 +7,7 @@ import Actions from './actions.js'
 import Tutorial from './tutorial.js'
 import Ui from './ui.js'
 import CardsMarkup from './cards-markup.js'
+import Almanac from './almanac.js'
 
 var cardDeck = [];
 var lastHoverTarget;
@@ -31,14 +32,15 @@ export default {
     const actionButton = target.closest('div.action-button');
     const itemContainer = target.closest('li.item:not(.is--hidden)');
     const leftMouseButton = (ev.button === 0);
+    const rightMouseButton = (ev.button === 2);
 
-    if (cardId && leftMouseButton) {
+    if (cardId) {
       const object = Props.getObject(cardId);
 
       ev.preventDefault();
       ev.stopPropagation();
 
-      if (actionButton && !object.disabled) {
+      if (actionButton && leftMouseButton && !object.disabled) {
         const action = actionButton.dataset.action;
         const actionObject = object.actions.find(singleAction => singleAction.id === action);
         const cardRef = this.getCardById(cardId);
@@ -71,7 +73,7 @@ export default {
       if (itemContainer) {
         const itemName = itemContainer?.dataset.item;
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
-        if (itemAmount) {
+        if (itemAmount && leftMouseButton) {
           Props.addToInventory(itemName, itemAmount);
           object.items.find(singleItem => singleItem.name === itemName).amount = 0;
           itemContainer.classList.add('transfer');
@@ -91,6 +93,8 @@ export default {
               console.log('No Card found for ' + cardId);
             }
           }, 400, itemContainer, cardId);
+        } else if (itemAmount && rightMouseButton) {
+          Almanac.showPage(itemName, 'item');
         }
       }
     }

@@ -1,8 +1,8 @@
 import Props from './props.js'
 import Player from './player.js'
-import Cards from './cards.js'
 import Crafting from './crafting.js'
 import Cooking from './cooking.js'
+import Almanac from './almanac.js'
 import Audio from './audio.js'
 
 const items = Props.getAllItems();
@@ -14,11 +14,10 @@ export default {
   init: function() {
     Props.addToInventory('tomato', 2);
     Props.addToInventory('drink-2', 1);
-    Props.addToInventory('snack-1', 1);
+    Props.addToInventory('snack-1', 3); //1);
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
     Props.addToInventory('pepper', 1);
-
     /*
     Props.addToInventory('bones', 1);
     Props.addToInventory('cloth', 1);
@@ -134,6 +133,9 @@ export default {
       if (energy > 0) {        
         Player.changeProps('energy', energy);
       }
+      /* super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
+      hoverSlot.style.display='none';setTimeout(()=>{hoverSlot.style.removeProperty('display');},0);
+      /* /super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
       if (items[item][0] === 'drink') {
         Audio.sfx('drink', 0, 0.7);
       } else if (items[item][0] === 'eat') {
@@ -159,6 +161,7 @@ export default {
 
     if (hoverSlot && hoverSlot.classList.contains('active') && rightMouseButton) {
       const item = hoverSlot.dataset.item;
+      Almanac.showPage(item, 'item');
     }
   },
 
@@ -187,10 +190,10 @@ export default {
           }
         }
       } else {
+        console.log('update');
         document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
-        console.log(item, this.inventoryContains(item));
         if (food > 0 && this.inventoryContains(item)) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="food">' + food + '<span class="material-symbols-outlined">lunch_dining</span></span>';
           document.querySelector('#properties li.food').classList.add('transfer');

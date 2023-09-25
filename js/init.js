@@ -11,6 +11,7 @@ import Actions from './actions.js'
 import Battle from './battle.js'
 import Cooking from './cooking.js'
 import Crafting from './crafting.js'
+import Almanac from './almanac.js'
 
 let startHour = 7; // 7
 let tick = 0;
@@ -39,6 +40,7 @@ let timeIsUnity = {
   Battle.init();
   Cooking.init();
   Crafting.init();
+  Almanac.init();
   bind();
   Ui.resizeViewport();
   initiateMainGameLoop();

@@ -408,13 +408,9 @@ export default {
         type: itemProps[0],
         name: item,
         amount: amount,
-        damage: itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10),
+        damage: this.calcItemDamage(item),
+        protection: this.calcItemProtection(item),
         durability: durability
-      }
-      if (itemProps[5]) {
-        inventory.items[item].protection = itemProps[5];
-      } else {
-        inventory.items[item].protection = itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10);
       }
     } else {
       console.log('adding item "' + item + '" to inventory failed');
@@ -424,6 +420,20 @@ export default {
       if (inventory.items[item].amount && inventory.items[item].amount > 0) {
         inventory.itemNumbers += inventory.items[item].amount;
       }
+    }
+  },
+
+  calcItemDamage: function(item) {
+    const itemProps = items[item];
+    return itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10);
+  },
+  
+  calcItemProtection: function(item) {
+    const itemProps = items[item];
+    if (itemProps[5]) {
+      return itemProps[5];
+    } else {
+      return itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10);
     }
   },
   

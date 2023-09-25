@@ -71,6 +71,7 @@ ul.actions .action-button span.additional-locked {
 }
 #battle-cards .end-turn,
 #craft .button-craft,
+#almanac .button,
 #cards .cooking .action-button,
 #cards .actions .action-button {
   cursor: pointer;
@@ -91,8 +92,14 @@ ul.actions .action-button span.additional-locked {
   transform: scale(0.9);
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background-color 0.3s ease-out,  opacity 0.2s ease-in;
 }
+#almanac .button.half--size {
+  font-size: 20px;
+  padding: 10px 4px 6px;
+  min-width: 100px;
+}
 #battle-cards .end-turn:hover,
 #craft .button-craft:hover,
+#almanac .button:hover,
 #cards .cooking .action-button:hover,
 #cards .actions .action-button:hover {
   transform: scale(1);
