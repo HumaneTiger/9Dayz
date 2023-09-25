@@ -33,15 +33,15 @@ export default {
 
     if (type === 'item') {
       // set title
-      almanacContainer.querySelector('h3').textContent = item.replace('-', ' ').replace(' 1', '').replace(' 2', '');
+      almanacContainer.querySelector('h3').textContent = this.extractItemName(item);
       // update motive img
       almanacContainer.querySelector('img.motive').setAttribute('src', './img/items/' + item + '.PNG');
       // check if cooking recipe
       for (const recipe in cookingRecipes) {
         if (recipe === item || cookingRecipes[recipe][0] === item || cookingRecipes[recipe][1] === item ) {
-          let cookingText = '<span class="keyword">' + recipe.replace('-', ' ') + '</span>' + ' can be ' + cookingRecipes[recipe][3] + 'ed with ' +
-                             '<span class="keyword">' + cookingRecipes[recipe][0].replace('-', ' ') + '</span> and ' +
-                             '<span class="keyword">' + cookingRecipes[recipe][1].replace('-', ' ') + '</span>.'
+          let cookingText = '<span class="keyword">' + this.extractItemName(recipe) + '</span>' + ' can be ' + cookingRecipes[recipe][3] + 'ed with ' +
+                             '<span class="keyword">' + this.extractItemName(cookingRecipes[recipe][0]) + '</span> and ' +
+                             '<span class="keyword">' + this.extractItemName(cookingRecipes[recipe][1]) + '</span>.'
           cookingParagraph.innerHTML = cookingText;
           cookingParagraph.classList.remove('is--hidden');
         }
@@ -49,9 +49,9 @@ export default {
       // check if crafting recipe
       for (const recipe in craftingRecipes) {
         if (recipe === item) {
-          let craftingText = '<span class="keyword">' + recipe.replace('-', ' ') + '</span>' + ' can be crafted from ';
+          let craftingText = '<span class="keyword">' + this.extractItemName(recipe) + '</span>' + ' can be crafted from ';
           for (const [i, recipeItem] of craftingRecipes[recipe].items.entries()) {
-            craftingText = craftingText + '<span class="keyword">' + recipeItem[0] + '</span>';
+            craftingText = craftingText + '<span class="keyword">' + this.extractItemName(recipeItem[0]) + '</span>';
             if (i < craftingRecipes[recipe].items.length - 1) {
               craftingText += ' and ';
             } else {
@@ -69,5 +69,9 @@ export default {
         battlesParagraph.classList.remove('is--hidden');    
       }
     }
+  },
+
+  extractItemName: function(item) {
+    return item.replace('-', ' ').replace(' 1-2', '').replace(' 1', '').replace(' 2', '');
   }
 }

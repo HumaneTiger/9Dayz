@@ -2,12 +2,12 @@
   background-image: url(../img/ui/almanac.png);
   background-repeat: no-repeat;
   background-size: contain;
-  width: 280px;
-  height: 460px;
+  width: 290px;
+  height: 480px;
   /*box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);*/
   color: rgba(53, 35, 26, 0.66);
   position: fixed;
-  padding: 20px 30px;
+  padding: 20px 40px;
   font-size: 16px;
   text-align: center;
   line-height: 1.4em;
@@ -20,7 +20,7 @@
 }
 #almanac h3 {
   font-size: 24px;
-  padding: 9px 0;
+  padding: 26px 0 6px;
   text-transform: capitalize;
 }
 #almanac img.back-button,
