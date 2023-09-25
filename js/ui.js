@@ -26,7 +26,11 @@ export default {
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
 
-    //document.body.addEventListener("contextmenu", (ev) => { ev.preventDefault(); });
+    document.body.addEventListener("contextmenu", (ev) => { 
+      if (Props.getGameProp('local') === false) {
+        ev.preventDefault();
+      }
+    });
 
     this.bind();
 

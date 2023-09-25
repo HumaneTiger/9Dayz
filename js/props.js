@@ -19,7 +19,7 @@ var game = {
   tutorial: false,
   battle: false,
   gamePaused: true,
-  local: location.href.startsWith('http://127'),
+  local: location.href.startsWith('http://127.0.0.1'),
   speed: 4000, // 4000
   firstUserInteraction: false,
   firstFight: false,
