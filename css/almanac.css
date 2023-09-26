@@ -6,7 +6,7 @@
   height: 480px;
   /*box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);*/
   color: rgba(53, 35, 26, 0.66);
-  position: fixed;
+  position: absolute;
   padding: 20px 40px;
   font-size: 16px;
   text-align: center;
@@ -19,7 +19,7 @@
   transition: right 0.2s ease-out;
 }
 #almanac h3 {
-  font-size: 24px;
+  font-size: 23px;
   padding: 26px 0 6px;
   text-transform: capitalize;
 }
@@ -35,21 +35,25 @@
 
 #almanac img.back-button {
   position: absolute;
-  left: 26px;
-  top: 20px;
+  left: 38px;
+  top: 36px;
 }
 #almanac img.close-button {
   position: absolute;
-  right: 24px;
-  top: 20px;
+  right: 38px;
+  top: 36px;
 }
 #almanac.out {
   right: -300px;
 }
-#almanac .motive {
+#almanac img.motive {
   width: 120px;
   height: auto;
   margin: 5px 0 -10px;
+}
+#almanac img.motive.unknown {
+  filter: brightness(0);
+  opacity: 0.3;
 }
 #almanac p {
   margin: 12px 0;
@@ -57,6 +61,10 @@
 #almanac p span.keyword {
   text-transform: capitalize;
   color: rgb(255, 91, 6);
+  cursor: pointer;
+}
+#almanac p span.keyword:hover {
+  text-decoration: underline;
 }
 #almanac .footer {
   position: absolute;

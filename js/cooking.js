@@ -1,5 +1,6 @@
 import Props from './props.js'
 import Items from './items.js'
+import Almanac from './almanac.js'
 import Audio from './audio.js'
 
 let cookingRecipes = Props.getCookingRecipes();
@@ -7,7 +8,7 @@ let cookingRecipes = Props.getCookingRecipes();
 export default {
   
   init: function() {
-    document.body.addEventListener('click', this.checkForCardClick.bind(this));
+    document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
   start: function(cardRef) {
@@ -65,9 +66,13 @@ export default {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');
     const actionSlotActive = target.closest('div.slot.action.active');
+    const slotActive = target.closest('div.slot.active');
     const cookingContainer = target.closest('.card.cooking-mode');
+    const leftMouseButton = (ev.button === 0);
+    const rightMouseButton = (ev.button === 2);
     if (cookingContainer) {
-      if (actionSlotActive) {
+      console.log(slotActive, rightMouseButton);
+      if (actionSlotActive && leftMouseButton) {
         const recipe = actionSlotActive.dataset?.item;
         if (recipe) {
           Props.addToInventory(recipe, cookingRecipes[recipe][2]);
@@ -83,7 +88,13 @@ export default {
         }
         Items.inventoryChangeFeedback();
         Items.fillInventorySlots();            
-      } else if (actionButton && actionButton.dataset.action === 'close-cooking') {
+      } else if (slotActive && rightMouseButton) {
+        const item = slotActive.dataset?.item;
+        if (item !== undefined) {
+          Props.addToInventory(item.replace('-2', ''), 0); // makes item known to inventory
+          Almanac.showPage(item.replace('-2', ''), 'item');
+        }
+      } else if (actionButton && leftMouseButton && actionButton.dataset.action === 'close-cooking') {
         cookingContainer.classList.remove('full');
         window.setTimeout(() => {cookingContainer.classList.remove('cooking-mode');}, 100);
       }

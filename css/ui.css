@@ -315,6 +315,7 @@ ul#properties li.time {
   width: 100%;
   margin: 0;
   text-align: center;
+  text-transform: capitalize;
 }
 #inventory p.info .material-symbols-outlined {
   display: inline-block;

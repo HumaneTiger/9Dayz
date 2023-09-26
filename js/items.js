@@ -103,8 +103,6 @@ export default {
     return inventory.items[name];
   },
 
-
-
   inventoryChangeFeedback: function() {
     document.querySelector('#actions .inventory').classList.add('transfer');
     window.setTimeout(function() {
@@ -135,7 +133,8 @@ export default {
         Player.changeProps('energy', energy);
       }
       /* super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
-      hoverSlot.style.display='none';setTimeout(()=>{hoverSlot.style.removeProperty('display');},0);
+      hoverSlot.style.opacity='0';hoverSlot.style.top='-85px';
+      setTimeout(()=>{hoverSlot.style.removeProperty('opacity');hoverSlot.style.removeProperty('top');},0);
       /* /super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
       if (items[item][0] === 'drink') {
         Audio.sfx('drink', 0, 0.7);
@@ -177,7 +176,7 @@ export default {
       let food = items[item][1];
       let drink = items[item][2];
       let energy = items[item][3];
-      let itemName = this.capitalizeFirstLetter(item.split('-')[0]);
+      let itemName = Props.extractItemName(item);
       inventoryContainer.querySelector('p.info').innerHTML = '<span class="name">' + itemName + '</span>';
       if (action === 'craft' && hoverSlot.classList.contains('active')) {
         if (hoverSlot.classList.contains('active')) {
@@ -191,7 +190,6 @@ export default {
           }
         }
       } else {
-        console.log('update');
         document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
         document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';

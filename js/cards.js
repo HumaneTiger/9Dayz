@@ -94,6 +94,7 @@ export default {
             }
           }, 400, itemContainer, cardId);
         } else if (itemAmount && rightMouseButton) {
+          Props.addToInventory(itemName, 0); // makes item known to inventory
           Almanac.showPage(itemName, 'item');
         }
       }

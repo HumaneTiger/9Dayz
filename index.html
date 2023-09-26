@@ -70,22 +70,6 @@
         <strong>Please note:</strong> Only objects placed next to or on a street will be seen by the character and spawn.
       </p>
     </div>
-    <div id="almanac" class="out">
-      <!--
-      <img class="back-button" src="./img/ui/back-button.png">
-      <img class="close-button" src="./img/ui/close-button.png">
-      -->
-      <h3>Glue</h3>
-      <img class="motive" src="./img/items/glue.PNG">
-      <p class="cooking"></p>
-      <p class="crafting"></p>
-      <p class="battles"></p>
-      <!--
-      <p class="footer">
-        <span class="button half--size close-button">Got it!</span>
-      </p>
-      -->
-    </div>
     <div id="startscreen">
       <div class="screen__1">
         <p class="screen__logo">
@@ -210,6 +194,19 @@
           <li class="map"><span>Map</span></li>
           <li class="settings"><span>Game Editor<!--Settings--></span></li>
         </ul>
+        <div id="almanac" class="out">
+          <img class="back-button is--hidden" src="./img/ui/back-button.png">
+          <img class="close-button" src="./img/ui/close-button.png">
+          <h3></h3>
+          <img class="motive" src="./img/items/glue.PNG">
+          <div class="markup"></div>
+          <p class="content"></p>
+          <p class="stats"></p>
+          <p class="cooking"></p>
+          <p class="crafting"></p>
+          <p class="battles"></p>
+          <!--<p class="footer"><span class="button half--size close-button">Got it!</span></p>-->
+        </div>
         <div id="inventory">
           <div class="inner"></div>
           <p class="info"></p>
@@ -310,7 +307,7 @@
         Lure single zombies into a fight (chance is 50:50), to make the battle easier. Zombies will attack you first, when you walk right into them.
       </p>
       <p class="screen__paragraph">
-        Once the battle starts, <strong>all your inventory items turn into a Battle Card deck</strong>. Each item now has orange Attack and blue Defense values.
+        Once the battle starts, <strong>all your inventory items turn into a Battle Card deck</strong>. Each item now has orange Damage and blue Protection values.
         Make sure you have enough items at hand before starting a fight.
       </p>
       <p class="screen__paragraph">

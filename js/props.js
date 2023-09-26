@@ -334,6 +334,14 @@ export default {
     return items;
   },
 
+  getItem: function(item) {
+    return items[item];
+  },
+
+  extractItemName: function(item) {
+    return item.replace('-', ' ').replace(' 1-2', '').replace(' 1', '').replace(' 2', '').replace(' 3', '').replace(' 4', '');
+  },
+
   /* active crafting number */
   getCrafting: function() {
     return crafting;
@@ -423,6 +431,17 @@ export default {
     }
   },
 
+  calcItemProps: function(item) {
+    const itemProps = items[item];
+    return {
+      damage: itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10),
+      protection: itemProps[5] ? itemProps[5] : (itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10)),
+      food: itemProps[1],
+      drink: itemProps[2],
+      energy: itemProps[3]
+    }
+  },
+  
   calcItemDamage: function(item) {
     const itemProps = items[item];
     return itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10);
