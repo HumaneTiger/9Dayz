@@ -14,21 +14,33 @@ const cookingRecipes = Props.getCookingRecipes();
 let almanacHistory = [];
 
 const almanacContent = {
+  'almanac': {
+    'motive': './img/almanac/almanac.png',
+    'markup': '<p>The Almanac provides comprehensive information about all items, crafting options, cooking recipes and more.</p><p>You can open it at any time by right-clicking item slots and crafting buttons.</p>'
+  },
   'battle': {
-    'motive': './img/icons/shield-wide.png',
+    'motive': './img/almanac/battle.png',
     'markup': '<p>Once a battle starts, all your inventory items turn into a Battle Card deck.</p><p>Each item now has orange Damage and blue Protection values.</p><p>Make sure you have enough items at hand before starting a fight.</p>'
   },
+  'health': {
+    'motive': './img/almanac/health.png',
+    'markup': '<p>Your character is loosing health not only in <span class="keyword" data-content="battle">battle</span>, but also when <span class="keyword" data-content="food">starving</span> or when suffering from <span class="keyword" data-content="thirst">thirst</span>.</p><p>Health is restored during resting or most efficiently when taking a sleep.</p>'
+  },
   'food': {
-    'motive': './img/icons/food.png',
-    'markup': '<p>Hunger and starvation are a constant threat. Gather trees or search vehicles and buildings for all sorts of food. Cut dead animals to get their meat.</p><p>When ever you can, cook raw food at a <span class="keyword" data-building="fireplace">fireplace</span> to get high-quality meals.</p>'
+    'motive': './img/almanac/food.png',
+    'markup': '<p>Hunger and starvation are a constant threat. Gather trees or search vehicles and buildings for all sorts of food. Cut dead animals to get their <span class="keyword" data-item="meat">meat</span>.</p><p>When ever you can, cook raw food at a <span class="keyword" data-content="fireplace">fireplace</span> to get high-quality meals.</p>'
   },
   'thirst': {
-    'motive': './img/icons/water-2.png',
-    'markup': '<p>Search vehicles and buildings to find <span class="keyword" data-item="drink-1">Water Bottles</span> and <span class="keyword" data-item="drink-3">Soda Cans</span>.</p><p>If you find a Jetty or Well, these are your jackpots. They allow you to drink as much as you like.</p>'
+    'motive': './img/almanac/drink.png',
+    'markup': '<p>Search vehicles and buildings to find <span class="keyword" data-item="drink-1">Water Bottles</span> and <span class="keyword" data-item="drink-3">Soda Cans</span>.</p><p>If you find a Jetty, Pump or Well, these are all jackpots. They allow you to drink as much as you like.</p>'
   },
   'energy': {
-    'motive': './img/icons/energy.png',
-    'markup': '<p>Most actions will consume some of your energy. It is important to renew your energy through regular rest and sleep - night time will give you a bonus.</p><p>Some food and pills will also provide energy, cooked meals are true power packs.</p>'
+    'motive': './img/almanac/energy.png',
+    'markup': '<p>Most actions will consume some of your energy. It is important to renew your energy through regular rest and sleep - night time will give you a bonus.</p><p>Some <span class="keyword" data-content="food">food</span> and <span class="keyword" data-item="energy-pills">pills</span> will also provide energy, cooked meals are true power packs.</p>'
+  },
+  'fireplace': {
+    'motive': './img/almanac/fireplace.png',
+    'markup': '<p>Raw food roasted with a <span class="keyword" data-item="sharp-stick">sharp stick</span> over fire provides substantially more <span class="keyword" data-content="food">nutritions</span> and <span class="keyword" data-content="energy">energy</span>.</p><p>A <span class="keyword" data-content="fireplace">fireplace</span> can be crafted from <span class="keyword" data-item="stone">stone</span>, <span class="keyword" data-item="stump">stump</span> and <span class="keyword" data-item="straw-wheet">straw wheet</span>.</p><p>It remains in place where it is crafted.</p>'
   }
 };
 
@@ -77,6 +89,10 @@ export default {
     craftingParagraph.classList.add('is--hidden');
     battlesParagraph.classList.add('is--hidden');
 
+    if (item === 'fireplace' && type === 'item') {
+      type = 'content';
+    }
+
     // set title
     almanacContainer.querySelector('h3').textContent = Props.extractItemName(item);
     if (type === 'item') {
@@ -103,7 +119,7 @@ export default {
         // check if cooking recipe
         for (const recipe in cookingRecipes) {
           if (recipe === item || cookingRecipes[recipe][0] === item || cookingRecipes[recipe][1] === item ) {
-            let cookingText = `<span class="keyword" data-item="${recipe}">${Props.extractItemName(recipe)}</span> can be ${cookingRecipes[recipe][3]}ed with ` +
+            let cookingText = `<span class="keyword" data-item="${recipe}">${Props.extractItemName(recipe)}</span> can be ${cookingRecipes[recipe][3]}ed over <span class="keyword" data-content="fireplace">fire</span> with ` +
                               `<span class="keyword" data-item="${cookingRecipes[recipe][0]}">${Props.extractItemName(cookingRecipes[recipe][0])}</span> and ` +
                               `<span class="keyword" data-item="${cookingRecipes[recipe][1]}">${Props.extractItemName(cookingRecipes[recipe][1])}</span>.`;
             cookingParagraph.innerHTML = cookingText;
@@ -116,6 +132,9 @@ export default {
             let craftingText = `<span class="keyword" data-item="${recipe}">${Props.extractItemName(recipe)}</span> can be crafted from `;
             for (const [i, recipeItem] of craftingRecipes[recipe].items.entries()) {
               craftingText = craftingText + `<span class="keyword" data-item="${recipeItem[0]}">${Props.extractItemName(recipeItem[0])}</span>`;
+              if (recipeItem[1] !== undefined) {
+                craftingText = craftingText + ` or <span class="keyword" data-item="${recipeItem[1]}">${Props.extractItemName(recipeItem[1])}</span>`;
+              }
               if (i < craftingRecipes[recipe].items.length - 1) {
                 craftingText += ' and ';
               } else {

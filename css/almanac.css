@@ -58,6 +58,9 @@
 #almanac p {
   margin: 12px 0;
 }
+#almanac div.markup p {
+  margin: 8px 0;
+}
 #almanac p span.keyword {
   text-transform: capitalize;
   color: rgb(255, 91, 6);

@@ -1,5 +1,6 @@
 import { default as Props } from './props.js'
 import { default as Player } from './player.js'
+import { default as Items } from './items.js'
 
 var events = {
   '18-44': {
@@ -65,7 +66,7 @@ var specialEvents = {
   },
   'low-energy': {
     title: 'Worn-out',
-    text: 'Most actions consume a certain amount of Energy. Make sure to eat high-quality food and find a place to rest or sleep. At night you get a bonus.<br><img class="double" src="./img/icons/energy.png">'
+    text: 'Your energy is low.<br>Most actions consume a certain amount of Energy. Make sure to eat high-quality food and find a place to rest or sleep. Low energy gives penalties in battles.'
   }
 };
 
@@ -188,7 +189,8 @@ export default {
         Props.setGameProp('firstLowEnergy', true);
         let objectId = this.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);
-      }      
+      }
+
     }
     return specialEventObjectIds;
   }

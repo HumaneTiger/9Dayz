@@ -1,6 +1,7 @@
 import Props from './props.js'
 import Items from './items.js'
 import Player from './player.js'
+import Almanac from './almanac.js'
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
@@ -23,12 +24,12 @@ export default {
     // const item = clickButton.dataset.item;
     if (hoverButton) {
       if (hoverButton.classList.contains('active')) {
-        craftContainer.querySelector('p.info').textContent = "Click to " + hoverButton.dataset.action;
+        craftContainer.querySelector('p.info').textContent = "Click to " + hoverButton.dataset.action + " (right-click for info)";
       } else if (hoverButton.classList.contains('only1')) {
         craftContainer.querySelector('p.info').textContent = "Can't do - can carry only one";
       } else {
-        craftContainer.querySelector('p.info').textContent = "Can't do - items missing";
-      }
+        craftContainer.querySelector('p.info').textContent = "Can't do - items missing (right-click for info)";
+      }  
     } else {
       craftContainer.querySelector('p.info').textContent = "";
     }
@@ -38,8 +39,10 @@ export default {
 
     const target = ev.target;
     const clickButton = target.closest('.button-craft');
+    const leftMouseButton = (ev.button === 0);
+    const rightMouseButton = (ev.button === 2);
 
-    if (clickButton && clickButton.classList.contains('active')) { // relying heavily on active class for verification
+    if (clickButton && clickButton.classList.contains('active') && leftMouseButton) { // relying heavily on active class for verification
       const item = clickButton.dataset.item;
       const itemRecipe = craftingRecipes[item];
       if (itemRecipe !== undefined) {
@@ -80,6 +83,9 @@ export default {
         Items.inventoryChangeFeedback();
         Items.fillInventorySlots();
       }
+    } else if (clickButton && rightMouseButton) {
+      const item = clickButton.dataset.item;
+      Almanac.showPage(item, 'item');
     }
   },
 

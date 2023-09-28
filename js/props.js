@@ -31,7 +31,8 @@ var game = {
   firstAxeCraft: false,
   firstCorpse: false,
   firstLowEnergy: false,
-  firstDeadAnimal: false
+  firstDeadAnimal: false,
+  firstInventoryOpen: false
 }
 
 // all generated ids go in here

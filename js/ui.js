@@ -2,6 +2,7 @@ import Props from './props.js'
 import Battle from './battle.js'
 import Audio from './audio.js'
 import Player from './player.js'
+import Almanac from './almanac.js'
 
 var viewport = document.getElementById("viewport");
 var mapHigh = document.querySelector('.map-high img');
@@ -143,40 +144,54 @@ export default {
 
     const target = ev.target;
     const clickAction = target.closest('#actions');
+    const clickProperty = target.closest('#properties');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = (ev.button === 0);
 
-    if (leftMouseButton) {
-      if (clickAction) {
-        Audio.sfx('click');
-        ev.preventDefault();
-        ev.stopPropagation();
-        const action = target.closest('li');
-        if (action.classList.contains('inventory')) {
-          document.getElementById('inventory').classList.toggle('active');
-          document.getElementById('craft').classList.remove('active');
-        } else if (action.classList.contains('craft')) {
-          document.getElementById('craft').classList.toggle('active');
-          document.getElementById('inventory').classList.remove('active');
-        } else if (action.classList.contains('settings')) {
-          document.getElementById('card-console').classList.toggle('out');
-        } else if (action.classList.contains('map')) {
-          this.hideUI();
-        }
-      }
-  
-      if (mapClick) {
+    if (clickAction && leftMouseButton) {
+      Audio.sfx('click');
+      ev.preventDefault();
+      ev.stopPropagation();
+      const action = target.closest('li');
+      if (action.classList.contains('inventory')) {
+        document.getElementById('inventory').classList.toggle('active');
         document.getElementById('craft').classList.remove('active');
+        if (Props.getGameProp('firstInventoryOpen') === false) {
+          Props.setGameProp('firstInventoryOpen', true);
+          Almanac.showPage('almanac', 'content');
+        }
+      } else if (action.classList.contains('craft')) {
+        document.getElementById('craft').classList.toggle('active');
         document.getElementById('inventory').classList.remove('active');
-        document.getElementById('almanac').classList.add('out');
-        this.showUI();
+      } else if (action.classList.contains('settings')) {
+        document.getElementById('card-console').classList.toggle('out');
+      } else if (action.classList.contains('map')) {
+        this.hideUI();
       }
+    } else if (clickProperty) {
+      const property = target.closest('li');
+      if (property.classList.contains('health')) {
+        Almanac.showPage('health', 'content');
+      } else if (property.classList.contains('food')) {
+        Almanac.showPage('food', 'content');
+      } else if (property.classList.contains('thirst')) {
+        Almanac.showPage('thirst', 'content');
+      } else if (property.classList.contains('energy')) {
+        Almanac.showPage('energy', 'content');
+      }
+    }
 
-      if (target && target.classList.contains('card-tutorial-confirm')) {
-        Audio.sfx('shuffle-paper');
-        document.getElementById('tutorial-fights').classList.add('is--hidden');
-        document.getElementById('tutorial-beginning').classList.add('is--hidden');
-      }
+    if (mapClick) {
+      document.getElementById('craft').classList.remove('active');
+      document.getElementById('inventory').classList.remove('active');
+      document.getElementById('almanac').classList.add('out');
+      this.showUI();
+    }
+
+    if (target && target.classList.contains('card-tutorial-confirm')) {
+      Audio.sfx('shuffle-paper');
+      document.getElementById('tutorial-fights').classList.add('is--hidden');
+      document.getElementById('tutorial-beginning').classList.add('is--hidden');
     }
   },
 
