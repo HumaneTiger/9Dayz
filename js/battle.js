@@ -269,14 +269,14 @@ export default {
     // play "hit" animation, resolve item card
     scratch.style.left = zedCardRef.style.left;
     scratch.classList.add('anim-scratch');
-    zedCardRef.classList.add('shake');
+    zedCardRef.classList.add('card-heavy-shake');
     dragEl.classList.add('resolve');
 
     // cleanup
     window.setTimeout(function(scratch, dragEl, zedCardRef) {
       scratch.classList.remove('anim-scratch');
       dragEl.remove();
-      zedCardRef.classList.remove('shake');
+      zedCardRef.classList.remove('card-heavy-shake');
     }.bind(this), 200, scratch, dragEl, zedCardRef);
 
     if (this.zedIsDead()) {
@@ -353,14 +353,14 @@ export default {
             this.showBattleStats(-1 * attack, 'blue');
           }
           Player.changeProps('protection', -1 * attack);
-          battleHealthMeter.classList.add('shake');  
+          battleHealthMeter.classList.add('heavy-shake');  
         }
       }, (delay / 3) + index * delay);
 
       // single zed attacks
       window.setTimeout(() => {
         zedCardRef.classList.add('anim-punch');
-        battleHealthMeter.classList.remove('shake');
+        battleHealthMeter.classList.remove('heavy-shake');
         if (zedObject.name === 'rat') {
           Audio.sfx('rat-attacks');
         } else {

@@ -71,11 +71,43 @@ small {
     filter: brightness(85%);
 }
 
-.shake {
-  animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+/* use margin for cards, as transform would interfere with other card transform props */
+.card-shake {
+    animation: card-shake linear 0.1s 3 forwards;
+}
+@keyframes card-shake {
+    0% { margin-left: 0; }
+    33% { margin-left: 8px; }
+    66% { margin-left: -12px; }
+    100% { margin-left: 4px; }
 }
 
-@keyframes shake {
+.card-heavy-shake {
+    animation: card-heavy-shake 0.3s cubic-bezier(.2,.1,.2,.97) both;
+}
+@keyframes card-heavy-shake {
+    10%, 90% {
+        margin-left: -8px;
+    }
+
+    20%, 80% {
+        margin-left: 16px;
+    }
+
+    30%, 50%, 70% {
+        margin-left: -30px;
+    }
+
+    40%, 60% {
+        margin-left: 30px;
+    }
+}
+  
+.heavy-shake {
+  animation: heavy-shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes heavy-shake {
   10%, 90% {
     transform: translateX(-5px);
   }
@@ -92,3 +124,4 @@ small {
     transform: translateX(20px);
   }
 }
+

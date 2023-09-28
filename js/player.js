@@ -77,9 +77,9 @@ export default {
         propMeter.parentNode.classList.add('low');
       }
       if (prop === 'health' && change < 0) {
-        document.querySelector('#properties li.health').classList.add('shake');
+        document.querySelector('#properties li.health').classList.add('heavy-shake');
         window.setTimeout(() => {
-          document.querySelector('#properties li.health').classList.remove('shake');
+          document.querySelector('#properties li.health').classList.remove('heavy-shake');
         }, 200);
       }
     }

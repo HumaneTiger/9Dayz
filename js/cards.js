@@ -47,9 +47,9 @@ export default {
 
         if (actionObject) {
           if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
-            document.querySelector('#properties li.energy')?.classList.add('shake');
+            document.querySelector('#properties li.energy')?.classList.add('heavy-shake');
             window.setTimeout(() => {
-              document.querySelector('#properties li.energy')?.classList.remove('shake');
+              document.querySelector('#properties li.energy')?.classList.remove('heavy-shake');
             }, 200);    
             Audio.sfx('nope');
           } else if (actionObject && !actionObject.locked) {
@@ -62,9 +62,9 @@ export default {
             }
             Actions.goToAndAction(cardId, action);
           } else {
-            cardRef?.classList.add('shake');
+            cardRef?.classList.add('card-shake');
             window.setTimeout(() => {
-              cardRef?.classList.remove('shake');
+              cardRef?.classList.remove('card-shake');
             }, 200);    
             Audio.sfx('nope');
           }  

@@ -285,9 +285,9 @@ export default {
         Player.lockMovement(false);
         Player.changeProps('energy', energy);
         Audio.sfx('nope');
-        cardRef?.classList.add('shake');
+        cardRef?.classList.add('card-heavy-shake');
         window.setTimeout(() => {
-          cardRef?.classList.remove('shake');
+          cardRef?.classList.remove('card-heavy-shake');
         }, 200);
         Cards.renderCardDeck();
       }
