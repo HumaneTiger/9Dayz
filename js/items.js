@@ -1,5 +1,6 @@
 import Props from './props.js'
 import Player from './player.js'
+import Cards from './cards.js'
 import Crafting from './crafting.js'
 import Cooking from './cooking.js'
 import Almanac from './almanac.js'
@@ -22,8 +23,8 @@ export default {
     // add zero items to present crafting options in Almanac
     Props.addToInventory('tape', 0);
     Props.addToInventory('sharp-stick', 0);
-    Props.addToInventory('wooden-club', 0);
-    Props.addToInventory('improvised-axe', 0);
+    Props.addToInventory('wooden-club', 0, 0);
+    Props.addToInventory('improvised-axe', 0, 0);
     
     /*
     Props.addToInventory('bones', 1);
@@ -121,6 +122,7 @@ export default {
 
     const target = ev.target;
     const hoverSlot = target.closest('.slot');
+    const weaponSlot = target.closest('.weapon');
     const leftMouseButton = (ev.button === 0);
     const rightMouseButton = (ev.button === 2);
 
@@ -137,6 +139,9 @@ export default {
       }
       if (energy > 0) {        
         Player.changeProps('energy', energy);
+        // with enough new energy, certain actions become unlocked
+        Cards.calculateCardDeckProperties();
+        Cards.updateCardDeck();
       }
       /* super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
       hoverSlot.style.opacity='0';hoverSlot.style.top='-85px';
@@ -169,6 +174,14 @@ export default {
       const item = hoverSlot.dataset.item;
       Almanac.showPage(item, 'item');
     }
+
+    if (weaponSlot && rightMouseButton) {
+      if (weaponSlot.classList.contains('wooden-club')) {
+        Almanac.showPage('wooden-club', 'item');
+      } else if (weaponSlot.classList.contains('improvised-axe')) {
+        Almanac.showPage('improvised-axe', 'item');
+      }
+    }
   },
 
   checkForSlotHover: function(ev) {
@@ -196,9 +209,7 @@ export default {
           }
         }
       } else {
-        document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
-        document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
-        document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+        Player.resetPreviewProps();
         if (food > 0 && this.inventoryContains(item)) {
           inventoryContainer.querySelector('p.info').innerHTML += '<span class="food">' + food + '<span class="material-symbols-outlined">lunch_dining</span></span>';
           document.querySelector('#properties li.food').classList.add('transfer');

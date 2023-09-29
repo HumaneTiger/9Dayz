@@ -153,30 +153,30 @@ export default {
       ev.preventDefault();
       ev.stopPropagation();
       const action = target.closest('li');
-      if (action.classList.contains('inventory')) {
+      if (action?.classList.contains('inventory')) {
         document.getElementById('inventory').classList.toggle('active');
         document.getElementById('craft').classList.remove('active');
         if (Props.getGameProp('firstInventoryOpen') === false) {
           Props.setGameProp('firstInventoryOpen', true);
           Almanac.showPage('almanac', 'content');
         }
-      } else if (action.classList.contains('craft')) {
+      } else if (action?.classList.contains('craft')) {
         document.getElementById('craft').classList.toggle('active');
         document.getElementById('inventory').classList.remove('active');
-      } else if (action.classList.contains('settings')) {
+      } else if (action?.classList.contains('settings')) {
         document.getElementById('card-console').classList.toggle('out');
-      } else if (action.classList.contains('map')) {
+      } else if (action?.classList.contains('map')) {
         this.hideUI();
       }
     } else if (clickProperty) {
       const property = target.closest('li');
-      if (property.classList.contains('health')) {
+      if (property?.classList.contains('health')) {
         Almanac.showPage('health', 'content');
-      } else if (property.classList.contains('food')) {
+      } else if (property?.classList.contains('food')) {
         Almanac.showPage('food', 'content');
-      } else if (property.classList.contains('thirst')) {
+      } else if (property?.classList.contains('thirst')) {
         Almanac.showPage('thirst', 'content');
-      } else if (property.classList.contains('energy')) {
+      } else if (property?.classList.contains('energy')) {
         Almanac.showPage('energy', 'content');
       }
     }

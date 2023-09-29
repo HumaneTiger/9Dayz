@@ -73,8 +73,17 @@ export default {
       if (itemContainer) {
         const itemName = itemContainer?.dataset.item;
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
+        const itemProps = Props.getItem(itemName);
+
         if (itemAmount && leftMouseButton) {
-          Props.addToInventory(itemName, itemAmount);
+          if (itemProps[0] === 'extra' && Items.inventoryContains(itemName)) {
+            // spawn weapon as card to avoid conflicts with existing weapon in inventory
+            Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
+          } else if (itemProps[0] === 'extra') {
+            Props.addToInventory(itemName, itemAmount, 3);
+          } else {
+            Props.addToInventory(itemName, itemAmount);
+          }
           object.items.find(singleItem => singleItem.name === itemName).amount = 0;
           itemContainer.classList.add('transfer');
           Items.inventoryChangeFeedback();
@@ -85,6 +94,7 @@ export default {
             const object = Props.getObject(cardId);
             if (cardRef) {
               itemContainer.classList.add('is--hidden');
+              if (itemProps[0] === 'extra') { Player.findAndHandleObjects(); }
               if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
                   !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
                 this.renderCardDeck();
@@ -94,7 +104,12 @@ export default {
             }
           }, 400, itemContainer, cardId);
         } else if (itemAmount && rightMouseButton) {
-          Props.addToInventory(itemName, 0); // makes item known to inventory
+          // make item known to inventory
+          if (itemProps[0] === 'extra') {
+            Props.addToInventory(itemName, 0, 0); 
+          } else {
+            Props.addToInventory(itemName, 0); 
+          }
           Almanac.showPage(itemName, 'item');
         }
       }
@@ -234,6 +249,12 @@ export default {
         if (object.zednearby && object.group !== 'event' && object.group !== 'zombie' && action.id !== 'scout-area' && action.id !== 'read' && action.id !== 'equip') {
           action.locked = true;
         }
+        if (action.energy && Player.getProp('energy') + action.energy < 0) {
+          action.locked = true;
+        }
+        if (action.id === 'equip' && object.group === 'weapon' && Items.inventoryContains(object.name)) {
+          action.locked = true;
+        }
         if (action.id === 'smash-window') {
           if (!Items.inventoryContains('stone') && !Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
             action.locked = true;
@@ -291,11 +312,15 @@ export default {
       }
     });
 
-    CardsMarkup.updateCardDeckMarkup(cardDeck);
+    this.updateCardDeck();
     this.cleanupRemovedCards(); // call directly after update, as the removed card effect has to be applied before
 
     this.switchDayNight();
     this.logDeck();
+  },
+
+  updateCardDeck: function() {
+    CardsMarkup.updateCardDeckMarkup(cardDeck);
   },
 
   cleanupRemovedCards: function() {

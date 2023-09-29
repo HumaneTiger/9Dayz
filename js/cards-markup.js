@@ -266,6 +266,8 @@ export default {
         if (action.locked) {
           if (!object.inreach) {
             actionRef.querySelector('.additional-locked').textContent = 'Too far away';
+          } else if (action.energy && Player.getProp('energy') + action.energy < 0) {
+            actionRef.querySelector('.additional-locked').textContent = Math.abs(action.energy) + ' energy needed';
           } else if (object.zednearby) {
             actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
           } else if (action.id === 'cut-down' || action.id === 'break-door') {
@@ -274,6 +276,8 @@ export default {
             actionRef.querySelector('.additional-locked').textContent = 'Knife needed';        
           } else if (action.id === 'smash-window') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
+          } else if (action.id === 'equip') {
+            actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
           } else {
             actionRef.querySelector('.additional-locked').textContent = 'Locked';
           }
@@ -315,8 +319,9 @@ export default {
       if (cardRef.querySelector('p.activity') !== null) {
         cardRef.querySelector('p.activity').textContent = text;
         cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
+        /* hide "dead" banner while activity is shown */
+        cardRef.querySelector('div.dead')?.classList.add('is--hidden');
       }
-      // missing: hide "Dead" / "Undead"
     }
   },  
   
@@ -324,7 +329,9 @@ export default {
     if (cardRef) {
       if (cardRef.querySelector('p.activity')) {
         cardRef.querySelector('p.activity').textContent = '';
-        cardRef.querySelector('p.activity').classList.add('is--hidden');  
+        cardRef.querySelector('p.activity').classList.add('is--hidden');
+        /* show "dead" banner when activity has finished */
+        cardRef.querySelector('div.dead')?.classList.remove('is--hidden');
       }
       cardRef.querySelector('ul.actions')?.classList.remove('is--hidden');
       if (cardRef.querySelector('ul.items')?.classList.contains('is--hidden')) {

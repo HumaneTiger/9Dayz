@@ -210,12 +210,11 @@ export default {
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
       Player.changeProps('health', Math.floor(energy / 2));
-      Player.changeProps('food', -20);
-      Player.changeProps('thirst', -25);
+      Player.changeProps('food', -18);
+      Player.changeProps('thirst', -24);
       Map.hideScoutMarker();
       this.goBackFromAction(cardId);
     }, cardId, time, 100, energy);
-
   },
 
   simulateCooking: function(cardId) {

@@ -95,6 +95,12 @@ export default {
     }
   },
 
+  resetPreviewProps: function() {
+    document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+  },
+
   checkForDamage: function() {
     if (this.getProp('health') < 33) {
       document.getElementById('damage-cover').style.opacity = (100 - this.getProp('health') * 3.3) / 100;
