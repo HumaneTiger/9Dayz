@@ -301,26 +301,26 @@ export default {
     let images = [];
     for (const prop in buildingProps) {
       images[i] = new Image();
-      images[i].src = '../img/buildings/' + (prop.startsWith('signpost-') ? 'signpost' : prop) + '.png';
+      images[i].src = './img/buildings/' + (prop.startsWith('signpost-') ? 'signpost' : prop) + '.png';
     };
   },
   preloadItems: function() {
     let images = [];
     for (const prop in items) {
       images[i] = new Image();
-      images[i].src = '../img/items/'+prop+'.PNG';
+      images[i].src = './img/items/'+prop+'.PNG';
     };
   },
   preloadZombies: function() {
     let images = [];
     images[1] = new Image();
-    images[1].src = '../img/zombies/zombie-1.png';
+    images[1].src = './img/zombies/zombie-1.png';
     images[2] = new Image();
-    images[2].src = '../img/zombies/zombie-2.png';
+    images[2].src = './img/zombies/zombie-2.png';
     images[3] = new Image();
-    images[3].src = '../img/zombies/zombie-3.png';
+    images[3].src = './img/zombies/zombie-3.png';
     images[4] = new Image();
-    images[4].src = '../img/zombies/scratch.png';
+    images[4].src = './img/zombies/scratch.png';
   },
 
   getGameProp: function(prop) {

@@ -8,7 +8,7 @@ let startMode = 1;
 export default {
   
   init: function() {
-    document.body.addEventListener('click', this.handleClick.bind(this));
+    document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
     this.bind();
     if (Props.getGameProp('local')) {
@@ -89,6 +89,7 @@ export default {
   },
 
   startTutorial: function() {
+    console.log('go');
     document.getElementById('startscreen').style.opacity = 0;
     Props.setGameProp('tutorial', true);
     Tutorial.setupAllEvents();
