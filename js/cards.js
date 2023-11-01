@@ -94,7 +94,7 @@ export default {
             const object = Props.getObject(cardId);
             if (cardRef) {
               itemContainer.classList.add('is--hidden');
-              if (itemProps[0] === 'extra') { Player.findAndHandleObjects(); }
+              if (itemProps[0] === 'extra') { Player.findAndHandleObjects(); } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
               if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
                   !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
                 this.renderCardDeck();

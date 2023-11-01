@@ -26,6 +26,7 @@ export default {
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
+    document.body.addEventListener('keydown', this.handleKeydown.bind(this));
 
     document.body.addEventListener("contextmenu", (ev) => { 
       if (Props.getGameProp('local') === false) {
@@ -38,6 +39,26 @@ export default {
   },
 
   bind: function() {
+  },
+
+  handleKeydown: function(ev) {
+    const actionsPanel = document.getElementById('actions');
+    const actionsPanelActive = actionsPanel.classList.contains('active');
+    if (!Props.getGameProp('gamePaused') && ev.key) {
+      if (ev.key.toLowerCase() === 'i' && actionsPanelActive) {
+        actionsPanel.querySelector('li.inventory')?.dispatchEvent(new Event('click', { bubbles: true }));
+      } else if (ev.key.toLowerCase() === 'c' && actionsPanelActive) {
+        actionsPanel.querySelector('li.craft')?.dispatchEvent(new Event('click', { bubbles: true }));
+      } else if (ev.key.toLowerCase() === 'm') {
+        if (actionsPanelActive) {
+          actionsPanel.querySelector('li.map')?.dispatchEvent(new Event('click', { bubbles: true }));
+        } else {
+          this.handleMapClick();
+        }
+      } else if (ev.key.toLowerCase() === 'g' && actionsPanelActive) {
+        actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+    }
   },
 
   mouseDown(e) {
@@ -146,7 +167,7 @@ export default {
     const clickAction = target.closest('#actions');
     const clickProperty = target.closest('#properties');
     const mapClick = target.closest('#maximap');
-    const leftMouseButton = (ev.button === 0);
+    const leftMouseButton = (ev.button === 0 || !ev.button); // 2nd part also takes keyboard shortcuts into account
 
     if (clickAction && leftMouseButton) {
       Audio.sfx('click');
@@ -182,10 +203,7 @@ export default {
     }
 
     if (mapClick) {
-      document.getElementById('craft').classList.remove('active');
-      document.getElementById('inventory').classList.remove('active');
-      document.getElementById('almanac').classList.add('out');
-      this.showUI();
+      this.handleMapClick();
     }
 
     if (target && target.classList.contains('card-tutorial-confirm')) {
@@ -193,6 +211,13 @@ export default {
       document.getElementById('tutorial-fights').classList.add('is--hidden');
       document.getElementById('tutorial-beginning').classList.add('is--hidden');
     }
+  },
+
+  handleMapClick: function() {
+    document.getElementById('craft').classList.remove('active');
+    document.getElementById('inventory').classList.remove('active');
+    document.getElementById('almanac').classList.add('out');
+    this.showUI();
   },
 
   hideUI: function() {
