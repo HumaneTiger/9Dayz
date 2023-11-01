@@ -106,8 +106,8 @@ var buildingProps = {
   'gas-station': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
   'tool-shed': { locked: 2, spawn: 2, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
   'garage': { locked: 3, spawn: 3, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
-  'well': { locked: 0, spawn: 1, items: ['branch', 'rosehip', 'reef', 'stone'], amount: 2 },
-  'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck'], amount: 2 },
+  'well': { locked: 0, spawn: 1, items: ['rosehip', 'bones', 'mushroom-1', 'stone', 'froggy']},
+  'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck', 'froggy'], amount: 2 },
   'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
@@ -993,7 +993,6 @@ export default {
         singleAction.label = action.split("|")[0]; // new
         singleAction.id = action.split("|")[0].replaceAll(' ', '-'); // new
         if ((buildingName === 'pump' && singleAction.id === 'fish') ||
-            (buildingName === 'pump' && singleAction.id === 'gather') ||
             (buildingName === 'outhouse' && singleAction.id === 'break-door') ||
             (buildingName === 'small-tree' && singleAction.id === 'rest') ||
             (buildingName === 'big-tree' && singleAction.id === 'cut-down') ||
@@ -1003,7 +1002,6 @@ export default {
             (buildingName === 'seating' && singleAction.id === 'break-door') ||
             (buildingName === 'seating' && singleAction.id === 'scout-area') ||
             (buildingName === 'seating' && singleAction.id === 'sleep') ||
-            (buildingName === 'well' && singleAction.id === 'gather') ||
             (buildingName === 'well' && singleAction.id === 'fish')) {
           // these are exceptions for certain building <-> action combos that make no sense
         } else if ((!locked && singleAction.id === 'smash-window') ||

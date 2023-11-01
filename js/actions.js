@@ -145,8 +145,10 @@ export default {
         window.setTimeout(function(index, item, cardId, energy) {
           allPreviews[index].classList.add('is--hidden');
           if (item.amount > 0) {
-            if (item.name === 'duck') {
+            if (item.name === 'duck' || item.name === 'froggy') {
               Props.spawnAnimalAt(item.name, object.x, object.y);
+              cardRef.querySelector('ul.items li[data-item="' + item.name + '"].is--hidden').dataset.amount = 0;
+              item.amount = 0;
             } else {
               cardRef.querySelector('ul.items li[data-item="' + item.name + '"].is--hidden').classList.remove('is--hidden');
             }

@@ -40,7 +40,7 @@ export default {
                              '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>';
 
     let cardMarkupAnimal =   '<p class="activity glow is--hidden"></p>' +
-                             '<img class="motive" src="./img/items/' + object.name + '.PNG">' +
+                             '<img class="motive" src="./img/animals/' + object.name + '.png">' +
                              '<div class="banner"><img src="./img/icons/animals/animal.png"></div>' +
                              '<div class="dead"><img src="./img/zombies/dead.png"></div>';
 
@@ -212,7 +212,7 @@ export default {
             cardRef.classList.remove('locked');
           }
           // need object prop for 'lootable', can also be used in props.js for action combos that make no sense
-          if (object.looted && !(object.name.startsWith('signpost') || object.name === 'pump' || object.name === 'fireplace' || object.name === 'well')) {
+          if (object.looted && !(object.name.startsWith('signpost') || object.name === 'fireplace')) {
             cardRef.querySelector('ul.items')?.remove();
             cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
             cardRef.classList.add('looted');
