@@ -67,7 +67,12 @@ var specialEvents = {
   'low-energy': {
     title: 'Worn-out',
     text: 'Your energy is low.<br>Most actions consume a certain amount of Energy. Make sure to eat high-quality food and find a place to rest or sleep. Low energy gives penalties in battles.'
-  }
+  },
+  'almanac': {
+    title: 'Almanac',
+    text: 'The Almanac provides details about all items.<br><img src="./img/almanac/almanac.png"><br>Just right-click item slots and crafting buttons.'
+  },
+
 };
 
 export default {
@@ -190,7 +195,11 @@ export default {
         let objectId = this.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);
       }
-
+      if (document.getElementById('inventory').classList.contains('active') && Props.getGameProp('firstInventoryOpen') === false) {
+        Props.setGameProp('firstInventoryOpen', true);
+        let objectId = this.setupSpecialEvent('almanac', playerPosition.x, playerPosition.y);
+        specialEventObjectIds.push(objectId);
+      }
     }
     return specialEventObjectIds;
   }

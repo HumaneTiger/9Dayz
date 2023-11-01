@@ -36,6 +36,7 @@ export default {
 
     if (cardId) {
       const object = Props.getObject(cardId);
+      const cardRef = this.getCardById(cardId);
 
       ev.preventDefault();
       ev.stopPropagation();
@@ -43,7 +44,6 @@ export default {
       if (actionButton && leftMouseButton && !object.disabled) {
         const action = actionButton.dataset.action;
         const actionObject = object.actions.find(singleAction => singleAction.id === action);
-        const cardRef = this.getCardById(cardId);
 
         if (actionObject) {
           if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
@@ -89,9 +89,7 @@ export default {
           Items.inventoryChangeFeedback();
           Items.fillInventorySlots();
           Audio.sfx('pick', 0, 0.1);
-          window.setTimeout((itemContainer, cardId) => {
-            const cardRef = this.getCardById(cardId);
-            const object = Props.getObject(cardId);
+          window.setTimeout((itemContainer) => {
             if (cardRef) {
               itemContainer.classList.add('is--hidden');
               if (itemProps[0] === 'extra') { Player.findAndHandleObjects(); } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
@@ -99,10 +97,8 @@ export default {
                   !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
                 this.renderCardDeck();
               }
-            } else {
-              console.log('No Card found for ' + cardId);
             }
-          }, 400, itemContainer, cardId);
+          }, 400, itemContainer);
         } else if (itemAmount && rightMouseButton) {
           // make item known to inventory
           if (itemProps[0] === 'extra') {
@@ -110,7 +106,7 @@ export default {
           } else {
             Props.addToInventory(itemName, 0); 
           }
-          Almanac.showPage(itemName, 'item');
+          Almanac.showPage(itemName, 'item', itemContainer.closest('ul.items'), cardRef);
         }
       }
     }

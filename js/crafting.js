@@ -85,7 +85,7 @@ export default {
       }
     } else if (clickButton && rightMouseButton) {
       const item = clickButton.dataset.item;
-      Almanac.showPage(item, 'item');
+      Almanac.showPage(item, 'item', clickButton, craftContainer);
     }
   },
 

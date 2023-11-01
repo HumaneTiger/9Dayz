@@ -1,22 +1,23 @@
 #almanac {
-  background-image: url(../img/ui/almanac.png);
+  background-image: url(../img/ui/almanac-bg.png);
   background-repeat: no-repeat;
-  background-size: contain;
-  width: 290px;
-  height: 480px;
-  /*box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);*/
+  background-size: cover;
+  border: 1px rgba(53, 35, 26, 0.25) solid;
+  box-shadow: 0 2px 5px rgba(53, 35, 26, 0.3);
+  border-radius: 8px;
+  width: 300px;
+  height: auto;
   color: rgba(53, 35, 26, 0.66);
-  position: absolute;
-  padding: 20px 40px;
+  position: fixed;
+  padding: 0 20px 15px 20px;
   font-size: 16px;
   text-align: center;
   line-height: 1.4em;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 12;
+  z-index: 50;
   user-select: initial;
-  transition: right 0.2s ease-out;
+  opacity: 1;
+  transform: translate(-35%, -110%);
+  transition: opacity 0.15s ease-out;
 }
 #almanac h3 {
   font-size: 23px;
@@ -35,16 +36,17 @@
 
 #almanac img.back-button {
   position: absolute;
-  left: 38px;
-  top: 36px;
+  left: 18px;
+  top: 16px;
 }
 #almanac img.close-button {
   position: absolute;
-  right: 38px;
-  top: 36px;
+  right: 18px;
+  top: 16px;
 }
 #almanac.out {
   right: -300px;
+  opacity: 0;
 }
 #almanac img.motive {
   width: 120px;

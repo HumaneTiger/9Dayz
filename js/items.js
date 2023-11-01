@@ -121,7 +121,7 @@ export default {
   checkForSlotClick: function(ev) {
 
     const target = ev.target;
-    const hoverSlot = target.closest('.slot');
+    const hoverSlot = target.closest('.slot');    
     const weaponSlot = target.closest('.weapon');
     const leftMouseButton = (ev.button === 0);
     const rightMouseButton = (ev.button === 2);
@@ -159,7 +159,7 @@ export default {
           this.resetInventorySlotHoverEffect();
         }
       }
-    }
+    }    
     if (hoverSlot && leftMouseButton &&
         hoverSlot.classList.contains('active') &&
         hoverSlot.classList.contains('craft') &&
@@ -169,19 +169,17 @@ export default {
       document.getElementById('inventory').classList.remove('active');
       document.querySelector('#actions li.craft').classList.remove('transfer');
     }
-
     if (hoverSlot && hoverSlot.classList.contains('active') && rightMouseButton) {
       const item = hoverSlot.dataset.item;
-      Almanac.showPage(item, 'item');
+      Almanac.showPage(item, 'item', hoverSlot, inventoryContainer);
     }
-
     if (weaponSlot && rightMouseButton) {
       if (weaponSlot.classList.contains('wooden-club')) {
-        Almanac.showPage('wooden-club', 'item');
+        Almanac.showPage('wooden-club', 'item', weaponSlot, inventoryContainer);
       } else if (weaponSlot.classList.contains('improvised-axe')) {
-        Almanac.showPage('improvised-axe', 'item');
+        Almanac.showPage('improvised-axe', 'item', weaponSlot, inventoryContainer);
       }
-    }
+    }    
   },
 
   checkForSlotHover: function(ev) {
@@ -198,15 +196,13 @@ export default {
       let itemName = Props.extractItemName(item);
       inventoryContainer.querySelector('p.info').innerHTML = '<span class="name">' + itemName + '</span>';
       if (action === 'craft' && hoverSlot.classList.contains('active')) {
-        if (hoverSlot.classList.contains('active')) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
-          if (Crafting.isItemPartOfCrafting(item)) {
-            inventoryContainer.querySelector('p.info').innerHTML += '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
-            document.querySelector('#actions li.craft').classList.add('transfer');
-          }
-          if (Cooking.isItemPartOfRecipe(item)) {
-            inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
-          }
+        inventoryContainer.querySelector('p.info').innerHTML += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
+        if (Crafting.isItemPartOfCrafting(item)) {
+          inventoryContainer.querySelector('p.info').innerHTML += '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
+          document.querySelector('#actions li.craft').classList.add('transfer');
+        }
+        if (Cooking.isItemPartOfRecipe(item)) {
+          inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       } else {
         Player.resetPreviewProps();

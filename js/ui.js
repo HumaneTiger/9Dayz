@@ -3,6 +3,7 @@ import Battle from './battle.js'
 import Audio from './audio.js'
 import Player from './player.js'
 import Almanac from './almanac.js'
+import Cards from './cards.js'
 
 var viewport = document.getElementById("viewport");
 var mapHigh = document.querySelector('.map-high img');
@@ -21,7 +22,7 @@ export default {
   init: function() {
 
     window.addEventListener('resize', this.resizeViewport);
-    document.body.addEventListener('click', this.handleClick.bind(this));
+    document.body.addEventListener('mousedown', this.handleClick.bind(this));
 
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
@@ -46,17 +47,17 @@ export default {
     const actionsPanelActive = actionsPanel.classList.contains('active');
     if (!Props.getGameProp('gamePaused') && ev.key) {
       if (ev.key.toLowerCase() === 'i' && actionsPanelActive) {
-        actionsPanel.querySelector('li.inventory')?.dispatchEvent(new Event('click', { bubbles: true }));
+        actionsPanel.querySelector('li.inventory')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'c' && actionsPanelActive) {
-        actionsPanel.querySelector('li.craft')?.dispatchEvent(new Event('click', { bubbles: true }));
+        actionsPanel.querySelector('li.craft')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'm') {
         if (actionsPanelActive) {
-          actionsPanel.querySelector('li.map')?.dispatchEvent(new Event('click', { bubbles: true }));
+          actionsPanel.querySelector('li.map')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
         } else {
           this.handleMapClick();
         }
       } else if (ev.key.toLowerCase() === 'g' && actionsPanelActive) {
-        actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('click', { bubbles: true }));
+        actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
   },
@@ -168,6 +169,7 @@ export default {
     const clickProperty = target.closest('#properties');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = (ev.button === 0 || !ev.button); // 2nd part also takes keyboard shortcuts into account
+    const rightMouseButton = (ev.button === 2);
 
     if (clickAction && leftMouseButton) {
       Audio.sfx('click');
@@ -178,8 +180,7 @@ export default {
         document.getElementById('inventory').classList.toggle('active');
         document.getElementById('craft').classList.remove('active');
         if (Props.getGameProp('firstInventoryOpen') === false) {
-          Props.setGameProp('firstInventoryOpen', true);
-          Almanac.showPage('almanac', 'content');
+          Cards.renderCardDeck();
         }
       } else if (action?.classList.contains('craft')) {
         document.getElementById('craft').classList.toggle('active');
@@ -189,16 +190,16 @@ export default {
       } else if (action?.classList.contains('map')) {
         this.hideUI();
       }
-    } else if (clickProperty) {
+    } else if (clickProperty && rightMouseButton) {
       const property = target.closest('li');
       if (property?.classList.contains('health')) {
-        Almanac.showPage('health', 'content');
+        Almanac.showPage('health', 'content', property, document.getElementById('properties'));
       } else if (property?.classList.contains('food')) {
-        Almanac.showPage('food', 'content');
+        Almanac.showPage('food', 'content', property, document.getElementById('properties'));
       } else if (property?.classList.contains('thirst')) {
-        Almanac.showPage('thirst', 'content');
+        Almanac.showPage('thirst', 'content', property, document.getElementById('properties'));
       } else if (property?.classList.contains('energy')) {
-        Almanac.showPage('energy', 'content');
+        Almanac.showPage('energy', 'content', property, document.getElementById('properties'));
       }
     }
 

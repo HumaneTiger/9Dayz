@@ -92,7 +92,7 @@ export default {
         const item = slotActive.dataset?.item;
         if (item !== undefined) {
           Props.addToInventory(item.replace('-2', ''), 0); // makes item known to inventory
-          Almanac.showPage(item.replace('-2', ''), 'item');
+          Almanac.showPage(item.replace('-2', ''), 'item', slotActive, cookingContainer);
         }
       } else if (actionButton && leftMouseButton && actionButton.dataset.action === 'close-cooking') {
         cookingContainer.classList.remove('full');
