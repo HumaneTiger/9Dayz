@@ -20,7 +20,7 @@ export default {
     let object = Props.getObject(id);
     let cardMarkupExtension;
 
-    let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + (object.dead ? 'dead ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
+    let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + (object.dead ? 'dead ' : '') + (object.preview ? 'preview ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                           '<div class="inner">';
 
     let cardMarkupBuilding = '<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested"></div></div>' +
@@ -37,7 +37,8 @@ export default {
     let cardMarkupWeapon =   '<div class="attack">' + object.attack + '</div><div class="shield">' + object.defense + '</div>' +
                              '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/weapons/' + object.name + '.png">' +
-                             '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>';
+                             '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>' +
+                             '<div class="dead"><img src="./img/weapons/preview.png"></div>';
 
     let cardMarkupAnimal =   '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/animals/' + object.name + '.png">' +

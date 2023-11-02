@@ -41,7 +41,7 @@ export default {
               Props.setZedAt(squareX, squareY, 1);
             } else if (selectedObject === 'rats') {
               Props.spawnRatsAt(squareX, squareY);
-            } else if (selectedObject === 'improvised-axe' || selectedObject === 'wooden-club') {
+            } else if (selectedObject === 'improvised-axe' || selectedObject === 'axe' || selectedObject === 'wooden-club' || selectedObject === 'baseball-bat' || selectedObject === 'wrench') {
               Props.setupWeapon(squareX, squareY, selectedObject);
             } else if (selectedObject === 'care-package') {
               Props.addToInventory('tomato', 1);

@@ -60,7 +60,7 @@ var paths = new Array(mapSize.width);
 for (var i = 0; i < paths.length; i += 1) { paths[i] = new Array(mapSize.height); }
 
 var buildingTypes = {
-  'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house'],
+  'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
   'car': ['car-1', 'car-2'],
   'farm': ['field', 'compost', 'scarecrow'],
   'tree': [ 'small-tree', 'big-tree'],
@@ -81,6 +81,7 @@ var buildingProps = {
   'outhouse': { locked: 0, spawn: 1, items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'] },
   'pump': { locked: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
   'house': { locked: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus', 'cloth'] },
+  'basement': { locked: 0, spawn: 3, items: ['axe', 'baseball-bat', 'wine', 'tape', 'cloth', 'hacksaw', 'bones', 'spanner', 'books'] },
   'farm-house': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'pumpkin', 'carrot', 'knife', 'pepper', 'tomato', 'exodus'] },
   'town-house': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus', 'cloth'] },
   'car-1': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner', 'cloth'] },
@@ -104,15 +105,15 @@ var buildingProps = {
   'train-wreck-1': { locked: 0, spawn: 3, items: ['snack-1', 'snack-2', 'drink-2', 'drink-5', 'wine'] },
   'market': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-3', 'drink-4', 'exodus'] },
   'gas-station': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
-  'tool-shed': { locked: 2, spawn: 2, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
-  'garage': { locked: 3, spawn: 3, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'spanner', 'tape'] },
+  'tool-shed': { locked: 2, spawn: 2, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'wrench', 'tape'] },
+  'garage': { locked: 3, spawn: 3, items: ['cloth', 'claw', 'fail', 'hacksaw', 'exodus', 'knife', 'mallet', 'pincers', 'wrench', 'tape'] },
   'well': { locked: 0, spawn: 1, items: ['rosehip', 'bones', 'mushroom-1', 'stone', 'froggy']},
   'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck', 'froggy'], amount: 2 },
   'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
   'fireplace': { locked: 0, spawn: 0, items: [] },
-  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'wooden-club'] },
+  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'wooden-club', 'baseball-bat'] },
 };
 
 var buildingActions = {
@@ -168,11 +169,9 @@ var craftingRecipes = {
 };
 
 var weaponProps = {
-  /*'axe': [0, 8],
-  'baseball-bat': [25, 4],
-  'hammer': [0, 5],
-  'saw': [0, 1],
-  'wrench': [0, 7]*/
+  'baseball-bat': {attack: 10, defense: 2, durability: 3, preview: true},
+  'wrench': {attack: 14, defense: 2, durability: 3, preview: true},
+  'axe': {attack: 12, defense: 6, durability: 3, preview: true},
   'improvised-axe': {attack: 8, defense: 4, durability: 3},
   'wooden-club': {attack: 6, defense: 3, durability: 3}
 };
@@ -238,8 +237,11 @@ var items = {
   'tape': ['craft', 0, 0, 0, 1, 0],
   'tomato': ['eat', 4, 8, 3],
   'wine': ['drink', 5, 35, 20],
-  'improvised-axe': ['extra', 0, 0, 0, 8, 4],
-  'wooden-club': ['extra', 0, 0, 0, 6, 3]
+  'improvised-axe': ['extra', 0, 0, 0, weaponProps['improvised-axe'].attack, weaponProps['improvised-axe'].defense],
+  'wooden-club': ['extra', 0, 0, 0, weaponProps['wooden-club'].attack, weaponProps['wooden-club'].defense],
+  'wrench': ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
+  'baseball-bat': ['extra', 0, 0, 0, weaponProps['baseball-bat'].attack, weaponProps['baseball-bat'].defense],
+  'axe': ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense]
 };
 
 const actionTextMapping = {
@@ -725,7 +727,7 @@ export default {
     return lootItemList;
   },
 
-  setupBuilding: function(x, y, buildingNamesArray, forceItems) {
+  setupBuilding: function(x, y, buildingNamesArray, forceItems, forceInfested) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
       const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9, props.amount);
@@ -746,7 +748,7 @@ export default {
         items: lootItemList,
         locked: locked,
         looted: false,
-        infested: infested,
+        infested: forceInfested || infested,
         zednearby: null,
         active: true,
         inreach: false,
@@ -892,9 +894,7 @@ export default {
       type: undefined,
       group: 'weapon',
       text: false,
-      actions: [{
-        id: 'equip', label: 'Equip'
-      }],
+      actions: props.preview ? [{ id: 'got-it', label: 'Got it!' }] : [{ id: 'equip', label: 'Equip' }],
       items: [],
       locked: undefined,
       looted: false,
@@ -907,6 +907,7 @@ export default {
       defense: props.defense,
       durability: props.durability,
       dead: undefined,
+      preview: props.preview,
       disabled: false,
       removed: false
     });

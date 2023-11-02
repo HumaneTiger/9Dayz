@@ -72,6 +72,7 @@
   top: 22%;
   display: none;
 }
+.card.preview .dead,
 .card.dead .dead {
   display: block;
 }

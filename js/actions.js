@@ -141,6 +141,9 @@ export default {
       if (object.type === 'house' && Math.random() < 0.25) {
         Props.setupBuilding(object.x, object.y, ['human-corpse-1']);
       }
+      if ((object.name === 'house' || object.name === 'farm-house') && Math.random() < 0.2) {
+        Props.setupBuilding(object.x, object.y, ['basement'], false, true);
+      }
       for (let i = 0; i < allItems.length; i += 1) {
         window.setTimeout(function(index, item, cardId, energy) {
           allPreviews[index].classList.add('is--hidden');

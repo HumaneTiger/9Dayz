@@ -76,7 +76,7 @@ export default {
         const itemProps = Props.getItem(itemName);
 
         if (itemAmount && leftMouseButton) {
-          if (itemProps[0] === 'extra' && Items.inventoryContains(itemName)) {
+          if (itemProps[0] === 'extra' && (Items.inventoryContains(itemName) || itemName === 'axe' || itemName === 'baseball-bat' || itemName === 'wrench')) {
             // spawn weapon as card to avoid conflicts with existing weapon in inventory
             Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
           } else if (itemProps[0] === 'extra') {
