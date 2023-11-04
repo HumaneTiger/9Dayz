@@ -106,6 +106,9 @@
   text-decoration: underline;
 }
 #almanac .footer {
-  margin: -10px 0 10px;  
+  margin: 0 0 -2px;
   width: 100%;
+}
+#almanac .footer img {
+  width: 150px;
 }
