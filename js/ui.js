@@ -62,11 +62,12 @@ export default {
     }
   },
 
-  mouseDown(e) {
+  mouseDown(ev) {
     
-    let target = e.target;
+    let target = ev.target;
+    const leftMouseButton = (ev.button === 0);
 
-    if (target) {
+    if (target && leftMouseButton) {
 
       if (dragMode === false && target.closest('div.battle-card')) {
 
@@ -75,6 +76,20 @@ export default {
         dragEl = target.closest('div.battle-card');
 
         dragEl.style.zIndex = topIndex++;
+        dragEl.classList.add('grabbed');
+        
+        startPosX = dragEl.clientX;
+        startPosY = dragEl.clientY;
+
+        initialStyleLeft = dragEl.style.left;
+        initialStyleTop = dragEl.style.top;
+      }
+
+      if (dragMode === false && target.closest('#almanac') && target.classList.contains('title')) {
+
+        dragMode = true;
+
+        dragEl = target.closest('#almanac');
         dragEl.classList.add('grabbed');
         
         startPosX = dragEl.clientX;
@@ -121,6 +136,9 @@ export default {
         if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
           Battle.resolveAttack(dragEl, dragTarget);
         }
+      } else if (dragEl.id && dragEl.id === 'almanac') {
+        dragEl.classList.remove('grabbed');
+        dragEl.classList.add('repos');
       } else {
         this.resetDraggedElement(dragEl);
       }

@@ -48,6 +48,7 @@ export default {
   },
 
   close: function() {
+    almanacContainer.classList.remove('repos')
     almanacContainer.classList.add('out');
     almanacContainer.dataset.item = '';
     almanacContainer.removeAttribute('style');
@@ -88,7 +89,7 @@ export default {
 
       almanacContainer.dataset.item = item;
 
-      if (refElem && parentElem) {
+      if (refElem && parentElem && !almanacContainer.classList.contains('repos')) {
         const left = (refElem.offsetLeft + parentElem.offsetLeft > 120) ? (refElem.offsetLeft + parentElem.offsetLeft) : 120;
         const top = (refElem.offsetTop + parentElem.offsetTop > 445) ? (refElem.offsetTop + parentElem.offsetTop) : 445;
         almanacContainer.style.left = left + 'px';

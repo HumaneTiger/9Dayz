@@ -17,8 +17,42 @@
   user-select: initial;
   opacity: 1;
   transform: translate(-35%, -110%);
-  transition: opacity 0.15s ease-out;
+  transition: opacity 0.15s ease-out, box-shadow 0.15s ease-out;
 }
+
+#almanac .title {
+  cursor: pointer;
+  color: rgba(53, 35, 26, 0.5);
+  display: inline-block;
+  width: 174px;
+  height: 42px;
+  background-color: #faf7f2;
+  background-image: url(../img/almanac/title.png);
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding: 32px 24px 0;
+  line-height: 0;
+  border-top-right-radius: 8px 8px;
+  border-top-left-radius: 8px 8px;
+  font-size: 20px;
+  font-weight: 400;
+  font-style: normal;
+  position: absolute;
+  top: -42px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 -1px 1px rgba(53, 35, 26, 0.6);
+  transition: opacity 0.15s ease-out, box-shadow 0.15s ease-out;
+  z-index: -1;
+}
+
+#almanac.grabbed {
+  box-shadow: 0 0 12px rgba(53, 35, 26, 0.3);
+}
+#almanac.grabbed .title {
+  box-shadow: 0 -4px 6px rgba(53, 35, 26, 0.2);
+}
+
 #almanac h3 {
   font-size: 23px;
   padding: 26px 0 6px;
@@ -72,8 +106,6 @@
   text-decoration: underline;
 }
 #almanac .footer {
-  position: absolute;
+  margin: -10px 0 10px;  
   width: 100%;
-  bottom: 24px;
-  left: 0;
 }
