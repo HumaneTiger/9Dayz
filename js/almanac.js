@@ -47,11 +47,13 @@ export default {
     almanacContainer.dataset.item = '';
   },
 
-  close: function() {
-    almanacContainer.classList.remove('repos')
-    almanacContainer.classList.add('out');
-    almanacContainer.dataset.item = '';
-    almanacContainer.removeAttribute('style');
+  close: function(force) {
+    if (force ||!almanacContainer.classList.contains('repos')) {
+      almanacContainer.classList.remove('repos');
+      almanacContainer.classList.add('out');
+      almanacContainer.dataset.item = '';
+      almanacContainer.removeAttribute('style');  
+    }
   },
 
   checkActionClick: function(ev) {
@@ -62,7 +64,7 @@ export default {
     const closeButton = target.closest('.close-button');
 
     if (closeButton) {
-      this.close();
+      this.close(true);
     }
 
     if (backButton) {

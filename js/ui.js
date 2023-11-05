@@ -4,13 +4,18 @@ import Audio from './audio.js'
 import Player from './player.js'
 import Almanac from './almanac.js'
 import Cards from './cards.js'
+import Items from './items.js'
 
-var viewport = document.getElementById("viewport");
-var mapHigh = document.querySelector('.map-high img');
-var morningLight = document.querySelectorAll('.morning-light');
-var eveningLight = document.querySelectorAll('.evening-light');
-var nightLight = document.querySelectorAll('.night-light');
-var nightCover = document.querySelectorAll('.night-ui-cover');
+const viewport = document.getElementById("viewport");
+const mapHigh = document.querySelector('.map-high img');
+const morningLight = document.querySelectorAll('.morning-light');
+const eveningLight = document.querySelectorAll('.evening-light');
+const nightLight = document.querySelectorAll('.night-light');
+const nightCover = document.querySelectorAll('.night-ui-cover');
+
+const battleCardsContainer = document.getElementById('battle-cards');
+const inventoryContainer = document.getElementById('inventory');
+const craftContainer = document.getElementById('craft');
 
 let newPosX = 0, newPosY = 0, startPosX = 0, startPosY = 0, initialStyleLeft = 0, initialStyleTop = 0;
 let dragMode = false;
@@ -24,6 +29,7 @@ export default {
     window.addEventListener('resize', this.resizeViewport);
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
 
+    document.body.addEventListener('mouseover', this.mouseOver);
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
@@ -62,7 +68,19 @@ export default {
     }
   },
 
-  mouseDown(ev) {
+  mouseOver: function(ev) {
+    const target = ev.target,
+          battleCard = target.closest('div.battle-card'),
+          item = battleCard?.dataset.item;
+
+    if (dragMode === false && battleCard) {
+      battleCardsContainer.querySelector('p.item-info').innerHTML = Items.getItemInfoMarkup(item, true);
+    } else {
+      battleCardsContainer.querySelector('p.item-info').innerHTML = '';
+    }
+  },
+
+  mouseDown: function(ev) {
     
     let target = ev.target;
     const leftMouseButton = (ev.button === 0);
@@ -101,7 +119,7 @@ export default {
     }
   },
 
-  mouseMove(e) {
+  mouseMove: function(e) {
 
     e.preventDefault;
     e.stopPropagation();
@@ -125,11 +143,13 @@ export default {
         if (dragTarget) {
           dragTarget.classList.add('active');
         }
+        // remove item info when card is dragged
+        battleCardsContainer.querySelector('p.item-info').innerHTML = '';
       }
     }  
   },
 
-  mouseUp(e) {
+  mouseUp: function(e) {
     if (dragMode) {
       let dragTarget = this.getDragTarget(e);
       if (dragTarget) {
@@ -147,13 +167,13 @@ export default {
     }
   },
 
-  resetDraggedElement(el) {
+  resetDraggedElement: function(el) {
     el.style.left = initialStyleLeft;
     el.style.top = initialStyleTop;
     el.classList.remove('grabbed');
   },
 
-  getDragTarget(e) {
+  getDragTarget: function(e) {
 
     let targetCandidateFound;
     let mouseX = e.clientX;
@@ -195,14 +215,16 @@ export default {
       ev.stopPropagation();
       const action = target.closest('li');
       if (action?.classList.contains('inventory')) {
-        document.getElementById('inventory').classList.toggle('active');
-        document.getElementById('craft').classList.remove('active');
+        inventoryContainer.classList.toggle('active');
+        craftContainer.classList.remove('active');
+        Almanac.close();
         if (Props.getGameProp('firstInventoryOpen') === false) {
           Cards.renderCardDeck();
         }
       } else if (action?.classList.contains('craft')) {
-        document.getElementById('craft').classList.toggle('active');
-        document.getElementById('inventory').classList.remove('active');
+        craftContainer.classList.toggle('active');
+        inventoryContainer.classList.remove('active');
+        Almanac.close();
       } else if (action?.classList.contains('settings')) {
         document.getElementById('card-console').classList.toggle('out');
       } else if (action?.classList.contains('map')) {
@@ -233,15 +255,16 @@ export default {
   },
 
   handleMapClick: function() {
-    document.getElementById('craft').classList.remove('active');
-    document.getElementById('inventory').classList.remove('active');
-    document.getElementById('almanac').classList.add('out');
+    craftContainer.classList.remove('active');
+    inventoryContainer.classList.remove('active');
+    Almanac.close();
     this.showUI();
   },
 
   hideUI: function() {
-    document.getElementById('craft').classList.remove('active');
-    document.getElementById('inventory').classList.remove('active');
+    craftContainer.classList.remove('active');
+    inventoryContainer.classList.remove('active');
+    Almanac.close(true);
     document.getElementById('properties').classList.remove('active');
     document.getElementById('actions').classList.remove('active');
     document.getElementById('cards').classList.remove('active');

@@ -201,7 +201,7 @@
   font-size: 60px;
   width: 100%;
   text-align: center;
-  color: rgba(255, 254, 251, 1);  
+  color: rgba(255, 254, 251, 1);
   transition: transform 0.5s ease-out, opacity 0.5s ease-out;
   opacity: 0;
   bottom: -20px;
@@ -273,6 +273,18 @@
   right: 380px;
   z-index: 1;
   cursor: pointer;
+}
+#battle-cards .item-info {
+  color: rgba(255, 254, 251, 1);
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+#battle-cards .item-info,
+#battle-cards .material-symbols-outlined {
+  font-size: 20px;
 }
 #battle-cards .discard {
   position: absolute;
@@ -385,30 +397,6 @@
   color: white;
   background-color: rgba(145, 211, 242, 0.9);
   border: 1px rgba(75, 153, 190, 0.25) solid;
-}
-#battle-cards .energy.e0 {
-  display: none;
-}
-#battle-cards .energy.e1 {
-  width: 28px;
-}
-#battle-cards .energy.e2 {
-  width: 56px;
-}
-#battle-cards .energy.e3 {
-  width: 80px;
-}
-#battle-cards .energy {
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  width: 80px;
-  height: 32px;
-  transform: translateX(-50%);
-  background-image: url(../img/card/actions.png);
-  background-position: left center;
-  background-size: auto 100%;
-  background-repeat: no-repeat;
 }
 #action-points {
   width: 120px;

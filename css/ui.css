@@ -306,7 +306,7 @@ ul#properties li.time {
   left: 4px;
 }
 #craft p.info,
-#inventory p.info {
+p.item-info {
   color: rgba(53, 35, 26, 0.6);
   font-weight: 300;
   font-size: 24px;
@@ -317,43 +317,43 @@ ul#properties li.time {
   text-align: center;
   text-transform: capitalize;
 }
-#inventory p.info .material-symbols-outlined {
+p.item-info .material-symbols-outlined {
   display: inline-block;
   padding-left: 4px;
   line-height: 1.4em;
   vertical-align: top;
 }
-#inventory p.info .name,
-#inventory p.info .fighting,
-#inventory p.info .cooking,
-#inventory p.info .crafting,
-#inventory p.info .food,
-#inventory p.info .drink,
-#inventory p.info .energy {
+p.item-info .name,
+p.item-info .fighting,
+p.item-info .cooking,
+p.item-info .crafting,
+p.item-info .food,
+p.item-info .drink,
+p.item-info .energy {
   display: inline-block;
   padding-right: 12px;
 }
-#inventory p.info .food {
+p.item-info .food {
   font-weight: 400;
   color: #ec9f71;
 }
-#inventory p.info .drink {
+p.item-info .drink {
   font-weight: 400;
   color: #82c8e8;
 }
-#inventory p.info .energy {
+p.item-info .energy {
   font-weight: 400;
   color: #ddaa30;
 }
-#inventory p.info .fighting {
+p.item-info .fighting {
   font-weight: 400;
   color: #ff808d;
 }
-#inventory p.info .cooking {
+p.item-info .cooking {
   font-weight: 400;
   color: #a0bf39;
 }
-#inventory p.info .crafting {
+p.item-info .crafting {
   font-weight: 400;
   color: #ac9fb0;
 }

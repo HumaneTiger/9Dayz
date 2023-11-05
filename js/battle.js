@@ -16,6 +16,7 @@ const inventory = Props.getInventory();
 
 let cardZedDeck = [];
 let battleDeck = [];
+let allDrawPileCards = [];
 let battleDeckProps = {
   number: 0
 };
@@ -105,19 +106,35 @@ export default {
     }
   },
 
-  spawnBattleDeck: function(surprised) {
+  renderDrawPile: function() {
+    const pileSize = Math.min(battleDeck.length, 24);
+    for (let card = 0; card < pileSize; card += 1) {
+      if (card < battleDeckProps.number) {
+        allDrawPileCards[card].classList.remove('is--hidden');
+      } else {
+        allDrawPileCards[card].classList.add('is--hidden');
+      }
+    }
+    document.getElementById('draw-amount').style.left = (200 + Math.min(battleDeckProps.number, 24) * 4) + 'px';
+    if (battleDeckProps.number === 0) {
+      document.getElementById('draw-amount').classList.add('is--hidden');
+    } else {
+      document.getElementById('draw-amount').classList.remove('is--hidden');
+    }
+    battleDrawContainer.style.width = (160 + pileSize * 4) + 'px';
+  },
 
+  spawnBattleDeck: function(surprised) {
     for (const item in inventory.items) {
       for (var i = 0; i < inventory.items[item].amount; i += 1) {
         battleDeck.push(inventory.items[item]);
       }
     }
-    for (const item in battleDeck) {
-      battleDrawContainer.innerHTML += '<div class="battle-card-back" style="left: ' + (item * 4) + 'px"></div>';
+    for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
+      battleDrawContainer.innerHTML += '<div class="battle-card-back is--hidden" style="left: ' + (card * 4) + 'px"></div>';
     }
-    document.getElementById('draw-amount').style.left = (200 + battleDeck.length * 4) + 'px';
-    battleDrawContainer.style.width = (160 + battleDeck.length * 4) + 'px';
-
+    allDrawPileCards = battleDrawContainer.querySelectorAll('.battle-card-back');
+    this.renderDrawPile();
     battleHealthMeter.classList.add('in-battle');
 
     if (surprised) {
@@ -214,10 +231,11 @@ export default {
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (var i = 0; i < battlePlayContainer.children.length; i += 1) {
-        window.setTimeout(function(index, child, totalCards) {
+        window.setTimeout((index, child, totalCards) => {
           child.style.left = (index * 170) + 'px';
           child.classList.remove('inactive');
           battleDeckProps.number = totalCards + index;
+          this.renderDrawPile();
         }, 500 + i * 300, battlePlayContainer.children.length - i - 1, battlePlayContainer.children[i], battleDeck.length-battlePlayContainer.children.length);
       }  
     } else {
@@ -298,6 +316,7 @@ export default {
   endTurn: function() {
     const allBattleCards = battlePlayContainer.querySelectorAll('.battle-card');
     battleDeckProps.number = battleDeck.length;
+    this.renderDrawPile();
     if (allBattleCards) {
       allBattleCards.forEach(battleCard => {
         battleCard.classList.add('inactive');
@@ -340,6 +359,7 @@ export default {
               }
             }
             battleDeckProps.number = battleDeck.length;
+            this.renderDrawPile();
             this.showBattleStats(foodItem.name, 'image');
           }
         }

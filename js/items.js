@@ -188,41 +188,34 @@ export default {
     const hoverSlot = target.closest('.slot');
 
     if (hoverSlot && !hoverSlot.classList.contains('unknown')) {
-      const item = hoverSlot.dataset.item;
-      let action = items[item][0];
-      let food = items[item][1];
-      let drink = items[item][2];
-      let energy = items[item][3];
-      let itemName = Props.extractItemName(item);
-      inventoryContainer.querySelector('p.info').innerHTML = '<span class="name">' + itemName + '</span>';
-      if (action === 'craft' && hoverSlot.classList.contains('active')) {
-        inventoryContainer.querySelector('p.info').innerHTML += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
+
+      const item = hoverSlot.dataset.item,
+            itemActive = hoverSlot.classList.contains('active');
+
+      const action = items[item][0],
+            food = items[item][1],
+            drink = items[item][2],
+            energy = items[item][3];
+
+      inventoryContainer.querySelector('p.item-info').innerHTML = this.getItemInfoMarkup(item, itemActive);
+
+      if (action === 'craft' && itemActive) {
         if (Crafting.isItemPartOfCrafting(item)) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
           document.querySelector('#actions li.craft').classList.add('transfer');
-        }
-        if (Cooking.isItemPartOfRecipe(item)) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       } else {
         Player.resetPreviewProps();
         if (food > 0 && this.inventoryContains(item)) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="food">' + food + '<span class="material-symbols-outlined">lunch_dining</span></span>';
           document.querySelector('#properties li.food').classList.add('transfer');
           Player.previewProps('food', food);
         }
         if (drink > 0 && this.inventoryContains(item)) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="drink">' + drink + '<span class="material-symbols-outlined">water_medium</span></span>';
           document.querySelector('#properties li.thirst').classList.add('transfer');
           Player.previewProps('thirst', drink);
         }
         if (energy > 0 && this.inventoryContains(item)) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="energy">' + energy + '<span class="material-symbols-outlined">flash_on</span></span>';
           document.querySelector('#properties li.energy').classList.add('transfer');
           Player.previewProps('energy', energy);
-        }
-        if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
-          inventoryContainer.querySelector('p.info').innerHTML += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       }
     } else {
@@ -230,8 +223,42 @@ export default {
     }
   },
 
+  getItemInfoMarkup: function(item, itemActive) {
+
+    const action = items[item][0],
+          food = items[item][1],
+          drink = items[item][2],
+          energy = items[item][3];
+
+    let itemInfoMarkup = '<span class="name">' + Props.extractItemName(item) + '</span>';
+
+    if (action === 'craft' && itemActive) {
+      itemInfoMarkup += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
+      if (Crafting.isItemPartOfCrafting(item)) {
+        itemInfoMarkup += '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
+      }
+      if (Cooking.isItemPartOfRecipe(item)) {
+        itemInfoMarkup += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+      }
+    } else {
+      if (food > 0 && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="food">' + food + '<span class="material-symbols-outlined">lunch_dining</span></span>';
+      }
+      if (drink > 0 && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="drink">' + drink + '<span class="material-symbols-outlined">water_medium</span></span>';
+      }
+      if (energy > 0 && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="energy">' + energy + '<span class="material-symbols-outlined">flash_on</span></span>';
+      }
+      if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+      }
+    }
+    return itemInfoMarkup;
+  },
+
   resetInventorySlotHoverEffect: function() {
-    inventoryContainer.querySelector('p.info').textContent = '';
+    inventoryContainer.querySelector('p.item-info').textContent = '';
     document.querySelector('#properties li.food').classList.remove('transfer');
     document.querySelector('#properties li.thirst').classList.remove('transfer');
     document.querySelector('#properties li.energy').classList.remove('transfer');
