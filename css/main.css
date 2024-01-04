@@ -22,13 +22,13 @@ body * {
 
 #viewport {
     position: fixed;
-    top: 0;
+    top: 50%;
     left: 50%;
     width: 2135px;
     height: 1200px;
     transform-origin: top left;
     background-repeat: no-repeat;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     z-index: 10;
 }
 
@@ -55,10 +55,16 @@ main ul {
     height: 100vh;
     width: auto;
     position: absolute;
-    z-index: 4;
+    
+    pointer-events: none;
     left: 50%;
-    transform: translateX(-50%) scale(1.181);
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1.181);
     margin-left: -2px;
 }
-  
-  
+#map-border.vertical {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+#map-border.in-front {
+  z-index: 11;
+}

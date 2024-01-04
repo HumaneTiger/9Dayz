@@ -15,7 +15,10 @@ var crafting = {
 
 var game = {
   mode: 'real',
+  startMode: 1,
   timeMode: 'day',
+  viewMode: '',
+  scaleFactor: 0,
   tutorial: false,
   battle: false,
   gamePaused: true,

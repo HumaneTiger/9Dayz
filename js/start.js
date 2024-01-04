@@ -2,23 +2,19 @@ import { default as Audio } from './audio.js'
 import { default as Player } from './player.js'
 import { default as Props } from './props.js'
 import { default as Tutorial } from './tutorial.js'
-
-let startMode = 1;
+import { default as Ui } from './ui.js'
 
 export default {
   
   init: function() {
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
-    this.bind();
+    Props.setGameProp('startMode', 1);
     if (Props.getGameProp('local')) {
-      startMode = 2;
+      Props.setGameProp('startMode', 2);
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
       document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
     }
-  },
-
-  bind: function() {
   },
 
   handleClick: function(ev) {
@@ -27,7 +23,7 @@ export default {
     const startscreenAction = target.closest('#startscreen');
     const leftMouseButton = (ev.button === 0);
 
-    if (startMode === 1) {
+    if (Props.getGameProp('startMode') === 1) {
       this.switchToScreen2();
     } else if (leftMouseButton) {
       if (startscreenAction) {
@@ -83,6 +79,7 @@ export default {
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
     Audio.playAmbientLoop();
+    Ui.showMapBorder();
     window.setTimeout(function() {
       document.getElementById('startscreen').classList.add('is--hidden');
     }, 1500);
@@ -96,19 +93,20 @@ export default {
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
     Audio.playAmbientLoop();
+    Ui.showMapBorder();
     window.setTimeout(function() {
       document.getElementById('startscreen').classList.add('is--hidden');
     }, 1500);          
   },
 
   handleKeypress: function(ev) {
-    if (startMode === 1) {
+    if (Props.getGameProp('startMode') === 1) {
       this.switchToScreen2();
     }
   },
 
   switchToScreen2: function() {
-    startMode = 2;
+    Props.setGameProp('startMode', 2);
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
   },

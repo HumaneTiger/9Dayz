@@ -7,6 +7,7 @@ import Cards from './cards.js'
 import Items from './items.js'
 
 const viewport = document.getElementById("viewport");
+const mapBorder = document.getElementById("map-border");
 const mapHigh = document.querySelector('.map-high img');
 const morningLight = document.querySelectorAll('.morning-light');
 const eveningLight = document.querySelectorAll('.evening-light');
@@ -278,18 +279,24 @@ export default {
     document.getElementById('cards').classList.add('active');
   },
 
+  showMapBorder: function() {
+    mapBorder.classList.add('in-front');
+  },
+
   resizeViewport: function() {
     const viewWidth = window.innerWidth,
           viewHeight = window.innerHeight;
-    let scaleFactor;
 
-    /*if (viewWidth / viewHeight < 1.78) {
-      scaleFactor = viewWidth / 2135;
+    if (viewWidth / viewHeight < 1.78) {
+      Props.setGameProp('scaleFactor', viewWidth / 2135);
+      Props.setGameProp('viewMode', 'vertical');
     } else {
-      scaleFactor = viewHeight / 1200;
-    }*/
-    scaleFactor = viewHeight / 1200;
-    viewport.style.transform = 'scale3d('+scaleFactor+','+scaleFactor+','+scaleFactor+') translate3d(-50%,0,0)';
+      Props.setGameProp('scaleFactor', viewHeight / 1200);
+      Props.setGameProp('viewMode', 'horizontal');
+    }
+    mapBorder.classList.remove('horizontal', 'vertical');
+    mapBorder.classList.add(Props.getGameProp('viewMode'));
+    viewport.style.transform = 'scale3d('+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+') translate3d(-50%, -50% , 0)';
   },
 
   hourlyTasks: function(hour) {

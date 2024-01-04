@@ -323,15 +323,19 @@ export default {
       });
     }
     document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
-    this.showBattleMessage('Enemies Turn', 800);
-    window.setTimeout(() => {
-      this.zedAttack();
-    }, 400);
+    if (battleDeck.length <= 0) {
+      this.zedAttack(true);
+    } else {
+      this.showBattleMessage('Enemies Turn', 800);
+      window.setTimeout(() => {
+        this.zedAttack();
+      }, 400);  
+    }
   },
 
-  zedAttack: function() {
+  zedAttack: function(zeroItems) {
 
-    const delay = 1200;
+    const delay = battleDeck.length <= 0 ? 400 : 1200;
     const allAttackingZeds = cardZedDeck.filter(zed => Props.getObject(zed).fighting);
 
     for (let index = 0; index < allAttackingZeds.length; index += 1) {

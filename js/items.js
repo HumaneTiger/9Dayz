@@ -13,13 +13,14 @@ const inventoryContainer = document.getElementById('inventory');
 export default {
   
   init: function() {
+    /*
     Props.addToInventory('tomato', 2);
     Props.addToInventory('drink-2', 1);
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
     Props.addToInventory('pepper', 1);
-
+*/
     // add zero items to present crafting options in Almanac
     Props.addToInventory('tape', 0);
     Props.addToInventory('sharp-stick', 0);

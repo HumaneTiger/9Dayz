@@ -115,14 +115,13 @@ export default {
   },
 
   showSquare: function(ev) {
-    const scale = window.innerHeight / 1200;
     const viewportRect = document.getElementById('viewport').getBoundingClientRect();
     const playerPosition = Player.getPlayerPosition();
     let mouseX, mouseY;
 
     if (!squareFreeze) {
-      mouseX = Math.floor(((ev.clientX - viewportRect.left) / scale) / 44.4);
-      mouseY = Math.floor(((ev.clientY - 23 - viewportRect.top) / scale) / 44.4);
+      mouseX = Math.floor(((ev.clientX - viewportRect.left) / Props.getGameProp('scaleFactor')) / 44.4);
+      mouseY = Math.floor(((ev.clientY - 23 - viewportRect.top) / Props.getGameProp('scaleFactor')) / 44.4);
 
       squareX = mouseX;
       if (playerPosition.y < 20) {
