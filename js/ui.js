@@ -287,16 +287,18 @@ export default {
     const viewWidth = window.innerWidth,
           viewHeight = window.innerHeight;
 
-    if (viewWidth / viewHeight < 1.78) {
+    if (viewWidth / viewHeight < 1.73) {
       Props.setGameProp('scaleFactor', viewWidth / 2135);
       Props.setGameProp('viewMode', 'vertical');
+      mapBorder.style.transform = 'scale3d('+ (Props.getGameProp('scaleFactor') * 1.173) +','+ (Props.getGameProp('scaleFactor') * 1.173) +', 1) translate3d(-5%, -50% , 0)';
     } else {
       Props.setGameProp('scaleFactor', viewHeight / 1200);
       Props.setGameProp('viewMode', 'horizontal');
+      mapBorder.removeAttribute('style');
     }
     mapBorder.classList.remove('horizontal', 'vertical');
     mapBorder.classList.add(Props.getGameProp('viewMode'));
-    viewport.style.transform = 'scale3d('+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+') translate3d(-50%, -50% , 0)';
+    viewport.style.transform = 'scale3d('+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+', 1) translate3d(-50%, -50% , 0)';
   },
 
   hourlyTasks: function(hour) {
