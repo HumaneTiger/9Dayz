@@ -87,6 +87,9 @@ export default {
 
   showPage: function(item, type, refElem, parentElem) {
     
+    if (item.endsWith('-1-2')) {
+      item = item.replace('-2', '');
+    }
     if (almanacContainer.dataset?.item !== item) {
 
       almanacContainer.dataset.item = item;
