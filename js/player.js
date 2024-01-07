@@ -8,7 +8,7 @@ import Ui from './ui.js'
 const allPaths = Props.getAllPaths();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 30, y: 37 }; //{ x: 18, y: 44 };
+var playerPosition = { x: 30, y: 37 };
 var playerProps = {
   health: 100,
   food: 65, // 65
