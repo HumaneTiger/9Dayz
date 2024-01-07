@@ -8,7 +8,7 @@ import Ui from './ui.js'
 const allPaths = Props.getAllPaths();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 18, y: 44 };
+var playerPosition = { x: 30, y: 37 }; //{ x: 18, y: 44 };
 var playerProps = {
   health: 100,
   food: 65, // 65
@@ -199,7 +199,18 @@ export default {
   },
 
   movePlayerTo: function(x, y) {
-    player.style.left = Math.round(x * 44.4 + 17) + 'px';
+    console.log(x,y);
+    /* handle horizontal position */
+    if (x <= 12) {
+      Map.moveMapXTo(12 - x);
+      player.style.left = '550px';
+    } else if (x >= 29) {
+      Map.moveMapXTo(29 - x);
+      player.style.left = '1304px';
+    } else {
+      player.style.left = Math.round(x * 44.4 + 17) + 'px'; // default horizontal pos before zoom
+    }
+    /* handle vertical position */
     if (y < 20) {
       player.style.top = 885 - Math.round((20 - y) * 44.4) + 'px';
     } else if (y > 40) {
@@ -308,6 +319,13 @@ export default {
   setPlayerPosition: function(x, y) {
     playerPosition.x = x;
     playerPosition.y = y;
+  },
+
+  getPlayerViewportPosition: function() {
+    return {
+      x: player.style.left,
+      y: player.style.top
+    }
   },
 
   getProp: function(prop) {

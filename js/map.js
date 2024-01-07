@@ -8,10 +8,17 @@ const mapCover = map.querySelector('.map-cover .cover');
 
 const fogImage = map.querySelector('.map-cover img');
 const mapFog2dCtx = document.getElementById('map-fog').getContext('2d');
-var canvasPrimed = false;
+let canvasPrimed = false;
 
-var uncoverMatrix = new Array(15);
+let uncoverMatrix = new Array(15);
 for (var i = 0; i < uncoverMatrix.length; i += 1) { uncoverMatrix[i] = new Array(30); }
+
+let mapPosition = {
+  refX: 12,
+  refY: 33,
+  x: 0,
+  y: -311
+}
 
 export default {
   
@@ -95,10 +102,18 @@ export default {
     }
   },
 
+  moveMapXTo: function(x) {
+    mapPosition.x = x * 44.4;
+    this.updateMapPosition();
+  },
+
   moveMapYTo: function(y) {
-    const refVert = 885, refPosY = 33;
-    let shiftY = (refPosY - y) * 44.4;
-    map.style.transform = 'translate3d(0, ' + shiftY + 'px, 0)';
+    mapPosition.y = (mapPosition.refY - y) * 44.4;
+    this.updateMapPosition();
+  },
+
+  updateMapPosition() {
+    map.style.transform = 'translate3d(' + mapPosition.x + 'px, ' + mapPosition.y + 'px, 0)';
   },
 
   showTargetLocation: function(target) {

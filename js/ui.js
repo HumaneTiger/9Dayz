@@ -22,6 +22,7 @@ let newPosX = 0, newPosY = 0, startPosX = 0, startPosY = 0, initialStyleLeft = 0
 let dragMode = false;
 let dragEl = null;
 let topIndex = 1;
+let zoom = 1;
 
 export default {
   
@@ -35,6 +36,7 @@ export default {
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
     document.body.addEventListener('keydown', this.handleKeydown.bind(this));
+    document.body.addEventListener('wheel', this.handleMouseWheel.bind(this));
 
     document.body.addEventListener("contextmenu", (ev) => { 
       if (Props.getGameProp('local') === false) {
@@ -67,6 +69,16 @@ export default {
         actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
+  },
+
+  handleMouseWheel: function(ev) {
+    if (ev.deltaY > 0) {
+      zoom > 1 ? zoom -= 0.1 : false;
+    } else if (zoom <= 1.8) {
+      zoom += 0.1;
+    }
+    //viewport.querySelector('#maximap .inner').style.transformOrigin = Player.getPlayerViewportPosition().x + ' ' + Player.getPlayerViewportPosition().y;
+    viewport.querySelector('#maximap .inner').style.transform = 'scale('+zoom+')';
   },
 
   mouseOver: function(ev) {

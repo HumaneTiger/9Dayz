@@ -65,6 +65,12 @@
   background-color: rgba(0, 0, 0, 0.9);
 }
 
+#maximap .inner {
+  transform-origin: 816px 1063px;
+  transition: transform 0.1s linear;
+  will-change: transition, transform;
+}
+
 #maximap .inner .map-highlights {
   z-index: 19;
 }
@@ -120,7 +126,7 @@
   z-index: 20;
   transform: translate3d(0, -177.6px, 0);
   transition: transform 1s linear;
-  will-change: transition;
+  will-change: transition, transform;
 }
 
 #maximap .inner .map-quadrant,
@@ -136,8 +142,16 @@
   width: 100%;
 }
 
-#maximap .inner .map-low {
+#maximap .inner .map-cover-wide {
+  position: fixed;
+  left: -427px;
+  top: -50%;
+  width: 140%;
   z-index: 1;
+}
+
+#maximap .inner .map-low {
+  z-index: 2;
 }
 
 #maximap .inner .map-middle {
@@ -150,10 +164,6 @@
 
 #maximap .inner .map-cover {
   z-index: 30;
-}
-
-#maximap .inner .map-cover img {
-  /*visibility: hidden;*/
 }
 
 #map-fog {

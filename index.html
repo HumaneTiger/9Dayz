@@ -134,6 +134,43 @@
         </p>
       </div>
     </div>
+    <div id="card-console" class="out">
+      <img class="logo" src="./img/ui/logo.png">
+      <p>
+        Select a square in the game world
+      </p>
+      <p>
+        <button class="select-square">Select Square <span class="selected-square"></span></button>
+      </p>
+      <p>
+        <strong>Place an object</strong> at the selected square:
+      </p>
+      <p>
+        <select class="select-object"></select>
+      </p>
+      <p>
+        <button class="place-object">Place it!</button>
+      </p>
+      <p>
+        <strong>Or</strong> Beam character to selected square
+      </p>
+      <p>
+        <button class="beam-character">Scotty ... Now!</button>
+      </p>
+      <p>
+        <strong>3.</strong> Place it in the selected square
+      </p>
+      <p>
+        The new object behaves like any pre-placed object.
+        If you place it in direct range of the character, its Card will spawn instantly.
+      </p>
+      <p>
+        If you place it anywhere else, you have to move your character close to that place to make its Card spawn.
+      </p>
+      <p>
+        <strong>Please note:</strong> Only objects placed next to or on a street will be seen by the character and spawn.
+      </p>
+    </div>
     <div id="damage-cover"></div>
     <img id="map-border" src="./img/ui/map-border.png">
     <div class="morning-light backlight"></div>
@@ -141,43 +178,6 @@
     <div class="night-light backlight"></div>
     <div class="night-ui-cover"></div>
     <div id="viewport">
-      <div id="card-console" class="out">
-        <img class="logo" src="./img/ui/logo.png">
-        <p>
-          Select a square in the game world
-        </p>
-        <p>
-          <button class="select-square">Select Square <span class="selected-square"></span></button>
-        </p>
-        <p>
-          <strong>Place an object</strong> at the selected square:
-        </p>
-        <p>
-          <select class="select-object"></select>
-        </p>
-        <p>
-          <button class="place-object">Place it!</button>
-        </p>
-        <p>
-          <strong>Or</strong> Beam character to selected square
-        </p>
-        <p>
-          <button class="beam-character">Scotty ... Now!</button>
-        </p>
-        <p>
-          <strong>3.</strong> Place it in the selected square
-        </p>
-        <p>
-          The new object behaves like any pre-placed object.
-          If you place it in direct range of the character, its Card will spawn instantly.
-        </p>
-        <p>
-          If you place it anywhere else, you have to move your character close to that place to make its Card spawn.
-        </p>
-        <p>
-          <strong>Please note:</strong> Only objects placed next to or on a street will be seen by the character and spawn.
-        </p>
-      </div>
       <main>
         <div id="square-marker" class="is--hidden"></div>
         <div class="night-ui-cover"></div>
@@ -244,6 +244,9 @@
               </div>  
               <div class="map-low">
                 <img src="./img/ui/map-low.jpg" width="2135" height="2135">
+              </div>
+              <div class="map-cover-wide">
+                <img src="./img/ui/map-blank-wide.jpg" width="2989" height="2135">
               </div>
             </div>
           </div>
