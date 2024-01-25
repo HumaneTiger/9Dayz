@@ -8,7 +8,7 @@ import Ui from './ui.js'
 const allPaths = Props.getAllPaths();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 30, y: 37 };
+var playerPosition = { x: 18, y: 44 };
 var playerProps = {
   health: 100,
   food: 65, // 65
@@ -88,17 +88,37 @@ export default {
   },
 
   previewProps: function(prop, change) {
-    playerProps[prop] + change > 100 ? change = 100 - playerProps[prop] : null;
     const previewMeter = document.querySelector('#properties li.' + prop + ' span.meter:not(.preview)');
     if (previewMeter) {
-      previewMeter.style.paddingRight = change + '%';
+      if (change > 0) {
+        playerProps[prop] + change > 100 ? change = 100 - playerProps[prop] : null;
+        previewMeter.style.paddingRight = change + '%';
+      } else if (change < 0) {
+        if (previewMeter) {
+          previewMeter.style.paddingRight = (playerProps[prop] + change > 9 ? Math.abs(change) : 0) + '%';
+          previewMeter.style.width = (playerProps[prop] + change > 9 ? playerProps[prop] + change : 9) + '%';
+        }
+      }
+      if (playerProps[prop] + change < 10)  {
+        previewMeter.parentNode.classList.add('very-low');
+      } else if (playerProps[prop] + change < 33)  {
+        previewMeter.parentNode.classList.add('low');
+      }
     }
   },
 
   resetPreviewProps: function() {
+    document.querySelector('#properties li.food').classList.remove('transfer');
+    document.querySelector('#properties li.thirst').classList.remove('transfer');
+    document.querySelector('#properties li.energy').classList.remove('transfer');
+    document.querySelector('#properties li.health').classList.remove('transfer');
     document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+    this.changeProps('food', 0);
+    this.changeProps('thirst', 0);
+    this.changeProps('energy', 0);
+    this.changeProps('health', 0);
   },
 
   checkForDamage: function() {

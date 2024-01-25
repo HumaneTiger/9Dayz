@@ -144,6 +144,35 @@ export default {
         }  
         Map.highlightObject(cardId);
       }
+      if (hoverButton) {
+        const action = hoverButton.dataset?.action;
+        if (action && (action === 'rest' || action === 'sleep')) {
+          this.previewStatsChange(action, cardId);
+        }
+      } else {
+        Player.resetPreviewProps();
+      }
+    }
+  },
+
+  previewStatsChange: function(action, cardId) {
+    const object = Props.getObject(cardId);
+    const actionObject = object.actions.find(singleAction => singleAction.id === action);
+    if (!actionObject.locked) {
+      let energy = actionObject.energy;
+      if (actionObject.id === 'rest') {
+        if (Props.getGameProp('timeMode') === 'night') { energy += 5 };
+        Player.previewProps('health', Math.floor(energy / 2));
+        Player.previewProps('food', -10);
+        Player.previewProps('thirst', -14);
+        Player.previewProps('energy', energy);      
+      } else if (actionObject.id === 'sleep') {
+        if (Props.getGameProp('timeMode') === 'night') { energy += 20 };
+        Player.previewProps('health', Math.floor(energy / 2));
+        Player.previewProps('food', -18);
+        Player.previewProps('thirst', -24);
+        Player.previewProps('energy', energy);      
+      }
     }
   },
 
@@ -243,6 +272,9 @@ export default {
           action.locked = true;
         }
         if (object.zednearby && object.group !== 'event' && object.group !== 'zombie' && action.id !== 'scout-area' && action.id !== 'read' && action.id !== 'equip') {
+          action.locked = true;
+        }
+        if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
           action.locked = true;
         }
         if (action.energy && Player.getProp('energy') + action.energy < 0) {
