@@ -90,6 +90,24 @@
   transform: translateY(-50%);
   padding: 100px;
 }
+#startscreen .screen__update {
+  position: fixed;
+  color: white;
+  font-size: 18px;
+  left: 50px;
+  top: 50px;
+  padding: 20px;
+  background: rgba(40, 40, 42, 0.5);
+  border: 1px rgba(97, 97, 97, 0.9) solid;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+  width: 336px;
+}
+#startscreen .screen__update p {
+  padding: 0;
+}
+#startscreen .screen__update a {
+  color: #ff5b06;
+}
 #startscreen .screen__2 p.screen__logo {
   margin-bottom: 3em;
 }

@@ -14,6 +14,7 @@ export default {
       Props.setGameProp('startMode', 2);
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
       document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
+      document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
     }
   },
 
@@ -86,7 +87,6 @@ export default {
   },
 
   startTutorial: function() {
-    console.log('go');
     document.getElementById('startscreen').style.opacity = 0;
     Props.setGameProp('tutorial', true);
     Tutorial.setupAllEvents();
@@ -109,11 +109,13 @@ export default {
     Props.setGameProp('startMode', 2);
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
+    document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
   },
 
   switchToScreen3: function() {
     Audio.sfx('shuffle-paper');
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
     document.getElementById('tutorial-beginning').classList.remove('is--hidden');
   }
