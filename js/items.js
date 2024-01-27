@@ -24,8 +24,8 @@ export default {
     // add zero items to present crafting options in Almanac
     Props.addToInventory('tape', 0);
     Props.addToInventory('sharp-stick', 0);
-    Props.addToInventory('wooden-club', 1, 3);
-    Props.addToInventory('improvised-axe', 1, 3);
+    Props.addToInventory('wooden-club', 0, 0);
+    Props.addToInventory('improvised-axe', 0, 0);
     
     /*
     Props.addToInventory('bones', 1);

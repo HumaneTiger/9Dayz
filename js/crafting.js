@@ -108,12 +108,24 @@ export default {
         prerequisiteCondition:
         if (itemRecipe.items[recipeItem].length === 1) {
           if (Items.inventoryContains(itemRecipe.items[recipeItem][0])) {
+            craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
+              el.classList.add('is--hidden');
+            });
           } else {
+            craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
+              el.classList.remove('is--hidden');
+            });
             prerequisitsFulfilled = false;
           }
         } else {
           for (const orItem in itemRecipe.items[recipeItem]) {
+            craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
+              el.classList.remove('is--hidden');
+            });
             if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
+              craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
+                el.classList.add('is--hidden');
+              });
               break prerequisiteCondition;
             }
           }

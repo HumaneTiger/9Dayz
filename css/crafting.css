@@ -1,0 +1,65 @@
+#craft .nope {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  z-index: 1;
+  text-shadow: 0 1px 1px #fcfaf6, 0 -1px 1px #fcfaf6, 1px 0 1px #fcfaf6, -1px 0 1px #fcfaf6, 0 0 6px #fcfaf6;
+}
+#craft .nope::before {
+  content: '✗';
+  color: #e6725d;
+  display: inline-block;
+  vertical-align: top;
+  line-height: 1;
+  font-size: 46px;
+}
+
+.stump.c-club {
+  left: 174px;
+  top: 56px;
+}
+.fail.c-club {
+  left: 131px;
+  top: 134px;
+}
+.knife.c-stick {
+  left: 117px;
+  top: 370px;
+}
+.branch.c-stick {
+  left: 213px;
+  top: 363px;
+}
+.branch.c-axe {
+  left: 453px;
+  top: 95px;
+}
+.stone.c-axe {
+  left: 557px;
+  top: 55px;
+}
+.tape.c-axe {
+  left: 488px;
+  top: 138px;
+}
+.stone.c-fire {
+  left: 382px;
+  top: 415px;
+}
+.stump.c-fire {
+  left: 499px;
+  top: 415px;
+}
+.straw.c-fire {
+  left: 443px;
+  top: 365px;
+}
+.cloth.c-tape {
+  left: 639px;
+  top: 255px;
+}
+.glue.c-tape {
+  left: 570px;
+  top: 299px;
+}

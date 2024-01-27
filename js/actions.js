@@ -375,11 +375,9 @@ export default {
   },
 
   drinking: function(cardId, time) {
-
     Audio.sfx('water');
-
     this.fastForward(function(cardId) {
-      Player.changeProps('thirst', 25);
+      Player.changeProps('thirst', 50);
       this.goBackFromAction(cardId);
     }, cardId, time, 800);
   },
