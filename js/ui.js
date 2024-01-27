@@ -23,6 +23,7 @@ let dragMode = false;
 let dragEl = null;
 let topIndex = 1;
 let zoom = 1;
+let maxZoom = 1.9;
 
 export default {
   
@@ -72,13 +73,23 @@ export default {
   },
 
   handleMouseWheel: function(ev) {
-    if (ev.deltaY > 0) {
+    this.zoomMap(ev.deltaY);
+  },
+
+  zoomMap: function(deltaY, limitZoom) {
+    if (limitZoom) {
+      if (zoom > limitZoom) zoom = limitZoom;
+      maxZoom = limitZoom;
+    } else if (deltaY > 0) {
       zoom > 1 ? zoom -= 0.1 : false;
-    } else if (zoom <= 1.8) {
+    } else if (zoom < maxZoom) {
       zoom += 0.1;
     }
-    //viewport.querySelector('#maximap .inner').style.transformOrigin = Player.getPlayerViewportPosition().x + ' ' + Player.getPlayerViewportPosition().y;
     viewport.querySelector('#maximap .inner').style.transform = 'scale('+zoom+')';
+  },
+
+  resetZoom: function() {
+    maxZoom = 1.9;
   },
 
   mouseOver: function(ev) {

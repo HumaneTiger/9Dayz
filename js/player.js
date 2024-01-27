@@ -8,7 +8,7 @@ import Ui from './ui.js'
 const allPaths = Props.getAllPaths();
 
 var player = document.getElementById("player");
-var playerPosition = { x: 18, y: 44 };
+var playerPosition = { x: 35, y: 16 };//{ x: 18, y: 44 };
 var playerProps = {
   health: 100,
   food: 65, // 65
@@ -236,6 +236,11 @@ export default {
       player.style.top = 885 + Math.round((y - 40) * 44.4) + 'px';
     } else {
       player.style.top = '885px';
+    }
+    if (y < 16) {
+      Ui.zoomMap(0, 1.1);
+    } else {
+      Ui.resetZoom();
     }
     if (playerPosition.y >= 20 && playerPosition.y <= 40) {
       Map.moveMapYTo(y);
