@@ -228,16 +228,13 @@ export default {
       ev.stopPropagation();
       const action = target.closest('li');
       if (action?.classList.contains('inventory')) {
-        inventoryContainer.classList.toggle('active');
-        craftContainer.classList.remove('active');
-        Almanac.close();
-        if (Props.getGameProp('firstInventoryOpen') === false) {
-          Cards.renderCardDeck();
-        }
+        this.toggleInventory();
+        Items.updateWeaponState();
       } else if (action?.classList.contains('craft')) {
         craftContainer.classList.toggle('active');
         inventoryContainer.classList.remove('active');
         Almanac.close();
+        Items.updateWeaponState();
       } else if (action?.classList.contains('settings')) {
         document.getElementById('card-console').classList.toggle('out');
       } else if (action?.classList.contains('map')) {
@@ -264,6 +261,20 @@ export default {
       Audio.sfx('shuffle-paper');
       document.getElementById('tutorial-fights').classList.add('is--hidden');
       document.getElementById('tutorial-beginning').classList.add('is--hidden');
+    }
+  },
+
+  toggleInventory: function() {
+    const inventoryActive = inventoryContainer.classList.contains('active');
+    if (inventoryActive) {
+      inventoryContainer.classList.remove('active');
+    } else {
+      inventoryContainer.classList.add('active');
+      craftContainer.classList.remove('active');
+      Almanac.close();
+      if (Props.getGameProp('firstInventoryOpen') === false) {
+        Cards.renderCardDeck();
+      }  
     }
   },
 

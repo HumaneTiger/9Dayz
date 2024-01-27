@@ -219,7 +219,6 @@ export default {
   },
 
   movePlayerTo: function(x, y) {
-    console.log(x,y);
     /* handle horizontal position */
     if (x <= 12) {
       Map.moveMapXTo(12 - x);

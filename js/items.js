@@ -24,8 +24,8 @@ export default {
     // add zero items to present crafting options in Almanac
     Props.addToInventory('tape', 0);
     Props.addToInventory('sharp-stick', 0);
-    Props.addToInventory('wooden-club', 0, 0);
-    Props.addToInventory('improvised-axe', 0, 0);
+    Props.addToInventory('wooden-club', 1, 3);
+    Props.addToInventory('improvised-axe', 1, 3);
     
     /*
     Props.addToInventory('bones', 1);
@@ -303,17 +303,26 @@ export default {
   fillInventorySlots: function() {
     for (var item in inventory.items) {
       if (inventory.items[item].name === 'improvised-axe' || inventory.items[item].name === 'wooden-club') {
-        let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' + '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
-        inventoryContainer.querySelector('.weapon.' + inventory.items[item].name + ' .extension').innerHTML = durability;
-        if (inventory.items[item].amount > 0) {
-          inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.remove('is--hidden');
-        } else {
-          inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.add('is--hidden');
-        }
+        // maybe remove
       } else {
         this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, Crafting.isItemPartOfCrafting(item));
       }
     }
+    this.updateWeaponState();
     Cooking.checkAllCookingModeCards();
+  },
+
+  updateWeaponState: function() {
+    for (var item in inventory.items) {
+      if (inventory.items[item].name === 'improvised-axe' || inventory.items[item].name === 'wooden-club') {
+        let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' +  '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
+        inventoryContainer.querySelector('.weapon.' + inventory.items[item].name + ' .extension').innerHTML = durability;
+        if (inventory.items[item].amount > 0 && !document.getElementById('craft').classList.contains('active')) {
+          inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.remove('is--hidden');
+        } else {
+          inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.add('is--hidden');
+        }  
+      }
+    }
   }
 }
