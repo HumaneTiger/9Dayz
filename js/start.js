@@ -1,6 +1,7 @@
 import { default as Audio } from './audio.js'
 import { default as Player } from './player.js'
 import { default as Props } from './props.js'
+import { default as Items } from './items.js'
 import { default as Tutorial } from './tutorial.js'
 import { default as Ui } from './ui.js'
 
@@ -16,6 +17,55 @@ export default {
       document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
       document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
     }
+  },
+
+  initProps: function() {
+    
+    Props.addToInventory('tomato', 2);
+    Props.addToInventory('drink-2', 1);
+    Props.addToInventory('snack-1', 1);
+    Props.addToInventory('knife', 1);
+    Props.addToInventory('energy-pills', 1);
+    Props.addToInventory('pepper', 1);
+
+    // add zero items to present crafting options in Almanac
+    Props.addToInventory('tape', 0);
+    Props.addToInventory('sharp-stick', 0);
+    Props.addToInventory('wooden-club', 0, 0);
+    Props.addToInventory('improvised-axe', 0, 0);
+
+    Items.generateInventorySlots();
+    Items.fillInventorySlots();
+
+    Player.setPlayerPosition(18, 44);
+
+    Player.init();
+    Items.init();
+  },
+
+  restoreCheckpoint: function() {
+
+    const saveCheckpoint = JSON.parse(localStorage.getItem("saveCheckpoint"));
+    const inventoryItems = saveCheckpoint.inventoryItems;
+    
+    // add zero items to present crafting options in Almanac
+    Props.addToInventory('tape', 0);
+    Props.addToInventory('sharp-stick', 0);
+    Props.addToInventory('wooden-club', 0, 0);
+    Props.addToInventory('improvised-axe', 0, 0);
+
+    for (var key in inventoryItems) {
+      Props.addToInventory(inventoryItems[key].name, inventoryItems[key].amount, inventoryItems[key].durability);
+    }
+
+    Items.generateInventorySlots();
+    Items.fillInventorySlots();    
+
+    Player.setPlayerPosition(saveCheckpoint.playerPosition.x, saveCheckpoint.playerPosition.y);
+
+    Player.init();
+    Items.init();
+
   },
 
   handleClick: function(ev) {
@@ -43,6 +93,12 @@ export default {
             window.setTimeout(function() {
               document.location.reload();
             }, 300);
+          } else if (action.classList.contains('resume')) {
+            let startScreen = document.getElementById('startscreen');
+            startScreen.querySelector('.screen__quit').classList.add('is--hidden');
+            startScreen.classList.add('is--hidden');
+            startScreen.style.opacity = 0;
+            Ui.showUI();
           } else if (action.classList.contains('card-tutorial-confirm')) {
             this.startTutorial();
           }
@@ -76,6 +132,9 @@ export default {
 
   startReal: function() {
     document.getElementById('startscreen').style.opacity = 0;
+    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    this.restoreCheckpoint();
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
@@ -88,6 +147,7 @@ export default {
 
   startTutorial: function() {
     document.getElementById('startscreen').style.opacity = 0;
+    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     Props.setGameProp('tutorial', true);
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();

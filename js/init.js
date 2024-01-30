@@ -33,9 +33,9 @@ let timeIsUnity = {
   Ui.init();
   Editor.init();
   Map.init();
-  Player.init();
+  //Player.init();
   Cards.init();
-  Items.init();
+  //Items.init();
   Actions.init();
   Battle.init();
   Cooking.init();

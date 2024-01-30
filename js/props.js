@@ -309,6 +309,7 @@ export default {
       images[i].src = './img/buildings/' + (prop.startsWith('signpost-') ? 'signpost' : prop) + '.png';
     };
   },
+
   preloadItems: function() {
     let images = [];
     for (const prop in items) {
@@ -316,6 +317,7 @@ export default {
       images[i].src = './img/items/'+prop+'.PNG';
     };
   },
+
   preloadZombies: function() {
     let images = [];
     images[1] = new Image();
@@ -328,9 +330,34 @@ export default {
     images[4].src = './img/zombies/scratch.png';
   },
 
+  saveCheckpoint: function(targetLocationName, playerPosition) {
+    let saveCheckpoint = {
+      targetLocationName: targetLocationName,
+      playerPosition: playerPosition,
+      inventoryItems: {}
+    }
+    // https://stackoverflow.com/questions/29585812/json-stringify-does-not-stringify-nested-arrays
+    for (let item in inventory.items) {
+      if (inventory.items[item].amount && inventory.items[item].amount > 0) {
+        saveCheckpoint.inventoryItems[item] = inventory.items[item];
+      }
+    }
+    /*
+    MISSING:
+      - Player Stats
+      - Time
+    */
+    localStorage.setItem("saveCheckpoint", JSON.stringify(saveCheckpoint));
+    document.getElementById('actions').querySelector('li.mixed .game-saved').classList.add('active');
+    window.setTimeout(() => {
+      document.getElementById('actions').querySelector('li.mixed .game-saved').classList.remove('active');
+    }, 2000);
+  },
+
   getGameProp: function(prop) {
     return game[prop];
   },
+
   setGameProp: function(prop, value) {
     game[prop] = value;
   },

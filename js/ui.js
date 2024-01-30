@@ -66,8 +66,10 @@ export default {
         } else {
           this.handleMapClick();
         }
-      } else if (ev.key.toLowerCase() === 'g' && actionsPanelActive) {
+      } else if (ev.key.toLowerCase() === 'e' && actionsPanelActive) {
         actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+      } else if (ev.key.toLowerCase() === 'q' && actionsPanelActive) {
+        actionsPanel.querySelector('li.quit')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
   },
@@ -250,6 +252,9 @@ export default {
         document.getElementById('card-console').classList.toggle('out');
       } else if (action?.classList.contains('map')) {
         this.hideUI();
+      } else if (action?.classList.contains('quit')) {
+        this.hideUI();
+        this.quitConfirmation();
       }
     } else if (clickProperty && rightMouseButton) {
       const property = target.closest('li');
@@ -287,6 +292,21 @@ export default {
         Cards.renderCardDeck();
       }  
     }
+  },
+
+  quitConfirmation: function() {
+    let startScreen = document.getElementById('startscreen');
+    startScreen.classList.remove('is--hidden');
+    startScreen.style.opacity = 0;
+    window.setTimeout(function() {
+      startScreen.querySelector('.screen__1').classList.add('is--hidden');
+      startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__3').classList.add('is--hidden');
+      startScreen.querySelector('.screen__dead').classList.add('is--hidden');
+      startScreen.querySelector('.screen__win').classList.add('is--hidden');
+      startScreen.querySelector('.screen__quit').classList.remove('is--hidden');
+      startScreen.style.opacity = 1;
+    }, 300);
   },
 
   handleMapClick: function() {

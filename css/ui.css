@@ -484,6 +484,7 @@ ul#actions li.mixed {
   background-position: 28px 8px;
   background-size: 48px;
   background-repeat: no-repeat;
+  width: 440px;
 }
 
 ul#actions li.mixed.day {
@@ -491,6 +492,17 @@ ul#actions li.mixed.day {
 }
 ul#actions li.mixed.night {
   background-image: url(../img/actions/moon.png);
+}
+ul#actions li.mixed .game-saved {
+  position: absolute;
+  background-color: rgb(255, 254, 251);
+  padding: 6px 80px;
+  margin: -8px 0 0 -80px;
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+ul#actions li.mixed .game-saved.active {
+  opacity: 1;
 }
 
 ul#actions li span.countdown,
@@ -524,6 +536,13 @@ ul#actions li.settings span {
 
 ul#actions li.map span {
   background-image: url(../img/actions/map.png);
+}
+ul#actions li.quit {
+  width: 150px;
+  padding-right: 20px;
+}
+ul#actions li.quit span {
+  padding-left: 0;
 }
 
 #touchcontrols {

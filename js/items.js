@@ -13,40 +13,6 @@ const inventoryContainer = document.getElementById('inventory');
 export default {
   
   init: function() {
-    
-    Props.addToInventory('tomato', 2);
-    Props.addToInventory('drink-2', 1);
-    Props.addToInventory('snack-1', 1);
-    Props.addToInventory('knife', 1);
-    Props.addToInventory('energy-pills', 1);
-    Props.addToInventory('pepper', 1);
-
-    // add zero items to present crafting options in Almanac
-    Props.addToInventory('tape', 0);
-    Props.addToInventory('sharp-stick', 0);
-    Props.addToInventory('wooden-club', 0, 0);
-    Props.addToInventory('improvised-axe', 0, 0);
-    
-    /*
-    Props.addToInventory('bones', 1);
-    Props.addToInventory('cloth', 1);
-    Props.addToInventory('mushroom-1', 1);
-    Props.addToInventory('sharp-stick', 1);
-    Props.addToInventory('bones', 1);
-    Props.addToInventory('pumpkin', 1);
-    Props.addToInventory('meat', 1);
-    */
-    /*
-    Props.addToInventory('bones', 2);
-    Props.addToInventory('hacksaw', 2);
-    Props.addToInventory('branch', 2);
-    Props.addToInventory('stump', 4);
-    Props.addToInventory('straw-wheet', 1);
-    Props.addToInventory('pepper', 1);
-    */
-    this.generateInventorySlots();
-    this.fillInventorySlots();
-
     this.bind();
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
