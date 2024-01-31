@@ -330,10 +330,12 @@ export default {
     images[4].src = './img/zombies/scratch.png';
   },
 
-  saveCheckpoint: function(targetLocationName, playerPosition) {
+  saveCheckpoint: function(targetLocationName, playerPosition, playerStats) {
     let saveCheckpoint = {
       targetLocationName: targetLocationName,
+      gameTime: window.timeIsUnity,
       playerPosition: playerPosition,
+      playerStats: playerStats,
       inventoryItems: {}
     }
     // https://stackoverflow.com/questions/29585812/json-stringify-does-not-stringify-nested-arrays
@@ -342,11 +344,6 @@ export default {
         saveCheckpoint.inventoryItems[item] = inventory.items[item];
       }
     }
-    /*
-    MISSING:
-      - Player Stats
-      - Time
-    */
     localStorage.setItem("saveCheckpoint", JSON.stringify(saveCheckpoint));
     document.getElementById('actions').querySelector('li.mixed .game-saved').classList.add('active');
     window.setTimeout(() => {

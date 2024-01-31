@@ -5,12 +5,21 @@ import { default as Items } from './items.js'
 import { default as Tutorial } from './tutorial.js'
 import { default as Ui } from './ui.js'
 
+const saveCheckpoint = JSON.parse(localStorage.getItem("saveCheckpoint"));
+
 export default {
   
   init: function() {
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
     Props.setGameProp('startMode', 1);
+    if (saveCheckpoint !== null) {
+      document.getElementById('start-option-new').classList.add('is--hidden');
+      document.getElementById('start-option-continue').classList.remove('is--hidden');
+    } else {
+      document.getElementById('start-option-new').classList.remove('is--hidden');
+      document.getElementById('start-option-continue').classList.add('is--hidden');
+    }  
     if (Props.getGameProp('local')) {
       Props.setGameProp('startMode', 2);
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
@@ -38,34 +47,59 @@ export default {
     Items.fillInventorySlots();
 
     Player.setPlayerPosition(18, 44);
+    
+    Player.changeProps('health', 100);
+    Player.changeProps('food', 65);
+    Player.changeProps('thirst', 70);
+    Player.changeProps('energy', 75);
 
     Player.init();
     Items.init();
   },
 
-  restoreCheckpoint: function() {
+  restoreCheckpoint: function(saveCheckpoint) {
+    if (saveCheckpoint) {
+      const inventoryItems = saveCheckpoint.inventoryItems;
+        
+      // add zero items to present crafting options in Almanac
+      Props.addToInventory('tape', 0);
+      Props.addToInventory('sharp-stick', 0);
+      Props.addToInventory('wooden-club', 0, 0);
+      Props.addToInventory('improvised-axe', 0, 0);
+  
+      for (var key in inventoryItems) {
+        Props.addToInventory(inventoryItems[key].name, inventoryItems[key].amount, inventoryItems[key].durability);
+      }
+  
+      Items.generateInventorySlots();
+      Items.fillInventorySlots();    
+  
+      Player.setPlayerPosition(saveCheckpoint.playerPosition.x, saveCheckpoint.playerPosition.y);
 
-    const saveCheckpoint = JSON.parse(localStorage.getItem("saveCheckpoint"));
-    const inventoryItems = saveCheckpoint.inventoryItems;
-    
-    // add zero items to present crafting options in Almanac
-    Props.addToInventory('tape', 0);
-    Props.addToInventory('sharp-stick', 0);
-    Props.addToInventory('wooden-club', 0, 0);
-    Props.addToInventory('improvised-axe', 0, 0);
+      Player.changeProps('health', saveCheckpoint.playerStats.health);
+      Player.changeProps('food', saveCheckpoint.playerStats.food);
+      Player.changeProps('thirst', saveCheckpoint.playerStats.thirst);
+      Player.changeProps('energy', saveCheckpoint.playerStats.energy);
 
-    for (var key in inventoryItems) {
-      Props.addToInventory(inventoryItems[key].name, inventoryItems[key].amount, inventoryItems[key].durability);
+      window.timeIsUnity.gameTick = saveCheckpoint.gameTime.gameTick;
+      window.timeIsUnity.gameHours = saveCheckpoint.gameTime.gameHours;
+      window.timeIsUnity.gameDays = saveCheckpoint.gameTime.gameDays;
+      window.timeIsUnity.todayHours = saveCheckpoint.gameTime.todayHours;
+      window.timeIsUnity.todayTime = saveCheckpoint.gameTime.todayTime;
+  
+      Ui.updateDayNightLayers(saveCheckpoint.gameTime.todayHours);
+
+      if (saveCheckpoint.gameTime.todayHours >= 21 || saveCheckpoint.gameTime.todayHours < 5) {
+        Ui.switchDayNight(21);
+      } else {
+        Ui.switchDayNight(5);
+      }
+      if (saveCheckpoint.gameTime.todayHours >= 23 || saveCheckpoint.gameTime.todayHours < 5) {
+        Ui.triggerNight();
+      }
+      Player.init();
+      Items.init();  
     }
-
-    Items.generateInventorySlots();
-    Items.fillInventorySlots();    
-
-    Player.setPlayerPosition(saveCheckpoint.playerPosition.x, saveCheckpoint.playerPosition.y);
-
-    Player.init();
-    Items.init();
-
   },
 
   handleClick: function(ev) {
@@ -86,6 +120,12 @@ export default {
         if (action) {
           if (action.classList.contains('start-real')) {
             Audio.sfx('click');
+            localStorage.removeItem("saveCheckpoint"); 
+            this.initProps();
+            this.startReal();
+          } else if (action.classList.contains('continue-real')) {
+            Audio.sfx('click');
+            this.restoreCheckpoint(saveCheckpoint);
             this.startReal();
           } else if (action.classList.contains('start-tutorial')) {
             this.switchToScreen3();
@@ -134,7 +174,6 @@ export default {
     document.getElementById('startscreen').style.opacity = 0;
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
-    this.restoreCheckpoint();
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
@@ -149,6 +188,7 @@ export default {
     document.getElementById('startscreen').style.opacity = 0;
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     Props.setGameProp('tutorial', true);
+    this.initProps();
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);

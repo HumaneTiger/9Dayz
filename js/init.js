@@ -4,9 +4,7 @@ import Ui from './ui.js'
 import Editor from './editor.js'
 import Props from './props.js'
 import Map from './map.js'
-import Player from './player.js'
 import Cards from './cards.js'
-import Items from './items.js'
 import Actions from './actions.js'
 import Battle from './battle.js'
 import Cooking from './cooking.js'
@@ -14,12 +12,12 @@ import Crafting from './crafting.js'
 import Almanac from './almanac.js'
 
 let startHour = 7; // 7
-let tick = 0;
 let ticksPerHour = 6; // 6
 let tickInterval = 100;
 let tickCurrent = 0;
 
-let timeIsUnity = {
+window.timeIsUnity = {
+    gameTick: 0,
     gameHours: 24 + startHour,
     gameDays: 1,
     todayHours: startHour,
@@ -33,9 +31,7 @@ let timeIsUnity = {
   Ui.init();
   Editor.init();
   Map.init();
-  //Player.init();
   Cards.init();
-  //Items.init();
   Actions.init();
   Battle.init();
   Cooking.init();
@@ -61,10 +57,10 @@ function bind() {
 
 function triggerGameTick() {
 
-    tick += 1;
+    timeIsUnity.gameTick += 1;
     
     /* TICKY TASKS */
-    if (tick % ticksPerHour === 0) {
+    if (timeIsUnity.gameTick % ticksPerHour === 0) {
 
         timeIsUnity.gameHours += 1;
 
@@ -87,7 +83,7 @@ function triggerGameTick() {
 
     timeIsUnity.todayHours = timeIsUnity.gameHours - timeIsUnity.gameDays * 24;    
     timeIsUnity.todayTime = timeIsUnity.todayHours < 10 ? '0' + timeIsUnity.todayHours + ':' : timeIsUnity.todayHours + ':';
-    timeIsUnity.todayTime += (tick % 6) + '0';
+    timeIsUnity.todayTime += (timeIsUnity.gameTick % 6) + '0';
 }
 
 function initiateMainGameLoop() {

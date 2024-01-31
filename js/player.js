@@ -10,13 +10,13 @@ const allPaths = Props.getAllPaths();
 var player = document.getElementById("player");
 var playerPosition = {};
 var playerProps = {
-  health: 100,
-  food: 65, // 65
-  thirst: 70, // 70
-  energy: 75, // 75
+  health: 0,
+  food: 0,
+  thirst: 0,
+  energy: 0,
   protection: 0,
   actions: 0
-}
+};
 
 var moveLocked = false;
 var moving = false;

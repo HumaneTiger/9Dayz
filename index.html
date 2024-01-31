@@ -36,10 +36,18 @@
     <div id="startscreen">
       <div class="screen__update is--hidden">
         <h3 class="screen__paragraph align--center text--smedium">
-          Update
+          Latest Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          Latest update contains lots of UI improvements based on feedback from the community.
+          The latest update is adding check- points to the game. When reading a postsign, the game gets saved.
+          When continuing the run at a later point, the most important properties get restored, like
+          inventory items, the players position and stats (health, energy etc.) as well as the day and time.
+        </p>
+        <h3 class="screen__paragraph align--center text--smedium">
+          Previous Update
+        </h3>
+        <p class="screen__paragraph align--block text--ssmedium">
+          This update contained lots of UI improvements based on feedback from the community.
           Here are the most notable.
           The map can be zoomed in and out using the mouse wheel.
           The viewport adapts to the resolution and orientation of the monitor.
@@ -74,8 +82,12 @@
           <p class="screen__logo">
             <img src="./img/ui/logo.png" width="100%" height="auto">
           </p>  
-          <p class="screen__button">
+          <p class="screen__button" id="start-option-new">
             <span data-href="#" class="button full-width start-real">New Game</span>
+          </p>
+          <p class="screen__button is--hidden" id="start-option-continue">
+            <span data-href="#" class="button half--width continue-real">Continue</span>
+            <span data-href="#" class="button half--width start-real">New Game</span>
           </p>
           <p class="screen__button">
             <span data-href="#" class="button full-width start-tutorial">Start with Tutorial<small>(recommended for new players)</small></span>
@@ -153,7 +165,7 @@
       </div>
       <div class="screen__quit is--hidden">
         <p class="screen__paragraph align--center text--medium">
-          Really want to quit the game?
+          Really want to quit?
         </p>
         <p class="screen__paragraph align--center text--ssmedium">
           Your game has been saved automatically at the last checkpoint (reading a signpost).
@@ -165,7 +177,7 @@
           <span class="button half--width restart">Quit</span>
         </p>
         <p class="screen__paragraph align--center">
-          <span class="button half--width resume">Resume</span>
+          <span class="button half--width button--secondary resume">Resume</span>
         </p>
         <p class="screen__paragraph align--center spacing--top text--ssmedium">
           Thanks for playing! I am happy about any kind of ideas, thoughts, feedback or criticism.

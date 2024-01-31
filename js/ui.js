@@ -358,7 +358,11 @@ export default {
   hourlyTasks: function(hour) {
 
     this.updateDayNightLayers(hour);
-    
+    this.switchDayNight(hour);
+
+  },
+
+  switchDayNight: function(hour) {
     if (hour === 21) {
       // switch to night time
       document.querySelector('#actions li.mixed').classList.remove('day');
@@ -371,7 +375,6 @@ export default {
       document.querySelector('#actions li.mixed').classList.add('day');
       Props.setGameProp('timeMode', 'day');
     }
-
   },
 
   dailyTasks: function(days) {
@@ -424,19 +427,23 @@ export default {
       }
     }
     if (hour === 23) {
-      mapHigh.style.filter = "";
-      for (const light of morningLight) {
-        light.style.opacity = 0;
-      }
-      for (const light of eveningLight) {
-        light.style.opacity = 0;
-      }
-      for (const light of nightLight) {
-        light.style.opacity = 0.8;
-      }
-      for (const light of nightCover) {
-        light.style.opacity = 1;
-      }
+      this.triggerNight();
     }
+  },
+
+  triggerNight: function() {
+    mapHigh.style.filter = "";
+    for (const light of morningLight) {
+      light.style.opacity = 0;
+    }
+    for (const light of eveningLight) {
+      light.style.opacity = 0;
+    }
+    for (const light of nightLight) {
+      light.style.opacity = 0.8;
+    }
+    for (const light of nightCover) {
+      light.style.opacity = 1;
+    }  
   }
 }

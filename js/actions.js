@@ -402,7 +402,13 @@ export default {
       } else if (targetLocationName === 'signpost-7') {
         Map.showTargetLocation('Harbor Gas Station');
       }
-      Props.saveCheckpoint(targetLocationName, Player.getPlayerPosition());
+      Props.saveCheckpoint( targetLocationName,
+                            Player.getPlayerPosition(),
+                            { 'health': Player.getProp('health'),
+                              'food': Player.getProp('food'),
+                              'thirst': Player.getProp('thirst'),
+                              'energy': Player.getProp('energy')
+                            });
       this.goBackFromAction(cardId);
     }.bind(this), 1800, cardId);
   }

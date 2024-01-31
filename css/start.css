@@ -136,7 +136,10 @@
 }
 #startscreen .button.half--width {
   display: inline-block;
-  width: 50%;
+  width: 49%;
+}
+#startscreen .button.button--secondary {
+  opacity: 0.66;
 }
 #startscreen .button.inactive {
   cursor: default;
