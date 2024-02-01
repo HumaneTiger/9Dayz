@@ -242,12 +242,8 @@ export default {
       const action = target.closest('li');
       if (action?.classList.contains('inventory')) {
         this.toggleInventory();
-        Items.updateWeaponState();
       } else if (action?.classList.contains('craft')) {
-        craftContainer.classList.toggle('active');
-        inventoryContainer.classList.remove('active');
-        Almanac.close();
-        Items.updateWeaponState();
+        this.toggleCrafting();
       } else if (action?.classList.contains('settings')) {
         document.getElementById('card-console').classList.toggle('out');
       } else if (action?.classList.contains('map')) {
@@ -287,11 +283,22 @@ export default {
     } else {
       inventoryContainer.classList.add('active');
       craftContainer.classList.remove('active');
-      Almanac.close();
       if (Props.getGameProp('firstInventoryOpen') === false) {
         Cards.renderCardDeck();
       }  
     }
+    Items.updateWeaponState();
+  },
+
+  toggleCrafting: function(forceOpen) {
+    const craftingActive = craftContainer.classList.contains('active');
+    if (craftingActive && !forceOpen) {
+      craftContainer.classList.remove('active');
+    } else {
+      craftContainer.classList.add('active');
+      inventoryContainer.classList.remove('active');
+    }
+    Items.updateWeaponState();
   },
 
   quitConfirmation: function() {
@@ -312,13 +319,13 @@ export default {
   handleMapClick: function() {
     craftContainer.classList.remove('active');
     inventoryContainer.classList.remove('active');
-    Almanac.close();
     this.showUI();
   },
 
   hideUI: function() {
     craftContainer.classList.remove('active');
     inventoryContainer.classList.remove('active');
+    inventoryContainer.querySelectorAll('.weapon').forEach(function(el) { el.classList.remove('active'); });
     Almanac.close(true);
     document.getElementById('properties').classList.remove('active');
     document.getElementById('actions').classList.remove('active');
@@ -331,6 +338,8 @@ export default {
     document.getElementById('properties').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.getElementById('cards').classList.add('active');
+    Items.updateWeaponState();
+    inventoryContainer.querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });
   },
 
   showMapBorder: function() {

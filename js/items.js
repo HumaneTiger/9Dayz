@@ -1,5 +1,6 @@
 import Props from './props.js'
 import Player from './player.js'
+import Ui from './ui.js'
 import Cards from './cards.js'
 import Crafting from './crafting.js'
 import Cooking from './cooking.js'
@@ -132,8 +133,7 @@ export default {
         hoverSlot.classList.contains('craft') &&
         hoverSlot.classList.contains('already')) {
       Audio.sfx('click');
-      document.getElementById('craft').classList.toggle('active');
-      document.getElementById('inventory').classList.remove('active');
+      Ui.toggleCrafting();
       document.querySelector('#actions li.craft').classList.remove('transfer');
     }
     if (hoverSlot && hoverSlot.classList.contains('active') && rightMouseButton) {

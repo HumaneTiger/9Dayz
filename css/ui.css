@@ -179,16 +179,19 @@ ul#properties li.time {
 #inventory.active {
   transform: translateX(0);
 }
-#inventory .wooden-club,
-#inventory .improvised-axe {
+#inventory .weapon {
   height: 217px;
   width: 160px;
   position: absolute;
   top: 20px;
+  right: 0;
+  transition: right 0.1s ease-out;
+}
+#inventory .weapon.active {
   right: -152px;
 }
-#inventory.the-end .wooden-club,
-#inventory.the-end .improvised-axe {
+#inventory.the-end .weapon,
+#inventory.the-end .weapon {
   display: none;
 }
 #inventory .wooden-club {

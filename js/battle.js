@@ -81,6 +81,7 @@ export default {
 
       document.getElementById('inventory').classList.remove('active');
       document.getElementById('craft').classList.remove('active');
+      Items.updateWeaponState();
       document.getElementById('cards').classList.add('battle-mode');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
 
@@ -92,6 +93,7 @@ export default {
         document.getElementById('properties').classList.remove('active');
         document.getElementById('actions').classList.remove('active');
         document.querySelector('#cards .cards-blocker').classList.add('active');
+        document.getElementById('inventory').querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });  
         this.spawnBattleDeck(surprised);
       }, 600);
     } else {
