@@ -19,7 +19,7 @@ export default {
     } else {
       document.getElementById('start-option-new').classList.remove('is--hidden');
       document.getElementById('start-option-continue').classList.add('is--hidden');
-    }  
+    }
     if (Props.getGameProp('local')) {
       Props.setGameProp('startMode', 2);
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
@@ -120,14 +120,16 @@ export default {
         if (action) {
           if (action.classList.contains('start-real')) {
             Audio.sfx('click');
-            localStorage.removeItem("saveCheckpoint"); 
-            this.initProps();
-            this.startReal();
+            localStorage.removeItem("saveCheckpoint");
+            this.prepareGameStart();
+            this.chooseCharacter();
           } else if (action.classList.contains('continue-real')) {
             Audio.sfx('click');
             this.restoreCheckpoint(saveCheckpoint);
+            this.prepareGameStart();
             this.startReal();
           } else if (action.classList.contains('start-tutorial')) {
+            this.prepareGameStart();
             this.switchToScreen3();
           } else if (action.classList.contains('restart')) {
             window.setTimeout(function() {
@@ -140,15 +142,8 @@ export default {
             startScreen.style.opacity = 0;
             Ui.showUI();
           } else if (action.classList.contains('card-tutorial-confirm')) {
+            this.prepareGameStart();
             this.startTutorial();
-          }
-          if (document.getElementById('touchsupport')?.classList.contains('on')) {
-            document.getElementById('touchcontrols')?.classList.remove('is--hidden');
-          }
-          if (document.getElementById('fullscreen')?.classList.contains('on')) {
-            if (document.documentElement.requestFullscreen) {
-              document.documentElement.requestFullscreen();
-            }
           }
         }
         if (slider) {
@@ -170,9 +165,27 @@ export default {
     }
   },
 
+  prepareGameStart: function() {
+    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
+    if (document.getElementById('touchsupport')?.classList.contains('on')) {
+      document.getElementById('touchcontrols')?.classList.remove('is--hidden');
+    }
+    if (document.getElementById('fullscreen')?.classList.contains('on')) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    }
+  },
+
+  chooseCharacter: function() {
+    document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.remove('is--hidden');
+//    this.initProps();
+//    this.startReal();
+  },
+
   startReal: function() {
     document.getElementById('startscreen').style.opacity = 0;
-    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
@@ -186,7 +199,6 @@ export default {
 
   startTutorial: function() {
     document.getElementById('startscreen').style.opacity = 0;
-    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     Props.setGameProp('tutorial', true);
     this.initProps();
     Tutorial.setupAllEvents();

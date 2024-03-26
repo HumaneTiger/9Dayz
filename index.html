@@ -31,6 +31,13 @@
   <!-- 
     CREDITS:
   -->
+  <!--
+    Snackivore – Snacks
+    Cashmeister – deals with money professionally, like a banker or a financial expert
+    Furbuddy – someone who adores and cares deeply for animals. loves animals and enjoys spending time with them
+    Craftsmaniac - someone who is enthusiastic and proficient in all kinds of handcrafting and construction work
+    Hardcharger - individuals who are aggressive and tenacious in their approach. So, a Hardcharger would be a tough and driven person, especially with a military or security background
+  -->
 
   <body>
     <div id="startscreen">
@@ -39,22 +46,15 @@
           Latest Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          The latest update is adding check- points to the game. When reading a postsign, the game gets saved.
-          When continuing the run at a later point, the most important properties get restored, like
-          inventory items, the players position and stats (health, energy etc.) as well as the day and time.
+          tbd
         </p>
         <h3 class="screen__paragraph align--center text--smedium">
           Previous Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          This update contained lots of UI improvements based on feedback from the community.
-          Here are the most notable.
-          The map can be zoomed in and out using the mouse wheel.
-          The viewport adapts to the resolution and orientation of the monitor.
-          Missing items are crossed out in the crafting menu.
-          When the actions Sleep or Rest are hovered, a preview shows the effects on hunger, thirst and energy.
-          Furthermore, these actions are no longer available if a location is infested with rats.
-          Additionally, there are some quality-of-life improvements.
+          Adding checkpoints to the game. When reading a postsign, the game gets saved.
+          When continuing the run at a later point, the most important properties get restored, like
+          inventory items, the players position and stats (health, energy etc.) as well as the day and time.
         </p>
         <p class="screen__paragraph text--ssmedium">
           <a href="https://humane-tiger.itch.io/9-dayz/devlog/672475/update-whats-new" target="_blank">Read Devlog</a>
@@ -77,7 +77,7 @@
           Press any key to continue
         </p>  
       </div>
-      <div class="screen__2 is--hidden">
+      <div class="screen__2 screen__menu is--hidden">
         <div class="container">
           <p class="screen__logo">
             <img src="./img/ui/logo.png" width="100%" height="auto">
@@ -100,16 +100,102 @@
             <div id="touchsupport" class="slider"><div class="knob"></div></div>
             <div class="label">Touch Support</div>
           </div>
-          <!--
-          <p class="screen__button">
-            <span class="button full-width inactive">Resume<small>(under development)</small></span>
-          </p>
-          -->
           <p class="screen__button">
             <span class="button full-width inactive">Settings<small>(under development)</small></span>
           </p>
           <p class="screen__button">
             <span data-href="https://humane-tiger.itch.io/9-dayz" class="button full-width">Give Feedback</span>
+          </p>
+        </div>
+        <p class="screen__paragraph align--center footer">
+          Development Build
+        </p>
+      </div>
+      <div class="screen__2a screen__menu is--hidden">
+        <div class="container">
+          <p class="screen__logo">
+            <img src="./img/ui/logo.png" width="100%" height="auto">
+          </p>
+          <p class="screen__paragraph align--center">
+            Choose your Character
+          </p>  
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width start-tutorial">Treehugger<small>(recommended for new players)</small></span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width start-tutorial">Snackivore</span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width start-tutorial">Furbuddy</span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width start-tutorial">Craftsmaniac</span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width start-tutorial">Hardcharger</span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width start-tutorial">Cashmeister<small>(for seasoned players)</small></span>
+          </p>
+          <p class="screen__paragraph align--center">
+            Starting Equipment
+          </p>  
+          <ul class="equipment">
+            <li class="filled">
+              <span class="amount">2</span>
+              <img class="item" src="img/items/tomato.PNG">
+            </li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+          </ul>
+          <p class="screen__button">
+            <span data-href="#" class="button full-width">Start Game</span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width button--secondary">Back</span>
+          </p>
+        </div>
+        <div class="character__description is--hidden">
+          <p>
+            Your character has a particular affinity for nature and the natural world.
+          </p>
+          <p class="nerf">
+            Food and Energy bonus from all fruits, nuts, meat and vegetables
+          </p>
+          <p class="nerf">
+            Lucky with gathering natural resources
+          </p>
+          <p class="nerf">
+            Can sleep at a Fireplace
+          </p>
+          <p class="buff">
+            Unlucky when searching buildings and vehicles
+          </p>
+          <p class="buff">
+            Penalty when eating processed food
+          </p>
+          <p class="buff">
+            Penalty when sleeping in buildings
+          </p>
+        </div>
+        <div class="character__description">
+          <p>
+            In past times your character used to constantly snack throughout the day.
+          </p>
+          <p class="nerf">
+            Bonuses for all stats from snacks, soda drinks and roasted meat
+          </p>
+          <p class="nerf">
+            All natural food items deal +1 damage<br>(you happily let them go)
+          </p>
+          <p class="buff">
+            Unlucky when searching trees and fields
+          </p>
+          <p class="buff">
+            Penalty when eating all kinds of natural food
           </p>
         </div>
         <p class="screen__paragraph align--center footer">
