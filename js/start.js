@@ -26,16 +26,40 @@ export default {
       document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
       document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
     }
+    this.initCharacterSelection();
+  },
+
+  initCharacterSelection: function() {
+    const character = Props.getGameProp('character');
+    // preselect game character
+    document.querySelector('.button[data-character="' + character + '"]')?.parentNode.classList.add('is--selected');
+    document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
+    this.presetCharacterInventory(character);
+  },
+
+  presetCharacterInventory: function(character) {
+    const inventoryPresets = Props.getInventoryPresets(character);
+    const inventoryPresetsContainer = document.getElementById('inventory-presets');
+    if (inventoryPresets !== undefined) {
+      inventoryPresetsContainer.innerHTML = '';
+      for (let item in inventoryPresets) {
+        inventoryPresetsContainer.innerHTML += '<li class="filled"><span class="amount">' + inventoryPresets[item] + '</span><img class="item" src="img/items/' + item + '.PNG"></li>';
+      };
+      for (let i = 0; i < 6 - Object.keys(inventoryPresets).length; i += 1) {
+        inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
+      }
+    }
   },
 
   initProps: function() {
     
-    Props.addToInventory('tomato', 2);
+    /*Props.addToInventory('tomato', 2);
     Props.addToInventory('drink-2', 1);
     Props.addToInventory('snack-1', 1);
     Props.addToInventory('knife', 1);
     Props.addToInventory('energy-pills', 1);
-    Props.addToInventory('pepper', 1);
+    Props.addToInventory('pepper', 1);*/
+
 
     // add zero items to present crafting options in Almanac
     Props.addToInventory('tape', 0);
@@ -117,6 +141,7 @@ export default {
         const action = target.closest('.button');
         const slider = target.closest('.slider');
         const href = target.getAttribute('data-href');
+        const character = target.closest('.button')?.getAttribute('data-character');
         if (action) {
           if (action.classList.contains('start-real')) {
             Audio.sfx('click');
@@ -144,6 +169,12 @@ export default {
           } else if (action.classList.contains('card-tutorial-confirm')) {
             this.prepareGameStart();
             this.startTutorial();
+          } else if (character) {
+            document.querySelector('.screen__menu div[data-character].is--selected')?.classList.remove('is--selected');
+            document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
+            document.querySelector('#startscreen .character__button.is--selected')?.classList.remove('is--selected');
+            target.closest('.character__button').classList.add('is--selected');
+            this.presetCharacterInventory(character);
           }
         }
         if (slider) {

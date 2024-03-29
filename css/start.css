@@ -84,39 +84,94 @@
   bottom: 0;
   transform: translateX(-50%);
 }
-#startscreen div.character__description {
+#startscreen .screen__menu div[data-character] {
   background: rgba(40, 40, 42, 0.5);
   border: 1px rgba(97, 97, 97, 0.9) solid;
   box-shadow: 0 0 15px rgba(0, 0, 0, 1);
   width: 400px;
   position: absolute;
-  top: 9%;
-  left: 91%;
+  left: 87%;
+  opacity: 0;
   color: #fffefb;
   text-shadow: 0 1px 2px black;
   font-size: 16px;
   padding: 8px 24px;
+  transition: opacity 0.2s ease-out, left 0.2s ease-out;
 }
-#startscreen div.character__description p.nerf {
+#startscreen .screen__menu div[data-character].is--selected {
+  left: 91%;
+  opacity: 1;
+}
+#startscreen .character__button.is--selected .button {
+  position: relative;
+}
+#startscreen .character__button.is--selected .button::before {
+  content: 'Selected';
+  color: #ff925b;
+  font-size: 18px;
+  padding: 1px 6px;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  border: 2px #ff925b solid;
+  border-radius: 4px;
+  transform: rotate(10deg) translateY(-50%);
+}
+#startscreen div[data-character="everyman"] {
+  top: 11%;
+}
+#startscreen div[data-character="treehugger"] {
+  top: 13%;
+}
+#startscreen div[data-character="snackivore"] {
+  top: 20%;
+}
+#startscreen div[data-character="furbuddy"] {
+  top: 25%;
+}
+#startscreen div[data-character="craftsmaniac"] {
+  top: 33%;
+}
+#startscreen div[data-character="hardcharger"] {
+  top: 34%;
+}
+#startscreen div[data-character="cashmeister"] {
+  top: 39%;
+}
+#startscreen div[data-character].not--available::before {
+  content: 'Preview';
+  color: #ff925b;
+  font-size: 48px;
+  padding: 2px 8px;
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  border: 3px #ff925b solid;
+  border-radius: 4px;
+  transform: translate(-50%, -50%) rotate(12deg);
+  z-index: 1;
+  background-color: rgba(40, 40, 42, 0.5);
+}
+#startscreen div[data-character] p.nerf {
   color: #c1ff5b;
   position: relative;
   padding-left: 18px;
   margin: 12px 0;
 }
-#startscreen div.character__description p.nerf::before {
+#startscreen div[data-character] p.nerf::before {
   content: '+';
   position: absolute;
   top: -4px;
   left: 0px;
   font-size: 21px;
 }
-#startscreen div.character__description p.buff {
+#startscreen div[data-character] p.buff {
   color: #ff925b;
   position: relative;
   padding-left: 18px;
   margin: 12px 0;
 }
-#startscreen div.character__description p.buff::before {
+#startscreen div[data-character] p.buff::before {
   content: '-';
   position: absolute;
   top: -4px;
@@ -203,13 +258,13 @@
   opacity: 1;
   box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
 }
-#startscreen ul.equipment {
+#startscreen ul#inventory-presets {
   margin-right: -5%;
   margin-bottom: -5%;
   display: block;
   padding: 0;
 }
-#startscreen ul.equipment li {
+#startscreen ul#inventory-presets li {
   display: inline-block;
   border-radius: 4px;
   position: relative;
@@ -217,26 +272,26 @@
   margin: 0 4% 5% 0;
   height: 70px;
 }
-#startscreen ul.equipment li.empty {
+#startscreen ul#inventory-presets li.empty {
   background: rgba(40, 40, 42, 0.5);
   border: 1px rgba(97, 97, 97, 0.9) solid;
 }
-#startscreen ul.equipment li.filled {
+#startscreen ul#inventory-presets li.filled {
   background-color: rgba(255, 254, 251, 1);
   box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
 }
-#startscreen ul.equipment li.filled span.amount {
+#startscreen ul#inventory-presets li.filled span.amount {
   position: absolute;
   top: 5px;
   left: 5px;
   font-size: 20px;
 }
-#startscreen ul.equipment li.filled img.item {
+#startscreen ul#inventory-presets li.filled img.item {
   position: absolute;
-  height: 80px;
+  height: 70px;
   width: auto;
-  top: -4px;
-  left: 10px;
+  top: 0px;
+  left: 16px;
 }
 .card-tutorial {
   z-index: 101;

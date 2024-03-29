@@ -31,13 +31,6 @@
   <!-- 
     CREDITS:
   -->
-  <!--
-    Snackivore – Snacks
-    Cashmeister – deals with money professionally, like a banker or a financial expert
-    Furbuddy – someone who adores and cares deeply for animals. loves animals and enjoys spending time with them
-    Craftsmaniac - someone who is enthusiastic and proficient in all kinds of handcrafting and construction work
-    Hardcharger - individuals who are aggressive and tenacious in their approach. So, a Hardcharger would be a tough and driven person, especially with a military or security background
-  -->
 
   <body>
     <div id="startscreen">
@@ -119,28 +112,31 @@
           <p class="screen__paragraph align--center">
             Choose your Character
           </p>  
-          <p class="narrow__button">
-            <span data-href="#" class="button full-width start-tutorial">Treehugger<small>(recommended for new players)</small></span>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="everyman" class="button full-width">Everyman<small>(recommended for new players)</small></span>
           </p>
-          <p class="narrow__button">
-            <span data-href="#" class="button full-width start-tutorial">Snackivore</span>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="treehugger" class="button full-width">Treehugger</span>
           </p>
-          <p class="narrow__button">
-            <span data-href="#" class="button full-width start-tutorial">Furbuddy</span>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="snackivore" class="button full-width">Snackivore</span>
           </p>
-          <p class="narrow__button">
-            <span data-href="#" class="button full-width start-tutorial">Craftsmaniac</span>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="furbuddy" class="button full-width">Furbuddy</span>
           </p>
-          <p class="narrow__button">
-            <span data-href="#" class="button full-width start-tutorial">Hardcharger</span>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="craftsmaniac" class="button full-width">Craftsmaniac</span>
           </p>
-          <p class="narrow__button">
-            <span data-href="#" class="button full-width start-tutorial">Cashmeister<small>(for seasoned players)</small></span>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="hardcharger" class="button full-width">Hardcharger</span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="cashmeister" class="button full-width">Cashmeister<small>(for seasoned players)</small></span>
           </p>
           <p class="screen__paragraph align--center">
             Starting Equipment
           </p>  
-          <ul class="equipment">
+          <ul id="inventory-presets">
             <li class="filled">
               <span class="amount">2</span>
               <img class="item" src="img/items/tomato.PNG">
@@ -158,7 +154,22 @@
             <span data-href="#" class="button full-width button--secondary">Back</span>
           </p>
         </div>
-        <div class="character__description is--hidden">
+        <div data-character="everyman">
+          <p>
+            This character is an ordinary person.<br>House, wife, kids, a job - that was his life, until everything spiraled down.
+            Somehow he managed to survive. For the first time in his life he isn't part of the mainstreamers, who are walking undead in the streets now.
+          </p>
+          <p>
+            This is also the character you play in the Tutorial. Ideal for your first runs to get more familiar with the world of 9 Dayz.
+          </p>
+          <p class="nerf">
+            No mentionable weak points
+          </p>
+          <p class="buff">
+            No particular strengths or special skills
+          </p>
+        </div>
+        <div data-character="treehugger">
           <p>
             Your character has a particular affinity for nature and the natural world.
           </p>
@@ -181,7 +192,7 @@
             Penalty when sleeping in buildings
           </p>
         </div>
-        <div class="character__description">
+        <div data-character="snackivore">
           <p>
             In past times your character used to constantly snack throughout the day.
           </p>
@@ -189,13 +200,85 @@
             Bonuses for all stats from snacks, soda drinks and roasted meat
           </p>
           <p class="nerf">
-            All natural food items deal +1 damage<br>(you happily let them go)
+            In fights all natural food items deal +1 damage (you happily let them go)
           </p>
           <p class="buff">
             Unlucky when searching trees and fields
           </p>
           <p class="buff">
             Penalty when eating all kinds of natural food
+          </p>
+        </div>
+        <div data-character="furbuddy" class="not--available">
+          <p>
+            You character adores and cares deeply for animals and enjoys spending time with them.
+          </p>
+          <p class="nerf">
+            Starts with an animal companion (dog or duck)
+          </p>
+          <p class="nerf">
+            Can tame a giant rat to become a companion
+          </p>
+          <p class="nerf">
+            Wild ducks and dogs join without resistance
+          </p>
+          <p class="buff">
+            Can't cut animals for meat and bones
+          </p>
+          <p class="buff">
+            Takes damage over time without an animal companion, otherwise heals over time
+          </p>
+        </div>
+        <div data-character="craftsmaniac">
+          <p>
+            As a former construction side worker and passionated home improver, your character is proficient in all kinds of handcrafting work.
+          </p>
+          <p class="nerf">
+            Start with some tools in your pockets
+          </p>
+          <p class="nerf">
+            Repairing weapons occasionally preserves required materials <span style="color: #ff925b">(not in game yet)</span>
+          </p>
+        </div>
+        <div data-character="hardcharger" class="not--available">
+          <p>
+            Your character is a tough and driven person with a military background, 
+            aggressive and tenacious in their approach.
+          </p>
+          <p class="nerf">
+            In fights you can attack with bare fists
+          </p>
+          <p class="nerf">
+            No Action Points penalty when energy is low
+          </p>
+          <p class="nerf">
+            Quality weapons have a chance to not loose durability when used
+          </p>
+          <p class="buff">
+            Your muscled body needs more energy, sleep and water
+          </p>
+          <p class="buff">
+            Improvised weapons have a chance to break when used
+          </p>
+        </div>
+        <div data-character="cashmeister">
+          <p>
+            As a banker you dealed with big money professionally. These days, your skills, values and attitudes are the least wanted and needed of all.
+          </p>
+          <p class="nerf">
+            Start with your pockets full of money
+          </p>
+          <p class="nerf">
+            You can loot money from houses
+          </p>
+          <p class="buff">
+            Never had to get your hands dirty, so you will find less loot and randomly fail crafting
+          </p>
+          <p class="buff">
+            Animals sense your dishonest nature and will refuse to join you
+          </p>
+          <p class="buff">
+            Your money stinks - Undead attack you instantly
           </p>
         </div>
         <p class="screen__paragraph align--center footer">

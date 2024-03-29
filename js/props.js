@@ -15,6 +15,7 @@ var crafting = {
 
 var game = {
   mode: 'real',
+  character: 'everyman',
   startMode: 1,
   timeMode: 'day',
   viewMode: '',
@@ -61,6 +62,40 @@ var zedCounter = 1;
 
 var paths = new Array(mapSize.width);
 for (var i = 0; i < paths.length; i += 1) { paths[i] = new Array(mapSize.height); }
+
+var inventoryPresets = [];
+inventoryPresets['everyman'] = {
+  'tomato': 2,
+  'drink-2': 1,
+  'snack-1': 1,
+  'knife': 1,
+  'energy-pills': 1,
+  'pepper': 1
+}
+inventoryPresets['treehugger'] = {
+  'mushroom-1': 2,
+  'acorn': 1,
+  'branch': 1,
+  'fruit-2': 2,
+  'knife': 1
+}
+inventoryPresets['snackivore'] = {
+  'snack-1': 3,
+  'drink-5': 1,
+  'snack-2': 1
+}
+inventoryPresets['furbuddy'] = {}
+inventoryPresets['craftsmaniac'] = {
+  'spanner': 1,
+  'tape': 1,
+  'knife': 1,
+  'drink-2': 1,
+  'pincers': 1
+}
+inventoryPresets['hardcharger'] = {}
+inventoryPresets['cashmeister'] = {
+  'straw-wheet': 1,
+}
 
 var buildingTypes = {
   'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
@@ -429,6 +464,10 @@ export default {
   
   getInventory: function() {
     return inventory;
+  },
+
+  getInventoryPresets: function(character) {
+    return inventoryPresets[character];
   },
   
   addToInventory: function(item, amount, durability) {
