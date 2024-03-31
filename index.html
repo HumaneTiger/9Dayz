@@ -76,7 +76,7 @@
             <img src="./img/ui/logo.png" width="100%" height="auto">
           </p>  
           <p class="screen__button" id="start-option-new">
-            <span data-href="#" class="button full-width start-real">New Game</span>
+            <span data-href="#" class="button full-width start-real">New Game<small>(choose your character)</small></span>
           </p>
           <p class="screen__button is--hidden" id="start-option-continue">
             <span data-href="#" class="button half--width continue-real">Continue</span>
@@ -100,9 +100,6 @@
             <span data-href="https://humane-tiger.itch.io/9-dayz" class="button full-width">Give Feedback</span>
           </p>
         </div>
-        <p class="screen__paragraph align--center footer">
-          Development Build
-        </p>
       </div>
       <div class="screen__2a screen__menu is--hidden">
         <div class="container">
@@ -122,10 +119,10 @@
             <span data-href="#" data-character="snackivore" class="button full-width">Snackivore</span>
           </p>
           <p class="narrow__button character__button">
-            <span data-href="#" data-character="furbuddy" class="button full-width">Furbuddy</span>
+            <span data-href="#" data-character="craftsmaniac" class="button full-width">Craftsmaniac</span>
           </p>
           <p class="narrow__button character__button">
-            <span data-href="#" data-character="craftsmaniac" class="button full-width">Craftsmaniac</span>
+            <span data-href="#" data-character="furbuddy" class="button full-width">Furbuddy</span>
           </p>
           <p class="narrow__button character__button">
             <span data-href="#" data-character="hardcharger" class="button full-width">Hardcharger</span>
@@ -148,25 +145,25 @@
             <li class="empty"></li>
           </ul>
           <p class="screen__button">
-            <span data-href="#" class="button full-width">Start Game</span>
+            <span data-href="#" class="button full-width start-game">Start Game</span>
           </p>
           <p class="narrow__button">
-            <span data-href="#" class="button full-width button--secondary">Back</span>
+            <span data-href="#" class="button full-width button--secondary back-screen-2">Back</span>
           </p>
         </div>
         <div data-character="everyman">
           <p>
-            This character is an ordinary person.<br>House, wife, kids, a job - that was his life, until everything spiraled down.
-            Somehow he managed to survive. For the first time in his life he isn't part of the mainstreamers, who are walking undead in the streets now.
+            It is nothing short of a miracle that this very ordinary person survived.
+            For the first time in their life this lucky one isn't part of the mainstreamers, who are walking undead in the streets now.
           </p>
           <p>
             This is also the character you play in the Tutorial. Ideal for your first runs to get more familiar with the world of 9 Dayz.
           </p>
           <p class="nerf">
-            No mentionable weak points
+            No recognizable weaknesses
           </p>
           <p class="buff">
-            No particular strengths or special skills
+            No special strengths or skills
           </p>
         </div>
         <div data-character="treehugger">
@@ -223,7 +220,7 @@
             Wild ducks and dogs join without resistance
           </p>
           <p class="buff">
-            Can't cut animals for meat and bones
+            Won't cut animals for meat and bones
           </p>
           <p class="buff">
             Takes damage over time without an animal companion, otherwise heals over time
@@ -237,7 +234,16 @@
             Start with some tools in your pockets
           </p>
           <p class="nerf">
+            Lucky when searching cars, basements and sheds
+          </p>
+          <p class="nerf">
             Repairing weapons occasionally preserves required materials <span style="color: #ff925b">(not in game yet)</span>
+          </p>
+          <p class="buff">
+            In fights won't use tools against enemies
+          </p>
+          <p class="buff">
+            Ain't no cooking
           </p>
         </div>
         <div data-character="hardcharger" class="not--available">
@@ -261,7 +267,7 @@
             Improvised weapons have a chance to break when used
           </p>
         </div>
-        <div data-character="cashmeister">
+        <div data-character="cashmeister" class="not--available">
           <p>
             As a banker you dealed with big money professionally. These days, your skills, values and attitudes are the least wanted and needed of all.
           </p>
@@ -272,7 +278,7 @@
             You can loot money from houses
           </p>
           <p class="buff">
-            Never had to get your hands dirty, so you will find less loot and randomly fail crafting
+            Never had to get your hands dirty, so you will find less loot, randomly fail crafting and can't cook
           </p>
           <p class="buff">
             Animals sense your dishonest nature and will refuse to join you
@@ -281,9 +287,6 @@
             Your money stinks - Undead attack you instantly
           </p>
         </div>
-        <p class="screen__paragraph align--center footer">
-          Development Build
-        </p>
       </div>
       <div class="screen__3 is--hidden">
         <div class="card-tutorial is--hidden" id="tutorial-beginning">
@@ -352,6 +355,9 @@
           Thanks for playing! I am happy about any kind of ideas, thoughts, feedback or criticism.
         </p>
       </div>
+      <p class="screen__paragraph development-build">
+        Development Build
+      </p>
     </div>
     <div class="screen__dead is--hidden">
       <p class="screen__paragraph align--center text--medium">

@@ -56,7 +56,7 @@ export default {
             let audio = allAudio.querySelector('.sfx-' + name);
             let volume = vol || 0.3;
 
-            audio.volume = volume;
+            audio.volume = name === 'click' ? 0.15 : volume;
 
             audio.play().catch(() => {});
 

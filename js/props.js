@@ -84,7 +84,6 @@ inventoryPresets['snackivore'] = {
   'drink-5': 1,
   'snack-2': 1
 }
-inventoryPresets['furbuddy'] = {}
 inventoryPresets['craftsmaniac'] = {
   'spanner': 1,
   'tape': 1,
@@ -92,10 +91,9 @@ inventoryPresets['craftsmaniac'] = {
   'drink-2': 1,
   'pincers': 1
 }
+inventoryPresets['furbuddy'] = {}
 inventoryPresets['hardcharger'] = {}
-inventoryPresets['cashmeister'] = {
-  'straw-wheet': 1,
-}
+inventoryPresets['cashmeister'] = {}
 
 var buildingTypes = {
   'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
@@ -281,6 +279,68 @@ var items = {
   'baseball-bat': ['extra', 0, 0, 0, weaponProps['baseball-bat'].attack, weaponProps['baseball-bat'].defense],
   'axe': ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense]
 };
+var itemModifiers = {
+  'snackivore': {
+    'acorn': [-1, 0, 0],
+    'bread-1': [5, 0, 10],
+    'bread-2': [5, 0, 10],
+    'carrot': [-4, -2, 0],
+    'drink-1': [0, -20, 0],
+    'drink-2': [0, -20, 0],
+    'drink-3': [10, 20, 10],
+    'drink-4': [10, 20, 10],
+    'drink-5': [15, 30, 15],
+    'fruit-1': [-2, -4, -2],
+    'fruit-2': [-2, -4, -2],
+    'fruit-3': [-2, -4, -2],
+    'energy-pills': [0, 0, +25],
+    'hawthorn': [-2, -2, 0],
+    'meat': [-3, -5, 0],
+    'roasted-meat': [15, 15, 20],
+    'pepper': [-4, -2, 0],
+    'roasted-pepper': [-5, -5, -5],
+    'physalis': [-2, -2, 0],
+    'pumpkin': [-10, -10, -10],
+    'roasted-pumpkin': [-5, -5, -5],
+    'rosehip': [-2, -2, 0],
+    'mushroom-1': [-2, -2, 0],
+    'mushroom-2': [-4, -3, 0],
+    'roasted-mushroom': [1, 1, 1],
+    'snack-1': [20, 0, 25],
+    'snack-2': [20, 0, 25],
+    'tomato': [-2, -4, -3]
+  },
+  'treehugger': {
+    'acorn': [2, 0, 0],
+    'bread-1': [-15, 0, -10],
+    'bread-2': [-20, 0, -10],
+    'carrot': [4, 2, 0],
+    'drink-1': [0, 10, 0],
+    'drink-2': [0, 10, 0],
+    'drink-3': [-3, -10, -3],
+    'drink-4': [-3, -10, -3],
+    'drink-5': [-5, -10, -5],
+    'fruit-1': [3, 5, 5],
+    'fruit-2': [3, 5, 5],
+    'fruit-3': [3, 5, 5],
+    'energy-pills': [0, 0, -25],
+    'hawthorn': [3, 5, 3],
+    'meat': [3, 3, 5],
+    'roasted-meat': [-10, -5, -15],
+    'pepper': [5, 5, 5],
+    'roasted-pepper': [-10, 0, -10],
+    'physalis': [2, 3, 2],
+    'pumpkin': [5, 5, 10],
+    'roasted-pumpkin': [-4, -3, -4],
+    'rosehip': [2, 2, 4],
+    'mushroom-1': [2, 2, 4],
+    'mushroom-2': [2, 2, 4],
+    'roasted-mushroom': [-6, -3, -5],
+    'snack-1': [-15, 0, -8],
+    'snack-2': [-15, 0, -8],
+    'tomato': [4, 5, 7]
+  }
+}
 
 const actionTextMapping = {
   'break-door': 'breaking',
@@ -401,6 +461,13 @@ export default {
 
   getItem: function(item) {
     return items[item];
+  },
+
+  getItemModifier: function(type, item) {
+    // returns item modifiers for [hunger, thirst, energy]
+    if (itemModifiers[type]) {
+      return itemModifiers[type][item];
+    }
   },
 
   extractItemName: function(item) {

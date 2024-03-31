@@ -16,7 +16,7 @@
 }
 #startscreen p.screen__logo {
   text-align: center;
-  margin-bottom: 1.6em;
+  margin-bottom: -0.4em;
 }
 #startscreen p.screen__logo img {
   width: 300px;
@@ -30,13 +30,6 @@
 #startscreen .card-tutorial p.screen__paragraph {
   color: rgb(86, 68, 53);
   text-shadow: initial;
-}
-
-#startscreen p.screen__paragraph.footer {
-  position: absolute;
-  width: 100%;
-  bottom: 3%;
-  font-size: 0.6em;
 }
 
 #startscreen .screen__1,
@@ -98,6 +91,22 @@
   padding: 8px 24px;
   transition: opacity 0.2s ease-out, left 0.2s ease-out;
 }
+#startscreen .button.start-game {
+  position: relative;
+}
+#startscreen .button.start-game.not--available::before {
+  content: 'Not Yet Available';
+  color: #ff925b;
+  font-size: 18px;
+  padding: 1px 6px;
+  position: absolute;
+  top: 63%;
+  left: 50%;
+  border: 2px #ff925b solid;
+  border-radius: 4px;
+  transform: rotate(5deg) translate(-50%, -50%);
+  background-color: rgba(241, 241, 241, 0.95);
+}
 #startscreen .screen__menu div[data-character].is--selected {
   left: 91%;
   opacity: 1;
@@ -126,11 +135,11 @@
 #startscreen div[data-character="snackivore"] {
   top: 20%;
 }
-#startscreen div[data-character="furbuddy"] {
-  top: 25%;
-}
 #startscreen div[data-character="craftsmaniac"] {
-  top: 33%;
+  top: 23%;
+}
+#startscreen div[data-character="furbuddy"] {
+  top: 30%;
 }
 #startscreen div[data-character="hardcharger"] {
   top: 34%;
@@ -212,8 +221,11 @@
 #startscreen .screen__menu p.screen__button {
   margin: 1.4em 0;
 }
-#startscreen .screen__menu p.narrow__button {
+#startscreen .screen__2a p.narrow__button {
   margin: 0.6em 0;
+}
+#startscreen .screen__2a p.screen__button {
+  margin-bottom: 0.6em;
 }
 #startscreen .screen__menu p.narrow__button .button {
   padding: 14px 20px;
@@ -223,7 +235,12 @@
 #startscreen .button {
   cursor: pointer;
   background-color: rgba(255, 254, 251, 1);
-  box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
+  background-image: url(../img/ui/button-bg.png);
+  background-position: center center;
+  border-top: 2px white solid;
+  border-bottom: 2px rgb(86, 68, 53) solid;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(86, 68, 53, 0.5);
   text-shadow: none;
   font-size: 1em;
   color: rgb(86, 68, 53);
@@ -365,6 +382,13 @@
   line-height: 3em;
   vertical-align: text-top;
 }
+#startscreen p.screen__paragraph.development-build {
+  position: fixed;
+  right: 20px;
+  bottom: 5px;
+  font-size: 0.6em;
+}
+
 /*
 #startscreen div.options {
   text-align: center;

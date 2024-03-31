@@ -34,13 +34,15 @@ export default {
     // preselect game character
     document.querySelector('.button[data-character="' + character + '"]')?.parentNode.classList.add('is--selected');
     document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
-    this.presetCharacterInventory(character);
+    this.presetCharacterInventory();
   },
 
-  presetCharacterInventory: function(character) {
+  presetCharacterInventory: function() {
+    const character = Props.getGameProp('character');
     const inventoryPresets = Props.getInventoryPresets(character);
     const inventoryPresetsContainer = document.getElementById('inventory-presets');
-    if (inventoryPresets !== undefined) {
+    if (inventoryPresets && Object.keys(inventoryPresets).length) {
+      document.querySelector('.screen__menu .button.start-game').classList.remove('not--available');
       inventoryPresetsContainer.innerHTML = '';
       for (let item in inventoryPresets) {
         inventoryPresetsContainer.innerHTML += '<li class="filled"><span class="amount">' + inventoryPresets[item] + '</span><img class="item" src="img/items/' + item + '.PNG"></li>';
@@ -48,20 +50,27 @@ export default {
       for (let i = 0; i < 6 - Object.keys(inventoryPresets).length; i += 1) {
         inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
       }
+    } else {
+      document.querySelector('.screen__menu .button.start-game').classList.add('not--available');
+      inventoryPresetsContainer.innerHTML = '';
+      for (let i = 0; i < 6; i += 1) {
+        inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
+      }
     }
   },
 
   initProps: function() {
     
-    /*Props.addToInventory('tomato', 2);
-    Props.addToInventory('drink-2', 1);
-    Props.addToInventory('snack-1', 1);
-    Props.addToInventory('knife', 1);
-    Props.addToInventory('energy-pills', 1);
-    Props.addToInventory('pepper', 1);*/
+    const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
+    if (inventoryPresets && Object.keys(inventoryPresets).length) {
+      for (let item in inventoryPresets) {
+        Props.addToInventory(item, inventoryPresets[item]);
+      }
+    }
 
     // add zero items to present crafting options in Almanac
+    // fix this in the almanach
     Props.addToInventory('tape', 0);
     Props.addToInventory('sharp-stick', 0);
     Props.addToInventory('wooden-club', 0, 0);
@@ -148,6 +157,17 @@ export default {
             localStorage.removeItem("saveCheckpoint");
             this.prepareGameStart();
             this.chooseCharacter();
+          } else if (action.classList.contains('start-game')) {
+            if (!action.classList.contains('not--available')) {
+              Audio.sfx('click');
+              this.initProps();
+              this.startReal();
+            } else {
+              Audio.sfx('nope');
+            }
+          } else if (action.classList.contains('back-screen-2')) {
+            Audio.sfx('click');
+            this.switchToScreen2();
           } else if (action.classList.contains('continue-real')) {
             Audio.sfx('click');
             this.restoreCheckpoint(saveCheckpoint);
@@ -170,11 +190,13 @@ export default {
             this.prepareGameStart();
             this.startTutorial();
           } else if (character) {
+            Audio.sfx('click');
             document.querySelector('.screen__menu div[data-character].is--selected')?.classList.remove('is--selected');
             document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
             document.querySelector('#startscreen .character__button.is--selected')?.classList.remove('is--selected');
             target.closest('.character__button').classList.add('is--selected');
-            this.presetCharacterInventory(character);
+            Props.setGameProp('character', character);
+            this.presetCharacterInventory();
           }
         }
         if (slider) {
@@ -211,13 +233,12 @@ export default {
   chooseCharacter: function() {
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.remove('is--hidden');
-//    this.initProps();
-//    this.startReal();
   },
 
   startReal: function() {
     document.getElementById('startscreen').style.opacity = 0;
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
@@ -252,12 +273,14 @@ export default {
     Props.setGameProp('startMode', 2);
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
   },
 
   switchToScreen3: function() {
     Audio.sfx('shuffle-paper');
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
     document.getElementById('tutorial-beginning').classList.remove('is--hidden');
