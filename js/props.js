@@ -315,8 +315,8 @@ var itemModifiers = {
     'bread-1': [-15, 0, -10],
     'bread-2': [-20, 0, -10],
     'carrot': [4, 2, 0],
-    'drink-1': [0, 10, 0],
-    'drink-2': [0, 10, 0],
+    'drink-1': [0, 0, 0],
+    'drink-2': [0, 0, 0],
     'drink-3': [-3, -10, -3],
     'drink-4': [-3, -10, -3],
     'drink-5': [-5, -10, -5],
@@ -326,16 +326,16 @@ var itemModifiers = {
     'energy-pills': [0, 0, -25],
     'hawthorn': [3, 5, 3],
     'meat': [3, 3, 5],
-    'roasted-meat': [-10, -5, -15],
+    'roasted-meat': [10, 5, 10],
     'pepper': [5, 5, 5],
-    'roasted-pepper': [-10, 0, -10],
+    'roasted-pepper': [5, 5, 5],
     'physalis': [2, 3, 2],
     'pumpkin': [5, 5, 10],
-    'roasted-pumpkin': [-4, -3, -4],
+    'roasted-pumpkin': [4, 3, 4],
     'rosehip': [2, 2, 4],
     'mushroom-1': [2, 2, 4],
     'mushroom-2': [2, 2, 4],
-    'roasted-mushroom': [-6, -3, -5],
+    'roasted-mushroom': [2, 3, 5],
     'snack-1': [-15, 0, -8],
     'snack-2': [-15, 0, -8],
     'tomato': [4, 5, 7]
@@ -364,8 +364,6 @@ const actionTextMapping = {
 export default {
   
   init: function() {
-    this.setupAllBuildings();
-    this.setupAllZeds();
     this.setupAllPaths();
     this.bind();
     this.preloadBuidlings();
@@ -568,13 +566,14 @@ export default {
   },
 
   calcItemProps: function(item) {
-    const itemProps = items[item];
+    const itemProps = this.getItem(item);
+    const itemMods = this.getItemModifier(this.getGameProp('character'), item);
     return {
       damage: itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10),
       protection: itemProps[5] ? itemProps[5] : (itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10)),
-      food: itemProps[1],
-      drink: itemProps[2],
-      energy: itemProps[3]
+      food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
+      drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
+      energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]
     }
   },
   
@@ -827,6 +826,34 @@ export default {
     this.setZedAt(35, 18, 1);
   },
 
+  getLootBuildingProbability: function(buildingName) {
+    // returns [firstItemChance, nextItemsChance]
+    const type = this.getBuildingTypeOf(buildingName);
+
+    // house, car, farm, tree, church, train, shop, industrial, water, camping, corpse
+    if (this.getGameProp('character') === 'treehugger') {
+      if (type === 'house' || type === 'car' || type === 'train' || type === 'shop' || type === 'industrial') {
+        return [7, 3];
+      } else if (type === 'farm' || type === 'tree' || type === 'water' || type === 'camping') {
+        return [11, 8];
+      }
+    } else if (this.getGameProp('character') === 'snackivore') {
+      if (type === 'house' || type === 'car' || type === 'train' || type === 'shop') {
+        return [11, 8];
+      } else if (type === 'farm' || type === 'tree' || type === 'water') {
+        return [7, 3];
+      }
+    } else if (this.getGameProp('character') === 'craftsmaniac') {
+      if (type === 'industrial' || type === 'car' || type === 'train' || buildingName === 'basement') {
+        return [11, 8];
+      }
+    } else if (this.getGameProp('character') === 'cashmeister') {
+      return [7, 3];
+    }
+    // defaults
+    return [9, 6];
+  },
+
   forceLootItemList: function(forceItems, maxAmount) {
     let lootItemList = [];
     for (var i = 0; i < forceItems.length; i += 1) {
@@ -838,9 +865,11 @@ export default {
     return lootItemList;
   },
 
-  createLootItemList: function(spawn, allItems, probability, amount) {
+  createLootItemList: function(spawn, allItems, allProbabilities, amount) {
     const maxAmount = amount || 1;
     let lootItemList = [];
+    let probability = allProbabilities[0];
+    
     for (var i = 0; i < spawn; i += 1) {
       let randomItem = Math.floor(Math.random() * allItems.length);
       if ((Math.random() * 10) < probability) {
@@ -848,7 +877,7 @@ export default {
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
           amount: Math.round(Math.random() * maxAmount) || 1
         });
-        probability = 6;
+        probability = allProbabilities[1];
       } else {
         lootItemList.push({
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
@@ -863,7 +892,7 @@ export default {
   setupBuilding: function(x, y, buildingNamesArray, forceItems, forceInfested) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
-      const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9, props.amount);
+      const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), this.getLootBuildingProbability(buildingName, true), props.amount);
       const locked = (Math.random() * props.locked > 1) ? true : false;
       const type = this.getBuildingTypeOf(buildingName);
       const infested = (type === 'house' && (Math.random() < 0.5)) ? true : false;
@@ -898,7 +927,7 @@ export default {
 
   setZedAt: function(x, y, amount) {
     for (var i = 0; i < amount; i += 1) {
-      let lootItemList = this.createLootItemList(3, ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'tape', 'snack-1', 'drink-1'], 10);
+      let lootItemList = this.createLootItemList(3, ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'tape', 'snack-1', 'drink-1'], [10, 6]);
       let name = 'zombie-' + zedCounter;
 
       zedCounter += 1;
@@ -938,7 +967,7 @@ export default {
   },
 
   setRatAt: function(x, y) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 2);
+    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
     let name = 'rat';
 
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
@@ -984,7 +1013,7 @@ export default {
   },
 
   spawnAnimalAt: function(name, x, y) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 3);
+    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(currentObjectsIdCounter, {
       x: x,

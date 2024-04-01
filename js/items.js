@@ -96,17 +96,16 @@ export default {
 
     if (hoverSlot && hoverSlot.classList.contains('active') && leftMouseButton) {
       const item = hoverSlot.dataset.item;
-      let food = items[item][1];
-      let drink = items[item][2];
-      let energy = items[item][3];
-      if (food > 0) {        
-        Player.changeProps('food', food);
+      const itemProps = Props.calcItemProps(item);
+
+      if (itemProps.food > 0) {        
+        Player.changeProps('food', itemProps.food);
       }
-      if (drink > 0) {        
-        Player.changeProps('thirst', drink);
+      if (itemProps.drink > 0) {        
+        Player.changeProps('thirst', itemProps.drink);
       }
-      if (energy > 0) {        
-        Player.changeProps('energy', energy);
+      if (itemProps.energy > 0) {        
+        Player.changeProps('energy', itemProps.energy);
         // with enough new energy, certain actions become unlocked
         Cards.calculateCardDeckProperties();
         Cards.updateCardDeck();
@@ -120,7 +119,7 @@ export default {
       } else if (items[item][0] === 'eat') {
         Audio.sfx('eat-' + Math.floor(Math.random() * (2) + 1), 0, 0.7);
       }
-      if (food || drink || energy) {
+      if (itemProps.food || itemProps.drink || itemProps.energy) {
         Props.addToInventory(item, -1);
         this.fillInventorySlots();
         if (!this.inventoryContains(item)) {
@@ -160,9 +159,7 @@ export default {
             itemActive = hoverSlot.classList.contains('active');
 
       const action = items[item][0],
-            food = items[item][1],
-            drink = items[item][2],
-            energy = items[item][3];
+            itemProps = Props.calcItemProps(item);
 
       inventoryContainer.querySelector('p.item-info').innerHTML = this.getItemInfoMarkup(item, itemActive);
 
@@ -172,17 +169,17 @@ export default {
         }
       } else {
         Player.resetPreviewProps();
-        if (food > 0 && this.inventoryContains(item)) {
+        if (itemProps.food > 0 && this.inventoryContains(item)) {
           document.querySelector('#properties li.food').classList.add('transfer');
-          Player.previewProps('food', food);
+          Player.previewProps('food', itemProps.food);
         }
-        if (drink > 0 && this.inventoryContains(item)) {
+        if (itemProps.drink > 0 && this.inventoryContains(item)) {
           document.querySelector('#properties li.thirst').classList.add('transfer');
-          Player.previewProps('thirst', drink);
+          Player.previewProps('thirst', itemProps.drink);
         }
-        if (energy > 0 && this.inventoryContains(item)) {
+        if (itemProps.energy > 0 && this.inventoryContains(item)) {
           document.querySelector('#properties li.energy').classList.add('transfer');
-          Player.previewProps('energy', energy);
+          Player.previewProps('energy', itemProps.energy);
         }
       }
     } else {
@@ -193,11 +190,23 @@ export default {
   getItemInfoMarkup: function(item, itemActive) {
 
     const action = items[item][0],
-          food = items[item][1],
-          drink = items[item][2],
-          energy = items[item][3];
+          itemProps = Props.calcItemProps(item),
+          itemMods = Props.getItemModifier(Props.getGameProp('character'), item);
+    let   itemFood = itemProps.food,
+          itemDrink = itemProps.drink,
+          itemEnergy = itemProps.energy || 0;
 
     let itemInfoMarkup = '<span class="name">' + Props.extractItemName(item) + '</span>';
+    
+    if (itemMods !== undefined && itemMods[0] !== 0) {
+      itemFood += '<small>(' + (itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]) + ')</small>';
+    }
+    if (itemMods !== undefined && itemMods[1] !== 0) {
+      itemDrink += '<small>(' + (itemMods[1] > 0 ? '+' + itemMods[1] : itemMods[1]) + ')</small>';
+    }
+    if (itemMods !== undefined && itemMods[2] !== 0) {
+      itemEnergy += '<small>(' + (itemMods[2] > 0 ? '+' + itemMods[2] : itemMods[2]) + ')</small>';
+    }
 
     if (action === 'craft' && itemActive) {
       itemInfoMarkup += '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
@@ -208,14 +217,14 @@ export default {
         itemInfoMarkup += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
       }
     } else {
-      if (food > 0 && this.inventoryContains(item)) {
-        itemInfoMarkup += '<span class="food">' + food + '<span class="material-symbols-outlined">lunch_dining</span></span>';
+      if (itemProps.food > 0 && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="food">' + itemFood + '<span class="material-symbols-outlined">lunch_dining</span></span>';
       }
-      if (drink > 0 && this.inventoryContains(item)) {
-        itemInfoMarkup += '<span class="drink">' + drink + '<span class="material-symbols-outlined">water_medium</span></span>';
+      if (itemProps.drink > 0 && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="drink">' + itemDrink + '<span class="material-symbols-outlined">water_medium</span></span>';
       }
-      if (energy > 0 && this.inventoryContains(item)) {
-        itemInfoMarkup += '<span class="energy">' + energy + '<span class="material-symbols-outlined">flash_on</span></span>';
+      if (itemProps.energy > 0 && this.inventoryContains(item)) {
+        itemInfoMarkup += '<span class="energy">' + itemEnergy + '<span class="material-symbols-outlined">flash_on</span></span>';
       }
       if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
         itemInfoMarkup += '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';

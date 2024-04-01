@@ -6,12 +6,14 @@ import { default as Tutorial } from './tutorial.js'
 import { default as Ui } from './ui.js'
 
 const saveCheckpoint = JSON.parse(localStorage.getItem("saveCheckpoint"));
+const startscreenContainer = document.getElementById('startscreen');
 
 export default {
   
   init: function() {
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
+    startscreenContainer.addEventListener('mousemove', this.handleMove.bind(this));
     Props.setGameProp('startMode', 1);
     if (saveCheckpoint !== null) {
       document.getElementById('start-option-new').classList.add('is--hidden');
@@ -68,7 +70,6 @@ export default {
         Props.addToInventory(item, inventoryPresets[item]);
       }
     }
-
     // add zero items to present crafting options in Almanac
     // fix this in the almanach
     Props.addToInventory('tape', 0);
@@ -78,6 +79,10 @@ export default {
 
     Items.generateInventorySlots();
     Items.fillInventorySlots();
+
+    // generate all buildings and zeds
+    Props.setupAllBuildings();
+    Props.setupAllZeds();
 
     Player.setPlayerPosition(18, 44);
     
@@ -181,10 +186,9 @@ export default {
               document.location.reload();
             }, 300);
           } else if (action.classList.contains('resume')) {
-            let startScreen = document.getElementById('startscreen');
-            startScreen.querySelector('.screen__quit').classList.add('is--hidden');
-            startScreen.classList.add('is--hidden');
-            startScreen.style.opacity = 0;
+            startscreenContainer.querySelector('.screen__quit').classList.add('is--hidden');
+            startscreenContainer.classList.add('is--hidden');
+            startscreenContainer.style.opacity = 0;
             Ui.showUI();
           } else if (action.classList.contains('card-tutorial-confirm')) {
             this.prepareGameStart();
@@ -218,6 +222,15 @@ export default {
     }
   },
 
+  handleMove: function(ev) {
+    let translateX = (window.innerWidth / 2 - ev.clientX),
+        translateY = (window.innerHeight / 2 - ev.clientY),
+        translateRatio = window.innerWidth / 80;
+
+    startscreenContainer.style.backgroundPositionX = (translateX / translateRatio - 50) + 'px';
+    startscreenContainer.style.backgroundPositionY = (translateY / translateRatio - 30) + 'px';
+  },
+
   prepareGameStart: function() {
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     if (document.getElementById('touchsupport')?.classList.contains('on')) {
@@ -236,7 +249,7 @@ export default {
   },
 
   startReal: function() {
-    document.getElementById('startscreen').style.opacity = 0;
+    startscreenContainer.style.opacity = 0;
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     Tutorial.setupAllEvents();
@@ -245,12 +258,12 @@ export default {
     Audio.playAmbientLoop();
     Ui.showMapBorder();
     window.setTimeout(function() {
-      document.getElementById('startscreen').classList.add('is--hidden');
+      startscreenContainer.classList.add('is--hidden');
     }, 1500);
   },
 
   startTutorial: function() {
-    document.getElementById('startscreen').style.opacity = 0;
+    startscreenContainer.style.opacity = 0;
     Props.setGameProp('tutorial', true);
     this.initProps();
     Tutorial.setupAllEvents();
@@ -259,7 +272,7 @@ export default {
     Audio.playAmbientLoop();
     Ui.showMapBorder();
     window.setTimeout(function() {
-      document.getElementById('startscreen').classList.add('is--hidden');
+      startscreenContainer.classList.add('is--hidden');
     }, 1500);          
   },
 

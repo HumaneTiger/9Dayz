@@ -1,7 +1,8 @@
 #startscreen {
   background-image: url(../img/ui/startscreen-day.jpg);
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 120% 120%;
+  background-position: -50px -30px;
   font-family: Averia Serif;
   font-weight: 300;
   position: fixed;
