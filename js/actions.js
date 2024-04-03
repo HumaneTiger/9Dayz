@@ -193,10 +193,8 @@ export default {
   },
 
   simulateResting: function(cardId, time, energy) {
-
     Map.showScoutMarkerFor(cardId);
     if (Props.getGameProp('timeMode') === 'night') { energy += 5 };
-
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
       Player.changeProps('health', Math.floor(energy / 2));

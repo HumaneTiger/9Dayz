@@ -77,6 +77,8 @@ export default {
     Props.addToInventory('wooden-club', 0, 0);
     Props.addToInventory('improvised-axe', 0, 0);
 
+    Props.modifyObjectProperties();
+
     Items.generateInventorySlots();
     Items.fillInventorySlots();
 

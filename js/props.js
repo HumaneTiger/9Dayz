@@ -423,6 +423,15 @@ export default {
     images[4].src = './img/zombies/scratch.png';
   },
 
+  modifyObjectProperties: function() {
+    if (this.getGameProp('character') === 'treehugger') {
+      buildingActions['tree'][3] = 'rest|60|+20';
+      buildingActions['house'][3] = 'rest|60|+10';
+      buildingActions['house'][4] = 'sleep|120|+30';
+      buildingActions['car'][3] = 'rest|60|+10';
+    }
+  },
+
   saveCheckpoint: function(targetLocationName, playerPosition, playerStats) {
     let saveCheckpoint = {
       targetLocationName: targetLocationName,
@@ -1152,7 +1161,7 @@ export default {
     if (buildingName === 'fireplace') {
       if (this.getGameProp('character') !== 'craftsmaniac' && this.getGameProp('character') !== 'cashmeister') actionSet.push({id: 'cook', label: 'cook', time: 30});
       if (this.getGameProp('character') === 'treehugger') actionSet.push({id: 'sleep', label: 'sleep', time: 60, energy: 60});
-    }    
+    }
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
