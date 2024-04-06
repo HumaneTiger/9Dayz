@@ -124,9 +124,22 @@ export default {
           // stats
           if (itemProps) {
             if (itemProps.food || itemProps.drink || itemProps.energy) {
-              let propsText = 'This item satisfies <span class="keyword" data-content="food">' + (itemProps.food) + ' Hunger</span> and <span class="keyword" data-content="thirst">' + (itemProps.drink) + ' Thirst</span>.';
+              let itemMods = Props.getItemModifier(Props.getGameProp('character'), item);
+              let itemFood = itemProps.food,
+                  itemDrink = itemProps.drink,
+                  itemEnergy = itemProps.energy || 0;
+              if (itemMods !== undefined && itemMods[0] !== 0) {
+                itemFood += '<small>(' + (itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]) + ')</small>';
+              }
+              if (itemMods !== undefined && itemMods[1] !== 0) {
+                itemDrink += '<small>(' + (itemMods[1] > 0 ? '+' + itemMods[1] : itemMods[1]) + ')</small>';
+              }
+              if (itemMods !== undefined && itemMods[2] !== 0) {
+                itemEnergy += '<small>(' + (itemMods[2] > 0 ? '+' + itemMods[2] : itemMods[2]) + ')</small>';
+              }
+              let propsText = 'This item satisfies <span class="keyword" data-content="food">' + itemFood + ' Hunger</span> and <span class="keyword" data-content="thirst">' + itemDrink + ' Thirst</span>.';
               if (itemProps.energy) {
-                propsText = propsText + ' It provides <span class="keyword" data-content="energy">' + (itemProps.energy || 0) + ' Energy</span>.';
+                propsText = propsText + ' It provides <span class="keyword" data-content="energy">' + itemEnergy + ' Energy</span>.';
               }
               statsParagraph.innerHTML = propsText;
               statsParagraph.classList.remove('is--hidden');

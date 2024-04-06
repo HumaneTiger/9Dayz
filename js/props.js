@@ -15,6 +15,7 @@ var crafting = {
 
 var game = {
   mode: 'real',
+  character: 'everyman',
   startMode: 1,
   timeMode: 'day',
   viewMode: '',
@@ -61,6 +62,38 @@ var zedCounter = 1;
 
 var paths = new Array(mapSize.width);
 for (var i = 0; i < paths.length; i += 1) { paths[i] = new Array(mapSize.height); }
+
+var inventoryPresets = [];
+inventoryPresets['everyman'] = {
+  'tomato': 2,
+  'drink-2': 1,
+  'snack-1': 1,
+  'knife': 1,
+  'energy-pills': 1,
+  'pepper': 1
+}
+inventoryPresets['treehugger'] = {
+  'mushroom-1': 2,
+  'acorn': 1,
+  'branch': 1,
+  'fruit-2': 2,
+  'knife': 1
+}
+inventoryPresets['snackivore'] = {
+  'snack-1': 3,
+  'drink-5': 1,
+  'snack-2': 1
+}
+inventoryPresets['craftsmaniac'] = {
+  'spanner': 1,
+  'tape': 1,
+  'knife': 1,
+  'drink-2': 1,
+  'pincers': 1
+}
+inventoryPresets['furbuddy'] = {}
+inventoryPresets['hardcharger'] = {}
+inventoryPresets['cashmeister'] = {}
 
 var buildingTypes = {
   'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
@@ -246,6 +279,68 @@ var items = {
   'baseball-bat': ['extra', 0, 0, 0, weaponProps['baseball-bat'].attack, weaponProps['baseball-bat'].defense],
   'axe': ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense]
 };
+var itemModifiers = {
+  'snackivore': {
+    'acorn': [-1, 0, 0],
+    'bread-1': [5, 0, 10],
+    'bread-2': [5, 0, 10],
+    'carrot': [-4, -2, 0],
+    'drink-1': [0, -20, 0],
+    'drink-2': [0, -20, 0],
+    'drink-3': [10, 20, 10],
+    'drink-4': [10, 20, 10],
+    'drink-5': [15, 30, 15],
+    'fruit-1': [-2, -4, -2],
+    'fruit-2': [-2, -4, -2],
+    'fruit-3': [-2, -4, -2],
+    'energy-pills': [0, 0, +25],
+    'hawthorn': [-2, -2, 0],
+    'meat': [-3, -5, 0],
+    'roasted-meat': [15, 15, 20],
+    'pepper': [-4, -2, 0],
+    'roasted-pepper': [-5, -5, -5],
+    'physalis': [-2, -2, 0],
+    'pumpkin': [-10, -10, -10],
+    'roasted-pumpkin': [-5, -5, -5],
+    'rosehip': [-2, -2, 0],
+    'mushroom-1': [-2, -2, 0],
+    'mushroom-2': [-4, -3, 0],
+    'roasted-mushroom': [1, 1, 1],
+    'snack-1': [20, 0, 25],
+    'snack-2': [20, 0, 25],
+    'tomato': [-2, -4, -3]
+  },
+  'treehugger': {
+    'acorn': [2, 0, 0],
+    'bread-1': [-15, 0, -10],
+    'bread-2': [-20, 0, -10],
+    'carrot': [4, 2, 0],
+    'drink-1': [0, 0, 0],
+    'drink-2': [0, 0, 0],
+    'drink-3': [-3, -10, -3],
+    'drink-4': [-3, -10, -3],
+    'drink-5': [-5, -10, -5],
+    'fruit-1': [3, 5, 5],
+    'fruit-2': [3, 5, 5],
+    'fruit-3': [3, 5, 5],
+    'energy-pills': [0, 0, -25],
+    'hawthorn': [3, 5, 3],
+    'meat': [3, 3, 5],
+    'roasted-meat': [10, 5, 10],
+    'pepper': [5, 5, 5],
+    'roasted-pepper': [5, 5, 5],
+    'physalis': [2, 3, 2],
+    'pumpkin': [5, 5, 10],
+    'roasted-pumpkin': [4, 3, 4],
+    'rosehip': [2, 2, 4],
+    'mushroom-1': [2, 2, 4],
+    'mushroom-2': [2, 2, 4],
+    'roasted-mushroom': [2, 3, 5],
+    'snack-1': [-15, 0, -8],
+    'snack-2': [-15, 0, -8],
+    'tomato': [4, 5, 7]
+  }
+}
 
 const actionTextMapping = {
   'break-door': 'breaking',
@@ -269,8 +364,6 @@ const actionTextMapping = {
 export default {
   
   init: function() {
-    this.setupAllBuildings();
-    this.setupAllZeds();
     this.setupAllPaths();
     this.bind();
     this.preloadBuidlings();
@@ -330,6 +423,15 @@ export default {
     images[4].src = './img/zombies/scratch.png';
   },
 
+  modifyObjectProperties: function() {
+    if (this.getGameProp('character') === 'treehugger') {
+      buildingActions['tree'][3] = 'rest|60|+20';
+      buildingActions['house'][3] = 'rest|60|+10';
+      buildingActions['house'][4] = 'sleep|120|+30';
+      buildingActions['car'][3] = 'rest|60|+10';
+    }
+  },
+
   saveCheckpoint: function(targetLocationName, playerPosition, playerStats) {
     let saveCheckpoint = {
       targetLocationName: targetLocationName,
@@ -366,6 +468,13 @@ export default {
 
   getItem: function(item) {
     return items[item];
+  },
+
+  getItemModifier: function(type, item) {
+    // returns item modifiers for [hunger, thirst, energy]
+    if (itemModifiers[type]) {
+      return itemModifiers[type][item];
+    }
   },
 
   extractItemName: function(item) {
@@ -430,6 +539,10 @@ export default {
   getInventory: function() {
     return inventory;
   },
+
+  getInventoryPresets: function(character) {
+    return inventoryPresets[character];
+  },
   
   addToInventory: function(item, amount, durability) {
     amount = parseInt(amount);
@@ -462,13 +575,14 @@ export default {
   },
 
   calcItemProps: function(item) {
-    const itemProps = items[item];
+    const itemProps = this.getItem(item);
+    const itemMods = this.getItemModifier(this.getGameProp('character'), item);
     return {
       damage: itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10),
       protection: itemProps[5] ? itemProps[5] : (itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10)),
-      food: itemProps[1],
-      drink: itemProps[2],
-      energy: itemProps[3]
+      food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
+      drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
+      energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]
     }
   },
   
@@ -721,6 +835,34 @@ export default {
     this.setZedAt(35, 18, 1);
   },
 
+  getLootBuildingProbability: function(buildingName) {
+    // returns [firstItemChance, nextItemsChance]
+    const type = this.getBuildingTypeOf(buildingName);
+
+    // house, car, farm, tree, church, train, shop, industrial, water, camping, corpse
+    if (this.getGameProp('character') === 'treehugger') {
+      if (type === 'house' || type === 'car' || type === 'train' || type === 'shop' || type === 'industrial') {
+        return [7, 3];
+      } else if (type === 'farm' || type === 'tree' || type === 'water' || type === 'camping') {
+        return [11, 8];
+      }
+    } else if (this.getGameProp('character') === 'snackivore') {
+      if (type === 'house' || type === 'car' || type === 'train' || type === 'shop') {
+        return [11, 8];
+      } else if (type === 'farm' || type === 'tree' || type === 'water') {
+        return [7, 3];
+      }
+    } else if (this.getGameProp('character') === 'craftsmaniac') {
+      if (type === 'industrial' || type === 'car' || type === 'train' || buildingName === 'basement') {
+        return [11, 8];
+      }
+    } else if (this.getGameProp('character') === 'cashmeister') {
+      return [7, 3];
+    }
+    // defaults
+    return [9, 6];
+  },
+
   forceLootItemList: function(forceItems, maxAmount) {
     let lootItemList = [];
     for (var i = 0; i < forceItems.length; i += 1) {
@@ -732,9 +874,11 @@ export default {
     return lootItemList;
   },
 
-  createLootItemList: function(spawn, allItems, probability, amount) {
+  createLootItemList: function(spawn, allItems, allProbabilities, amount) {
     const maxAmount = amount || 1;
     let lootItemList = [];
+    let probability = allProbabilities[0];
+    
     for (var i = 0; i < spawn; i += 1) {
       let randomItem = Math.floor(Math.random() * allItems.length);
       if ((Math.random() * 10) < probability) {
@@ -742,7 +886,7 @@ export default {
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
           amount: Math.round(Math.random() * maxAmount) || 1
         });
-        probability = 6;
+        probability = allProbabilities[1];
       } else {
         lootItemList.push({
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
@@ -757,7 +901,7 @@ export default {
   setupBuilding: function(x, y, buildingNamesArray, forceItems, forceInfested) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
-      const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), 9, props.amount);
+      const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), this.getLootBuildingProbability(buildingName, true), props.amount);
       const locked = (Math.random() * props.locked > 1) ? true : false;
       const type = this.getBuildingTypeOf(buildingName);
       const infested = (type === 'house' && (Math.random() < 0.5)) ? true : false;
@@ -792,7 +936,7 @@ export default {
 
   setZedAt: function(x, y, amount) {
     for (var i = 0; i < amount; i += 1) {
-      let lootItemList = this.createLootItemList(3, ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'tape', 'snack-1', 'drink-1'], 10);
+      let lootItemList = this.createLootItemList(3, ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'tape', 'snack-1', 'drink-1'], [10, 6]);
       let name = 'zombie-' + zedCounter;
 
       zedCounter += 1;
@@ -832,7 +976,7 @@ export default {
   },
 
   setRatAt: function(x, y) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 2);
+    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
     let name = 'rat';
 
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
@@ -878,7 +1022,7 @@ export default {
   },
 
   spawnAnimalAt: function(name, x, y) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], 11, 3);
+    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(currentObjectsIdCounter, {
       x: x,
@@ -1013,7 +1157,11 @@ export default {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
     let actionSet = [];
-    if (buildingName === 'fireplace') actionSet.push({id: 'cook', label: 'cook', time: 30});
+    // adding actions for certain character <-> building combos
+    if (buildingName === 'fireplace') {
+      if (this.getGameProp('character') !== 'craftsmaniac' && this.getGameProp('character') !== 'cashmeister') actionSet.push({id: 'cook', label: 'cook', time: 30});
+      if (this.getGameProp('character') === 'treehugger') actionSet.push({id: 'sleep', label: 'sleep', time: 60, energy: 60});
+    }
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
@@ -1035,6 +1183,10 @@ export default {
         } else if ((!locked && singleAction.id === 'smash-window') ||
                    (!locked && singleAction.id === 'break-door')) {
           // these are exceptions for certain stats <-> action combos that make no sense
+        } else if (this.getGameProp('character') === 'snackivore' &&  singleAction.id === 'drink' ||
+                   this.getGameProp('character') === 'furbuddy' &&  singleAction.id === 'cut') {
+          // removing actions for certain character <-> building combos
+          // see fireplace above for craftsmaniac/cooking
         } else {
           singleAction.time = parseInt(action.split("|")[1]);
           singleAction.energy = parseInt(action.split("|")[2] || 0);

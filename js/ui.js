@@ -96,7 +96,7 @@ export default {
 
   mouseOver: function(ev) {
     const target = ev.target,
-          battleCard = target.closest('div.battle-card'),
+          battleCard = target?.closest('div.battle-card'),
           item = battleCard?.dataset.item;
 
     if (dragMode === false && battleCard) {

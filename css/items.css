@@ -201,6 +201,7 @@
   font-size: 60px;
   width: 100%;
   text-align: center;
+  text-shadow: rgba(53, 35, 26, 0.5) 0 4px 4px;
   color: rgba(255, 254, 251, 1);
   transition: transform 0.5s ease-out, opacity 0.5s ease-out;
   opacity: 0;
@@ -209,6 +210,7 @@
 #battle-message.active {
   opacity: 1;
   transform: translateY(-20px);
+  z-index: 4;
 }
 #battle-stats {
   position: absolute;
@@ -346,7 +348,7 @@
 #battle-cards .battle-card * {
     pointer-events: none;
 }
-#battle-cards .battle-card:hover {
+#battle-cards .battle-card:not(.wont--use):hover {
   transform: translateY(-10px) scale(1.05);
   box-shadow: 0 0 5px 4px rgba(145, 211, 242, 1), 0 0 12px 8px rgba(145, 211, 242, 1);
 }

@@ -39,22 +39,15 @@
           Latest Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          The latest update is adding check- points to the game. When reading a postsign, the game gets saved.
-          When continuing the run at a later point, the most important properties get restored, like
-          inventory items, the players position and stats (health, energy etc.) as well as the day and time.
+          tbd
         </p>
         <h3 class="screen__paragraph align--center text--smedium">
           Previous Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          This update contained lots of UI improvements based on feedback from the community.
-          Here are the most notable.
-          The map can be zoomed in and out using the mouse wheel.
-          The viewport adapts to the resolution and orientation of the monitor.
-          Missing items are crossed out in the crafting menu.
-          When the actions Sleep or Rest are hovered, a preview shows the effects on hunger, thirst and energy.
-          Furthermore, these actions are no longer available if a location is infested with rats.
-          Additionally, there are some quality-of-life improvements.
+          Adding checkpoints to the game. When reading a postsign, the game gets saved.
+          When continuing the run at a later point, the most important properties get restored, like
+          inventory items, the players position and stats (health, energy etc.) as well as the day and time.
         </p>
         <p class="screen__paragraph text--ssmedium">
           <a href="https://humane-tiger.itch.io/9-dayz/devlog/672475/update-whats-new" target="_blank">Read Devlog</a>
@@ -77,13 +70,13 @@
           Press any key to continue
         </p>  
       </div>
-      <div class="screen__2 is--hidden">
+      <div class="screen__2 screen__menu is--hidden">
         <div class="container">
           <p class="screen__logo">
             <img src="./img/ui/logo.png" width="100%" height="auto">
           </p>  
           <p class="screen__button" id="start-option-new">
-            <span data-href="#" class="button full-width start-real">New Game</span>
+            <span data-href="#" class="button full-width start-real">New Game<small>(choose your character)</small></span>
           </p>
           <p class="screen__button is--hidden" id="start-option-continue">
             <span data-href="#" class="button half--width continue-real">Continue</span>
@@ -100,11 +93,6 @@
             <div id="touchsupport" class="slider"><div class="knob"></div></div>
             <div class="label">Touch Support</div>
           </div>
-          <!--
-          <p class="screen__button">
-            <span class="button full-width inactive">Resume<small>(under development)</small></span>
-          </p>
-          -->
           <p class="screen__button">
             <span class="button full-width inactive">Settings<small>(under development)</small></span>
           </p>
@@ -112,9 +100,196 @@
             <span data-href="https://humane-tiger.itch.io/9-dayz" class="button full-width">Give Feedback</span>
           </p>
         </div>
-        <p class="screen__paragraph align--center footer">
-          Development Build
-        </p>
+      </div>
+      <div class="screen__2a screen__menu is--hidden">
+        <div class="container">
+          <p class="screen__logo">
+            <img src="./img/ui/logo.png" width="100%" height="auto">
+          </p>
+          <p class="screen__paragraph align--center">
+            Choose your Character
+          </p>  
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="everyman" class="button full-width">Everyman<small>(recommended for new players)</small></span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="treehugger" class="button full-width">Treehugger</span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="snackivore" class="button full-width">Snackivore</span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="craftsmaniac" class="button full-width">Craftsmaniac</span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="furbuddy" class="button full-width">Furbuddy</span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="hardcharger" class="button full-width">Hardcharger</span>
+          </p>
+          <p class="narrow__button character__button">
+            <span data-href="#" data-character="cashmeister" class="button full-width">Cashmeister<small>(for seasoned players)</small></span>
+          </p>
+          <p class="screen__paragraph align--center">
+            Starting Equipment
+          </p>  
+          <ul id="inventory-presets">
+            <li class="filled">
+              <span class="amount">2</span>
+              <img class="item" src="img/items/tomato.PNG">
+            </li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+            <li class="empty"></li>
+          </ul>
+          <p class="screen__button">
+            <span data-href="#" class="button full-width start-game">Start Game</span>
+          </p>
+          <p class="narrow__button">
+            <span data-href="#" class="button full-width button--secondary back-screen-2">Back</span>
+          </p>
+        </div>
+        <div data-character="everyman">
+          <p>
+            It is nothing short of a miracle that this very ordinary person survived.
+            For the first time in their life this lucky one isn't part of the mainstreamers, who are walking undead in the streets now.
+          </p>
+          <p>
+            This is also the character you play in the Tutorial. Ideal for your first runs to get more familiar with the world of 9 Dayz.
+          </p>
+          <p class="nerf">
+            No recognizable weaknesses
+          </p>
+          <p class="buff">
+            No special strengths or skills
+          </p>
+        </div>
+        <div data-character="treehugger">
+          <p>
+            Your character has a particular affinity for nature and the natural world.
+          </p>
+          <p class="nerf">
+            Food and Energy bonus from all fruits, nuts, meat and vegetables
+          </p>
+          <p class="nerf">
+            Lucky with gathering natural resources
+          </p>
+          <p class="nerf">
+            Can sleep at a Fireplace, Bonus for resting under trees
+          </p>
+          <p class="buff">
+            Unlucky when searching buildings and vehicles
+          </p>
+          <p class="buff">
+            Penalty when eating processed food
+          </p>
+          <p class="buff">
+            Penalty when sleeping in buildings or cars
+          </p>
+        </div>
+        <div data-character="snackivore">
+          <p>
+            In past times your character used to constantly snack throughout the day.
+          </p>
+          <p class="nerf">
+            Bonuses for all stats from snacks, soda drinks and roasted meat
+          </p>
+          <p class="nerf">
+            In fights all natural food items deal +1 damage (you happily let them go)
+          </p>
+          <p class="buff">
+            Unlucky when searching trees and fields
+          </p>
+          <p class="buff">
+            Penalty when eating all kinds of natural food
+          </p>
+          <p class="buff">
+            Won't drink from lakes and wells
+          </p>
+        </div>
+        <div data-character="furbuddy" class="not--available">
+          <p>
+            You character adores and cares deeply for animals and enjoys spending time with them.
+          </p>
+          <p class="nerf">
+            Starts with an animal companion (dog or duck)
+          </p>
+          <p class="nerf">
+            Can tame a giant rat to become a companion
+          </p>
+          <p class="nerf">
+            Wild ducks and dogs join without resistance
+          </p>
+          <p class="buff">
+            Won't cut animals for meat and bones
+          </p>
+          <p class="buff">
+            Takes damage over time without an animal companion, otherwise heals over time
+          </p>
+        </div>
+        <div data-character="craftsmaniac">
+          <p>
+            As a former construction side worker and passionated home improver, your character is proficient in all kinds of handcrafting work.
+          </p>
+          <p class="nerf">
+            Start with some tools in your pockets
+          </p>
+          <p class="nerf">
+            Lucky when searching vehicles, basements, sheds and garages
+          </p>
+          <p class="nerf">
+            Repairing weapons occasionally preserves required materials <span style="color: #ff925b">(not in game yet)</span>
+          </p>
+          <p class="buff">
+            Will spare their tools in fights against enemies
+          </p>
+          <p class="buff">
+            Ain't no cooking
+          </p>
+        </div>
+        <div data-character="hardcharger" class="not--available">
+          <p>
+            Your character is a tough and driven person with a military background, 
+            aggressive and tenacious in their approach.
+          </p>
+          <p class="nerf">
+            In fights you can attack with bare fists
+          </p>
+          <p class="nerf">
+            No Action Points penalty when energy is low
+          </p>
+          <p class="nerf">
+            Quality weapons have a chance to not loose durability when used
+          </p>
+          <p class="buff">
+            Your muscled body needs more energy, sleep and water
+          </p>
+          <p class="buff">
+            Improvised weapons have a chance to break when used
+          </p>
+        </div>
+        <div data-character="cashmeister" class="not--available">
+          <p>
+            As a banker you dealed with big money professionally. These days, your skills, values and attitudes are the least wanted and needed of all.
+          </p>
+          <p class="nerf">
+            Start with your pockets full of money
+          </p>
+          <p class="nerf">
+            You can loot money from houses
+          </p>
+          <p class="buff">
+            Never had to get your hands dirty, so you will find less loot, randomly fail crafting and can't cook
+          </p>
+          <p class="buff">
+            Animals sense your dishonest nature and will refuse to join you
+          </p>
+          <p class="buff">
+            Your money stinks - Undead attack you instantly
+          </p>
+        </div>
       </div>
       <div class="screen__3 is--hidden">
         <div class="card-tutorial is--hidden" id="tutorial-beginning">
@@ -183,6 +358,9 @@
           Thanks for playing! I am happy about any kind of ideas, thoughts, feedback or criticism.
         </p>
       </div>
+      <p class="screen__paragraph development-build">
+        Development Build
+      </p>
     </div>
     <div class="screen__dead is--hidden">
       <p class="screen__paragraph align--center text--medium">

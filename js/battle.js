@@ -127,10 +127,22 @@ export default {
   },
 
   spawnBattleDeck: function(surprised) {
+    let sparedTools = 0;
     for (const item in inventory.items) {
       for (var i = 0; i < inventory.items[item].amount; i += 1) {
-        battleDeck.push(inventory.items[item]);
+        if (
+          Props.getGameProp('character') === 'craftsmaniac' &&
+          (item === 'fail' || item === 'hacksaw' || item === 'knife' || item === 'mallet' || item === 'pincers' || item === 'spanner')
+        ) {
+          // craftsmaniac won't use their tools in battles
+          sparedTools +=1 ;
+        } else {
+          battleDeck.push(inventory.items[item]);
+        }
       }
+    }
+    if (sparedTools > 0) {
+      this.showBattleMessage('Craftsmaniac spares their ' + sparedTools + ' tools', 2000);
     }
     for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
       battleDrawContainer.innerHTML += '<div class="battle-card-back is--hidden" style="left: ' + (card * 4) + 'px"></div>';
@@ -227,9 +239,9 @@ export default {
       for (var i = 0; i < maxItems; i += 1) {
         const item = Items.getItemByName(battleDeck[i].name);
         battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +
-                                        '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' +
-                                        '<div class="attack">' + item.damage + '</div><div class="shield">' + item.protection + '</div>' +
-                                        '</div></div>';        
+                                          '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' +
+                                          '<div class="attack">' + item.damage + '</div><div class="shield">' + item.protection + '</div>' +
+                                          '</div></div>';        
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (var i = 0; i < battlePlayContainer.children.length; i += 1) {

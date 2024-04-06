@@ -6,12 +6,14 @@ import { default as Tutorial } from './tutorial.js'
 import { default as Ui } from './ui.js'
 
 const saveCheckpoint = JSON.parse(localStorage.getItem("saveCheckpoint"));
+const startscreenContainer = document.getElementById('startscreen');
 
 export default {
   
   init: function() {
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
+    startscreenContainer.addEventListener('mousemove', this.handleMove.bind(this));
     Props.setGameProp('startMode', 1);
     if (saveCheckpoint !== null) {
       document.getElementById('start-option-new').classList.add('is--hidden');
@@ -19,32 +21,70 @@ export default {
     } else {
       document.getElementById('start-option-new').classList.remove('is--hidden');
       document.getElementById('start-option-continue').classList.add('is--hidden');
-    }  
+    }
     if (Props.getGameProp('local')) {
       Props.setGameProp('startMode', 2);
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
       document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
       document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
     }
+    this.initCharacterSelection();
+  },
+
+  initCharacterSelection: function() {
+    const character = Props.getGameProp('character');
+    // preselect game character
+    document.querySelector('.button[data-character="' + character + '"]')?.parentNode.classList.add('is--selected');
+    document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
+    this.presetCharacterInventory();
+  },
+
+  presetCharacterInventory: function() {
+    const character = Props.getGameProp('character');
+    const inventoryPresets = Props.getInventoryPresets(character);
+    const inventoryPresetsContainer = document.getElementById('inventory-presets');
+    if (inventoryPresets && Object.keys(inventoryPresets).length) {
+      document.querySelector('.screen__menu .button.start-game').classList.remove('not--available');
+      inventoryPresetsContainer.innerHTML = '';
+      for (let item in inventoryPresets) {
+        inventoryPresetsContainer.innerHTML += '<li class="filled"><span class="amount">' + inventoryPresets[item] + '</span><img class="item" src="img/items/' + item + '.PNG"></li>';
+      };
+      for (let i = 0; i < 6 - Object.keys(inventoryPresets).length; i += 1) {
+        inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
+      }
+    } else {
+      document.querySelector('.screen__menu .button.start-game').classList.add('not--available');
+      inventoryPresetsContainer.innerHTML = '';
+      for (let i = 0; i < 6; i += 1) {
+        inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
+      }
+    }
   },
 
   initProps: function() {
     
-    Props.addToInventory('tomato', 2);
-    Props.addToInventory('drink-2', 1);
-    Props.addToInventory('snack-1', 1);
-    Props.addToInventory('knife', 1);
-    Props.addToInventory('energy-pills', 1);
-    Props.addToInventory('pepper', 1);
+    const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
+    if (inventoryPresets && Object.keys(inventoryPresets).length) {
+      for (let item in inventoryPresets) {
+        Props.addToInventory(item, inventoryPresets[item]);
+      }
+    }
     // add zero items to present crafting options in Almanac
+    // fix this in the almanach
     Props.addToInventory('tape', 0);
     Props.addToInventory('sharp-stick', 0);
     Props.addToInventory('wooden-club', 0, 0);
     Props.addToInventory('improvised-axe', 0, 0);
 
+    Props.modifyObjectProperties();
+
     Items.generateInventorySlots();
     Items.fillInventorySlots();
+
+    // generate all buildings and zeds
+    Props.setupAllBuildings();
+    Props.setupAllZeds();
 
     Player.setPlayerPosition(18, 44);
     
@@ -117,38 +157,52 @@ export default {
         const action = target.closest('.button');
         const slider = target.closest('.slider');
         const href = target.getAttribute('data-href');
+        const character = target.closest('.button')?.getAttribute('data-character');
         if (action) {
           if (action.classList.contains('start-real')) {
             Audio.sfx('click');
-            localStorage.removeItem("saveCheckpoint"); 
-            this.initProps();
-            this.startReal();
+            localStorage.removeItem("saveCheckpoint");
+            this.prepareGameStart();
+            this.chooseCharacter();
+          } else if (action.classList.contains('start-game')) {
+            if (!action.classList.contains('not--available')) {
+              Audio.sfx('click');
+              this.initProps();
+              this.startReal();
+            } else {
+              Audio.sfx('nope');
+            }
+          } else if (action.classList.contains('back-screen-2')) {
+            Audio.sfx('click');
+            this.switchToScreen2();
           } else if (action.classList.contains('continue-real')) {
             Audio.sfx('click');
             this.restoreCheckpoint(saveCheckpoint);
+            this.prepareGameStart();
             this.startReal();
           } else if (action.classList.contains('start-tutorial')) {
+            this.prepareGameStart();
             this.switchToScreen3();
           } else if (action.classList.contains('restart')) {
             window.setTimeout(function() {
               document.location.reload();
             }, 300);
           } else if (action.classList.contains('resume')) {
-            let startScreen = document.getElementById('startscreen');
-            startScreen.querySelector('.screen__quit').classList.add('is--hidden');
-            startScreen.classList.add('is--hidden');
-            startScreen.style.opacity = 0;
+            startscreenContainer.querySelector('.screen__quit').classList.add('is--hidden');
+            startscreenContainer.classList.add('is--hidden');
+            startscreenContainer.style.opacity = 0;
             Ui.showUI();
           } else if (action.classList.contains('card-tutorial-confirm')) {
+            this.prepareGameStart();
             this.startTutorial();
-          }
-          if (document.getElementById('touchsupport')?.classList.contains('on')) {
-            document.getElementById('touchcontrols')?.classList.remove('is--hidden');
-          }
-          if (document.getElementById('fullscreen')?.classList.contains('on')) {
-            if (document.documentElement.requestFullscreen) {
-              document.documentElement.requestFullscreen();
-            }
+          } else if (character) {
+            Audio.sfx('click');
+            document.querySelector('.screen__menu div[data-character].is--selected')?.classList.remove('is--selected');
+            document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
+            document.querySelector('#startscreen .character__button.is--selected')?.classList.remove('is--selected');
+            target.closest('.character__button').classList.add('is--selected');
+            Props.setGameProp('character', character);
+            this.presetCharacterInventory();
           }
         }
         if (slider) {
@@ -170,23 +224,48 @@ export default {
     }
   },
 
-  startReal: function() {
-    document.getElementById('startscreen').style.opacity = 0;
+  handleMove: function(ev) {
+    let translateX = (window.innerWidth / 2 - ev.clientX),
+        translateY = (window.innerHeight / 2 - ev.clientY),
+        translateRatio = window.innerWidth / 80;
+
+    startscreenContainer.style.backgroundPositionX = (translateX / translateRatio - 50) + 'px';
+    startscreenContainer.style.backgroundPositionY = (translateY / translateRatio - 30) + 'px';
+  },
+
+  prepareGameStart: function() {
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
+    if (document.getElementById('touchsupport')?.classList.contains('on')) {
+      document.getElementById('touchcontrols')?.classList.remove('is--hidden');
+    }
+    if (document.getElementById('fullscreen')?.classList.contains('on')) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    }
+  },
+
+  chooseCharacter: function() {
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.remove('is--hidden');
+  },
+
+  startReal: function() {
+    startscreenContainer.style.opacity = 0;
+    document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.setGameProp('gamePaused', false);
     Audio.playAmbientLoop();
     Ui.showMapBorder();
     window.setTimeout(function() {
-      document.getElementById('startscreen').classList.add('is--hidden');
+      startscreenContainer.classList.add('is--hidden');
     }, 1500);
   },
 
   startTutorial: function() {
-    document.getElementById('startscreen').style.opacity = 0;
-    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
+    startscreenContainer.style.opacity = 0;
     Props.setGameProp('tutorial', true);
     this.initProps();
     Tutorial.setupAllEvents();
@@ -195,7 +274,7 @@ export default {
     Audio.playAmbientLoop();
     Ui.showMapBorder();
     window.setTimeout(function() {
-      document.getElementById('startscreen').classList.add('is--hidden');
+      startscreenContainer.classList.add('is--hidden');
     }, 1500);          
   },
 
@@ -209,12 +288,14 @@ export default {
     Props.setGameProp('startMode', 2);
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
   },
 
   switchToScreen3: function() {
     Audio.sfx('shuffle-paper');
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
     document.getElementById('tutorial-beginning').classList.remove('is--hidden');
