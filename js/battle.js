@@ -144,6 +144,15 @@ export default {
     if (sparedTools > 0) {
       this.showBattleMessage('Craftsmaniac spares their ' + sparedTools + ' tools', 2000);
     }
+    for (let card = 0; card < battleDeck.length; card += 1) {
+      battleDeck[card].modifyDamage = 0;
+      if (Props.getGameProp('character') === 'snackivore') {
+        const itemModifier = Props.getItemModifier('snackivore', battleDeck[card].name);
+        if (itemModifier && itemModifier[0] < 0) {
+          battleDeck[card].modifyDamage = 1;
+        }
+      }
+    }
     for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
       battleDrawContainer.innerHTML += '<div class="battle-card-back is--hidden" style="left: ' + (card * 4) + 'px"></div>';
     }
@@ -238,9 +247,10 @@ export default {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (var i = 0; i < maxItems; i += 1) {
         const item = Items.getItemByName(battleDeck[i].name);
+        const modifyDamageMarkup = battleDeck[i].modifyDamage > 0 ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>' : '';
         battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +
                                           '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' +
-                                          '<div class="attack">' + item.damage + '</div><div class="shield">' + item.protection + '</div>' +
+                                          '<div class="attack">' + (item.damage + item.modifyDamage) + modifyDamageMarkup + '</div><div class="shield">' + item.protection + '</div>' +
                                           '</div></div>';        
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
@@ -269,7 +279,7 @@ export default {
     this.showBattleStats('+' + item.protection, 'blue');
     Audio.sfx('punch');
 
-    zedObject.defense -= item.damage;
+    zedObject.defense -= (item.damage + item.modifyDamage);
     if (zedObject.defense <= 0) {
       zedCardRef.classList.add('dead');
       zedObject.dead = true;

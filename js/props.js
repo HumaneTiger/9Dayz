@@ -1160,7 +1160,7 @@ export default {
     // adding actions for certain character <-> building combos
     if (buildingName === 'fireplace') {
       if (this.getGameProp('character') !== 'craftsmaniac' && this.getGameProp('character') !== 'cashmeister') actionSet.push({id: 'cook', label: 'cook', time: 30});
-      if (this.getGameProp('character') === 'treehugger') actionSet.push({id: 'sleep', label: 'sleep', time: 60, energy: 60});
+      if (this.getGameProp('character') === 'treehugger') actionSet.push({id: 'sleep', label: 'sleep', time: 120, energy: 60});
     }
     if (actions !== undefined) {
       actions.forEach(action => {

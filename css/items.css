@@ -393,6 +393,12 @@
   background-color: rgba(237, 125, 49, 0.66);
   border: 1px rgba(237, 125, 49, 0.25) solid;
 }
+#battle-cards .battle-card .attack .modify {
+  font-size: 20px;
+  position: absolute;
+  color: rgba(237, 125, 49, 0.66);
+  left: 40px;
+}
 #battle-cards .battle-card .shield {
   right: 15px;
   bottom: 15px;
