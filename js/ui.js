@@ -29,9 +29,8 @@ export default {
   
   init: function() {
 
-    window.addEventListener('resize', this.resizeViewport);
+    window.addEventListener('resize', this.resizeViewport.bind(this));
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
-
     document.body.addEventListener('mouseover', this.mouseOver);
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
@@ -70,6 +69,8 @@ export default {
         actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'q' && actionsPanelActive) {
         actionsPanel.querySelector('li.quit')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+      } else if (ev.key.toLowerCase() === 'f' && actionsPanelActive) {
+        actionsPanel.querySelector('li.fullscreen')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
   },
@@ -251,6 +252,16 @@ export default {
       } else if (action?.classList.contains('quit')) {
         this.hideUI();
         this.quitConfirmation();
+      } else if (action?.classList.contains('fullscreen')) {
+        // enter/exit fullscreen mode
+        const fullscreenActive = document.fullscreenElement;
+        if (document.fullscreenEnabled) {
+          if (!fullscreenActive) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }  
       }
     } else if (clickProperty && rightMouseButton) {
       const property = target.closest('li');
@@ -362,6 +373,17 @@ export default {
     mapBorder.classList.remove('horizontal', 'vertical');
     mapBorder.classList.add(Props.getGameProp('viewMode'));
     viewport.style.transform = 'scale3d('+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+', 1) translate3d(-50%, -50% , 0)';
+    this.handleFullscreenChange();
+  },
+
+  handleFullscreenChange: function() {
+    if (document.fullscreenElement) {
+      document.querySelector('#actions .fullscreen .fullscreen--on').classList.add('is--hidden');
+      document.querySelector('#actions .fullscreen .fullscreen--off').classList.remove('is--hidden');
+    } else {
+      document.querySelector('#actions .fullscreen .fullscreen--on').classList.remove('is--hidden');
+      document.querySelector('#actions .fullscreen .fullscreen--off').classList.add('is--hidden');
+    }
   },
 
   hourlyTasks: function(hour) {

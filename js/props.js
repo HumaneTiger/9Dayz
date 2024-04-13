@@ -436,6 +436,7 @@ export default {
     let saveCheckpoint = {
       targetLocationName: targetLocationName,
       gameTime: window.timeIsUnity,
+      playerCharacter: this.getGameProp('character'),
       playerPosition: playerPosition,
       playerStats: playerStats,
       inventoryItems: {}

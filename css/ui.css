@@ -552,6 +552,14 @@ ul#actions li.quit {
 ul#actions li.quit span {
   padding-left: 0;
 }
+ul#actions li.fullscreen {
+  width: 68px;
+  padding-top: 12px;
+}
+ul#actions li.fullscreen span {
+  vertical-align: top;
+  padding-left: 0;
+}
 
 #touchcontrols {
   position: fixed;

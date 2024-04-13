@@ -205,6 +205,12 @@ export default {
       this.changeProps('food', -1);  
     }
 
+    if (Props.getGameProp('character') === 'snackivore') {
+      this.changeProps('energy', -1);
+      this.changeProps('thirst', -1);
+      this.changeProps('food', -1);  
+    }
+
     if (this.getProp('food') <= 0) this.changeProps('health', -5);
     if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
     if (this.getProp('energy') <= 0) this.changeProps('energy', -5);

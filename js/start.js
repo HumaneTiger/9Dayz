@@ -111,8 +111,18 @@ export default {
         Props.addToInventory(inventoryItems[key].name, inventoryItems[key].amount, inventoryItems[key].durability);
       }
   
+      if (saveCheckpoint.playerCharacter) {
+        Props.setGameProp('character', saveCheckpoint.playerCharacter);
+      }
+
+      Props.modifyObjectProperties();
+
       Items.generateInventorySlots();
       Items.fillInventorySlots();    
+
+      // generate all buildings and zeds
+      Props.setupAllBuildings();
+      Props.setupAllZeds();
   
       Player.setPlayerPosition(saveCheckpoint.playerPosition.x, saveCheckpoint.playerPosition.y);
 
@@ -239,7 +249,7 @@ export default {
       document.getElementById('touchcontrols')?.classList.remove('is--hidden');
     }
     if (document.getElementById('fullscreen')?.classList.contains('on')) {
-      if (document.documentElement.requestFullscreen) {
+      if (document.fullscreenEnabled) {
         document.documentElement.requestFullscreen();
       }
     }
