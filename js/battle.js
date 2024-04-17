@@ -135,7 +135,7 @@ export default {
           (item === 'fail' || item === 'hacksaw' || item === 'knife' || item === 'mallet' || item === 'pincers' || item === 'spanner')
         ) {
           // craftsmaniac won't use their tools in battles
-          sparedTools +=1 ;
+          sparedTools +=1;
         } else {
           battleDeck.push(inventory.items[item]);
         }
