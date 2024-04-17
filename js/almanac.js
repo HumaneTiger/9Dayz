@@ -120,7 +120,11 @@ export default {
         const itemProps = Props.calcItemProps(item);
         if (Items.inventoryKnows(item)) {
           // update motive img
-          almanacContainer.querySelector('img.motive').setAttribute('src', './img/items/' + item + '.PNG');
+          if (itemProps.type !== 'extra') {
+            almanacContainer.querySelector('img.motive').setAttribute('src', './img/items/' + item + '.PNG');
+          } else {
+            almanacContainer.querySelector('img.motive').setAttribute('src', './img/weapons/' + item + '.png');
+          }
           // stats
           if (itemProps) {
             if (itemProps.food || itemProps.drink || itemProps.energy) {
@@ -181,7 +185,11 @@ export default {
           }
         } else {
           // update motive img
-          almanacContainer.querySelector('img.motive').setAttribute('src', './img/items/' + item + '.PNG');
+          if (itemProps.type !== 'extra') {
+            almanacContainer.querySelector('img.motive').setAttribute('src', './img/items/' + item + '.PNG');
+          } else {
+            almanacContainer.querySelector('img.motive').setAttribute('src', './img/weapons/' + item + '.png');
+          }
           almanacContainer.querySelector('img.motive').classList.add('unknown');
           contentParagraph.innerHTML = "You haven't discovered this item yet.";
           contentParagraph.classList.remove('is--hidden');

@@ -538,6 +538,10 @@ ul#actions li.craft span {
   background-image: url(../img/actions/craft.png);
 }
 
+ul#actions li.settings {
+  width: 15%;
+}
+
 ul#actions li.settings span {
   background-image: url(../img/actions/explore.png);
 }

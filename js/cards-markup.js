@@ -141,8 +141,12 @@ export default {
   },
 
   generateItemMarkup: function(name, amount) {
+    const props = Props.calcItemProps(name);
     return '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>' +
-           '<li class="item is--hidden" data-item="'+name+'" data-amount="'+amount+'"><span class="img"><img src="./img/items/'+name+'.PNG"></span><span class="amount">' + (amount > 1 ? amount : '') + '</span><span class="grab">Grab</span></li>';
+           '<li class="item is--hidden" data-item="'+name+'" data-amount="'+amount+'">' +
+           '<span class="img">' +
+           (props.type !== 'extra' ? '<img src="./img/items/'+name+'.PNG">' : '<img src="./img/weapons/'+name+'.png">') +
+           '</span><span class="amount">' + (amount > 1 ? amount : '') + '</span><span class="grab">Grab</span></li>';
   },
 
   updateCardDeckMarkup: function(cardDeck) {
@@ -295,9 +299,10 @@ export default {
         }
         if (action.critical) {
           actionRef.classList.add('critical');
-          actionRef.querySelector('span.text').innerHTML = '<span class="material-symbols-outlined">release_alert</span> ' + action.label;
+          actionRef.querySelector('span.text').innerHTML = '<span class="material-symbols-outlined alert">release_alert</span> ' + action.label;
         } else {
           actionRef.classList.remove('critical');
+          actionRef.querySelector('span.text').innerHTML = action.label;
         }
       });
 

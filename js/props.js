@@ -407,8 +407,36 @@ export default {
     let images = [];
     for (const prop in items) {
       images[i] = new Image();
-      images[i].src = './img/items/'+prop+'.PNG';
+      if (items[prop][0] !== 'extra') {
+        images[i].src = './img/items/'+prop+'.PNG';
+      } else {
+        images[i].src = './img/weapons/'+prop+'.png';
+      }
     };
+  },
+
+  preloadUI: function() {
+    let images = [];
+    images[1] = new Image();
+    images[1].src = './img/ui/logo.png';
+    images[2] = new Image();
+    images[2].src = './img/card/card-bg.png';
+    images[3] = new Image();
+    images[3].src = './img/card/card-bg-z.png';
+    images[4] = new Image();
+    images[4].src = './img/card/border-house.png';
+    images[5] = new Image();
+    images[5].src = './img/card/border-weapon.png';
+    images[6] = new Image();
+    images[6].src = './img/card/card-back.png';
+    images[7] = new Image();
+    images[7].src = './img/card/border-neutral.png';
+    images[8] = new Image();
+    images[8].src = './img/card/card-tutorial.png';
+    images[9] = new Image();
+    images[10].src = './img/card/chip.png';
+    images[10] = new Image();
+    images[10].src = './img/card/chip-border-neutral.png';
   },
 
   preloadZombies: function() {
@@ -579,8 +607,9 @@ export default {
     const itemProps = this.getItem(item);
     const itemMods = this.getItemModifier(this.getGameProp('character'), item);
     return {
-      damage: itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10),
-      protection: itemProps[5] ? itemProps[5] : (itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10)),
+      type: itemProps[0],
+      damage: this.calcItemDamage(item),
+      protection: this.calcItemProtection(item),
       food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
       drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
       energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]

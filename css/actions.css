@@ -27,7 +27,7 @@
 #cards .actions li.critical span.additional {
   color: #dc6452;  
 }
-#cards .actions li.critical .material-symbols-outlined {
+#cards .actions li.critical .material-symbols-outlined.alert {
   display: inline-block;
 }
 #cards .actions li .material-symbols-outlined.energy {

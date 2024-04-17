@@ -249,7 +249,7 @@ export default {
         const item = Items.getItemByName(battleDeck[i].name);
         const modifyDamageMarkup = battleDeck[i].modifyDamage > 0 ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>' : '';
         battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +
-                                          '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' +
+                                          (item.type !== 'extra' ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
                                           '<div class="attack">' + (item.damage + item.modifyDamage) + modifyDamageMarkup + '</div><div class="shield">' + item.protection + '</div>' +
                                           '</div></div>';        
       }
