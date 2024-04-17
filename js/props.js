@@ -604,13 +604,17 @@ export default {
   calcItemProps: function(item) {
     const itemProps = this.getItem(item);
     const itemMods = this.getItemModifier(this.getGameProp('character'), item);
-    return {
-      type: itemProps[0],
-      damage: this.calcItemDamage(item),
-      protection: this.calcItemProtection(item),
-      food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
-      drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
-      energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]
+    if (itemProps) {
+      return {
+        type: itemProps[0],
+        damage: this.calcItemDamage(item),
+        protection: this.calcItemProtection(item),
+        food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
+        drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
+        energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]
+      }
+    } else {
+      console.log('No props for item ' + item);
     }
   },
   

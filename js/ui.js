@@ -96,10 +96,9 @@ export default {
   },
 
   mouseOver: function(ev) {
-    const target = ev.target,
-          battleCard = target?.closest('div.battle-card'),
-          item = battleCard?.dataset.item;
-
+    const target = ev.target;
+    const battleCard = target.closest ? target.closest('div.battle-card') : null,
+    item = battleCard?.dataset.item;
     if (dragMode === false && battleCard) {
       battleCardsContainer.querySelector('p.item-info').innerHTML = Items.getItemInfoMarkup(item, true);
     } else {

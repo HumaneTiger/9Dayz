@@ -115,8 +115,9 @@ export default {
   checkForCardHover: function(ev) {
 
     const target = ev.target;
-    const cardId = target.closest('div.card')?.id;
-    const hoverButton = target.closest('div.action-button');
+
+    const cardId = target.closest ? target.closest('div.card')?.id : null;
+    const hoverButton = target.closest ? target.closest('div.action-button') : null;
 
     if (!cardId || cardId !== lastHoverTarget) {
       const cardRef = this.getCardById(lastHoverTarget);
