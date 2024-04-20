@@ -145,7 +145,7 @@ export default {
     return '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>' +
            '<li class="item is--hidden" data-item="'+name+'" data-amount="'+amount+'">' +
            '<span class="img">' +
-           (props.type !== 'extra' ? '<img src="./img/items/'+name+'.PNG">' : '<img src="./img/weapons/'+name+'.png">') +
+           (props?.type !== 'extra' ? '<img src="./img/items/'+name+'.PNG">' : '<img src="./img/weapons/'+name+'.png">') +
            '</span><span class="amount">' + (amount > 1 ? amount : '') + '</span><span class="grab">Grab</span></li>';
   },
 
