@@ -34,7 +34,7 @@ export default {
     const leftMouseButton = (ev.button === 0);
     const rightMouseButton = (ev.button === 2);
 
-    if (cardId) {
+    if (cardId && !Props.getGameProp('gamePaused')) {
       const object = Props.getObject(cardId);
       const cardRef = this.getCardById(cardId);
 
