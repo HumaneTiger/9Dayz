@@ -6,6 +6,7 @@ import Cards from './cards.js'
 import CardsMarkup from './cards-markup.js'
 import Actions from './actions.js'
 import Items from './items.js'
+import Character from './character.js'
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -81,7 +82,8 @@ export default {
 
       document.getElementById('inventory').classList.remove('active');
       document.getElementById('craft').classList.remove('active');
-      Items.updateWeaponState();
+      document.getElementById('character').classList.remove('active');
+      Character.updateWeaponState();
       document.getElementById('cards').classList.add('battle-mode');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
 
@@ -93,7 +95,7 @@ export default {
         document.getElementById('properties').classList.remove('active');
         document.getElementById('actions').classList.remove('active');
         document.querySelector('#cards .cards-blocker').classList.add('active');
-        document.getElementById('inventory').querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });  
+        //document.getElementById('inventory').querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });  
         this.spawnBattleDeck(surprised);
       }, 600);
     } else {
@@ -187,6 +189,7 @@ export default {
     battleHealthMeter.classList.remove('in-battle');
     document.getElementById('properties').classList.add('active');
     document.getElementById('actions').classList.add('active');
+    document.getElementById('character').classList.add('active');
     document.getElementById('cards').classList.remove('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('active');
 

@@ -5,6 +5,7 @@ import Player from './player.js'
 import Almanac from './almanac.js'
 import Cards from './cards.js'
 import Items from './items.js'
+import Character from './character.js'
 
 const viewport = document.getElementById("viewport");
 const mapBorder = document.getElementById("map-border");
@@ -297,7 +298,7 @@ export default {
         Cards.renderCardDeck();
       }  
     }
-    Items.updateWeaponState();
+    Character.updateWeaponState();
   },
 
   toggleCrafting: function(forceOpen) {
@@ -308,7 +309,7 @@ export default {
       craftContainer.classList.add('active');
       inventoryContainer.classList.remove('active');
     }
-    Items.updateWeaponState();
+    Character.updateWeaponState();
   },
 
   quitConfirmation: function() {
@@ -338,6 +339,7 @@ export default {
     inventoryContainer.querySelectorAll('.weapon').forEach(function(el) { el.classList.remove('active'); });
     Almanac.close(true);
     document.getElementById('properties').classList.remove('active');
+    document.getElementById('character').classList.remove('active');
     document.getElementById('actions').classList.remove('active');
     document.getElementById('cards').classList.remove('active');
     document.getElementById('almanac').classList.add('out');
@@ -346,9 +348,10 @@ export default {
 
   showUI: function() {
     document.getElementById('properties').classList.add('active');
+    document.getElementById('character').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.getElementById('cards').classList.add('active');
-    Items.updateWeaponState();
+    Character.updateWeaponState();
     inventoryContainer.querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });
   },
 

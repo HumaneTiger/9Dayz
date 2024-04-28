@@ -19,6 +19,7 @@
       <link rel="stylesheet" href="css/items.css">
       <link rel="stylesheet" href="css/cooking.css">
       <link rel="stylesheet" href="css/crafting.css">
+      <link rel="stylesheet" href="css/character.css">
       <link rel="stylesheet" href="css/tutorial.css">
       <link rel="stylesheet" href="css/almanac.css">
 
@@ -39,20 +40,20 @@
           Latest Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          Players can now choose from a variety of different characters - each of them with distinctive and relatable personalities.
-          With each character there comes a set of abilities and incapacities, as well as a starting equipment - fitting their personality, profession and preferences.
-          As always, there are some bugfixes and smaller improvements included in this update as well.
+          Added a new section (bottom right) dedicated to the character and the weapons they possess.
+          The almanac got an content upgrade. It is showing information about each character when players right-click their profile card.
+          These improvements also open up the path to a future introduction of new weapons (exist only as previews atm) as well as weapon repairs and animal companions.
+          <!--As always, there are some bugfixes and smaller improvements included in this update as well.-->
         </p>
         <p class="screen__paragraph text--ssmedium">
-          <a href="https://humane-tiger.itch.io/9-dayz/devlog/714395/devlog-character-selection" target="_blank">Read Devlog</a>
+          <a href="https://humane-tiger.itch.io/9-dayz/devlog/709058/concept-for-showing-weapons-and-upgrading-stats" target="_blank">Read Devlog</a>
         </p>
         <h3 class="screen__paragraph align--center text--smedium">
           Previous Update
         </h3>
         <p class="screen__paragraph align--block text--ssmedium">
-          Adding checkpoints to the game. When reading a postsign, the game gets saved.
-          When continuing the run at a later point, the most important properties get restored, like
-          inventory items, the players position and stats (health, energy etc.) as well as the day and time.
+          Players can choose from a variety of different characters - each of them with distinctive and relatable personalities.
+          With each character there comes a set of abilities and incapacities, as well as a starting equipment - fitting their personality, profession and preferences.
         </p>
         <p class="screen__paragraph text--ssmedium">
           <a href="https://humane-tiger.itch.io/9-dayz/devlog/672475/update-whats-new" target="_blank">Read Devlog</a>
@@ -176,13 +177,13 @@
             Your character has a particular affinity for nature and the natural world.
           </p>
           <p class="nerf">
-            Food and Energy bonus from all fruits, nuts, meat and vegetables
+            <span class="keyword" data-content="food">food</span> and <span class="keyword" data-content="energy">energy</span> bonus from all <span class="keyword" data-item="fruit-2">fruits</span>, <span class="keyword" data-item="acorn">nuts</span>, <span class="keyword" data-item="meat">meat</span> and <span class="keyword" data-item="mushroom-1">vegetables</span>
           </p>
           <p class="nerf">
             Lucky with gathering natural resources
           </p>
           <p class="nerf">
-            Can sleep at a Fireplace, Bonus for resting under trees
+            Can sleep at a <span class="keyword" data-content="fireplace">Fireplace</span>, Bonus for resting under trees
           </p>
           <p class="buff">
             Unlucky when searching buildings and vehicles
@@ -199,10 +200,10 @@
             In past times your character used to constantly snack throughout the day.
           </p>
           <p class="nerf">
-            Bonuses for all stats from snacks, soda drinks and roasted meat
+            Bonuses for all stats from <span class="keyword" data-item="snack-1">snacks</span>, <span class="keyword" data-item="drink-5">soda drinks</span> and <span class="keyword" data-item="roasted-meat">roasted meat</span>
           </p>
           <p class="nerf">
-            In fights all natural food items deal +1 damage (you happily let them go)
+            In <span class="keyword" data-content="battle">battles</span> all natural food items deal +1 damage (you happily let them go)
           </p>
           <p class="buff">
             Unlucky when searching trees and fields
@@ -211,7 +212,7 @@
             Penalty when eating all kinds of natural food
           </p>
           <p class="buff">
-            Your untrained body consumes more energy, calories and water
+            Your untrained body consumes more <span class="keyword" data-content="energy">energy</span>, <span class="keyword" data-content="food">calories</span> and <span class="keyword" data-content="thirst">water</span>
           </p>
           <p class="buff">
             Won't drink from lakes and wells
@@ -242,7 +243,7 @@
             As a former construction side worker and passionated home improver, your character is proficient in all kinds of handcrafting work.
           </p>
           <p class="nerf">
-            Start with some tools in your pockets
+            Start with some <span class="keyword" data-item="spanner">tools</span> in your pockets
           </p>
           <p class="nerf">
             Lucky when searching vehicles, basements, sheds and garages
@@ -251,10 +252,10 @@
             Repairing weapons occasionally preserves required materials <span style="color: #ff925b">(not in game yet)</span>
           </p>
           <p class="buff">
-            Will spare their tools in fights against enemies
+            Will spare their <span class="keyword" data-item="spanner">tools</span> in <span class="keyword" data-content="battle">battles</span> against enemies
           </p>
           <p class="buff">
-            Ain't no cooking
+            Ain't no <span class="keyword" data-content="fireplace">cooking</span>
           </p>
         </div>
         <div data-character="hardcharger" class="not--available">
@@ -438,6 +439,7 @@
           <li class="mixed day">
             <span class="game-saved">Game saved</span>
             <span class="countdown">Day <em id="gametime-days">1</em></span><span class="seperator">⬦</span><span class="time" id="gametime-hours"></span>
+            <span class="pause is--hidden"><u>P</u>ause</span>
           </li>
           <li class="map"><span><u>M</u>ap</span></li>
           <li class="settings"><span><u>E</u>ditor<!--Settings--></span></li>
@@ -447,9 +449,34 @@
           </li>
           <li class="quit"><span><u>Q</u>uit</span></li>
         </ul>
+        <div id="character" class="active">
+          <div class="card weapon slot-hero">
+            <h2>Snackivore</h2>
+            <div class="inner">
+              <img class="motive" src="./img/characters/hero.png">
+            </div>
+          </div>
+          <div class="card weapon slot-1">
+            <div class="inner">
+              <div class="attack">8</div>
+              <div class="shield">4</div>
+              <img class="motive" src="./img/weapons/improvised-axe.png">
+              <span class="distance">◈◈◈</span>
+            </div>
+          </div>
+          <div class="card weapon slot-2">
+            <div class="inner">
+              <div class="attack">8</div>
+              <div class="shield">4</div>
+              <img class="motive" src="./img/weapons/wooden-club.png">
+              <span class="distance">◈◈◈</span>
+            </div>
+          </div>
+        </div>
         <div id="inventory">
           <div class="inner"></div>
           <p class="item-info"></p>
+          <!--
           <div class="weapon wooden-club active is--hidden">
             <img src="./img/card/wooden-club.png" width="100%" height="auto">
             <span class="extension">◈◈◈</span>
@@ -458,6 +485,7 @@
             <img src="./img/card/improvised-axe.png" width="100%" height="auto">
             <span class="extension">◈◈◈</span>
           </div>
+          -->
         </div>
         <div id="craft">
           <div class="inner">

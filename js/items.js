@@ -4,6 +4,7 @@ import Ui from './ui.js'
 import Cards from './cards.js'
 import Crafting from './crafting.js'
 import Cooking from './cooking.js'
+import Character from './character.js'
 import Almanac from './almanac.js'
 import Audio from './audio.js'
 
@@ -90,7 +91,6 @@ export default {
 
     const target = ev.target;
     const hoverSlot = target.closest('.slot');    
-    const weaponSlot = target.closest('.weapon');
     const leftMouseButton = (ev.button === 0);
     const rightMouseButton = (ev.button === 2);
 
@@ -139,13 +139,6 @@ export default {
       const item = hoverSlot.dataset.item;
       Almanac.showPage(item, 'item', hoverSlot, inventoryContainer);
     }
-    if (weaponSlot && rightMouseButton) {
-      if (weaponSlot.classList.contains('wooden-club')) {
-        Almanac.showPage('wooden-club', 'item', weaponSlot, inventoryContainer);
-      } else if (weaponSlot.classList.contains('improvised-axe')) {
-        Almanac.showPage('improvised-axe', 'item', weaponSlot, inventoryContainer);
-      }
-    }    
   },
 
   checkForSlotHover: function(ev) {
@@ -283,21 +276,7 @@ export default {
         this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, Crafting.isItemPartOfCrafting(item));
       }
     }
-    this.updateWeaponState();
+    Character.updateWeaponState();
     Cooking.checkAllCookingModeCards();
-  },
-
-  updateWeaponState: function() {
-    for (var item in inventory.items) {
-      if (inventory.items[item].name === 'improvised-axe' || inventory.items[item].name === 'wooden-club') {
-        let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' +  '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
-        inventoryContainer.querySelector('.weapon.' + inventory.items[item].name + ' .extension').innerHTML = durability;
-        if (inventory.items[item].amount > 0 && !document.getElementById('craft').classList.contains('active')) {
-          inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.remove('is--hidden');
-        } else {
-          inventoryContainer.querySelector('.weapon.' + inventory.items[item].name)?.classList.add('is--hidden');
-        }  
-      }
-    }
   }
 }

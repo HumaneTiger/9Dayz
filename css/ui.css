@@ -179,6 +179,7 @@ ul#properties li.time {
 #inventory.active {
   transform: translateX(0);
 }
+/*
 #inventory .weapon {
   height: 217px;
   width: 160px;
@@ -219,6 +220,7 @@ ul#properties li.time {
   color: rgba(53, 35, 26, 0.2);
   text-decoration: none;
 }
+*/
 
 /* button styles in actions.css ! */
 #craft div.button-craft {
@@ -512,7 +514,6 @@ ul#actions li.mixed .game-saved {
 ul#actions li.mixed .game-saved.active {
   opacity: 1;
 }
-
 ul#actions li span.countdown,
 ul#actions li span.time {
   /*display: inline-block;*/
@@ -567,11 +568,12 @@ ul#actions li.fullscreen span {
 
 #touchcontrols {
   position: fixed;
-  right: 100px;
-  bottom: 150px;
+  right: -35px;
+  bottom: 82px;
   width: 350px;
   height: 350px;
   z-index: 101;
+  transform: scale(0.7);
 }
 
 #touchcontrols .move {

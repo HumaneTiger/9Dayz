@@ -9,6 +9,7 @@ import Actions from './actions.js'
 import Battle from './battle.js'
 import Cooking from './cooking.js'
 import Crafting from './crafting.js'
+import Character from './character.js'
 import Almanac from './almanac.js'
 
 let startHour = 7; // 7
@@ -36,6 +37,7 @@ window.timeIsUnity = {
   Battle.init();
   Cooking.init();
   Crafting.init();
+  Character.init();
   Almanac.init();
   bind();
   Ui.resizeViewport();

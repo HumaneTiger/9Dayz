@@ -23,10 +23,17 @@ export default {
       document.getElementById('start-option-continue').classList.add('is--hidden');
     }
     if (Props.getGameProp('local')) {
+      document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
+      document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
       Props.setGameProp('startMode', 2);
+      this.prepareGameStart();
+      /*
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
       document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
       document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
+      */
+      this.initProps();
+      this.startReal();
     }
     this.initCharacterSelection();
   },
@@ -64,6 +71,10 @@ export default {
   initProps: function() {
     
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
+
+    // TESTING
+    Props.addToInventory('wooden-club', 1, 2);
+    Props.addToInventory('improvised-axe', 1, 2);
 
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {
@@ -247,6 +258,7 @@ export default {
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     if (document.getElementById('touchsupport')?.classList.contains('on')) {
       document.getElementById('touchcontrols')?.classList.remove('is--hidden');
+      document.getElementById('character')?.classList.add('touchcontrols');
     }
     if (document.getElementById('fullscreen')?.classList.contains('on')) {
       if (document.fullscreenEnabled) {

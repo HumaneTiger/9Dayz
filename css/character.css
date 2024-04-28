@@ -1,0 +1,56 @@
+#character {
+  position: fixed;
+  right: -72px;
+  top: 830px;
+  height: 380px;
+  z-index: 50;
+  transform: translateX(800px);
+  transition: transform 0.6s ease-out;
+}
+#character.active {
+  transform: translateX(0);
+}
+
+#character.touchcontrols {
+  right: 200px;
+}
+#character .card {
+  position: absolute;
+  bottom: 0;
+  top: initial;
+  transform: scale(0.5);
+}
+#character .slot-hero {
+  right: 0;
+  z-index: 5;
+}
+#character .slot-1,
+#character .slot-2 {
+  bottom: -100vh;
+  transition: right 0.35s ease-out;
+}
+
+#character .slot-1 {
+  right: 0;
+  z-index: 4;
+}
+#character .slot-2 {
+  right: 190px;
+  z-index: 3;
+}
+
+#character .slot-1.active {
+  right: 190px;
+  display: initial;
+  bottom: 0;
+}
+#character .slot-2.active {
+  right: 380px;
+  z-index: 3;
+  display: initial;
+  bottom: 0;
+}
+#character .card .distance u {
+  color: rgba(53, 35, 26, 0.2);
+  text-decoration: none;
+}

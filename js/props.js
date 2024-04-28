@@ -380,6 +380,11 @@ export default {
       property: 'total',
       element: document.getElementById('crafting-total')
     })
+    new Binding({
+      object: game,
+      property: 'character',
+      element: document.getElementById('character').querySelector('.slot-hero h2')
+    })
   },
 
   hourlyTasks: function(hour) {
