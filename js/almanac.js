@@ -37,6 +37,22 @@ const almanacContent = {
   'fireplace': {
     'motive': './img/almanac/fireplace.png',
     'markup': '<p>Raw food roasted with a <span class="keyword" data-item="sharp-stick">sharp stick</span> over fire provides substantially more <span class="keyword" data-content="food">nutritions</span> and <span class="keyword" data-content="energy">energy</span>.</p><p>A <span class="keyword" data-content="fireplace">fireplace</span> can be crafted from <span class="keyword" data-item="stone">stone</span>, <span class="keyword" data-item="stump">stump</span> and <span class="keyword" data-item="straw-wheet">straw wheet</span>.</p><p>It remains in place where it is crafted.</p>'
+  },
+  'everyman': {
+    'motive': './img/characters/hero.png',
+    'markup': document.querySelector('div[data-character="everyman"]').innerHTML
+  },
+  'treehugger': {
+    'motive': './img/characters/hero.png',
+    'markup': document.querySelector('div[data-character="treehugger"]').innerHTML
+  },
+  'snackivore': {
+    'motive': './img/characters/hero.png',
+    'markup': document.querySelector('div[data-character="snackivore"]').innerHTML
+  },
+  'craftsmaniac': {
+    'motive': './img/characters/hero.png',
+    'markup': document.querySelector('div[data-character="craftsmaniac"]').innerHTML
   }
 };
 
@@ -98,7 +114,7 @@ export default {
         const left = (refElem.offsetLeft + parentElem.offsetLeft > 120) ? (refElem.offsetLeft + parentElem.offsetLeft) : 120;
         const top = (refElem.offsetTop + parentElem.offsetTop > 445) ? (refElem.offsetTop + parentElem.offsetTop) : 445;
         almanacContainer.style.left = left + 'px';
-        almanacContainer.style.top = top + 'px';    
+        almanacContainer.style.top = top + 'px';
       }
 
       almanacContainer.querySelector('img.motive').classList.remove('unknown');
@@ -200,6 +216,10 @@ export default {
           almanacContainer.querySelector('img.motive').setAttribute('src', almanacContent[item].motive);
           markupSection.innerHTML = almanacContent[item].markup;
           markupSection.classList.remove('is--hidden');
+
+          if (markupSection.offsetHeight > 200) {
+            almanacContainer.style.top = (parseInt(almanacContainer.style.top, 10) + markupSection.offsetHeight - 200) + 'px';
+          }
         }
       }
       if (!almanacHistory.length || almanacHistory.at(-1)[0] !== item) {
