@@ -493,6 +493,15 @@ export default {
     game[prop] = value;
   },
 
+  pauseGame: function(pause) {
+    this.setGameProp('gamePaused', pause);
+    if (pause) {
+      document.body.classList.add('is--paused');
+    } else {
+      document.body.classList.remove('is--paused');
+    }
+  },
+
   /* inventory */
   getAllItems: function() {
     return items;

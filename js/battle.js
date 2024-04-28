@@ -58,7 +58,7 @@ export default {
   startBattle(surprised, singleZedId) {
 
     Props.setGameProp('battle', true);
-    Props.setGameProp('gamePaused', true);
+    Props.pauseGame(true);
 
     if (singleZedId) {
       // result of successful luring
@@ -216,7 +216,7 @@ export default {
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);
         Player.lockMovement(false);
-        Props.setGameProp('gamePaused', false);
+        Props.pauseGame(false);
       });
       cardZedDeck = [];
     }.bind(this), 100);

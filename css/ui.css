@@ -491,6 +491,7 @@ ul#actions li.mixed {
   text-align: left;
   cursor: default;
   padding-left: 88px;
+  position: relative;
   background-position: 28px 8px;
   background-size: 48px;
   background-repeat: no-repeat;
@@ -503,14 +504,20 @@ ul#actions li.mixed.day {
 ul#actions li.mixed.night {
   background-image: url(../img/actions/moon.png);
 }
+ul#actions li.mixed .pause,
 ul#actions li.mixed .game-saved {
   position: absolute;
   background-color: rgb(255, 254, 251);
-  padding: 6px 80px;
-  margin: -8px 0 0 -80px;
+  padding: 7px 6px 2px;
+  text-align: center;
+  top: 10px;
+  right: 0;
+  left: 0;
   opacity: 0;
   transition: opacity 1s ease-out;
 }
+ul#actions li.mixed:hover .pause,
+ul#actions li.mixed .pause.active,
 ul#actions li.mixed .game-saved.active {
   opacity: 1;
 }

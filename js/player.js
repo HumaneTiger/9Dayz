@@ -272,7 +272,7 @@ export default {
     const posXBefore = playerPosition.x,
           posYBefore = playerPosition.y;
 
-    if (!moving && !moveLocked) {
+    if (!moving && !moveLocked && !Props.getGameProp('gamePaused')) {
       if (ev.key && (ev.key.toLowerCase() === 'w' || ev.key === 'ArrowUp')) {
         ev.preventDefault();
         if (allPaths[playerPosition.x][playerPosition.y - 1]) {

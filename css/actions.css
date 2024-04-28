@@ -5,7 +5,10 @@
   transform: translateY(-50%);
   z-index: 4;
 }
-#cards .card:hover ul.actions li {
+body.is--paused #cards .actions {
+  display: none;
+}
+body:not(.is--paused) #cards .card:hover ul.actions li {
   opacity: 1;
   transform: translateY(0);
 }

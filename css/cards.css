@@ -236,18 +236,18 @@
 .card.fight ul.actions {
   display: none;
 }
-.card:not(.fight):hover {
+body:not(.is--paused) .card:not(.fight):hover {
   transform: scale(0.9);
   z-index: 201;
 }
 .card.fight.attack {
   transform: scale(0.9);
 }
-#cards .card:not(.fight):hover img.motive {
+body:not(.is--paused) #cards .card:not(.fight):hover img.motive {
   filter: blur(4px);
   opacity: 0.8;
 }
-#cards .card:not(.fight):hover .banner {
+body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   opacity: 0;
   transform: translateY(5px);
 }

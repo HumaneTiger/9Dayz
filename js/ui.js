@@ -55,7 +55,7 @@ export default {
   handleKeydown: function(ev) {
     const actionsPanel = document.getElementById('actions');
     const actionsPanelActive = actionsPanel.classList.contains('active');
-    if (!Props.getGameProp('gamePaused') && ev.key) {
+    if (!Props.getGameProp('battle') && ev.key) {
       if (ev.key.toLowerCase() === 'i' && actionsPanelActive) {
         actionsPanel.querySelector('li.inventory')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'c' && actionsPanelActive) {
@@ -72,6 +72,8 @@ export default {
         actionsPanel.querySelector('li.quit')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'f' && actionsPanelActive) {
         actionsPanel.querySelector('li.fullscreen')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+      } else if ((ev.key.toLowerCase() === 'p' || ev.code === 'Space') && actionsPanelActive) {
+        actionsPanel.querySelector('li.mixed span.pause')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
   },
@@ -236,7 +238,7 @@ export default {
     const leftMouseButton = (ev.button === 0 || !ev.button); // 2nd part also takes keyboard shortcuts into account
     const rightMouseButton = (ev.button === 2);
 
-    if (clickAction && leftMouseButton) {
+    if (clickAction && leftMouseButton && !Props.getGameProp('battle')) {
       Audio.sfx('click');
       ev.preventDefault();
       ev.stopPropagation();
@@ -245,6 +247,16 @@ export default {
         this.toggleInventory();
       } else if (action?.classList.contains('craft')) {
         this.toggleCrafting();
+      } else if (action?.classList.contains('mixed') && target.classList.contains('pause')) {
+        if (Props.getGameProp('gamePaused')) {
+          Props.pauseGame(false);
+          target.innerHTML = '<u>P</u>ause Game';
+          target.classList.remove('active');
+        } else {
+          Props.pauseGame(true);
+          target.innerHTML = 'Game <u>P</u>aused';
+          target.classList.add('active');
+        }
       } else if (action?.classList.contains('settings')) {
         document.getElementById('card-console').classList.toggle('out');
       } else if (action?.classList.contains('map')) {

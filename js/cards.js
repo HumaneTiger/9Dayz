@@ -119,40 +119,42 @@ export default {
     const cardId = target.closest ? target.closest('div.card')?.id : null;
     const hoverButton = target.closest ? target.closest('div.action-button') : null;
 
-    if (!cardId || cardId !== lastHoverTarget) {
-      const cardRef = this.getCardById(lastHoverTarget);
-      if (cardRef) {
-        if (!Props.getGameProp('battle')) {
-          cardRef.style.zIndex = cardRef.dataset.oldZindex;
+    if (!Props.getGameProp('gamePaused')) {
+      if (!cardId || cardId !== lastHoverTarget) {
+        const cardRef = this.getCardById(lastHoverTarget);
+        if (cardRef) {
+          if (!Props.getGameProp('battle')) {
+            cardRef.style.zIndex = cardRef.dataset.oldZindex;
+          }
+          delete cardRef.dataset.oldZindex;
+          Map.noHighlightObject(lastHoverTarget);
+          lastHoverTarget = undefined;  
         }
-        delete cardRef.dataset.oldZindex;
-        Map.noHighlightObject(lastHoverTarget);
-        lastHoverTarget = undefined;  
       }
-    }
-    if (cardId) {
-      if (lastHoverTarget !== cardId) {
-        lastHoverTarget = cardId;
-        const cardRef = this.getCardById(cardId);
-        if (!Props.getGameProp('battle')) {
-          cardRef.dataset.oldZindex = cardRef.style.zIndex;
-          cardRef.style.zIndex = 200;  
+      if (cardId) {
+        if (lastHoverTarget !== cardId) {
+          lastHoverTarget = cardId;
+          const cardRef = this.getCardById(cardId);
+          if (!Props.getGameProp('battle')) {
+            cardRef.dataset.oldZindex = cardRef.style.zIndex;
+            cardRef.style.zIndex = 200;  
+          }
+          if (hoverButton) {
+            cardRef.classList.add('hover-button');
+          } else {
+            cardRef.classList.remove('hover-button');
+          }  
+          Map.highlightObject(cardId);
         }
         if (hoverButton) {
-          cardRef.classList.add('hover-button');
+          const action = hoverButton.dataset?.action;
+          if (action && (action === 'rest' || action === 'sleep')) {
+            this.previewStatsChange(action, cardId);
+          }
         } else {
-          cardRef.classList.remove('hover-button');
-        }  
-        Map.highlightObject(cardId);
-      }
-      if (hoverButton) {
-        const action = hoverButton.dataset?.action;
-        if (action && (action === 'rest' || action === 'sleep')) {
-          this.previewStatsChange(action, cardId);
+          Player.resetPreviewProps();
         }
-      } else {
-        Player.resetPreviewProps();
-      }
+      }  
     }
   },
 
