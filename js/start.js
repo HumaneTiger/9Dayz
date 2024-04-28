@@ -73,8 +73,8 @@ export default {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
-    Props.addToInventory('wooden-club', 1, 2);
-    Props.addToInventory('improvised-axe', 1, 2);
+    //Props.addToInventory('wooden-club', 1, 2);
+    //Props.addToInventory('improvised-axe', 1, 2);
 
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {
