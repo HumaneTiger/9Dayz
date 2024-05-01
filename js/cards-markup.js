@@ -3,6 +3,7 @@ import { default as Props } from './props.js'
 import { default as Player } from './player.js'
 import { default as Map } from './map.js'
 import { default as Cooking } from './cooking.js'
+import { default as Character } from './character.js'
 
 const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
@@ -158,8 +159,10 @@ export default {
     // Position (top / bottom)
     if (playerPosition.y < 15) {
       cardsContainer.classList.add('cards-at-bottom');
+      document.getElementById('character')?.classList.add('character-at-top');
     } else {
       cardsContainer.classList.remove('cards-at-bottom');
+      document.getElementById('character')?.classList.remove('character-at-top');
     }
 
     cardDeck?.forEach((card) => {
@@ -284,7 +287,11 @@ export default {
           } else if (action.id === 'smash-window') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
           } else if (action.id === 'equip') {
-            actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
+            if (Character.numberFilledSlots() >= 2) {
+              actionRef.querySelector('.additional-locked').textContent = 'No free space';
+            } else {
+              actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
+            }
           } else {
             actionRef.querySelector('.additional-locked').textContent = 'Locked';
           }
