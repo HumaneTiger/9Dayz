@@ -2,6 +2,7 @@ import Audio from './audio.js'
 import Props from './props.js'
 import Player from './player.js'
 import Items from './items.js'
+import Character from './character.js'
 import Map from './map.js'
 import Actions from './actions.js'
 import Tutorial from './tutorial.js'
@@ -283,11 +284,11 @@ export default {
         if (action.energy && Player.getProp('energy') + action.energy < 0) {
           action.locked = true;
         }
-        if (action.id === 'equip' && object.group === 'weapon' && Items.inventoryContains(object.name)) {
+        if (action.id === 'equip' && object.group === 'weapon' && (Items.inventoryContains(object.name) || Character.numberFilledSlots() >= 2)) {
           action.locked = true;
         }
         if (action.id === 'smash-window') {
-          if (!Items.inventoryContains('stone') && !Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
+          if (!Items.inventoryContains('stone') && !Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe') && !Items.inventoryContains('wrench')) {
             action.locked = true;
           }
         }
