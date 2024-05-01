@@ -179,48 +179,6 @@ ul#properties li.time {
 #inventory.active {
   transform: translateX(0);
 }
-/*
-#inventory .weapon {
-  height: 217px;
-  width: 160px;
-  position: absolute;
-  top: 20px;
-  right: 0;
-  transition: right 0.1s ease-out;
-}
-#inventory .weapon.active {
-  right: -152px;
-}
-#inventory.the-end .weapon,
-#inventory.the-end .weapon {
-  display: none;
-}
-#inventory .wooden-club {
-  top: 270px;
-}
-#inventory .weapon .extension {
-  display: inline-block;
-  background-color: #f0e4da ;
-  color: rgba(91, 155, 213, 1);
-  padding: 11px 24px 4px;
-  line-height: 1em;
-  border-bottom-right-radius: 8px 8px;
-  border-bottom-left-radius: 8px 8px;
-  font-size: 16px;
-  font-weight: 300;
-  position: absolute;
-  bottom: -20px;
-  left: 40%;
-  transform: translateX(-50%);
-  box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
-  background: linear-gradient(to bottom, rgba(53, 35, 26, 0.1) 0, #fffefb 8px, #fffefb 100%);
-  z-index: -1;
-}
-#inventory .weapon .extension u {
-  color: rgba(53, 35, 26, 0.2);
-  text-decoration: none;
-}
-*/
 
 /* button styles in actions.css ! */
 #craft div.button-craft {

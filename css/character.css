@@ -4,13 +4,15 @@
   top: 830px;
   height: 380px;
   z-index: 50;
-  transform: translateX(800px);
+  transform: translateX(50vw);
   transition: transform 0.6s ease-out;
 }
 #character.active {
   transform: translateX(0);
 }
-
+#character.character-at-top {
+  top: 105px;
+}
 #character.touchcontrols {
   right: 200px;
 }
@@ -45,10 +47,15 @@
   bottom: 0;
 }
 #character .slot-2.active {
-  right: 380px;
   z-index: 3;
   display: initial;
   bottom: 0;
+}
+#character .slot-2:not(.moveToSlot1).active {
+  right: 380px;
+}
+#character .card .action-button {
+  font-size: 42px;
 }
 #character .card .distance u {
   color: rgba(53, 35, 26, 0.2);
