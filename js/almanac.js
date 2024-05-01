@@ -38,6 +38,18 @@ const almanacContent = {
     'motive': './img/almanac/fireplace.png',
     'markup': '<p>Raw food roasted with a <span class="keyword" data-item="sharp-stick">sharp stick</span> over fire provides substantially more <span class="keyword" data-content="food">nutritions</span> and <span class="keyword" data-content="energy">energy</span>.</p><p>A <span class="keyword" data-content="fireplace">fireplace</span> can be crafted from <span class="keyword" data-item="stone">stone</span>, <span class="keyword" data-item="stump">stump</span> and <span class="keyword" data-item="straw-wheet">straw wheet</span>.</p><p>It remains in place where it is crafted.</p>'
   },
+  'axe': {
+    'motive': './img/weapons/axe.png',
+    'markup': '<p>A rare weapon and stronger version of the <span class="keyword" data-item="improvised-axe">Improvised Axe</span></p><p>This weapon can\'t be crafted but can only be found in basements.</p>'
+  },
+  'baseball-bat': {
+    'motive': './img/weapons/baseball-bat.png',
+    'markup': '<p>A rare weapon and stronger version of the <span class="keyword" data-item="wooden-club">Wooden Club</span></p><p>This weapon can\'t be crafted but can only be found in basements and on human corpses.</p>'
+  },
+  'wrench': {
+    'motive': './img/weapons/wrench.png',
+    'markup': '<p>A rare weapon that can\'t be crafted but can only be found in tool sheds and garages.</p>'
+  },
   'everyman': {
     'motive': './img/characters/hero.png',
     'markup': document.querySelector('div[data-character="everyman"]').innerHTML
