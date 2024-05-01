@@ -232,7 +232,7 @@ export default {
   simulateEquipping: function(cardId) {
     const object = Props.getObject(cardId);
     if (object.group === 'weapon' && object.name) {
-      Props.addToInventory(object.name, 1, 3);
+      Props.addToInventory(object.name, 1, object.durability);
     }
     window.setTimeout(function(cardId) {
       Items.inventoryChangeFeedback();

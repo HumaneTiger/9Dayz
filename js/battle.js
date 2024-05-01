@@ -251,10 +251,15 @@ export default {
       for (var i = 0; i < maxItems; i += 1) {
         const item = Items.getItemByName(battleDeck[i].name);
         const modifyDamageMarkup = battleDeck[i].modifyDamage > 0 ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>' : '';
+        const durabilityMarkup = item.durability ?  '<span class="durability">' +
+                                                    '◈◈◈'.substring(0, item.durability) + '<u>' +  '◈◈◈'.substring(0, 3 - item.durability) + '</u>' +
+                                                    '</span>' : '';
+
         battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +
                                           (item.type !== 'extra' ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
                                           '<div class="attack">' + (item.damage + item.modifyDamage) + modifyDamageMarkup + '</div><div class="shield">' + item.protection + '</div>' +
-                                          '</div></div>';        
+                                          durabilityMarkup +
+                                          '</div></div>';
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (var i = 0; i < battlePlayContainer.children.length; i += 1) {

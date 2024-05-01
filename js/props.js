@@ -23,7 +23,7 @@ var game = {
   tutorial: false,
   battle: false,
   gamePaused: true,
-  local: location.href.startsWith('http://127.0.0.1'),
+  local: false, //location.href.startsWith('http://127.0.0.1'),
   speed: 4000, // 4000
   firstUserInteraction: false,
   firstFight: false,
@@ -205,9 +205,9 @@ var craftingRecipes = {
 };
 
 var weaponProps = {
-  'baseball-bat': {attack: 10, defense: 2, durability: 3, preview: true},
-  'wrench': {attack: 14, defense: 2, durability: 3, preview: true},
-  'axe': {attack: 12, defense: 6, durability: 3, preview: true},
+  'baseball-bat': {attack: 10, defense: 3, durability: 3},
+  'wrench': {attack: 14, defense: 4, durability: 3},
+  'axe': {attack: 12, defense: 6, durability: 3},
   'improvised-axe': {attack: 8, defense: 4, durability: 3},
   'wooden-club': {attack: 6, defense: 3, durability: 3}
 };
@@ -1100,7 +1100,7 @@ export default {
     });  
   },
 
-  setupWeapon: function(x, y, weaponName) {
+  setupWeapon: function(x, y, weaponName, forceStats) {
     let props = weaponProps[weaponName];
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(currentObjectsIdCounter, {
@@ -1120,9 +1120,9 @@ export default {
       inreach: false,
       discovered: false,
       distance: null,
-      attack: props.attack,
-      defense: props.defense,
-      durability: props.durability,
+      attack: forceStats?.attack || props.attack,
+      defense: forceStats?.defense || props.defense,
+      durability: forceStats?.durability || props.durability,
       dead: undefined,
       preview: props.preview,
       disabled: false,
