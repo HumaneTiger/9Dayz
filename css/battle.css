@@ -1,0 +1,329 @@
+#battle-cards {
+  position: absolute;
+  bottom: 200px;
+  height: 220px;
+  width: 100%;
+  z-index: 51;
+}
+#battle-cards .draw {
+  position: absolute;
+  top: 0;
+  width: 160px;
+  height: 219px;
+  left: 200px;
+  z-index: 5;
+}
+.scratch {
+  position: absolute;
+  width: 360px;
+  top: 360px;
+  z-index: 0;
+  opacity: 0;
+}
+.scratch img {
+  width: 100%;
+  height: auto;
+}
+.anim-scratch {
+  z-index: 50;
+  animation: scratch 0.2s linear;
+}
+@keyframes scratch {
+  0% {
+    transform: translate(-200px, 0px) scale(0.6);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(0px, -150px) scale(1.6);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(200px, -300px) scale(0.6);
+    opacity: 0;
+  }
+}
+.scratch img {
+  width: 100%;
+  height: auto;
+}
+.anim-punch {
+  animation: punch 0.3s ease-in-out;
+}
+@keyframes punch {
+  0% {
+    transform: translate(0, 0) scale(0.9);
+  }
+  70% {
+    transform: translate(0, 100px) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) scale(0.9);
+  }
+}
+#battle-message {
+  position: absolute;
+  font-size: 60px;
+  width: 100%;
+  text-align: center;
+  text-shadow: rgba(53, 35, 26, 0.5) 0 4px 4px;
+  color: rgba(255, 254, 251, 1);
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  opacity: 0;
+  bottom: -20px;
+}
+#battle-message.active {
+  opacity: 1;
+  transform: translateY(-20px);
+  z-index: 4;
+}
+#battle-stats {
+  position: absolute;
+  font-size: 60px;
+  width: 100%;
+  text-align: center;
+  bottom: 350px;
+}
+#battle-stats span {
+  opacity: 0;
+  position: absolute;
+  bottom: -10px;
+  left: 48%;
+}
+#battle-stats span.active {
+  animation: stats 0.4s linear;
+}
+@keyframes stats {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-40px) scale(1.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-50px) scale(2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(3);
+  }
+}
+#battle-stats span.red {
+  color: rgba(220, 100, 82, 1);
+}
+#battle-stats span.blue {
+  color: rgba(145, 211, 255, 1);
+}
+#battle-stats span.image {
+  margin-left: 20px;
+}
+
+#draw-amount {
+  position: absolute;
+  top: 145px;
+  width: 160px;
+  height: 219px;
+  left: 200px;
+  text-align: center;
+  z-index: 100;
+  font-size: 24px;
+  padding-right: 12px;
+  color: rgb(77, 102, 138, 0.6);
+  text-shadow: 0 0 4px white;
+}
+#battle-cards .end-turn {
+  position: absolute;
+  top: 90px;
+  right: 380px;
+  z-index: 1;
+  cursor: pointer;
+}
+#battle-cards .item-info {
+  color: rgba(255, 254, 251, 1);
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+#battle-cards .item-info,
+#battle-cards .material-symbols-outlined {
+  font-size: 20px;
+}
+#battle-cards .discard {
+  position: absolute;
+  top: 0;
+  width: 160px;
+  right: 200px;
+}
+#battle-cards .battle-card-back {
+  position: absolute;
+  width: 160px;
+  height: 219px;
+  background-image: url(../img/card/card-back.png);
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease-out;
+}
+
+#battle-cards .play {
+  position: absolute;
+  width: 840px;
+  height: 100%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+#battle-cards .battle-card {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  width: 160px;
+  height: 219px;
+  background-image: url(../img/card/card-bg.png);
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border-radius: 16px;
+  transition: box-shadow 0.2s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out, margin-left 0.2s ease-out;
+}
+#battle-cards .battle-card.resolve {
+  transform: scale(2);
+  opacity: 0;
+}
+#battle-cards .battle-card .durability {
+  display: inline-block;
+  pointer-events: none;
+  background-color: #f0e4da ;
+  color: rgba(91, 155, 213, 1);
+  padding: 6px 8px 2px;
+  line-height: 1em;
+  border-bottom-right-radius: 8px 8px;
+  border-bottom-left-radius: 8px 8px;
+  font-size: 16px;
+  font-weight: 300;
+  position: absolute;
+  bottom: -23px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
+  background: linear-gradient(to bottom, #AD9D7E 0, #fffefb 8px, #fffefb 100%);
+  z-index: -1;
+}
+#battle-cards .battle-card .durability u {
+  color: rgba(53, 35, 26, 0.2);
+  text-decoration: none;
+}
+
+#dismantle-card {
+  width: 160px;
+  height: 219px;
+  background-image: url('../img/card/dismantle.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  padding-top: 27px;
+  border-radius: 16px;
+  position: absolute;
+  right: 220px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24px;
+}
+#battle-cards .battle-card * {
+    pointer-events: none;
+}
+#battle-cards .battle-card:not(.wont--use):hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 5px 4px rgba(145, 211, 242, 1), 0 0 12px 8px rgba(145, 211, 242, 1);
+}
+#battle-cards .battle-card.inactive {
+  opacity: 0;
+  margin-left: -200px;
+}
+#battle-cards .battle-card.grabbed {
+  transform: translateY(-5px);
+}
+
+#battle-cards .battle-card .inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url(../img/card/border-neutral.png);
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+#battle-cards .battle-card img.item-pic {
+  width: 76%;
+  height: auto;
+  margin: 30% 12%;
+}
+
+#battle-cards .battle-card .attack,
+#battle-cards .battle-card .shield {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(53, 35, 26, 0.5);
+  text-align: center;
+  font-size: 32px;
+  line-height: 1.4em;
+}
+#battle-cards .battle-card .attack {
+  left: 15px;
+  top: 15px;
+  color: white;
+  background-color: rgba(237, 125, 49, 0.66);
+  border: 1px rgba(237, 125, 49, 0.25) solid;
+}
+#battle-cards .battle-card .attack .modify {
+  font-size: 20px;
+  position: absolute;
+  color: rgba(237, 125, 49, 0.66);
+  left: 40px;
+}
+#battle-cards .battle-card .shield {
+  right: 15px;
+  bottom: 15px;
+  color: white;
+  background-color: rgba(145, 211, 242, 0.9);
+  border: 1px rgba(75, 153, 190, 0.25) solid;
+}
+#action-points {
+  width: 120px;
+  height: 120px;
+  background-image: url('../img/ui/action-points.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  padding-top: 27px;
+  position: absolute;
+  left: 465px;
+  bottom: 56px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 48px;
+}
+#action-points.low-energy {
+  bottom: 76px;
+}
+
+#action-points-warning {
+  width: 214px;
+  position: absolute;
+  left: calc(465px - 44px);
+  bottom: 18px;
+  text-align: center;
+  color: rgb(255, 180, 190);
+  font-size: 22px;
+  line-height: 1em;
+}
+#action-points-warning .material-symbols-outlined {
+  line-height: 1em;
+  vertical-align: bottom;
+  margin-left: -0.2em;
+}
