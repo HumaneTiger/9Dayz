@@ -17,6 +17,7 @@
       <link rel="stylesheet" href="css/cards.css">
       <link rel="stylesheet" href="css/actions.css">
       <link rel="stylesheet" href="css/items.css">
+      <link rel="stylesheet" href="css/battle.css">
       <link rel="stylesheet" href="css/cooking.css">
       <link rel="stylesheet" href="css/crafting.css">
       <link rel="stylesheet" href="css/character.css">
@@ -461,7 +462,8 @@
               <div class="attack">8</div>
               <div class="shield">4</div>
               <img class="motive" src="./img/weapons/improvised-axe.png">
-              <span class="distance">◈◈◈</span>
+              <ul class="actions"><li class="unequip"><div data-action="unequip" class="action-button"><span class="text">unequip</span></div></li></ul>
+              <span class="distance"></span>
             </div>
           </div>
           <div class="card weapon slot-2">
@@ -469,23 +471,14 @@
               <div class="attack">8</div>
               <div class="shield">4</div>
               <img class="motive" src="./img/weapons/wooden-club.png">
-              <span class="distance">◈◈◈</span>
+              <ul class="actions"><li class="unequip"><div data-action="unequip" class="action-button"><span class="text">unequip</span></div></li></ul>
+              <span class="distance"></span>
             </div>
           </div>
         </div>
         <div id="inventory">
           <div class="inner"></div>
           <p class="item-info"></p>
-          <!--
-          <div class="weapon wooden-club active is--hidden">
-            <img src="./img/card/wooden-club.png" width="100%" height="auto">
-            <span class="extension">◈◈◈</span>
-          </div>
-          <div class="weapon improvised-axe active is--hidden">
-            <img src="./img/card/improvised-axe.png" width="100%" height="auto">
-            <span class="extension">◈◈◈</span>
-          </div>
-          -->
         </div>
         <div id="craft">
           <div class="inner">

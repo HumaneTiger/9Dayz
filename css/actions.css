@@ -1,18 +1,18 @@
-#cards .actions {
+ul.actions {
   position: absolute;
   top: 52%;
   width: 100%;
   transform: translateY(-50%);
   z-index: 4;
 }
-body.is--paused #cards .actions {
+body.is--paused ul.actions {
   display: none;
 }
-body:not(.is--paused) #cards .card:hover ul.actions li {
+body:not(.is--paused) .card:hover ul.actions li {
   opacity: 1;
   transform: translateY(0);
 }
-#cards .actions li {
+ul.actions li {
   text-align: center;
   margin: 16px 0;
   opacity: 0;
@@ -26,14 +26,14 @@ body:not(.is--paused) #cards .card:hover ul.actions li {
   opacity: 0.75;
   background-color: rgba(255, 254, 251, 0.75);
 }
-#cards .actions li.critical .action-button,
-#cards .actions li.critical span.additional {
+ul.actions li.critical .action-button,
+ul.actions li.critical span.additional {
   color: #dc6452;  
 }
-#cards .actions li.critical .material-symbols-outlined.alert {
+ul.actions li.critical .material-symbols-outlined.alert {
   display: inline-block;
 }
-#cards .actions li .material-symbols-outlined.energy {
+ul.actions li .material-symbols-outlined.energy {
   display: inline-block;
   line-height: 0.9em;
   vertical-align: top;
@@ -76,7 +76,7 @@ ul.actions .action-button span.additional-locked {
 #craft .button-craft,
 #almanac .button,
 #cards .cooking .action-button,
-#cards .actions .action-button {
+ul.actions .action-button {
   cursor: pointer;
   display: inline-block;
   background-color: rgba(255, 254, 251, 1);
@@ -104,12 +104,12 @@ ul.actions .action-button span.additional-locked {
 #craft .button-craft:hover,
 #almanac .button:hover,
 #cards .cooking .action-button:hover,
-#cards .actions .action-button:hover {
+ul.actions .action-button:hover {
   transform: scale(1);
   box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
 }
-#cards .actions .action-button:hover span.additional-locked,
-#cards .actions .action-button:hover span.additional {
+ul.actions .action-button:hover span.additional-locked,
+ul.actions .action-button:hover span.additional {
   opacity: 1;
   margin-top: 3px;
 }
@@ -118,11 +118,11 @@ ul.actions .action-button span.additional-locked {
   background-color: rgba(255, 254, 251, 0.75);
 }
 
-#cards .actions .action-button span.text {
+ul.actions .action-button span.text {
   display: block;
   white-space: nowrap;
 }
-#cards .actions .action-button span.text .material-symbols-outlined {
+ul.actions .action-button span.text .material-symbols-outlined {
   font-size: 26px;
   margin-top: -3px;
   margin-right: -4px;
