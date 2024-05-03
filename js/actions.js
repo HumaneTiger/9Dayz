@@ -252,7 +252,11 @@ export default {
 
     this.fastForward(function(cardId, energy) {
       this.goBackFromAction(cardId);
-      Props.addToInventory('improvised-axe', 0, -1);
+      if (Items.inventoryContains('improvised-axe')) {
+        Props.addToInventory('improvised-axe', 0, -1);
+      } else if (Items.inventoryContains('axe')) {
+        Props.addToInventory('axe', 0, -1);
+      }
       Props.addToInventory('stump', 1); 
       Props.addToInventory('branch', 2 + Math.round(Math.random() - 0.25));
       Items.inventoryChangeFeedback();
@@ -335,7 +339,11 @@ export default {
     this.fastForward(function(cardId, energy) {
       const object = Props.getObject(cardId);
       object.locked = false;
-      Props.addToInventory('improvised-axe', 0, -1);
+      if (Items.inventoryContains('improvised-axe')) {
+        Props.addToInventory('improvised-axe', 0, -1);
+      } else if (Items.inventoryContains('axe')) {
+        Props.addToInventory('axe', 0, -1);
+      }
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);
       this.goBackFromAction(cardId);
