@@ -2,6 +2,7 @@ import { default as Audio } from './audio.js'
 import { default as Player } from './player.js'
 import { default as Props } from './props.js'
 import { default as Items } from './items.js'
+import { default as Crafting } from './crafting.js'
 import { default as Tutorial } from './tutorial.js'
 import { default as Ui } from './ui.js'
 
@@ -94,6 +95,7 @@ export default {
 
     Items.generateInventorySlots();
     Items.fillInventorySlots();
+    Crafting.checkCraftingPrerequisits();
 
     // generate all buildings and zeds
     Props.setupAllBuildings();

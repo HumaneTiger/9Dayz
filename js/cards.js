@@ -77,11 +77,9 @@ export default {
         const itemProps = Props.getItem(itemName);
 
         if (itemAmount && leftMouseButton) {
-          if (itemProps[0] === 'extra' && (Items.inventoryContains(itemName) || itemName === 'axe' || itemName === 'baseball-bat' || itemName === 'wrench')) {
-            // spawn weapon as card to avoid conflicts with existing weapon in inventory
+          if (itemProps[0] === 'extra') {
+            // spawn weapon as card
             Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
-          } else if (itemProps[0] === 'extra') {
-            Props.addToInventory(itemName, itemAmount, 3);
           } else {
             Props.addToInventory(itemName, itemAmount);
           }
@@ -318,7 +316,7 @@ export default {
   },
 
   renderCardDeck: function() {
-   
+
     this.calculateCardDeckProperties();
     this.addSpecialEventCards();
     cardDeck.sort(this.compare);
@@ -352,6 +350,7 @@ export default {
   },
 
   updateCardDeck: function() {
+    console.log('update card deck');
     CardsMarkup.updateCardDeckMarkup(cardDeck);
   },
 

@@ -6,6 +6,7 @@ import Cards from './cards.js'
 import CardsMarkup from './cards-markup.js'
 import Actions from './actions.js'
 import Items from './items.js'
+import Crafting from './crafting.js'
 import Character from './character.js'
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
@@ -95,7 +96,6 @@ export default {
         document.getElementById('properties').classList.remove('active');
         document.getElementById('actions').classList.remove('active');
         document.querySelector('#cards .cards-blocker').classList.add('active');
-        //document.getElementById('inventory').querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });  
         this.spawnBattleDeck(surprised);
       }, 600);
     } else {
@@ -212,6 +212,7 @@ export default {
           }
         }
         Props.setGameProp('battle', false);
+        Crafting.checkCraftingPrerequisits();
         CardsMarkup.hideActionFeedback(zedCardRef);
         Player.updatePlayer();
         Actions.goBackFromAction(zedId);

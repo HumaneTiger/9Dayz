@@ -98,7 +98,7 @@ export default {
       const item = hoverSlot.dataset.item;
       const itemProps = Props.calcItemProps(item);
 
-      if (itemProps.food > 0) {        
+      if (itemProps.food > 0) {
         Player.changeProps('food', itemProps.food);
       }
       if (itemProps.drink > 0) {        
@@ -110,10 +110,10 @@ export default {
         Cards.calculateCardDeckProperties();
         Cards.updateCardDeck();
       }
-      /* super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
-      hoverSlot.style.opacity='0';hoverSlot.style.top='-85px';
-      setTimeout(()=>{hoverSlot.style.removeProperty('opacity');hoverSlot.style.removeProperty('top');},0);
-      /* /super ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
+      /* not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
+      hoverSlot.style.pointerEvents = 'none';
+      setTimeout(()=>{hoverSlot.style.removeProperty('pointer-events')},0);
+      /* /not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
       if (items[item][0] === 'drink') {
         Audio.sfx('drink', 0, 0.7);
       } else if (items[item][0] === 'eat') {
@@ -270,11 +270,7 @@ export default {
 
   fillInventorySlots: function() {
     for (var item in inventory.items) {
-      if (inventory.items[item].name === 'improvised-axe' || inventory.items[item].name === 'wooden-club') {
-        // maybe remove
-      } else {
-        this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, Crafting.isItemPartOfCrafting(item));
-      }
+      this.fillItemSlot(inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name), inventory.items[item].amount, Crafting.isItemPartOfCrafting(item));
     }
     Character.updateWeaponState();
     Cooking.checkAllCookingModeCards();

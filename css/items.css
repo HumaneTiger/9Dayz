@@ -85,6 +85,9 @@
   width: 85%;
   height: auto;
 }
+.card ul.items li span.img img.weapon {
+  margin-top: -6px;
+}
 
 .searching {
   position: absolute;

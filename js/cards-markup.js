@@ -38,8 +38,7 @@ export default {
     let cardMarkupWeapon =   '<div class="attack">' + object.attack + '</div><div class="shield">' + object.defense + '</div>' +
                              '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/weapons/' + object.name + '.png">' +
-                             '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>' +
-                             '<div class="dead"><img src="./img/weapons/preview.png"></div>';
+                             '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>';
 
     let cardMarkupAnimal =   '<p class="activity glow is--hidden"></p>' +
                              '<img class="motive" src="./img/animals/' + object.name + '.png">' +
@@ -146,7 +145,7 @@ export default {
     return '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>' +
            '<li class="item is--hidden" data-item="'+name+'" data-amount="'+amount+'">' +
            '<span class="img">' +
-           (props?.type !== 'extra' ? '<img src="./img/items/'+name+'.PNG">' : '<img src="./img/weapons/'+name+'.png">') +
+           (props?.type !== 'extra' ? '<img src="./img/items/'+name+'.PNG">' : '<img class="weapon" src="./img/weapons/'+name+'.png">') +
            '</span><span class="amount">' + (amount > 1 ? amount : '') + '</span><span class="grab">Grab</span></li>';
   },
 

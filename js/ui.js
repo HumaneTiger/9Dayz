@@ -306,11 +306,7 @@ export default {
     } else {
       inventoryContainer.classList.add('active');
       craftContainer.classList.remove('active');
-      if (Props.getGameProp('firstInventoryOpen') === false) {
-        Cards.renderCardDeck();
-      }  
     }
-    Character.updateWeaponState();
   },
 
   toggleCrafting: function(forceOpen) {
@@ -321,7 +317,6 @@ export default {
       craftContainer.classList.add('active');
       inventoryContainer.classList.remove('active');
     }
-    Character.updateWeaponState();
   },
 
   quitConfirmation: function() {
@@ -348,7 +343,6 @@ export default {
   hideUI: function() {
     craftContainer.classList.remove('active');
     inventoryContainer.classList.remove('active');
-    inventoryContainer.querySelectorAll('.weapon').forEach(function(el) { el.classList.remove('active'); });
     Almanac.close(true);
     document.getElementById('properties').classList.remove('active');
     document.getElementById('character').classList.remove('active');
@@ -363,8 +357,6 @@ export default {
     document.getElementById('character').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.getElementById('cards').classList.add('active');
-    Character.updateWeaponState();
-    inventoryContainer.querySelectorAll('.weapon').forEach(function(el) { el.classList.add('active'); });
   },
 
   showMapBorder: function() {
