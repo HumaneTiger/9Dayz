@@ -20,7 +20,7 @@ let tickCurrent = 0;
 window.timeIsUnity = {
     gameTick: 0,
     gameHours: 24 + startHour,
-    gameDays: 1,
+    gameDays: 1, // 1
     todayHours: startHour,
     todayTime: '0' + startHour + ':00'
 }

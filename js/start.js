@@ -152,6 +152,7 @@ export default {
       window.timeIsUnity.gameDays = saveCheckpoint.gameTime.gameDays;
       window.timeIsUnity.todayHours = saveCheckpoint.gameTime.todayHours;
       window.timeIsUnity.todayTime = saveCheckpoint.gameTime.todayTime;
+      Props.setGameProp('startDay', saveCheckpoint.gameTime.gameDays)
   
       Ui.updateDayNightLayers(saveCheckpoint.gameTime.todayHours);
 
@@ -278,23 +279,19 @@ export default {
   },
 
   startReal: function() {
-    startscreenContainer.style.opacity = 0;
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
-    Tutorial.setupAllEvents();
-    Player.findAndHandleObjects();
-    Props.pauseGame(false);
-    Audio.playAmbientLoop();
-    Ui.showMapBorder();
-    window.setTimeout(function() {
-      startscreenContainer.classList.add('is--hidden');
-    }, 1500);
+    this.startGame();
   },
 
   startTutorial: function() {
-    startscreenContainer.style.opacity = 0;
     Props.setGameProp('tutorial', true);
     this.initProps();
+    this.startGame();
+  },
+
+  startGame: function() {
+    startscreenContainer.style.opacity = 0;
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.pauseGame(false);
@@ -302,7 +299,8 @@ export default {
     Ui.showMapBorder();
     window.setTimeout(function() {
       startscreenContainer.classList.add('is--hidden');
-    }, 1500);          
+      Ui.showNewDay(0, true);
+    }, 1500);
   },
 
   handleKeypress: function(ev) {

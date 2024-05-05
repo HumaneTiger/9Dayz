@@ -570,3 +570,56 @@ ul#actions li.fullscreen span {
 #touchcontrols .down {
   bottom: 0;
 }
+#day-teaser {
+  display: inline-block;
+  height: 84px;
+  background-image: url(../img/ui/day-teaser-left.png);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 1s ease-out;
+  z-index: 0;
+  opacity: 0;
+}
+#day-teaser .inner {
+  height: 84px;
+  margin-left: 79px;
+  overflow: hidden;
+  width: 78px; /* 306 */
+  background-image: url(../img/ui/day-teaser-right.png);
+  background-position: right 0;
+  background-repeat: no-repeat;
+  transition: width 0.6s ease-out;
+  transition-delay: 0.3s;
+}
+#day-teaser .content {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  padding: 8px;
+  color: white;
+  font-family: Chiller;
+  font-size: 62px;
+  font-weight: 300;
+  text-align: center;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+  transition-delay: 0.5s;
+}
+#day-teaser .content::first-letter,
+#day-teaser .content span {
+  color: #ff5b06;
+  font-size: 80px;
+}
+#day-teaser.open .content,
+#day-teaser.open {
+  opacity: 1;
+}
+#day-teaser.open .inner {
+  width: 250px;
+}

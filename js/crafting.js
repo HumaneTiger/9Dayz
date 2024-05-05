@@ -54,7 +54,6 @@ export default {
             }
           } else {
             for (const orItem in itemRecipe.items[recipeItem]) {
-              console.log(itemRecipe.items[recipeItem][orItem]);
               if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
                 // consume first one that is found
                 if (!this.preserveCraftingItem(itemRecipe.items[recipeItem][0])) {

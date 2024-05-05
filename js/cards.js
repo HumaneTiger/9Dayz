@@ -350,7 +350,6 @@ export default {
   },
 
   updateCardDeck: function() {
-    console.log('update card deck');
     CardsMarkup.updateCardDeckMarkup(cardDeck);
   },
 

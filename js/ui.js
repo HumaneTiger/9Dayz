@@ -396,6 +396,7 @@ export default {
 
     this.updateDayNightLayers(hour);
     this.switchDayNight(hour);
+    this.showNewDay(hour);
 
   },
 
@@ -415,8 +416,26 @@ export default {
   },
 
   dailyTasks: function(days) {
-    if (days >= 9) {
+    if (days > 9) {
       Player.playerDead();
+    }
+  },
+
+  showNewDay: function(hour, force) {
+    if (force || (timeIsUnity.gameDays > Props.getGameProp('startDay') && hour === 7)) {
+      const dayTeaser = document.getElementById('day-teaser');
+      if (dayTeaser) {
+        dayTeaser.querySelector('.content').innerHTML = 'Day <span>' + timeIsUnity.gameDays + '</span>';
+        dayTeaser.classList.add('open');
+        dayTeaser.style.zIndex = '60';
+        window.setTimeout(function() {
+          dayTeaser.querySelector('.content').style.transitionDelay = '0';
+          dayTeaser.classList.remove('open');
+          window.setTimeout(function() {
+            dayTeaser.removeAttribute('style');
+          }, 1000);
+        }, 2500);
+      }
     }
   },
 

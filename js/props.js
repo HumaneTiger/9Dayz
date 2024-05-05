@@ -17,6 +17,7 @@ var game = {
   mode: 'real',
   character: 'everyman',
   startMode: 1,
+  startDay: 1,
   timeMode: 'day',
   viewMode: '',
   scaleFactor: 0,
@@ -437,9 +438,15 @@ export default {
     images[8] = new Image();
     images[8].src = './img/card/card-tutorial.png';
     images[9] = new Image();
-    images[10].src = './img/card/chip.png';
+    images[9].src = './img/card/chip.png';
     images[10] = new Image();
     images[10].src = './img/card/chip-border-neutral.png';
+    images[11] = new Image();
+    images[11].src = './img/characters/hero.png';
+    images[12] = new Image();
+    images[12].src = './img/ui/day-teaser-left.png';
+    images[13] = new Image();
+    images[13].src = './img/ui/day-teaser-right.png';
   },
 
   preloadZombies: function() {
@@ -452,6 +459,14 @@ export default {
     images[3].src = './img/zombies/zombie-3.png';
     images[4] = new Image();
     images[4].src = './img/zombies/scratch.png';
+    images[5] = new Image();
+    images[5].src = './img/zombies/rat.png';
+    images[6] = new Image();
+    images[6].src = './img/zombies/bee.png';
+    images[7] = new Image();
+    images[7].src = './img/zombies/undead.png';
+    images[8] = new Image();
+    images[8].src = './img/zombies/dead.png';
   },
 
   modifyObjectProperties: function() {
