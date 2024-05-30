@@ -61,3 +61,51 @@
   color: rgba(53, 35, 26, 0.2);
   text-decoration: none;
 }
+
+#character .card div.upgrade {
+  position: absolute;
+  cursor: pointer;
+  width: 90px;
+  height: 90px;
+  border: 2px rgba(53, 35, 26, 0.5) solid;
+  border-radius: 4px;
+  box-shadow: 0 2px 3px rgba(53, 35, 26, 0.4);
+  border-radius: 18px;
+  background-color: transparent;
+  background-position: center center;
+  background-image: url(../img/card/chip.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease-out, transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+#character .card:hover div.upgrade {
+  opacity: 1;
+}
+#character .card:hover div.upgrade:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
+}
+
+#character .card div.attack-upgrade {
+  top: 18px;
+  left: 20px;
+}
+#character .card div.upgrade .attack {
+  top: 9px;
+  left: 8px;
+}
+#character .card div.defense-upgrade {
+  bottom: 19px;
+  right: 20px;
+}
+#character .card div.upgrade .shield {
+  top: 9px;
+  left: 8px;
+}
+#character .card div.durability-upgrade {
+  bottom: -38px;
+  left: 120px;
+  width: 125px;
+}

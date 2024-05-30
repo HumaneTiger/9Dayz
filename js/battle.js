@@ -134,7 +134,7 @@ export default {
       for (var i = 0; i < inventory.items[item].amount; i += 1) {
         if (
           Props.getGameProp('character') === 'craftsmaniac' &&
-          (item === 'fail' || item === 'hacksaw' || item === 'knife' || item === 'mallet' || item === 'pincers' || item === 'spanner')
+          (item === 'fail' || item === 'hacksaw' || item === 'knife' || item === 'mallet' || item === 'pincers' || item === 'spanner' || item === 'nails')
         ) {
           // craftsmaniac won't use their tools in battles
           sparedTools +=1;

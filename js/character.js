@@ -106,6 +106,27 @@ export default {
             freeSlot.querySelector('.shield').textContent = inventory.items[item].protection;
             let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' +  '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
             freeSlot.querySelector('.distance').innerHTML = durability;
+            const weaponPropsUpgrades = Props.getWeaponPropsUpgrades();
+            if (weaponPropsUpgrades[item] !== undefined) {
+              console.log(weaponPropsUpgrades[item]);
+              if (weaponPropsUpgrades[item].attack) {
+                freeSlot.querySelector('.attack-upgrade .attack').textContent = `+${weaponPropsUpgrades[item].attack.amount}`;
+                freeSlot.querySelector('.attack-upgrade').classList.remove('is--hidden');
+              } else {
+                freeSlot.querySelector('.attack-upgrade').classList.add('is--hidden');
+              }
+              if (weaponPropsUpgrades[item].defense) {
+                freeSlot.querySelector('.defense-upgrade .shield').textContent = `+${weaponPropsUpgrades[item].defense.amount}`;
+                freeSlot.querySelector('.defense-upgrade').classList.remove('is--hidden');
+              } else {
+                freeSlot.querySelector('.defense-upgrade').classList.add('is--hidden');
+              }
+              if (weaponPropsUpgrades[item].durability) {
+                freeSlot.querySelector('.durability-upgrade').classList.remove('is--hidden');
+              } else {
+                freeSlot.querySelector('.durability-upgrade').classList.add('is--hidden');
+              }
+            }
           }
         }
       }

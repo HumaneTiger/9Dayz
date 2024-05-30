@@ -8,6 +8,7 @@ const statsParagraph = almanacContainer.querySelector('p.stats');
 const cookingParagraph = almanacContainer.querySelector('p.cooking');
 const craftingParagraph = almanacContainer.querySelector('p.crafting');
 const battlesParagraph = almanacContainer.querySelector('p.battles');
+const weaponUpgradeParagraph = almanacContainer.querySelector('p.weapon-upgrades');
 const craftingRecipes = Props.getCraftingRecipes();
 const cookingRecipes = Props.getCookingRecipes();
 
@@ -137,6 +138,7 @@ export default {
       cookingParagraph.classList.add('is--hidden');
       craftingParagraph.classList.add('is--hidden');
       battlesParagraph.classList.add('is--hidden');
+      weaponUpgradeParagraph.classList.add('is--hidden');
 
       if (item === 'fireplace' && type === 'item') {
         type = 'content';
@@ -210,6 +212,21 @@ export default {
               craftingParagraph.innerHTML = craftingText;
               craftingParagraph.classList.remove('is--hidden');
             }
+          }
+          // check if weapon upgrade
+          const weaponPropsUpgrades = Props.getWeaponPropsUpgrades();
+          let weaponUpgradeText;
+          for (const weaponUpgrade in weaponPropsUpgrades) {
+            if (weaponPropsUpgrades[weaponUpgrade].attack?.item === item ||
+                weaponPropsUpgrades[weaponUpgrade].defense?.item === item ||
+                weaponPropsUpgrades[weaponUpgrade].durability?.item === item) {
+                  if (!weaponUpgradeText) weaponUpgradeText = `Can be used to improve`;
+                  weaponUpgradeText += ` <span class="keyword" data-item="${weaponUpgrade}">${Props.extractItemName(weaponUpgrade)}</span>,`;
+                }
+          }
+          if (weaponUpgradeText) {
+            weaponUpgradeParagraph.innerHTML = weaponUpgradeText.replace(/.$/,".");
+            weaponUpgradeParagraph.classList.remove('is--hidden');
           }
         } else {
           // update motive img
