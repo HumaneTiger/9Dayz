@@ -22,6 +22,7 @@
   top: initial;
   transform: scale(0.5);
 }
+
 #character .slot-hero {
   right: 0;
   z-index: 5;
@@ -29,7 +30,7 @@
 #character .slot-1,
 #character .slot-2 {
   bottom: -100vh;
-  transition: right 0.35s ease-out;
+  transition: right 0.35s ease-out, transform 0.1s ease-out;
 }
 
 #character .slot-1 {
@@ -51,6 +52,11 @@
   display: initial;
   bottom: 0;
 }
+#character .slot-1.active:hover,
+#character .slot-2.active:hover {
+  transform: scale(0.6);
+  z-index: 5;
+}
 #character .slot-2:not(.moveToSlot1).active {
   right: 380px;
 }
@@ -61,14 +67,30 @@
   color: rgba(53, 35, 26, 0.2);
   text-decoration: none;
 }
-
 #character .card div.upgrade {
   position: absolute;
   cursor: pointer;
   width: 90px;
   height: 90px;
+  opacity: 0;
+  transition: opacity 0.5s ease-out, transform 0.1s ease-out;
+  z-index: 10;
+}
+
+#character .card:hover div.upgrade {
+  opacity: 1;
+}
+
+#character .card div.upgrade .attack::before,
+#character .card div.upgrade .shield::before,
+#character .card div.upgrade .durability::before {
+  content: '';
+  position: absolute;
+  left: -13px;
+  top: -12px;
+  width: 90px;
+  height: 90px;
   border: 2px rgba(53, 35, 26, 0.5) solid;
-  border-radius: 4px;
   box-shadow: 0 2px 3px rgba(53, 35, 26, 0.4);
   border-radius: 18px;
   background-color: transparent;
@@ -76,16 +98,22 @@
   background-image: url(../img/card/chip.png);
   background-size: cover;
   background-repeat: no-repeat;
-  opacity: 0;
-  transition: opacity 0.5s ease-out, transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  transition: box-shadow 0.1s ease-out;
+  z-index: -1;
 }
 
-#character .card:hover div.upgrade {
-  opacity: 1;
+#character .card div.upgrade .durability::before {
+  width: 128px;
+  height: 90px;
+  left: 0;
+  top: 0;
 }
-#character .card:hover div.upgrade:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);
+#character .card .upgrade .durability {
+  text-align: center;
+  font-size: 52px;
+  line-height: 2em;
+  font-weight: 300;
+  color: rgba(91, 155, 213, 1);
 }
 
 #character .card div.attack-upgrade {
@@ -93,19 +121,115 @@
   left: 20px;
 }
 #character .card div.upgrade .attack {
-  top: 9px;
-  left: 8px;
+  left: 10px;
+  top: 10px;
 }
 #character .card div.defense-upgrade {
-  bottom: 19px;
-  right: 20px;
+  bottom: 24px;
+  right: 24px;
 }
 #character .card div.upgrade .shield {
-  top: 9px;
-  left: 8px;
+  top: 15px;
+  left: 15px;
 }
 #character .card div.durability-upgrade {
   bottom: -38px;
   left: 120px;
   width: 125px;
+}
+
+/* sep. element */
+#character .card div[data-item] .upgrade-item {
+  width: 90px;
+  height: 50px;
+  display: inline-block;
+  pointer-events: none;
+  background-color: #f0e4da;
+  padding: 11px 24px 4px;
+  border-radius: 12px;
+  left: 51%;
+  transform: translate(-50%, 10px);
+  box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0, #fffefb 2px, #fffefb 100%);
+  opacity: 0;
+  transition: transform 0.1s ease-out, height 0.1s ease-in;
+  position: absolute;
+  z-index: -1;
+}
+#character .card .upgrade.nope .upgrade-item::before {
+  content: '✗';
+  color: #e6725d;
+  display: inline-block;
+  line-height: 1;
+  font-size: 70px;
+  text-shadow: 0 1px 1px #fcfaf6, 0 -1px 1px #fcfaf6, 1px 0 1px #fcfaf6, -1px 0 1px #fcfaf6, 0 0 6px #fcfaf6;
+  text-shadow: 0 1px 1px #fcfaf6, 0 -1px 1px #fcfaf6, 1px 0 1px #fcfaf6, -1px 0 1px #fcfaf6, 0 0 6px #fcfaf6;
+  position: absolute;
+  left: 16px;
+  z-index: 3;
+  opacity: 0.8;
+  top: 16px;
+}
+
+#character .card .upgrade.nope .attack,
+#character .card .upgrade.nope .shield {
+  background-color: rgba(194, 194, 198, 0.66);
+  border: initial;
+  box-shadow: initial;
+}
+#character .card .upgrade.nope .durability {
+  color: rgba(194, 194, 198, 0.66);
+}
+
+#character .card div[data-item] .upgrade-item::after {
+  content: '';
+  background-size: 95% auto;
+  background-position: center 5px;
+  background-repeat: no-repeat;
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+}
+#character .card div[data-item="nails"] .upgrade-item::after {
+  background-image: url(../img/items/nails.PNG);
+}
+#character .card div[data-item="tape"] .upgrade-item::after {
+  background-image: url(../img/items/tape.PNG);
+}
+#character .card div[data-item="brush"] .upgrade-item::after {
+  background-image: url(../img/items/brush.PNG);
+}
+#character .card div[data-item="fail"] .upgrade-item::after {
+  background-image: url(../img/items/fail.PNG);
+}
+#character .card div[data-item="pincers"] .upgrade-item::after {
+  background-image: url(../img/items/pincers.PNG);
+}
+#character .card div[data-item="knife"] .upgrade-item::after {
+  background-image: url(../img/items/knife.PNG);
+}
+#character .card div[data-item="hacksaw"] .upgrade-item::after {
+  background-image: url(../img/items/hacksaw.PNG);
+}
+
+#character .card div[data-item]:hover .upgrade-item {
+  box-shadow: 0 1px 4px rgba(53, 35, 26, 0.8);
+  transform: translate(-50%, -82%);
+  height: 115px;
+  opacity: 1;
+}
+
+#character .card div.upgrade:not(.nope):hover .attack::before,
+#character .card div.upgrade:not(.nope):hover .shield::before,
+#character .card div.upgrade:not(.nope):hover .durabilityr::before {
+  box-shadow: 0 2px 6px rgba(53, 35, 26, 0.8);
+}  
+
+#character .card div.upgrade:not(.nope):hover,
+#character .card div.upgrade:not(.nope):hover,
+#character .card div.upgrade:not(.nope):hover {
+  transform: translateY(-5px) scale(1.2);
 }

@@ -88,6 +88,8 @@ export default {
       document.getElementById('cards').classList.add('battle-mode');
       document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
 
+      Player.resetPreviewProps();
+
       window.setTimeout(() => {
         document.querySelector('#cards .cards-blocker').classList.add('active');
       }, 100);

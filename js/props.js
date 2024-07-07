@@ -24,7 +24,7 @@ var game = {
   tutorial: false,
   battle: false,
   gamePaused: true,
-  local: location.href.startsWith('http://127.0.0.1'),
+  local: false, //location.href.startsWith('http://127.0.0.1'),
   speed: 4000, // 4000
   firstUserInteraction: false,
   firstFight: false,
@@ -151,7 +151,7 @@ var buildingProps = {
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
   'fireplace': { locked: 0, spawn: 0, items: [] },
-  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'wooden-club', 'baseball-bat'] },
+  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'bread-2', 'energy-pills', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'wooden-club', 'baseball-bat'] },
 };
 
 var buildingActions = {
@@ -1222,12 +1222,20 @@ export default {
     paths[x][y] = undefined;
   },
 
-  getWeaponProps: function() {
-    return weaponProps;
+  getWeaponProps: function(item) {
+    if (item) {
+      return weaponProps[item];
+    } else {
+      return weaponProps;
+    }
   },
 
-  getWeaponPropsUpgrades: function() {
-    return weaponPropsUpgrades;
+  getWeaponPropsUpgrades: function(item) {
+    if (item) {
+      return weaponPropsUpgrades[item];
+    } else {
+      return weaponPropsUpgrades;
+    }
   },
 
   getBuildingProps: function() {

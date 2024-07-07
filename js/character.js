@@ -5,6 +5,8 @@ import Almanac from './almanac.js'
 
 const inventory = Props.getInventory();
 const characterContainer = document.getElementById('character');
+const slot1 = characterContainer.querySelector('.slot-1');
+const slot2 = characterContainer.querySelector('.slot-2');
 
 export default {
   
@@ -25,8 +27,8 @@ export default {
   checkForSlotClick: function(ev) {
 
     const target = ev.target;
-    const hoverSlot = target.closest('.slot');
     const actionButton = target.closest('div.action-button');
+    const upgradeButton = target.closest('div.upgrade:not(.nope)');
     const leftMouseButton = (ev.button === 0);
     const rightMouseButton = (ev.button === 2);
     const cardSlot = target.closest('.card');    
@@ -49,6 +51,29 @@ export default {
       }
       this.updateWeaponState();
       Player.updatePlayer();
+    } else if (upgradeButton && leftMouseButton) {
+      const weapon = cardSlot.dataset?.item;
+      const upgradeItem = Props.getWeaponPropsUpgrades(weapon);
+      if (upgradeItem) {
+        if (upgradeButton.classList.contains('attack-upgrade')) {
+          if (Items.inventoryContains(upgradeItem.attack.item)) {
+            inventory.items[weapon].damage += upgradeItem.attack.amount;
+            Props.addToInventory(upgradeItem.attack.item, -1);
+            Items.inventoryChangeFeedback();
+            Items.fillInventorySlots();
+          }
+        } else if (upgradeButton.classList.contains('defense-upgrade')) {
+          inventory.items[weapon].protection += upgradeItem.defense.amount;
+          Props.addToInventory(upgradeItem.defense.item, -1);
+          Items.inventoryChangeFeedback();
+          Items.fillInventorySlots();
+        } else if (upgradeButton.classList.contains('durability-upgrade')) {
+          inventory.items[weapon].durability += upgradeItem.durability.amount;
+          Props.addToInventory(upgradeItem.durability.item, -1);
+          Items.inventoryChangeFeedback();
+          Items.fillInventorySlots();
+        }  
+      }
     } else if (cardSlot && rightMouseButton) {
       if (cardSlot.dataset.item === 'improvised-axe' || cardSlot.dataset.item === 'wooden-club') {
         Almanac.showPage(cardSlot.dataset.item, 'item', cardSlot, characterContainer);
@@ -61,30 +86,95 @@ export default {
   },
 
   numberFilledSlots: function() {
-    const slot1 = characterContainer.querySelector('.slot-1.active');
-    const slot2 = characterContainer.querySelector('.slot-2.active');
-    return (slot1 ? 1 : 0) + (slot2 ? 1 : 0);
+    return (slot1.classList.contains('active') ? 1 : 0) + (slot2.classList.contains('active') ? 1 : 0);
+  },
+
+  updateWeaponSlot: function(slot, weapon, item) {
+    let durability = '◈◈◈'.substring(0, weapon.durability) + '<u>' +  '◈◈◈'.substring(0, 3 - weapon.durability) + '</u>';
+    slot.querySelector('.distance').innerHTML = durability;
+    slot.querySelector('.attack').textContent = inventory.items[item].damage;
+    slot.querySelector('.shield').textContent = inventory.items[item].protection;
+    const upgradeItem = Props.getWeaponPropsUpgrades(item);
+    let changeFeedback = false;
+    if (upgradeItem !== undefined) {
+      const attackUpgrade = slot.querySelector('.attack-upgrade');
+      const defenseUpgrade = slot.querySelector('.defense-upgrade');
+      const durabilityUpgrade = slot.querySelector('.durability-upgrade');
+      if (attackUpgrade && upgradeItem.attack) {
+        attackUpgrade.querySelector('.attack').textContent = `+${upgradeItem.attack.amount}`;
+        attackUpgrade.classList.remove('is--hidden');
+        attackUpgrade.dataset.item = upgradeItem.attack.item;
+        if (Items.inventoryContains(upgradeItem.attack.item)) {
+          if (attackUpgrade.classList.contains('nope')) { changeFeedback = true; }
+          attackUpgrade.classList.remove('nope');
+        } else {
+          attackUpgrade.classList.add('nope');
+        }
+      } else {
+        attackUpgrade.classList.add('is--hidden');
+        delete attackUpgrade.dataset.item;
+      }
+      if (defenseUpgrade && upgradeItem.defense) {
+        defenseUpgrade.querySelector('.shield').textContent = `+${upgradeItem.defense.amount}`;
+        defenseUpgrade.classList.remove('is--hidden');
+        defenseUpgrade.dataset.item = upgradeItem.defense.item;
+        if (Items.inventoryContains(upgradeItem.defense.item)) {
+          if (defenseUpgrade.classList.contains('nope')) { changeFeedback = true; }
+          defenseUpgrade.classList.remove('nope');
+        } else {
+          defenseUpgrade.classList.add('nope');
+        }
+      } else {
+        defenseUpgrade.classList.add('is--hidden');
+        delete defenseUpgrade.dataset.item;
+      }
+      if (durabilityUpgrade && upgradeItem.durability) {
+        durabilityUpgrade.classList.remove('is--hidden');
+        durabilityUpgrade.dataset.item = upgradeItem.durability.item;
+        if (Items.inventoryContains(upgradeItem.durability.item)) {
+          if (Props.getWeaponProps(item).durability > inventory.items[item].durability) {
+            // upgrade possible
+            if (durabilityUpgrade.classList.contains('nope')) { changeFeedback = true; }
+            durabilityUpgrade.querySelector('.durability').textContent = `+◈`;
+            durabilityUpgrade.classList.remove('nope');  
+          } else {
+            // upgrade maxed out
+            durabilityUpgrade.classList.add('nope');
+            durabilityUpgrade.querySelector('.durability').textContent = `MAX`;
+          }
+        } else {
+          durabilityUpgrade.classList.add('nope');
+          if (Props.getWeaponProps(item).durability > inventory.items[item].durability) {
+            durabilityUpgrade.querySelector('.durability').textContent = `+◈`;
+          } else {
+            // upgrade maxed out
+            durabilityUpgrade.querySelector('.durability').textContent = `MAX`;
+          }
+        }
+      } else {
+        durabilityUpgrade.classList.add('is--hidden');
+        delete durabilityUpgrade.dataset.item;
+      }
+      if (changeFeedback) {
+        // todo: show animation similar to inventory/crafting button
+      }
+    }
   },
 
   updateWeaponState: function() {
-    const characterContainer = document.getElementById('character');
-    const slot1 = characterContainer.querySelector('.slot-1');
-    const slot2 = characterContainer.querySelector('.slot-2');
     for (var item in inventory.items) {
       if (inventory.items[item].type === 'extra') {
         const weaponName = inventory.items[item].name;
         // find suitable slot for the weapon in inventory
         if (slot1.classList.contains('active') && slot1.dataset.item === weaponName) {
           if (inventory.items[item].amount > 0) {
-            let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' +  '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
-            slot1.querySelector('.distance').innerHTML = durability;
+            this.updateWeaponSlot(slot1, inventory.items[item], item);
           } else {
             slot1.classList.remove('active');
           }
         } else if (slot2.classList.contains('active') && slot2.dataset.item === weaponName) {
           if (inventory.items[item].amount > 0) {
-            let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' +  '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
-            slot2.querySelector('.distance').innerHTML = durability;
+            this.updateWeaponSlot(slot2, inventory.items[item], item);
           } else {
             slot2.classList.remove('active');
           }
@@ -102,31 +192,7 @@ export default {
             freeSlot.classList.add('active');
             freeSlot.dataset.item = weaponName;
             freeSlot.querySelector('img.motive')?.setAttribute('src', './img/weapons/' + weaponName + '.png');
-            freeSlot.querySelector('.attack').textContent = inventory.items[item].damage;
-            freeSlot.querySelector('.shield').textContent = inventory.items[item].protection;
-            let durability = '◈◈◈'.substring(0, inventory.items[item].durability) + '<u>' +  '◈◈◈'.substring(0, 3 - inventory.items[item].durability) + '</u>';
-            freeSlot.querySelector('.distance').innerHTML = durability;
-            const weaponPropsUpgrades = Props.getWeaponPropsUpgrades();
-            if (weaponPropsUpgrades[item] !== undefined) {
-              console.log(weaponPropsUpgrades[item]);
-              if (weaponPropsUpgrades[item].attack) {
-                freeSlot.querySelector('.attack-upgrade .attack').textContent = `+${weaponPropsUpgrades[item].attack.amount}`;
-                freeSlot.querySelector('.attack-upgrade').classList.remove('is--hidden');
-              } else {
-                freeSlot.querySelector('.attack-upgrade').classList.add('is--hidden');
-              }
-              if (weaponPropsUpgrades[item].defense) {
-                freeSlot.querySelector('.defense-upgrade .shield').textContent = `+${weaponPropsUpgrades[item].defense.amount}`;
-                freeSlot.querySelector('.defense-upgrade').classList.remove('is--hidden');
-              } else {
-                freeSlot.querySelector('.defense-upgrade').classList.add('is--hidden');
-              }
-              if (weaponPropsUpgrades[item].durability) {
-                freeSlot.querySelector('.durability-upgrade').classList.remove('is--hidden');
-              } else {
-                freeSlot.querySelector('.durability-upgrade').classList.add('is--hidden');
-              }
-            }
+            this.updateWeaponSlot(freeSlot, inventory.items[item], item);
           }
         }
       }
