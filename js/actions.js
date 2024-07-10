@@ -38,7 +38,7 @@ export default {
           this.simulateCuttingDown(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'smash-window') {
           this.simulateSmashing(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'break-door') {
+        } else if (action === 'break-door' || action === 'break-lock') {
           this.simulateBreaking(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'attack') {
           this.simulateAttacking(cardId, actionObject.time, actionObject.energy);
@@ -143,6 +143,9 @@ export default {
       }
       if ((object.name === 'house' || object.name === 'farm-house') && Math.random() < 0.2) {
         Props.setupBuilding(object.x, object.y, ['basement'], false, true);
+      }
+      if (object.name === 'old-villa') {
+        Props.setupBuilding(object.x, object.y, ['basement'], ['crate'], true);
       }
       for (let i = 0; i < allItems.length; i += 1) {
         window.setTimeout(function(index, item, cardId, energy) {

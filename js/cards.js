@@ -77,9 +77,11 @@ export default {
         const itemProps = Props.getItem(itemName);
 
         if (itemAmount && leftMouseButton) {
-          if (itemProps[0] === 'extra') {
+          if (itemProps && itemProps[0] === 'extra') {
             // spawn weapon as card
             Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
+          } else if (itemName === 'crate') {            
+            Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, [itemName]);
           } else {
             Props.addToInventory(itemName, itemAmount);
           }
@@ -91,7 +93,7 @@ export default {
           window.setTimeout((itemContainer) => {
             if (cardRef) {
               itemContainer.classList.add('is--hidden');
-              if (itemProps[0] === 'extra') { Player.findAndHandleObjects(); } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
+              if (itemName === 'crate' || itemProps[0] === 'extra') { Player.findAndHandleObjects(); } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
               if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
                   !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
                 this.renderCardDeck();
@@ -100,7 +102,7 @@ export default {
           }, 400, itemContainer);
         } else if (itemAmount && rightMouseButton) {
           // make item known to inventory
-          if (itemProps[0] === 'extra') {
+          if (itemProps && itemProps[0] === 'extra') {
             Props.addToInventory(itemName, 0, 0); 
           } else {
             Props.addToInventory(itemName, 0); 
@@ -290,7 +292,7 @@ export default {
             action.locked = true;
           }
         }
-        if (action.id === 'cut-down' || action.id === 'break-door') {
+        if (action.id === 'cut-down' || action.id === 'break-door' || action.id === 'break-lock') {
           if (!Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
             action.locked = true;
           }

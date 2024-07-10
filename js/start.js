@@ -101,8 +101,8 @@ export default {
     Props.setupAllBuildings();
     Props.setupAllZeds();
 
-    Player.setPlayerPosition(18, 44);
-    //Player.setPlayerPosition(34, 13);
+    //Player.setPlayerPosition(18, 44);
+    Player.setPlayerPosition(35, 42);
     
     Player.changeProps('health', 100);
     Player.changeProps('food', 65);
