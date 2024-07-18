@@ -254,8 +254,9 @@ export default {
       for (var i = 0; i < maxItems; i += 1) {
         const item = Items.getItemByName(battleDeck[i].name);
         const modifyDamageMarkup = battleDeck[i].modifyDamage > 0 ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>' : '';
+        const maxDurabilityChars = '◈'.repeat(Props.getWeaponProps(item).durability);
         const durabilityMarkup = item.durability ?  '<span class="durability">' +
-                                                    '◈◈◈'.substring(0, item.durability) + '<u>' +  '◈◈◈'.substring(0, 3 - item.durability) + '</u>' +
+                                                      maxDurabilityChars.substring(0, item.durability) + '<u>' +  maxDurabilityChars.substring(0, maxDurabilityChars.length - item.durability) + '</u>' +
                                                     '</span>' : '';
 
         battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +

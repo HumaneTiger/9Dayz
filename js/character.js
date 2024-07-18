@@ -90,7 +90,8 @@ export default {
   },
 
   updateWeaponSlot: function(slot, weapon, item) {
-    let durability = '◈◈◈'.substring(0, weapon.durability) + '<u>' +  '◈◈◈'.substring(0, 3 - weapon.durability) + '</u>';
+    const maxDurabilityChars = '◈'.repeat(Props.getWeaponProps(item).durability);
+    const durability = maxDurabilityChars.substring(0, weapon.durability) + '<u>' +  maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) + '</u>';
     slot.querySelector('.distance').innerHTML = durability;
     slot.querySelector('.attack').textContent = inventory.items[item].damage;
     slot.querySelector('.shield').textContent = inventory.items[item].protection;
