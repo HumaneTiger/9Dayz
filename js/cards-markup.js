@@ -9,6 +9,8 @@ const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
 const zIndexBase = 200;
 
+let smallTreeCounter = 1, bigTreeCounter = 1;
+
 export default {
   
   init: function() {
@@ -20,6 +22,15 @@ export default {
   createCardMarkup: function(id) {
     let object = Props.getObject(id);
     let cardMarkupExtension;
+    let buildingName = (object.name.startsWith('signpost-') ? 'signpost' : object.name);
+
+    if (object.name === 'small-tree') {
+      buildingName = buildingName + '-' + smallTreeCounter;
+      smallTreeCounter === 1 ? smallTreeCounter = 2 : smallTreeCounter = 1;
+    } else if (object.name === 'big-tree') {
+      buildingName = buildingName + '-' + bigTreeCounter;
+      bigTreeCounter === 1 ? bigTreeCounter = 2 : bigTreeCounter = 1;
+    }
 
     let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + (object.dead ? 'dead ' : '') + (object.preview ? 'preview ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
                           '<div class="inner">';
@@ -27,7 +38,7 @@ export default {
     let cardMarkupBuilding = '<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested"></div></div>' +
                              '<h2>' + object.title + '</h2>' +
                              '<p class="activity glow is--hidden"></p>' +
-                             '<img class="motive" src="./img/buildings/' + (object.name.startsWith('signpost-') ? 'signpost' : object.name) + '.png">' +
+                             '<img class="motive" src="./img/buildings/' + buildingName + '.png">' +
                              '<div class="banner"><img src="./img/icons/buildings/' + object.type + '.png"></div>';
 
     let cardMarkupZombie =   '<div class="attack">' + object.attack + '</div><div class="health">' + object.defense + '</div>' +

@@ -2,6 +2,7 @@ import Props from './props.js'
 import Player from './player.js'
 import Items from './items.js'
 import Almanac from './almanac.js'
+import Audio from './audio.js'
 
 const inventory = Props.getInventory();
 const characterContainer = document.getElementById('character');
@@ -54,23 +55,33 @@ export default {
     } else if (upgradeButton && leftMouseButton) {
       const weapon = cardSlot.dataset?.item;
       const upgradeItem = Props.getWeaponPropsUpgrades(weapon);
+      const preserveResources = (Props.getGameProp('character') === 'craftsmaniac' && (Math.random() * 10) <= 2) ? true : false;
       if (upgradeItem) {
         if (upgradeButton.classList.contains('attack-upgrade')) {
           if (Items.inventoryContains(upgradeItem.attack.item)) {
             inventory.items[weapon].damage += upgradeItem.attack.amount;
-            Props.addToInventory(upgradeItem.attack.item, -1);
-            Items.inventoryChangeFeedback();
-            Items.fillInventorySlots();
+            Audio.sfx('improve-weapon');
+            if (!preserveResources) {
+              Props.addToInventory(upgradeItem.attack.item, -1); 
+              Items.inventoryChangeFeedback();
+            }
+            Items.fillInventorySlots();  
           }
         } else if (upgradeButton.classList.contains('defense-upgrade')) {
           inventory.items[weapon].protection += upgradeItem.defense.amount;
-          Props.addToInventory(upgradeItem.defense.item, -1);
-          Items.inventoryChangeFeedback();
+          Audio.sfx('improve-weapon');
+          if (!preserveResources) {
+            Props.addToInventory(upgradeItem.defense.item, -1);
+            Items.inventoryChangeFeedback();
+          }
           Items.fillInventorySlots();
         } else if (upgradeButton.classList.contains('durability-upgrade')) {
           inventory.items[weapon].durability += upgradeItem.durability.amount;
-          Props.addToInventory(upgradeItem.durability.item, -1);
-          Items.inventoryChangeFeedback();
+          Audio.sfx('repair-weapon');
+          if (!preserveResources) {
+            Props.addToInventory(upgradeItem.durability.item, -1);
+            Items.inventoryChangeFeedback();
+          }
           Items.fillInventorySlots();
         }  
       }

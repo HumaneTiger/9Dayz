@@ -23,19 +23,16 @@ export default {
       document.getElementById('start-option-new').classList.remove('is--hidden');
       document.getElementById('start-option-continue').classList.add('is--hidden');
     }
+    /*
     if (Props.getGameProp('local')) {
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
       document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
       Props.setGameProp('startMode', 2);
       this.prepareGameStart();
-      /*
-      document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
-      document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
-      document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
-      */
       this.initProps();
       this.startReal();
     }
+      */
     this.initCharacterSelection();
   },
 
@@ -74,10 +71,12 @@ export default {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
+    /*
     if (Props.getGameProp('local')) {
       Props.addToInventory('wooden-club', 1, 2);
       Props.addToInventory('improvised-axe', 1, 2);
     }
+      */
 
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {

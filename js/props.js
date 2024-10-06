@@ -433,7 +433,19 @@ export default {
     let images = [];
     for (const prop in buildingProps) {
       images[i] = new Image();
-      images[i].src = './img/buildings/' + (prop.startsWith('signpost-') ? 'signpost' : prop) + '.png';
+      if (prop.startsWith('signpost-')) {
+        images[i].src = './img/buildings/signpost.png';
+      } else if (prop === 'small-tree') {
+        images[i].src = './img/buildings/small-tree-1.png';
+        images[i] = new Image();
+        images[i].src = './img/buildings/small-tree-2.png';
+      } else if (prop === 'big-tree') {
+        images[i].src = './img/buildings/big-tree-1.png';
+        images[i] = new Image();
+        images[i].src = './img/buildings/big-tree-2.png';
+      } else {
+        images[i].src = './img/buildings/' + prop + '.png';
+      }
     };
   },
 
@@ -1228,17 +1240,17 @@ export default {
     paths[x][y] = undefined;
   },
 
-  getWeaponProps: function(item) {
-    if (item) {
-      return weaponProps[item];
+  getWeaponProps: function(itemName) {
+    if (itemName) {
+      return weaponProps[itemName];
     } else {
       return weaponProps;
     }
   },
 
-  getWeaponPropsUpgrades: function(item) {
-    if (item) {
-      return weaponPropsUpgrades[item];
+  getWeaponPropsUpgrades: function(itemName) {
+    if (itemName) {
+      return weaponPropsUpgrades[itemName];
     } else {
       return weaponPropsUpgrades;
     }
