@@ -120,7 +120,7 @@ export default {
         Audio.sfx('eat-' + Math.floor(Math.random() * (2) + 1), 0, 0.7);
       }
       if (itemProps.food || itemProps.drink || itemProps.energy) {
-        Props.addToInventory(item, -1);
+        Props.addItemToInventory(item, -1);
         this.fillInventorySlots();
         if (!this.inventoryContains(item)) {
           this.resetInventorySlotHoverEffect();

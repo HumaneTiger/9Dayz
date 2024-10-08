@@ -73,15 +73,15 @@ export default {
       if (actionSlotActive && leftMouseButton) {
         const recipe = actionSlotActive.dataset?.item;
         if (recipe) {
-          Props.addToInventory(recipe, cookingRecipes[recipe][2]);
+          Props.addItemToInventory(recipe, cookingRecipes[recipe][2]);
           Audio.sfx('roast');
           if (recipe === 'glue') {
-            Props.addToInventory(cookingRecipes[recipe][0], -1);
-            Items.inventoryContains('drink-1') ? Props.addToInventory('drink-1', -1) : Props.addToInventory('drink-2', -1);
+            Props.addItemToInventory(cookingRecipes[recipe][0], -1);
+            Items.inventoryContains('drink-1') ? Props.addItemToInventory('drink-1', -1) : Props.addItemToInventory('drink-2', -1);
           } else if (recipe === 'roasted-mushroom') {
-            Items.inventoryContains('mushroom-1') ? Props.addToInventory('mushroom-1', -1) : Props.addToInventory('mushroom-2', -1);
+            Items.inventoryContains('mushroom-1') ? Props.addItemToInventory('mushroom-1', -1) : Props.addItemToInventory('mushroom-2', -1);
           } else {
-            Props.addToInventory(cookingRecipes[recipe][0], -1);  
+            Props.addItemToInventory(cookingRecipes[recipe][0], -1);  
           }
         }
         Items.inventoryChangeFeedback();
@@ -89,7 +89,7 @@ export default {
       } else if (slotActive && rightMouseButton) {
         const item = slotActive.dataset?.item;
         if (item !== undefined) {
-          Props.addToInventory(item.replace('-2', ''), 0); // makes item known to inventory
+          Props.addItemToInventory(item.replace('-2', ''), 0); // makes item known to inventory
           Almanac.showPage(item.replace('-2', ''), 'item', slotActive, cookingContainer);
         }
       } else if (actionButton && leftMouseButton && actionButton.dataset.action === 'close-cooking') {

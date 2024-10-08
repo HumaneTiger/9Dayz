@@ -305,7 +305,7 @@ export default {
     }
     if (!item.durability) {
       //remove item from inventory
-      Props.addToInventory(item.name, -1);
+      Props.addItemToInventory(item.name, -1);
       //remove item from battle deck
       for (var i = 0; i < battleDeck.length; i += 1) {
         if (battleDeck[i].name === item.name) {
@@ -390,7 +390,7 @@ export default {
             zedObject.defense += foodItem.protection;
             zedCardRef.querySelector('.health').textContent = zedObject.defense;
             //remove item from inventory
-            Props.addToInventory(foodItem.name, -1);
+            Props.addItemToInventory(foodItem.name, -1);
             //remove item from battle deck
             for (var i = 0; i < battleDeck.length; i += 1) {
               if (battleDeck[i].name === foodItem.name) {

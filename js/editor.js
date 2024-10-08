@@ -44,15 +44,15 @@ export default {
             } else if (selectedObject === 'improvised-axe' || selectedObject === 'axe' || selectedObject === 'wooden-club' || selectedObject === 'baseball-bat' || selectedObject === 'wrench') {
               Props.setupWeapon(squareX, squareY, selectedObject);
             } else if (selectedObject === 'care-package') {
-              Props.addToInventory('tomato', 1);
-              Props.addToInventory('carrot', 1);
-              Props.addToInventory('pepper', 1);
-              Props.addToInventory('tape', 1);
-              Props.addToInventory('drink-2', 2);
-              Props.addToInventory('snack-1', 2);
-              Props.addToInventory('snack-2', 2);
-              Props.addToInventory('knife', 1);
-              Props.addToInventory('energy-pills', 1);
+              Props.addItemToInventory('tomato', 1);
+              Props.addItemToInventory('carrot', 1);
+              Props.addItemToInventory('pepper', 1);
+              Props.addItemToInventory('tape', 1);
+              Props.addItemToInventory('drink-2', 2);
+              Props.addItemToInventory('snack-1', 2);
+              Props.addItemToInventory('snack-2', 2);
+              Props.addItemToInventory('knife', 1);
+              Props.addItemToInventory('energy-pills', 1);
               Items.inventoryChangeFeedback();
               Items.fillInventorySlots();
             } else {

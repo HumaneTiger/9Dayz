@@ -47,22 +47,21 @@ export default {
           durability: inventory.items[weaponName].durability
         });
         // set weapon amount in inventory to 0 and set durability to 0
-        Props.addToInventory(weaponName, -1, -1 * inventory.items[weaponName].durability);
-        Items.inventoryChangeFeedback();
+        Props.addWeaponToInventory(weaponName, -1, {durability: -1 * inventory.items[weaponName].durability});
       }
       this.updateWeaponState();
       Player.updatePlayer();
     } else if (upgradeButton && leftMouseButton) {
       const weapon = cardSlot.dataset?.item;
       const upgradeItem = Props.getWeaponPropsUpgrades(weapon);
-      const preserveResources = (Props.getGameProp('character') === 'craftsmaniac' && (Math.random() * 10) <= 2) ? true : false;
+      const preserveResources = (Props.getGameProp('character') === 'craftsmaniac' && (Math.random() * 10) <= 2.25) ? true : false;
       if (upgradeItem) {
         if (upgradeButton.classList.contains('attack-upgrade')) {
           if (Items.inventoryContains(upgradeItem.attack.item)) {
             inventory.items[weapon].damage += upgradeItem.attack.amount;
             Audio.sfx('improve-weapon');
             if (!preserveResources) {
-              Props.addToInventory(upgradeItem.attack.item, -1); 
+              Props.addItemToInventory(upgradeItem.attack.item, -1); 
               Items.inventoryChangeFeedback();
             }
             Items.fillInventorySlots();  
@@ -71,7 +70,7 @@ export default {
           inventory.items[weapon].protection += upgradeItem.defense.amount;
           Audio.sfx('improve-weapon');
           if (!preserveResources) {
-            Props.addToInventory(upgradeItem.defense.item, -1);
+            Props.addItemToInventory(upgradeItem.defense.item, -1);
             Items.inventoryChangeFeedback();
           }
           Items.fillInventorySlots();
@@ -79,7 +78,7 @@ export default {
           inventory.items[weapon].durability += upgradeItem.durability.amount;
           Audio.sfx('repair-weapon');
           if (!preserveResources) {
-            Props.addToInventory(upgradeItem.durability.item, -1);
+            Props.addItemToInventory(upgradeItem.durability.item, -1);
             Items.inventoryChangeFeedback();
           }
           Items.fillInventorySlots();

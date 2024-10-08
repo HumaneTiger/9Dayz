@@ -32,7 +32,7 @@ export default {
       this.initProps();
       this.startReal();
     }
-      */
+    */
     this.initCharacterSelection();
   },
 
@@ -71,24 +71,22 @@ export default {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
-    /*
     if (Props.getGameProp('local')) {
-      Props.addToInventory('wooden-club', 1, 2);
-      Props.addToInventory('improvised-axe', 1, 2);
+      Props.addWeaponToInventory('wooden-club', 1, {durability: 2});
+      Props.addWeaponToInventory('improvised-axe', 1, {durability: 2});
     }
-      */
 
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {
-        Props.addToInventory(item, inventoryPresets[item]);
+        Props.addItemToInventory(item, inventoryPresets[item]);
       }
     }
     // add zero items to present crafting options in Almanac
     // fix this in the almanach
-    Props.addToInventory('tape', 0);
-    Props.addToInventory('sharp-stick', 0);
-    Props.addToInventory('wooden-club', 0, 0);
-    Props.addToInventory('improvised-axe', 0, 0);
+    Props.addItemToInventory('tape', 0);
+    Props.addItemToInventory('sharp-stick', 0);
+    Props.addWeaponToInventory('wooden-club', 0, {durability: 0});
+    Props.addWeaponToInventory('improvised-axe', 0, {durability: 0});
 
     Props.modifyObjectProperties();
 
@@ -117,13 +115,17 @@ export default {
       const inventoryItems = saveCheckpoint.inventoryItems;
         
       // add zero items to present crafting options in Almanac
-      Props.addToInventory('tape', 0);
-      Props.addToInventory('sharp-stick', 0);
-      Props.addToInventory('wooden-club', 0, 0);
-      Props.addToInventory('improvised-axe', 0, 0);
+      Props.addItemToInventory('tape', 0);
+      Props.addItemToInventory('sharp-stick', 0);
+      Props.addWeaponToInventory('wooden-club', 0, {durability: 0});
+      Props.addWeaponToInventory('improvised-axe', 0, {durability: 0});
   
       for (var key in inventoryItems) {
-        Props.addToInventory(inventoryItems[key].name, inventoryItems[key].amount, inventoryItems[key].durability);
+        if (inventoryItems[key].durability !== undefined) {
+          Props.addWeaponToInventory(inventoryItems[key].name, inventoryItems[key].amount, {durability: inventoryItems[key].durability});
+        } else {
+          Props.addItemToInventory(inventoryItems[key].name, inventoryItems[key].amount);
+        }
       }
   
       if (saveCheckpoint.playerCharacter) {

@@ -235,10 +235,13 @@ export default {
   simulateEquipping: function(cardId) {
     const object = Props.getObject(cardId);
     if (object.group === 'weapon' && object.name) {
-      Props.addToInventory(object.name, 1, object.durability);
+      Props.addWeaponToInventory(object.name, 1, {
+        durability: object.durability,
+        damage: object.attack,
+        protection: object.defense
+      });
     }
     window.setTimeout(function(cardId) {
-      Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       this.goBackFromAction(cardId);
     }.bind(this), 800, cardId);
@@ -256,12 +259,12 @@ export default {
     this.fastForward(function(cardId, energy) {
       this.goBackFromAction(cardId);
       if (Items.inventoryContains('improvised-axe')) {
-        Props.addToInventory('improvised-axe', 0, -1);
+        Props.addWeaponToInventory('improvised-axe', 0, {durability: -1});
       } else if (Items.inventoryContains('axe')) {
-        Props.addToInventory('axe', 0, -1);
+        Props.addWeaponToInventory('axe', 0, {durability: -1});
       }
-      Props.addToInventory('stump', 1); 
-      Props.addToInventory('branch', 2 + Math.round(Math.random() - 0.25));
+      Props.addItemToInventory('stump', 1); 
+      Props.addItemToInventory('branch', 2 + Math.round(Math.random() - 0.25));
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);
@@ -343,9 +346,9 @@ export default {
       const object = Props.getObject(cardId);
       object.locked = false;
       if (Items.inventoryContains('improvised-axe')) {
-        Props.addToInventory('improvised-axe', 0, -1);
+        Props.addWeaponToInventory('improvised-axe', 0, {durability: -1});
       } else if (Items.inventoryContains('axe')) {
-        Props.addToInventory('axe', 0, -1);
+        Props.addWeaponToInventory('axe', 0, {durability: -1});
       }
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);

@@ -83,7 +83,7 @@ export default {
           } else if (itemName === 'crate') {            
             Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, [itemName]);
           } else {
-            Props.addToInventory(itemName, itemAmount);
+            Props.addItemToInventory(itemName, itemAmount);
           }
           object.items.find(singleItem => singleItem.name === itemName).amount = 0;
           itemContainer.classList.add('transfer');
@@ -103,9 +103,9 @@ export default {
         } else if (itemAmount && rightMouseButton) {
           // make item known to inventory
           if (itemProps && itemProps[0] === 'extra') {
-            Props.addToInventory(itemName, 0, 0); 
+            Props.addWeaponToInventory(itemName, 0, {durability: 0}); 
           } else {
-            Props.addToInventory(itemName, 0); 
+            Props.addItemToInventory(itemName, 0); 
           }
           Almanac.showPage(itemName, 'item', itemContainer.closest('ul.items'), cardRef);
         }

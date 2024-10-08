@@ -50,14 +50,14 @@ export default {
         for (const recipeItem in itemRecipe.items) {
           if (itemRecipe.items[recipeItem].length === 1) {
             if (!this.preserveCraftingItem(itemRecipe.items[recipeItem][0])) {
-              Props.addToInventory(itemRecipe.items[recipeItem][0], -1);
+              Props.addItemToInventory(itemRecipe.items[recipeItem][0], -1);
             }
           } else {
             for (const orItem in itemRecipe.items[recipeItem]) {
               if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
                 // consume first one that is found
                 if (!this.preserveCraftingItem(itemRecipe.items[recipeItem][0])) {
-                  Props.addToInventory(itemRecipe.items[recipeItem][orItem], -1);
+                  Props.addItemToInventory(itemRecipe.items[recipeItem][orItem], -1);
                 }
                 break;
               }
@@ -66,7 +66,7 @@ export default {
         }
         // second - create the crafting result (add inventory item or create weapon/building card)
         if (itemRecipe.result === 'inventory') {
-          Props.addToInventory(item, 1);
+          Props.addItemToInventory(item, 1);
         } else {
           // create a card of sort
           const here = Player.getPlayerPosition();

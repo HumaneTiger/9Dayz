@@ -642,31 +642,72 @@ export default {
     return inventoryPresets[character];
   },
   
-  addToInventory: function(item, amount, durability) {
-    amount = parseInt(amount);
-    const itemProps = items[item];
+  addWeaponToInventory: function(item, addAmount, setWeaponProps) {
+    const amount = parseInt(addAmount),
+          setDamage = setWeaponProps.damage,
+          setProtection = setWeaponProps.protection,
+          setDurability = setWeaponProps.durability,
+          itemProps = items[item];
+
     if (inventory.items[item] !== undefined) {
+      // weapon was added to inventory before
       inventory.items[item].amount += amount;
       inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
-      if (durability !== undefined) {
-        inventory.items[item].durability += durability;
-        if (inventory.items[item].durability === 0) { inventory.items[item].amount = 0 }
+      
+      setDamage ? inventory.items[item].damage = setDamage : false;
+      setProtection ? inventory.items[item].protection = setProtection : false;
+
+      if (setDurability !== undefined) {
+        inventory.items[item].durability += setDurability;
+        if (inventory.items[item].durability <= 0) {
+          // remove and reset inventory weapon props
+          inventory.items[item].amount = 0;
+          inventory.items[item].damage = this.calcItemDamage(item);
+          inventory.items[item].protection = this.calcItemProtection(item);
+          inventory.items[item].durability = 0;
+        }
       }
     } else if (itemProps !== undefined) {
+      // weapon is added first time to inventory
       inventory.items[item] = {
         type: itemProps[0],
         name: item,
         amount: amount,
-        damage: this.calcItemDamage(item),
-        protection: this.calcItemProtection(item),
-        durability: durability
+        damage: setDamage || this.calcItemDamage(item),
+        protection: setProtection || this.calcItemProtection(item),
+        durability: setDurability
+      }
+    } else {
+      console.log('adding weapon "' + item + '" to inventory failed');
+    }
+    this.calcTotalInventoryItems();
+  },
+  
+  addItemToInventory: function(item, addAmount) {
+    const amount = parseInt(addAmount),
+          itemProps = items[item];
+
+    if (inventory.items[item] !== undefined) {
+      // item was added to inventory before
+      inventory.items[item].amount += amount;
+      inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
+    } else if (itemProps !== undefined) {
+      // item is added first time to inventory
+      inventory.items[item] = {
+        type: itemProps[0],
+        name: item,
+        amount: amount
       }
     } else {
       console.log('adding item "' + item + '" to inventory failed');
     }
+    this.calcTotalInventoryItems();        
+  },
+
+  calcTotalInventoryItems: function() {
     inventory.itemNumbers = 0;
-    for (item in inventory.items) {
-      if (inventory.items[item].amount && inventory.items[item].amount > 0) {
+    for (let item in inventory.items) {
+      if (inventory.items[item].type !== 'extra' && inventory.items[item].amount && inventory.items[item].amount > 0) {
         inventory.itemNumbers += inventory.items[item].amount;
       }
     }
