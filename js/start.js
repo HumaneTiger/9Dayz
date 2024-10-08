@@ -71,10 +71,11 @@ export default {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
+    /*
     if (Props.getGameProp('local')) {
       Props.addWeaponToInventory('wooden-club', 1, {durability: 2});
       Props.addWeaponToInventory('improvised-axe', 1, {durability: 2});
-    }
+    }*/
 
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {

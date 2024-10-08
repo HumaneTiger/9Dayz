@@ -696,12 +696,14 @@ export default {
       inventory.items[item] = {
         type: itemProps[0],
         name: item,
-        amount: amount
+        amount: amount,
+        damage: this.calcItemDamage(item), // props for battle mode
+        protection: this.calcItemProtection(item) // props for battle mode
       }
     } else {
       console.log('adding item "' + item + '" to inventory failed');
     }
-    this.calcTotalInventoryItems();        
+    this.calcTotalInventoryItems();
   },
 
   calcTotalInventoryItems: function() {

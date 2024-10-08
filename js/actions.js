@@ -243,6 +243,7 @@ export default {
     }
     window.setTimeout(function(cardId) {
       Items.fillInventorySlots();
+      Items.checkCraftingPrerequisits();
       this.goBackFromAction(cardId);
     }.bind(this), 800, cardId);
   },
@@ -351,6 +352,7 @@ export default {
         Props.addWeaponToInventory('axe', 0, {durability: -1});
       }
       Items.fillInventorySlots();
+      Items.checkCraftingPrerequisits();
       Player.changeProps('energy', energy);
       this.goBackFromAction(cardId);
       this.checkForInfested(cardId);

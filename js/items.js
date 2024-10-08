@@ -87,6 +87,10 @@ export default {
     Crafting.checkCraftingPrerequisits();
   },
 
+  checkCraftingPrerequisits: function() {
+    Crafting.checkCraftingPrerequisits(); // delegate
+  },
+
   checkForSlotClick: function(ev) {
 
     const target = ev.target;

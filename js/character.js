@@ -48,6 +48,7 @@ export default {
         });
         // set weapon amount in inventory to 0 and set durability to 0
         Props.addWeaponToInventory(weaponName, -1, {durability: -1 * inventory.items[weaponName].durability});
+        Items.checkCraftingPrerequisits(); // make weapon re-craftable again
       }
       this.updateWeaponState();
       Player.updatePlayer();

@@ -103,7 +103,7 @@ export default {
         } else if (itemAmount && rightMouseButton) {
           // make item known to inventory
           if (itemProps && itemProps[0] === 'extra') {
-            Props.addWeaponToInventory(itemName, 0, {durability: 0}); 
+            Props.addWeaponToInventory(itemName, 0, {durability: 0});
           } else {
             Props.addItemToInventory(itemName, 0); 
           }

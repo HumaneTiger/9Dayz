@@ -11,13 +11,21 @@ var events = {
     title: 'Gather',
     text: 'There are some trees growing here. You should look around them for useful things and pick everything up. Watch your stats - hunger and thirst are a constant threat in this broken world.'
   },
+  '18-42': {
+    title: 'Almanac',
+    text: 'The Almanac provides details about all items.<br><img src="./img/almanac/almanac.png"><br>Just right-click item slots and crafting buttons.'
+  },
   '18-40': {
     title: 'Zombies!',
     text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – better deal with them later.'
   },
-  '17-40': {
+  '12-44': {
     title: 'Zombie 101',
-    text: 'Try to lure single Zeds towards you. Attacking them will cause other Zeds in the area join the fight. When you walk right into them, they  will attack you first.'
+    text: 'Try to lure Zeds towards you. Attacking them will cause others in the area join the fight. When you walk right into them, they  will attack you first.'
+  },
+  '11-43': {
+    title: 'Be prepared',
+    text: 'Any weapon is better than no weapon. Check your inventory. Sharp sticks, tools or stones are good - improvised weapons are better. Check item properties in the Almanac.'
   },
   '30-7': {
     title: 'You found it!',
@@ -68,11 +76,6 @@ var specialEvents = {
     title: 'Worn-out',
     text: 'Your energy is low.<br>Most actions consume a certain amount of Energy. Make sure to eat high-quality food and find a place to rest or sleep. Low energy gives penalties in battles.'
   },
-  'almanac': {
-    title: 'Almanac',
-    text: 'The Almanac provides details about all items.<br><img src="./img/almanac/almanac.png"><br>Just right-click item slots and crafting buttons.'
-  },
-
 };
 
 export default {
@@ -195,11 +198,12 @@ export default {
         let objectId = this.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);
       }
+      /*
       if (document.getElementById('inventory').classList.contains('active') && Props.getGameProp('firstInventoryOpen') === false) {
         Props.setGameProp('firstInventoryOpen', true);
         let objectId = this.setupSpecialEvent('almanac', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);
-      }
+      }*/
     }
     return specialEventObjectIds;
   }
