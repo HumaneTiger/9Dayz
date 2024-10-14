@@ -423,6 +423,8 @@ export default {
         battleHealthMeter.classList.remove('heavy-shake');
         if (zedObject.name === 'rat') {
           Audio.sfx('rat-attacks');
+        } else if (zedObject.name === 'bee') {
+          Audio.sfx('bee-attacks');
         } else {
           Audio.sfx('zed-attacks');
         }

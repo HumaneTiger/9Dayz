@@ -32,36 +32,36 @@ export default {
       bigTreeCounter === 1 ? bigTreeCounter = 2 : bigTreeCounter = 1;
     }
 
-    let cardMarkupPre = '<div id="' + id + '" class="card ' + (object.locked ? 'locked ' : '') + (object.dead ? 'dead ' : '') + (object.preview ? 'preview ' : '') + ' ' + object.group + '" style="left: ' + Math.round(object.x * 44.4 - 120) + 'px; top: 600px; transform: scale(0.4);">' +
-                          '<div class="inner">';
+    let cardMarkupPre = `<div id="${id}" class="card ${(object.locked ? 'locked ' : '')} ${(object.dead ? 'dead ' : '')} ${(object.preview ? 'preview ' : '')} ${object.group}" style="left: ${Math.round(object.x * 44.4 - 120)}px; top: 600px; transform: scale(0.4);">` +
+                          `<div class="inner">`;
 
-    let cardMarkupBuilding = '<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested"></div></div>' +
-                             '<h2>' + object.title + '</h2>' +
-                             '<p class="activity glow is--hidden"></p>' +
-                             '<img class="motive" src="./img/buildings/' + buildingName + '.png">' +
-                             '<div class="banner"><img src="./img/icons/buildings/' + object.type + '.png"></div>';
+    let cardMarkupBuilding = `<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested ${(buildingName === 'beehive' ? 'bees' : '')}"></div></div>` +
+                             `<h2>${object.title}</h2>` +
+                             `<p class="activity glow is--hidden"></p>` +
+                             `<img class="motive" src="./img/buildings/${buildingName}.png">` +
+                             `<div class="banner"><img src="./img/icons/buildings/${object.type}.png"></div>`;
 
-    let cardMarkupZombie =   '<div class="attack">' + object.attack + '</div><div class="health">' + object.defense + '</div>' +
-                             '<p class="activity glow is--hidden"></p>' +
-                             '<img class="motive" src="./img/zombies/' + object.name + '.png">' +
-                             '<div class="dead"><img src="./img/zombies/' + (object.name === 'rat' ? 'dead' : 'undead') + '.png"></div>';
+    let cardMarkupZombie =   `<div class="attack">${object.attack}</div><div class="health">${object.defense}</div>` +
+                             `<p class="activity glow is--hidden"></p>` +
+                             `<img class="motive" src="./img/zombies/${object.name}.png">` +
+                             `<div class="dead"><img src="./img/zombies/${(object.name === 'rat' ? 'dead' : 'undead')}.png"></div>`;
 
-    let cardMarkupWeapon =   '<div class="attack">' + object.attack + '</div><div class="shield">' + object.defense + '</div>' +
-                             '<p class="activity glow is--hidden"></p>' +
-                             '<img class="motive" src="./img/weapons/' + object.name + '.png">' +
-                             '<div class="banner"><img src="./img/icons/weapons/' + object.group + '.png"></div>';
+    let cardMarkupWeapon =   `<div class="attack">${object.attack}</div><div class="shield">${object.defense}</div>` +
+                             `<p class="activity glow is--hidden"></p>` +
+                             `<img class="motive" src="./img/weapons/${object.name}.png">` +
+                             `<div class="banner"><img src="./img/icons/weapons/${object.group}.png"></div>`;
 
-    let cardMarkupAnimal =   '<p class="activity glow is--hidden"></p>' +
-                             '<img class="motive" src="./img/animals/' + object.name + '.png">' +
-                             '<div class="banner"><img src="./img/icons/animals/animal.png"></div>' +
-                             '<div class="dead"><img src="./img/zombies/dead.png"></div>';
+    let cardMarkupAnimal =   `<p class="activity glow is--hidden"></p>` +
+                             `<img class="motive" src="./img/animals/${object.name}.png">` +
+                             `<div class="banner"><img src="./img/icons/animals/animal.png"></div>` +
+                             `<div class="dead"><img src="./img/zombies/dead.png"></div>`;
 
-    let cardMarkupEvent =    '<h2>' + object.title + '</h2>' +
-                             '<p class="text">' + object.text + '</p>';
+    let cardMarkupEvent =    `<h2>${object.title}</h2>` +
+                             `<p class="text">${object.text}</p>`;
                  
-    let cardMarkupPost =  '</div>' +
-                        '<span class="distance">' + (object.distance > 1 ? Math.round(object.distance * 4.4) + ' min' : 'Here') + '</span>' +
-                      '</div>';
+    let cardMarkupPost =  `</div>` +
+                          `<span class="distance">${(object.distance > 1 ? Math.round(object.distance * 4.4) + ' min' : 'Here')}</span>` +
+                      `</div>`;
 
     if (object.name === 'fireplace') {
       cardMarkupExtension = '<ul class="cooking">';

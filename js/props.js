@@ -100,7 +100,7 @@ inventoryPresets['cashmeister'] = {}
 var buildingTypes = {
   'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
   'car': ['car-1', 'car-2'],
-  'farm': ['field', 'compost', 'scarecrow'],
+  'farm': ['field', 'compost', 'scarecrow', 'beehive'],
   'tree': [ 'small-tree', 'big-tree'],
   'church': [ 'church' ],
   'signpost': [ 'signpost-1', 'signpost-2', 'signpost-3', 'signpost-4', 'signpost-5', 'signpost-6', 'signpost-7' ],
@@ -136,6 +136,7 @@ var buildingProps = {
   'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'], amount: 2 },
   'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'], amount: 2 },
   'scarecrow': { locked: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin', 'cloth'], amount: 2 },
+  'beehive': { locked: 0, spawn: 1, items: ['honey'], amount: 5 },
   'small-tree': { locked: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone', 'straw-wheet'] },
   'church': { locked: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
   'milton': { locked: 0, spawn: 0, items: [] },
@@ -273,6 +274,7 @@ var items = {
   'fruit-2': ['eat', 4, 8, 2],
   'fruit-3': ['eat', 3, 8, 2],
   'glue': ['craft', 0, 0, 0, 5, 2],
+  'honey': ['eat', 15, 5, 25, 3, 2],
   'energy-pills': ['eat', 0, 0, 50, 1, 1],
   'exodus': ['craft', 0, 0, 0, 4, 2],
   'fail': ['craft', 0, 0, 0, 3, 2],
@@ -769,6 +771,8 @@ export default {
     // FIELDS
     this.setupBuilding(28, 33, ['field']);
     this.setupBuilding(17, 38, ['field']);
+    this.setupBuilding(17, 37, ['beehive'], false, true);
+    this.setupBuilding(42, 28, ['beehive'], false, true);
     this.setupBuilding(26, 38, ['field']);
     this.setupBuilding(27, 38, ['field']);
     this.setupBuilding(38, 31, ['field']);
@@ -950,7 +954,6 @@ export default {
     this.setZedAt(32, 41, 1);
     this.setZedAt(36, 41, 1);
     this.setZedAt(17, 38, 1);
-    //this.setZedAt(16, 38, 1);
     this.setZedAt(35, 37, 2);
     this.setZedAt(33, 31, 2);
     this.setZedAt(33, 30, 1);
@@ -1064,7 +1067,7 @@ export default {
         type: type,
         group: 'building',
         text: false,
-        actions: this.getBuildingActionsFor(buildingName, locked, infested),
+        actions: this.getBuildingActionsFor(buildingName, locked, forceInfested || infested),
         items: lootItemList,
         locked: locked,
         looted: false,
@@ -1161,6 +1164,42 @@ export default {
     });  
   },
 
+  setBeeAt: function(x, y) {
+    let lootItemList = this.createLootItemList(1, ['meat'], [7, 5], 1);
+    let name = 'bee';
+
+    const currentObjectsIdCounter = this.addObjectIdAt(x, y);
+    this.setObject(currentObjectsIdCounter, {
+      x: x,
+      y: y,
+      name: name,
+      title: '',
+      type: 'bee',
+      group: 'zombie',
+      text: false,
+      actions: [
+        { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+        { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 }
+      ],
+      items: lootItemList,
+      locked: undefined,
+      looted: false,
+      infested: false,
+      zednearby: null,
+      active: true,
+      inreach: false,
+      discovered: false,
+      distance: null,
+      attack: Math.floor(Math.random()*3+1),
+      defense: Math.floor(Math.random()*4+2),
+      dead: false,
+      fighting: false,
+      disabled: false,
+      removed: false
+    });  
+  },
+
   spawnRatsAt: function(x, y) {
     const amount = Math.round(Math.random() * 5) || 3;
     let spawnedRatIds = [];
@@ -1169,6 +1208,16 @@ export default {
       spawnedRatIds.push(objectsIdCounter - 1); // at this place the countor is one ahead
     }
     return spawnedRatIds;
+  },
+
+  spawnBeesAt: function(x, y) {
+    const amount = Math.round(Math.random() * 2) + 4;
+    let spawnedBeesIds = [];
+    for (var i = 0; i < amount; i += 1) {
+      this.setBeeAt(x, y);
+      spawnedBeesIds.push(objectsIdCounter - 1); // at this place the countor is one ahead
+    }
+    return spawnedBeesIds;
   },
 
   spawnAnimalAt: function(name, x, y) {
@@ -1367,7 +1416,7 @@ export default {
         } else {
           singleAction.needsUnlock = false;
         }
-        if (infested && singleAction.id === 'search') {
+        if (infested && (singleAction.id === 'search' || singleAction.id === 'gather')) {
           singleAction.critical = true;
         }
         singleAction.locked = undefined;

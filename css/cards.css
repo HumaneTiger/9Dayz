@@ -194,6 +194,9 @@
 .card .inner .status div.status-infested {
   background-image: url(../img/card/status-infested.png);
 }
+.card .inner .status div.status-infested.bees {
+  background-image: url(../img/card/status-infested-bees.png);
+}
 .card h2 {
   position: absolute;
   top: 32px;

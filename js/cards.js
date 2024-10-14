@@ -331,6 +331,8 @@ export default {
         if (object.group === 'zombie') {
           if (object.name === 'rat') {
             Audio.sfx('rat-squeaks');
+          } else if (object.name === 'bee') {
+            Audio.sfx('bee-appears');
           } else {
             Audio.sfx('zed-appears');
           }

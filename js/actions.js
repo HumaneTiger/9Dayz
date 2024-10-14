@@ -60,7 +60,7 @@ export default {
       if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook') {
         for (let i = object.actions.length - 1; i >= 0; i--) {
           if (object.actions[i].id === action) {
-            if (!(object.infested && action === 'search')) {
+            if (!(object.infested && (action === 'search' || action === 'gather'))) {
               const cardRef = Cards.getCardById(cardId);
               cardRef.querySelector('li.' + action).remove();
               object.actions.splice(i, 1);  
@@ -120,20 +120,25 @@ export default {
     let delay = 2000;
 
     if (object.infested) {
-      const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
+      let hostileObjectIds;
+      if (object.name === 'beehive') {
+        hostileObjectIds = Props.spawnBeesAt(object.x, object.y);
+      } else {
+        hostileObjectIds = Props.spawnRatsAt(object.x, object.y);
+      }
       cardRef.classList.remove('infested');
       object.actions?.forEach(action => {
-        // search action not critical any more
-        if (action.name === 'search') {
+        // search/gather action not critical any more
+        if (action.name === 'search' || action.name === 'gather') {
           action.critical = false;
         }
       });
-      Player.handleFoundObjectIds(ratObjectIds);
+      Player.handleFoundObjectIds(hostileObjectIds);
       window.setTimeout(function() {
         object.infested = false;
         this.endAction(cardId);
-        Battle.startBattle();
-      }.bind(this), 1200);
+        Battle.startBattle(object.name === 'beehive'); // instant attack when bees spawn
+      }.bind(this), 1200);  
     } else if (allPreviews) {
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
@@ -362,7 +367,7 @@ export default {
   checkForInfested: function(cardId) {
     const cardRef = Cards.getCardById(cardId);
     const object = Props.getObject(cardId);
-    if (object.infested && !object.locked) {
+    if (object.infested && !object.name === 'beehive' && !object.locked) {
       const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
       cardRef.classList.remove('infested');
       object.infested = false;
