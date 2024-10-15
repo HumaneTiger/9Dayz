@@ -90,7 +90,6 @@ export default {
     Props.addWeaponToInventory('improvised-axe', 0, {durability: 0});
 
     Props.modifyObjectProperties();
-
     Items.generateInventorySlots();
     Items.fillInventorySlots();
     Crafting.checkCraftingPrerequisits();

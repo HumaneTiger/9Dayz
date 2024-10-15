@@ -112,7 +112,7 @@ export default {
 
     // generate item markup
     let itemMarkup = '';
-    
+
     for (var i = 0; i < object.items.length; i += 1) {
       itemMarkup += this.generateItemMarkup(object.items[i].name, object.items[i].amount);
     }
@@ -230,7 +230,9 @@ export default {
             cardRef.classList.remove('locked');
           }
           // need object prop for 'lootable', can also be used in props.js for action combos that make no sense
-          if (object.looted && !(object.name.startsWith('signpost') || object.name === 'fireplace')) {
+          if (object.looted && !(object.name.startsWith('signpost') || object.name === 'fireplace' || object.name === 'bee')) {
+            // mega bug: when bees contains no item from the beginning (amount=0), ul.item will be removed and cut/gather/search won't work
+            // maybe next line can be removed? or is--hidden can be added?
             cardRef.querySelector('ul.items')?.remove();
             cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
             cardRef.classList.add('looted');
