@@ -238,8 +238,8 @@ ul#properties li.time {
   display: inline-block;
   margin: 0 4px;
   position: relative;
-  width: 72px;
-  height: 70px;
+  width: 64px;
+  height: 64px;
   transition: background-color 0.1s ease-out;
 }
 #inventory .slot span.unknown {
