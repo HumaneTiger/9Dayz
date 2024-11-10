@@ -14,7 +14,7 @@ export default {
   },
 
   goToAndAction: function(cardId, action) {
-    window.setTimeout(function(cardId, action) {
+    window.setTimeout((cardId, action) => {
       const object = Props.getObject(cardId);
       const actionObject = object.actions.find(singleAction => singleAction.id === action);
       if (actionObject) {
@@ -68,15 +68,15 @@ export default {
           }
         }
       }
-    }.bind(this), (action === 'got-it' || action === 'gather' || action === 'search') ? 0 : 1000, cardId, action);
+    }, (action === 'got-it' || action === 'gather' || action === 'search') ? 0 : 1000, cardId, action);
   },
 
   goBackFromAction: function(cardId) {
     this.endAction(cardId);
     Player.updatePlayer(true);
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       Player.lockMovement(false);
-    }.bind(this), 1000);
+    }, 1000);
   },
 
   endAction: function(cardId) {
@@ -90,10 +90,10 @@ export default {
     if (time) {
       let ticks = parseInt(time) / 10;
       Props.setGameProp('speed', newSpeed);
-      window.setTimeout(function(defaultSpeed, cardId) {
+      window.setTimeout((defaultSpeed, cardId) => {
         Props.setGameProp('speed', defaultSpeed);
         callbackfunction.call(this, cardId, energy);
-      }.bind(this), ticks * newSpeed, defaultSpeed, cardId);  
+      }, ticks * newSpeed, defaultSpeed, cardId);  
     }
   },
 
@@ -134,11 +134,11 @@ export default {
         }
       });
       Player.handleFoundObjectIds(hostileObjectIds);
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         object.infested = false;
         this.endAction(cardId);
         Battle.startBattle(object.name === 'beehive'); // instant attack when bees spawn
-      }.bind(this), 1200);  
+      }, 1200);  
     } else if (allPreviews) {
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
@@ -153,7 +153,7 @@ export default {
         Props.setupBuilding(object.x, object.y, ['basement'], ['crate'], true);
       }
       for (let i = 0; i < allItems.length; i += 1) {
-        window.setTimeout(function(index, item, cardId, energy) {
+        window.setTimeout((index, item, cardId, energy) => {
           allPreviews[index].classList.add('is--hidden');
           if (item.amount > 0) {
             if (item.name === 'duck' || item.name === 'froggy') {
@@ -179,7 +179,7 @@ export default {
               Cards.renderCardDeck();
             }
           }
-        }.bind(this), i * timeout + delay, i, allItems[i], cardId, energy);
+        }, i * timeout + delay, i, allItems[i], cardId, energy);
       }
     }
   },
@@ -246,11 +246,11 @@ export default {
         protection: object.defense
       });
     }
-    window.setTimeout(function(cardId) {
+    window.setTimeout((cardId) => {
       Items.fillInventorySlots();
       Items.checkCraftingPrerequisits();
       this.goBackFromAction(cardId);
-    }.bind(this), 800, cardId);
+    }, 800, cardId);
   },
 
   simulateCuttingDown: function(cardId, time, energy) {
@@ -322,10 +322,10 @@ export default {
     Player.handleFoundObjectIds(zedsOnly);
     Cards.disableActions();
     
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       this.endAction(cardId);
       Battle.startBattle();
-    }.bind(this), 800);
+    }, 800);
 
   },
 
@@ -402,7 +402,7 @@ export default {
   },
 
   reading: function(cardId) {
-    window.setTimeout(function(cardId) {
+    window.setTimeout((cardId) => {
       const targetLocationName = Props.getObject(cardId).name;
       Audio.sfx('note');
       if (targetLocationName === 'signpost-1') {
@@ -431,6 +431,6 @@ export default {
           });
       }
       this.goBackFromAction(cardId);
-    }.bind(this), 1800, cardId);
+    }, 1800, cardId);
   }
 }

@@ -90,7 +90,7 @@ function triggerGameTick() {
 
 function initiateMainGameLoop() {
 
-    window.setTimeout(function() {
+    window.setTimeout(() => {
 
         /* go foreward in time */
         tickCurrent += tickInterval;
@@ -110,7 +110,7 @@ function initiateMainGameLoop() {
 }
 
 function idleLoop() {
-    window.setTimeout(function() {
+    window.setTimeout(() => {
         if (!Props.getGameProp('gamePaused')) {
             initiateMainGameLoop();
         } else {

@@ -269,7 +269,7 @@ export default {
             cardRef.style.transform = 'scale(0.4)';
             cardRef.style.opacity = 0;
 
-            window.setTimeout(function(cardRef, object) {
+            window.setTimeout((cardRef, object) => {
               if (object.group === 'event') {
                 object.removed = true;
               } else {
@@ -329,7 +329,7 @@ export default {
         if (cardRef) {
           cardRef.classList.add('remove');
           Map.removeObjectIconById(card.id);
-          window.setTimeout(function(removeCard) {
+          window.setTimeout((removeCard) => {
             removeCard.remove();
           }, 300, cardRef);
         }

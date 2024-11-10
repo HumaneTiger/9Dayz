@@ -15,12 +15,8 @@ const inventoryContainer = document.getElementById('inventory');
 export default {
   
   init: function() {
-    this.bind();
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
-  },
-
-  bind: function() {
   },
 
   capitalizeFirstLetter: function(string) {

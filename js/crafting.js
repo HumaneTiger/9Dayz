@@ -162,7 +162,7 @@ export default {
 
   craftingChangeFeedback: function() {
     document.querySelector('#actions .craft').classList.add('transfer');
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       document.querySelector('#actions .craft').classList.remove('transfer');
     }, 400);
   }

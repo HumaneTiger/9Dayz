@@ -45,11 +45,6 @@ export default {
       }
     });
 
-    this.bind();
-
-  },
-
-  bind: function() {
   },
 
   handleKeydown: function(ev) {
@@ -323,7 +318,7 @@ export default {
     let startScreen = document.getElementById('startscreen');
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       startScreen.querySelector('.screen__1').classList.add('is--hidden');
       startScreen.querySelector('.screen__2').classList.add('is--hidden');
       startScreen.querySelector('.screen__3').classList.add('is--hidden');
@@ -428,10 +423,10 @@ export default {
         dayTeaser.querySelector('.content').innerHTML = 'Day <span>' + timeIsUnity.gameDays + '</span>';
         dayTeaser.classList.add('open');
         dayTeaser.style.zIndex = '60';
-        window.setTimeout(function() {
+        window.setTimeout(() => {
           dayTeaser.querySelector('.content').style.transitionDelay = '0';
           dayTeaser.classList.remove('open');
-          window.setTimeout(function() {
+          window.setTimeout(() => {
             dayTeaser.removeAttribute('style');
           }, 1000);
         }, 2500);

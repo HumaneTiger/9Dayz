@@ -11,11 +11,7 @@ export default {
   
   init: function() {
     document.body.addEventListener('click', this.handleClick.bind(this));
-    this.bind();
     this.initDevConsole();
-  },
-
-  bind: function() {
   },
 
   handleClick: function(ev) {

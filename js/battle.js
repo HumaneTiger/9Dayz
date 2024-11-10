@@ -195,7 +195,7 @@ export default {
     document.getElementById('cards').classList.remove('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('active');
 
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       Player.changeProps('energy', -15);
       document.querySelector('#cards .cards-blocker').classList.add('is--hidden');
       
@@ -222,7 +222,7 @@ export default {
         Props.pauseGame(false);
       });
       cardZedDeck = [];
-    }.bind(this), 100);
+    }, 100);
   },
 
   nextTurn: function() {
@@ -327,16 +327,16 @@ export default {
     dragEl.classList.add('resolve');
 
     // cleanup
-    window.setTimeout(function(scratch, dragEl, zedCardRef) {
+    window.setTimeout((scratch, dragEl, zedCardRef) => {
       scratch.classList.remove('anim-scratch');
       dragEl.remove();
       zedCardRef.classList.remove('card-heavy-shake');
-    }.bind(this), 200, scratch, dragEl, zedCardRef);
+    }, 200, scratch, dragEl, zedCardRef);
 
     if (this.zedIsDead()) {
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         this.endBattle();
-      }.bind(this), 800);
+      }, 800);
     } else if (Player.getProp('actions') === 0) {
       this.endTurn();
     }
@@ -453,16 +453,16 @@ export default {
       battleStats.innerHTML = stat;    
     }
     battleStats.classList.add('active');
-    window.setTimeout(function(battleStats) {
+    window.setTimeout((battleStats) => {
       battleStats.classList.remove('active');
-    }.bind(this), 500, battleStats);
+    }, 500, battleStats);
   },
 
   showBattleMessage: function(message, delay) {
     document.querySelector('#battle-message').innerHTML = message;
     document.querySelector('#battle-message').classList.add('active');
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       document.querySelector('#battle-message').classList.remove('active');
-    }.bind(this), delay);
+    }, delay);
   }
 }

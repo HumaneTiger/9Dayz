@@ -11,16 +11,16 @@ export default {
 
     playAmbientLoop: function() {
       this.music('ambient-' + ambientIndex);
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         ambientIndex += 1;
         if (ambientIndex > 4) ambientIndex = 1;
         this.playAmbientLoop();
-      }.bind(this), (ambientTimes[ambientIndex-1] + ambientDelay) * 1000);
+      }, (ambientTimes[ambientIndex-1] + ambientDelay) * 1000);
     },
 
     music: function(name, delay, vol) {
 
-        window.setTimeout(function() {
+        window.setTimeout(() => {
 
             let audio = allAudio.querySelector('.music-' + name);
             let volume = vol || 0.2;
@@ -29,13 +29,13 @@ export default {
             
             audio.play().catch(() => {});
 
-        }.bind(this), delay || 0);
+        }, delay || 0);
 
     },
 
     voice: function(name, delay, vol) {
 
-        window.setTimeout(function() {
+        window.setTimeout(() => {
 
             let audio = allAudio.querySelector('.voice-' + name);
             let volume = vol || 0.2;
@@ -50,7 +50,7 @@ export default {
 
     sfx: function(name, delay, vol) {
 
-        window.setTimeout(function() {
+        window.setTimeout(() => {
 
             this.sfxStop(name);
             let audio = allAudio.querySelector('.sfx-' + name);
@@ -60,7 +60,7 @@ export default {
 
             audio.play().catch(() => {});
 
-        }.bind(this), delay || 0);
+        }, delay || 0);
 
     },
 
@@ -75,7 +75,7 @@ export default {
 
     stop: function(name, delay) {
 
-        window.setTimeout(function() {
+        window.setTimeout(() => {
 
             let audio = allAudio.querySelector('.music-' + name);
             

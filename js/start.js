@@ -212,7 +212,7 @@ export default {
             this.prepareGameStart();
             this.switchToScreen3();
           } else if (action.classList.contains('restart')) {
-            window.setTimeout(function() {
+            window.setTimeout(() => {
               document.location.reload();
             }, 300);
           } else if (action.classList.contains('resume')) {
@@ -298,7 +298,7 @@ export default {
     Props.pauseGame(false);
     Audio.playAmbientLoop();
     Ui.showMapBorder();
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       startscreenContainer.classList.add('is--hidden');
       Ui.showNewDay(0, true);
     }, 1500);

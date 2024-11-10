@@ -12,13 +12,8 @@ const slot2 = characterContainer.querySelector('.slot-2');
 export default {
   
   init: function() {
-    this.bind();
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
-  },
-
-  bind: function() {
-    return;
   },
 
   checkForSlotHover: function(ev) {

@@ -144,7 +144,7 @@ export default {
     let startScreen = document.getElementById('startscreen');
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       startScreen.querySelector('.screen__1').classList.add('is--hidden');
       startScreen.querySelector('.screen__2').classList.add('is--hidden');
       startScreen.querySelector('.screen__3').classList.add('is--hidden');
@@ -158,7 +158,7 @@ export default {
     let startScreen = document.getElementById('startscreen');
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       startScreen.querySelector('.screen__1').classList.add('is--hidden');
       startScreen.querySelector('.screen__2').classList.add('is--hidden');
       startScreen.querySelector('.screen__3').classList.add('is--hidden');
@@ -190,14 +190,14 @@ export default {
     Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
 
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       const objectsHere = Props.getObjectsAt(playerPosition.x, playerPosition.y);
       Cards.enableActions();
       this.findAndHandleObjects();
       if (objectsHere?.some(obj => (obj.group === 'zombie' && !obj.dead))) {
-        window.setTimeout(function() { Battle.startBattle(true); }.bind(this), 800);
+        window.setTimeout(() => { Battle.startBattle(true); }, 800);
       }
-    }.bind(this), 0);
+    }, 0);
 
     if (!noPenalty) {
       this.changeProps('energy', -1);
