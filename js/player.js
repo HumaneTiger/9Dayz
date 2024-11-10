@@ -115,6 +115,7 @@ export default {
     document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.health span.meter').style.paddingRight = '0'; // do not remove, or meter will stick out to the right
     this.changeProps('food', 0);
     this.changeProps('thirst', 0);
     this.changeProps('energy', 0);
