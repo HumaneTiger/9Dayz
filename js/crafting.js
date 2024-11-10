@@ -39,6 +39,7 @@ export default {
 
     const target = ev.target;
     const clickButton = target.closest('.button-craft');
+    const navButton = target.closest('.button-next') || target.closest('.button-prev');
     const leftMouseButton = (ev.button === 0);
     const rightMouseButton = (ev.button === 2);
 
@@ -85,6 +86,15 @@ export default {
     } else if (clickButton && rightMouseButton) {
       const item = clickButton.dataset.item;
       Almanac.showPage(item, 'item', clickButton, craftContainer);
+    } else if (navButton && leftMouseButton) {
+      if (navButton.classList.contains('button-next')) {
+        console.log(craftContainer.querySelector('.inner.craft-1'));
+        craftContainer.querySelector('.inner.craft-1').classList.add('is--hidden');
+        craftContainer.querySelector('.inner.craft-2').classList.remove('is--hidden');
+      } else if (navButton.classList.contains('button-prev')) {
+        craftContainer.querySelector('.inner.craft-1').classList.remove('is--hidden');
+        craftContainer.querySelector('.inner.craft-2').classList.add('is--hidden');
+      }
     }
   },
 
@@ -133,14 +143,14 @@ export default {
       }
       if (prerequisitsFulfilled) {
         if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
-          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]').classList.remove('active');
-          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]').classList.add('only1');
+          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.remove('active');
+          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('only1');
         } else {
-          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]').classList.add('active');
+          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('active');
           craftingOptionsTotal += 1;
         }
       } else {
-        craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]').classList.remove('active');
+        craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.remove('active');
       }
     }
 
