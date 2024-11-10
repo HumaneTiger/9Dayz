@@ -137,7 +137,7 @@ export default {
       window.setTimeout(() => {
         object.infested = false;
         this.endAction(cardId);
-        Battle.startBattle(object.name === 'beehive'); // instant attack when bees spawn
+        Battle.startBattle(true); // instant attack when place is infested
       }, 1200);  
     } else if (allPreviews) {
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
@@ -367,8 +367,9 @@ export default {
   checkForInfested: function(cardId) {
     const cardRef = Cards.getCardById(cardId);
     const object = Props.getObject(cardId);
-    if (object.infested && !object.name === 'beehive' && !object.locked) {
+    if (object.infested && !(object.name === 'beehive') && !object.locked) {
       const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
+      console.log(ratObjectIds);
       cardRef.classList.remove('infested');
       object.infested = false;
       object.actions?.forEach(action => {
