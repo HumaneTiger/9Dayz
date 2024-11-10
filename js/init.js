@@ -22,7 +22,7 @@ window.timeIsUnity = {
     gameHours: 24 + startHour,
     gameDays: 1, // 1
     todayHours: startHour,
-    todayTime: '0' + startHour + ':00'
+    todayTime: `0${startHour}:00`
 }
 
 // initialize everything

@@ -153,20 +153,24 @@ export default {
       window.timeIsUnity.gameDays = saveCheckpoint.gameTime.gameDays;
       window.timeIsUnity.todayHours = saveCheckpoint.gameTime.todayHours;
       window.timeIsUnity.todayTime = saveCheckpoint.gameTime.todayTime;
-      Props.setGameProp('startDay', saveCheckpoint.gameTime.gameDays)
-  
-      Ui.updateDayNightLayers(saveCheckpoint.gameTime.todayHours);
+      Props.setGameProp('startDay', saveCheckpoint.gameTime.gameDays);
 
-      if (saveCheckpoint.gameTime.todayHours >= 21 || saveCheckpoint.gameTime.todayHours < 5) {
-        Ui.switchDayNight(21);
-      } else {
-        Ui.switchDayNight(5);
-      }
-      if (saveCheckpoint.gameTime.todayHours >= 23 || saveCheckpoint.gameTime.todayHours < 5) {
-        Ui.triggerNight();
-      }
+      this.adjustDayTimeUI();
+  
       Player.init();
       Items.init();  
+    }
+  },
+
+  adjustDayTimeUI: function() {
+    Ui.updateDayNightLayers(window.timeIsUnity.todayHours);
+    if (window.timeIsUnity.todayHours >= 21 || window.timeIsUnity.todayHours < 5) {
+      Ui.switchDayNight(21);
+    } else {
+      Ui.switchDayNight(5);
+    }
+    if (window.timeIsUnity.todayHours >= 23 || window.timeIsUnity.todayHours < 5) {
+      Ui.triggerNight();
     }
   },
 

@@ -1,4 +1,6 @@
 import Props from './props.js'
+import Start from './start.js'
+import Ui from './ui.js'
 import Items from './items.js'
 import Map from './map.js'
 import Player from './player.js'
@@ -67,6 +69,17 @@ export default {
             document.getElementById('square-marker').classList.remove('freeze');
             document.getElementById('square-marker').classList.add('is--hidden');
           }
+        } else if (target.classList.contains('shift-time')) {
+          const selectedDay = parseInt(document.querySelector('#card-console .select-day').value);
+          const todayHours = 7;
+          window.timeIsUnity.gameTick = 0;
+          window.timeIsUnity.gameHours = (24 * selectedDay) + todayHours;
+          window.timeIsUnity.gameDays = selectedDay;
+          window.timeIsUnity.todayHours = todayHours;
+          window.timeIsUnity.todayTime = `0${todayHours}:00`;
+          Props.setGameProp('startDay', selectedDay);
+          Start.adjustDayTimeUI();
+          Ui.showNewDay(0, true);
         }
       }
     }

@@ -389,7 +389,7 @@
   <div id="card-console" class="out">
       <img class="logo" src="./img/ui/logo.png">
       <p>
-        Select a square in the game world
+        <strong>Select a square</strong> in the game world
       </p>
       <p>
         <button class="select-square">Select Square <span class="selected-square"></span></button>
@@ -410,17 +410,28 @@
         <button class="beam-character">Scotty ... Now!</button>
       </p>
       <p>
-        <strong>3.</strong> Place it in the selected square
-      </p>
-      <p>
         The new object behaves like any pre-placed object.
         If you place it in direct range of the character, its Card will spawn instantly.
+        Only objects placed next to or on a street will be seen by the character and spawn.
       </p>
       <p>
-        If you place it anywhere else, you have to move your character close to that place to make its Card spawn.
+        <strong>Select a day</strong> 
       </p>
       <p>
-        <strong>Please note:</strong> Only objects placed next to or on a street will be seen by the character and spawn.
+        <select class="select-day">
+          <option value="1">Day 1</option>
+          <option value="2">Day 2</option>
+          <option value="3">Day 3</option>
+          <option value="4">Day 4</option>
+          <option value="5">Day 5</option>
+          <option value="6">Day 6</option>
+          <option value="7">Day 7</option>
+          <option value="8">Day 8</option>
+          <option value="9">Day 9</option>
+        </select>
+      </p>
+      <p>
+        <button class="shift-time">Shift time!</button>
       </p>
     </div>
     <div id="damage-cover"></div>
