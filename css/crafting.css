@@ -63,3 +63,52 @@
   left: 546px;
   top: 299px;
 }
+
+.branch.c-whip {
+  left: 127px;
+  top: 165px;
+}
+.rope.c-whip {
+  left: 127px;
+  top: 55px;
+}
+.branch.c-fishing-rod {
+  left: 472px;
+  top: 95px;
+}
+.rope.c-fishing-rod {
+  left: 527px;
+  top: 145px;
+}
+.bone-hook.c-fishing-rod {
+  left: 592px;
+  top: 67px;
+}
+.straw-wheet.c-rope {
+  left: 111px;
+  top: 395px;
+}
+.straw-wheet.additional.c-rope {
+  left: 203px;
+  top: 378px;
+}
+.stump.c-barricades {
+  left: 335px;
+  top: 420px;
+}
+.sharp-stick.c-barricades {
+  left: 437px;
+  top: 329px;
+}
+.rope.c-barricades {
+  left: 487px;
+  top: 395px;
+}
+.knife.c-bone-hook {
+  left: 357px;
+  top: 215px;
+}
+.bones.c-bone-hook {
+  left: 700px;
+  top: 280px;
+}

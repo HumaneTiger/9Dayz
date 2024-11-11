@@ -78,7 +78,8 @@ inventoryPresets['treehugger'] = {
   'acorn': 1,
   'branch': 1,
   'fruit-2': 2,
-  'knife': 1
+  'knife': 1,
+  'straw-wheet': 2
 }
 inventoryPresets['snackivore'] = {
   'snack-1': 3,
@@ -110,7 +111,7 @@ var buildingTypes = {
   'industrial': ['tool-shed', 'garage'],
   'water': ['well', 'jetty', 'pump'],
   'container': ['crate'],
-  'camping': ['seating', 'log-cabine', 'outhouse', 'fireplace'],
+  'camping': ['seating', 'log-cabine', 'outhouse', 'fireplace', 'barricades'],
   'corpse': ['human-corpse-1']
 };
 
@@ -153,6 +154,7 @@ var buildingProps = {
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'cloth', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
   'fireplace': { locked: 0, spawn: 0, items: [] },
+  'barricades': { locked: 0, spawn: 0, items: [] },
   'crate': { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'] }, // always locked
   'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'bread-2', 'energy-pills', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'rope', 'wooden-club'] },
 };
@@ -240,20 +242,25 @@ var weaponProps = {
   'wrench': {attack: 14, defense: 4, durability: 4},
   'axe': {attack: 12, defense: 6, durability: 4},
   'improvised-axe': {attack: 8, defense: 4, durability: 3},
-  'wooden-club': {attack: 6, defense: 3, durability: 3}
+  'wooden-club': {attack: 6, defense: 3, durability: 3},
+  'improvised-whip': {attack: 3, defense: 3, durability: 3},
+  'fishing-rod': {attack: 2, defense: 1, durability: 3},
 };
 
 var weaponPropsUpgrades = {
   'baseball-bat': {
     attack: { amount: 1, item: 'nails' },
+    defense: { amount: 2, item: 'glue' },
     durability: { amount: 1, item: 'tape' },
   },
   'wrench': { 
     durability: { amount: 1, item: 'tape' },
+    defense: { amount: 1, item: 'spanner' },
     defense: { amount: 1, item: 'brush' },
   },
   'axe': { 
     attack: { amount: 1, item: 'fail' },
+    defense: { amount: 2, item: 'glue' },
     durability: { amount: 1, item: 'tape' },
   },
   'improvised-axe': { 
@@ -261,10 +268,18 @@ var weaponPropsUpgrades = {
     defense: { amount: 2, item: 'knife' },
     durability: { amount: 1, item: 'tape' },
   },
-  'wooden-club': { 
+  'wooden-club': {
     attack: { amount: 1, item: 'hacksaw' },
     defense: { amount: 1, item: 'brush' },
     durability: { amount: 1, item: 'tape' },
+  },
+  'improvised-whip': {
+    attack: { amount: 2, item: 'rope' },
+    defense: { amount: 1, item: 'knife' },
+    durability: { amount: 1, item: 'tape' },
+  },
+  'fishing-rod': {
+    durability: { amount: 1, item: 'bone-hook' },
   },
 };
 
@@ -337,7 +352,9 @@ var items = {
   'wooden-club': ['extra', 0, 0, 0, weaponProps['wooden-club'].attack, weaponProps['wooden-club'].defense],
   'wrench': ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
   'baseball-bat': ['extra', 0, 0, 0, weaponProps['baseball-bat'].attack, weaponProps['baseball-bat'].defense],
-  'axe': ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense]
+  'axe': ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense],
+  'improvised-whip': ['extra', 0, 0, 0, weaponProps['improvised-whip'].attack, weaponProps['improvised-whip'].defense],
+  'fishing-rod': ['extra', 0, 0, 0, weaponProps['fishing-rod'].attack, weaponProps['fishing-rod'].defense],
 };
 var itemModifiers = {
   'snackivore': {
@@ -1413,6 +1430,9 @@ export default {
             (buildingName === 'fireplace' && singleAction.id === 'break-door') ||
             (buildingName === 'fireplace' && singleAction.id === 'scout-area') ||
             (buildingName === 'fireplace' && singleAction.id === 'search') ||
+            (buildingName === 'barricades' && singleAction.id === 'break-door') ||
+            (buildingName === 'barricades' && singleAction.id === 'scout-area') ||
+            (buildingName === 'barricades' && singleAction.id === 'search') ||
             (buildingName === 'seating' && singleAction.id === 'break-door') ||
             (buildingName === 'seating' && singleAction.id === 'scout-area') ||
             (buildingName === 'seating' && singleAction.id === 'sleep') ||

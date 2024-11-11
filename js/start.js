@@ -83,11 +83,15 @@ export default {
       }
     }
     // add zero items to present crafting options in Almanac
-    // fix this in the almanach
+    // TODO: fix this in the almanach
     Props.addItemToInventory('tape', 0);
     Props.addItemToInventory('sharp-stick', 0);
+    Props.addItemToInventory('rope', 0);
+    Props.addItemToInventory('bone-hook', 0);
     Props.addWeaponToInventory('wooden-club', 0, {durability: 0});
     Props.addWeaponToInventory('improvised-axe', 0, {durability: 0});
+    Props.addWeaponToInventory('improvised-whip', 0, {durability: 0});
+    Props.addWeaponToInventory('fishing-rod', 0, {durability: 0});
 
     Props.modifyObjectProperties();
     Items.generateInventorySlots();

@@ -83,7 +83,7 @@ export default {
     } else if (cardSlot && rightMouseButton) {
       if (cardSlot.dataset.item === 'improvised-axe' || cardSlot.dataset.item === 'wooden-club') {
         Almanac.showPage(cardSlot.dataset.item, 'item', cardSlot, characterContainer);
-      } else if (cardSlot.dataset.item === 'axe' || cardSlot.dataset.item === 'baseball-bat' || cardSlot.dataset.item === 'wrench') {
+      } else if (cardSlot.dataset.item === 'axe' || cardSlot.dataset.item === 'baseball-bat' || cardSlot.dataset.item === 'wrench' || cardSlot.dataset.item === 'improvised-whip' || cardSlot.dataset.item === 'fishing-rod') {
         Almanac.showPage(cardSlot.dataset.item, 'content', cardSlot, characterContainer);
       } else if (cardSlot.classList.contains('slot-hero')) {
         Almanac.showPage(Props.getGameProp('character'), 'content', cardSlot, characterContainer);

@@ -51,6 +51,14 @@ const almanacContent = {
     'motive': './img/weapons/wrench.png',
     'markup': '<p>A rare weapon that can\'t be crafted but can only be found in tool sheds and garages.</p>'
   },
+  'improvised-whip': {
+    'motive': './img/weapons/improvised-whip.png',
+    'markup': '<p>A weapon with rather little damage. However, when targeting a certain enemy, it will also hit all adjacent enemies.</p>'
+  },
+  'fishing-rod': {
+    'motive': './img/weapons/fishing-rod.png',
+    'markup': '<p>(Preview) With a fishing rod equiped, players can use the additional action "Fish" on the Jetty.</p>'
+  },
   'everyman': {
     'motive': './img/characters/hero.png',
     'markup': document.querySelector('div[data-character="everyman"]').innerHTML

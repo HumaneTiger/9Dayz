@@ -214,6 +214,12 @@
 #character .card div[data-item="hacksaw"] .upgrade-item::after {
   background-image: url(../img/items/hacksaw.PNG);
 }
+#character .card div[data-item="glue"] .upgrade-item::after {
+  background-image: url(../img/items/glue.PNG);
+}
+#character .card div[data-item="spanner"] .upgrade-item::after {
+  background-image: url(../img/items/spanner.PNG);
+}
 
 #character .card div[data-item]:hover .upgrade-item {
   box-shadow: 0 1px 4px rgba(53, 35, 26, 0.8);

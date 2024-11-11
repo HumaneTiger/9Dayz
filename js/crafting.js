@@ -146,8 +146,21 @@ export default {
           craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.remove('active');
           craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('only1');
         } else {
-          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('active');
-          craftingOptionsTotal += 1;
+          // small hack needed here
+          if (recipe === 'rope') {
+            if (Items.inventoryItemAmount('straw-wheet') === 1) {
+              craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
+              craftContainer.querySelector('.nope.straw-wheet.additional')?.classList.remove('is--hidden');
+            } else {
+              craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
+              craftContainer.querySelector('.nope.straw-wheet.additional')?.classList.add('is--hidden');
+              craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('active');
+              craftingOptionsTotal += 1;  
+            }
+          } else {
+            craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('active');
+            craftingOptionsTotal += 1;  
+          }
         }
       } else {
         craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.remove('active');
