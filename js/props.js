@@ -79,7 +79,6 @@ inventoryPresets['treehugger'] = {
   'branch': 1,
   'fruit-2': 2,
   'knife': 1,
-  'straw-wheet': 2
 }
 inventoryPresets['snackivore'] = {
   'snack-1': 3,
