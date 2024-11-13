@@ -50,6 +50,8 @@ export default {
           this.reading(cardId, actionObject.time, actionObject.energy);
         } else if (action === 'drink') {
           this.drinking(cardId, actionObject.time, actionObject.energy);
+        } else if (action === 'fish') {
+          this.fishing(cardId, actionObject.time, actionObject.energy);
         } else {
           console.log('Unknown action: ' + action);
         }        
@@ -57,7 +59,7 @@ export default {
         console.log('No action object for: ' + action);
       }
       /* optional: hide 1-time actions */
-      if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook') {
+      if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook' && action !== 'fish') {
         for (let i = object.actions.length - 1; i >= 0; i--) {
           if (object.actions[i].id === action) {
             if (!(object.infested && (action === 'search' || action === 'gather'))) {
@@ -400,6 +402,26 @@ export default {
       Player.changeProps('thirst', 50);
       this.goBackFromAction(cardId);
     }, cardId, time, 800);
+  },
+
+  fishing: function(cardId, time, energy) {
+    Audio.sfx('water-dip');
+    Map.showScoutMarkerFor(cardId);
+    this.fastForward(function(cardId) {
+      Map.hideScoutMarker();
+      Player.changeProps('energy', energy);
+      Player.changeProps('food', -5);
+      Player.changeProps('thirst', -10);
+      if (Math.random() >= 0.3) {
+        const object = Props.getObject(cardId);
+        Props.spawnAnimalAt('fish', object.x, object.y);
+        // baits would be nice as well
+        Props.addWeaponToInventory('fishing-rod', 0, {durability: -1});
+        Items.fillInventorySlots();
+        Items.checkCraftingPrerequisits();
+      }
+      this.goBackFromAction(cardId);
+    }, cardId, time, 800, energy);
   },
 
   reading: function(cardId) {

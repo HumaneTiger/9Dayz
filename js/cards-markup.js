@@ -52,7 +52,7 @@ export default {
                              `<div class="banner"><img src="./img/icons/weapons/${object.group}.png"></div>`;
 
     let cardMarkupAnimal =   `<p class="activity glow is--hidden"></p>` +
-                             `<img class="motive" src="./img/animals/${object.name}.png">` +
+                             `<img class="motive" src="./img/animals/${object.name === 'fish' ? object.name + '-' + Math.floor(Math.random() * 3 + 1) : object.name}.png">` +
                              `<div class="banner"><img src="./img/icons/animals/animal.png"></div>` +
                              `<div class="dead"><img src="./img/zombies/dead.png"></div>`;
 
@@ -298,6 +298,8 @@ export default {
             actionRef.querySelector('.additional-locked').textContent = 'Knife needed';        
           } else if (action.id === 'smash-window') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
+          } else if (action.id === 'fish') {
+            actionRef.querySelector('.additional-locked').textContent = 'Fishing rod needed';
           } else if (action.id === 'equip') {
             if (Character.numberFilledSlots() >= 2) {
               actionRef.querySelector('.additional-locked').textContent = 'No free space';

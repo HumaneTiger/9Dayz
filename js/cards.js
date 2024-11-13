@@ -302,6 +302,11 @@ export default {
             action.locked = true;
           }
         }
+        if (action.id === 'fish') {
+          if (!Items.inventoryContains('fishing-rod')) {
+            action.locked = true;
+          }
+        }
       });
 
       if (object.actions.filter(singleAction => (singleAction.id === 'search' || singleAction.id === 'gather')).length === 0 && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
