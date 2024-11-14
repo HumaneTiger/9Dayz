@@ -271,8 +271,9 @@ export default {
       } else if (Items.inventoryContains('axe')) {
         Props.addWeaponToInventory('axe', 0, {durability: -1});
       }
-      Props.addItemToInventory('stump', 1); 
+      Props.addItemToInventory('stump', 1);
       Props.addItemToInventory('branch', 2 + Math.round(Math.random() - 0.25));
+      Props.addItemToInventory('straw-wheet', Math.round(Math.random() - 0.25));
       Items.inventoryChangeFeedback();
       Items.fillInventorySlots();
       Player.changeProps('energy', energy);

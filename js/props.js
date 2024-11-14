@@ -243,7 +243,7 @@ var weaponProps = {
   'improvised-axe': {attack: 8, defense: 4, durability: 3},
   'wooden-club': {attack: 6, defense: 3, durability: 3},
   'improvised-whip': {attack: 3, defense: 3, durability: 3},
-  'fishing-rod': {attack: 2, defense: 1, durability: 3},
+  'fishing-rod': {attack: 2, defense: 1, durability: 4},
 };
 
 var weaponPropsUpgrades = {
@@ -278,7 +278,7 @@ var weaponPropsUpgrades = {
     durability: { amount: 1, item: 'tape' },
   },
   'fishing-rod': {
-    durability: { amount: 1, item: 'bone-hook' },
+    durability: { amount: 1, item: 'rope' },
   },
 };
 
@@ -346,7 +346,7 @@ var items = {
   'exodus': ['craft', 0, 0, 0, 4, 2],
   'mallet': ['craft', 0, 0, 0, 5, 1],
   'rope': ['craft', 0, 0, 0, 3, 1],
-  'bone-hook': ['craft', 0, 0, 0, 3, 1],
+  'bone-hook': ['craft', 0, 0, 0, 2, 2],
   'improvised-axe': ['extra', 0, 0, 0, weaponProps['improvised-axe'].attack, weaponProps['improvised-axe'].defense],
   'wooden-club': ['extra', 0, 0, 0, weaponProps['wooden-club'].attack, weaponProps['wooden-club'].defense],
   'wrench': ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
