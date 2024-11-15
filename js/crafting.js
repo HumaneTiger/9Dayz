@@ -88,7 +88,6 @@ export default {
       Almanac.showPage(item, 'item', clickButton, craftContainer);
     } else if (navButton && leftMouseButton) {
       if (navButton.classList.contains('button-next')) {
-        console.log(craftContainer.querySelector('.inner.craft-1'));
         craftContainer.querySelector('.inner.craft-1').classList.add('is--hidden');
         craftContainer.querySelector('.inner.craft-2').classList.remove('is--hidden');
       } else if (navButton.classList.contains('button-prev')) {

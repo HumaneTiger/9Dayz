@@ -265,16 +265,16 @@ ul#properties li.time {
   top: 145px;
 }
 .button-craft[data-item="rope"] {
-  left: 95px;
-  top: 265px;
+  left: 80px;
+  top: 295px;
 }
 .button-craft[data-item="barricades"] {
   left: 290px;
   top: 240px;
 }
 .button-craft[data-item="bone-hook"] {
-  left: 590px;
-  top: 390px;
+  left: 595px;
+  top: 395px;
 }
 
 #inventory .inner {

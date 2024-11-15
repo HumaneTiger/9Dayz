@@ -137,9 +137,9 @@ export default {
       }
 
       Props.modifyObjectProperties();
-
       Items.generateInventorySlots();
-      Items.fillInventorySlots();    
+      Items.fillInventorySlots();
+      Crafting.checkCraftingPrerequisits();
 
       // generate all buildings and zeds
       Props.setupAllBuildings();
