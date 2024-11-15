@@ -279,15 +279,41 @@ export default {
     }
   },
 
-  resolveAttack: function(dragEl, dragTarget) {
+  resolveMultiAttack: function(dragEl, dragTarget) {
+    const zedId = dragTarget.id;
+    const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
+    const item = Items.getItemByName(dragEl.dataset.item);
+
+    /* hit 3 potential targets */
+    let potentialTargets = [];
+    cardZedDeck[targetPositionInDeck - 1] !== undefined ? potentialTargets.push(cardZedDeck[targetPositionInDeck - 1]) : false;
+    cardZedDeck[targetPositionInDeck] !== undefined ? potentialTargets.push(cardZedDeck[targetPositionInDeck]) : false;
+    cardZedDeck[targetPositionInDeck + 1] !== undefined ? potentialTargets.push(cardZedDeck[targetPositionInDeck + 1]) : false;
+
+    /* do this only once upfront for all attacks */
+    Player.changeProps('protection', item.protection);
+    Player.changeProps('actions', -1);  
+    if (item.durability && item.durability > 0) {
+      item.durability -= 1;
+    }
+    potentialTargets.forEach((targetId, index) => {
+      window.setTimeout((targetId) => {
+        this.resolveAttack(dragEl, Cards.getCardById(targetId), true);
+      }, index * 150, targetId);
+    })
+  },
+
+  resolveAttack: function(dragEl, dragTarget, multiAttack) {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
     const zedCardRef = Cards.getCardById(zedId);
     const item = Items.getItemByName(dragEl.dataset.item);
     const scratch = document.querySelector('.scratch');
 
-    Player.changeProps('protection', item.protection);
-    Player.changeProps('actions', -1);
+    if (!multiAttack) {
+      Player.changeProps('protection', item.protection);
+      Player.changeProps('actions', -1);
+    }
     this.showBattleStats('+' + item.protection, 'blue');
     Audio.sfx('punch');
 
@@ -300,7 +326,7 @@ export default {
       zedCardRef.querySelector('.health').textContent = zedObject.defense;
     }
 
-    if (item.durability && item.durability > 0) {
+    if (!multiAttack && item.durability && item.durability > 0) {
       item.durability -= 1;
     }
     if (!item.durability) {
@@ -320,7 +346,7 @@ export default {
     }
     Items.fillInventorySlots();
 
-    // play "hit" animation, resolve item card
+    // run "hit" animation, resolve item card
     scratch.style.left = zedCardRef.style.left;
     scratch.classList.add('anim-scratch');
     zedCardRef.classList.add('card-heavy-shake');

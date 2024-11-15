@@ -413,13 +413,14 @@ export default {
       Player.changeProps('energy', energy);
       Player.changeProps('food', -5);
       Player.changeProps('thirst', -10);
-      if (Math.random() >= 0.3) {
+      // always success for now, add minigame later
+      // baits would be nice as well
+      if (true) {
         const object = Props.getObject(cardId);
         Props.spawnAnimalAt('fish', object.x, object.y);
-        // baits would be nice as well
         Props.addWeaponToInventory('fishing-rod', 0, {durability: -1});
         Items.fillInventorySlots();
-        Items.checkCraftingPrerequisits();
+        Items.checkCraftingPrerequisits();  
       }
       this.goBackFromAction(cardId);
     }, cardId, time, 800, energy);

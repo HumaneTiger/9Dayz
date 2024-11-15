@@ -178,7 +178,12 @@ export default {
       let dragTarget = this.getDragTarget(e);
       if (dragTarget) {
         if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
-          Battle.resolveAttack(dragEl, dragTarget);
+          const item = Items.getItemByName(dragEl.dataset.item);
+          if (item.name === 'improvised-whip') {
+            Battle.resolveMultiAttack(dragEl, dragTarget);
+          } else {
+            Battle.resolveAttack(dragEl, dragTarget, false);
+          }
         }
       } else if (dragEl.id && dragEl.id === 'almanac') {
         dragEl.classList.remove('grabbed');
