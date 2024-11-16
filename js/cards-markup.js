@@ -39,7 +39,8 @@ export default {
                              `<h2>${object.title}</h2>` +
                              `<p class="activity glow is--hidden"></p>` +
                              `<img class="motive" src="./img/buildings/${buildingName}.png">` +
-                             `<div class="banner"><img src="./img/icons/buildings/${object.type}.png"></div>`;
+                             `<div class="banner"><img src="./img/icons/buildings/${object.type}.png"></div>` +
+                             `<div class="dead"><img src="./img/ui/preview.png"></div>`;
 
     let cardMarkupZombie =   `<div class="attack">${object.attack}</div><div class="health">${object.defense}</div>` +
                              `<p class="activity glow is--hidden"></p>` +

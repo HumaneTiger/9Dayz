@@ -57,7 +57,11 @@ const almanacContent = {
   },
   'fishing-rod': {
     'motive': './img/weapons/fishing-rod.png',
-    'markup': '<p>(Preview) With a fishing rod equiped, players can use the additional action "Fish" on the Jetty.</p>'
+    'markup': '<p>With a fishing rod equiped, players can use the additional action "Fish" on the Jetty.</p>'
+  },
+  'barricades': {
+    'motive': './img/almanac/barricades.png',
+    'markup': '<p>Barricades offer a strategic option for preparing <span class="keyword" data-content="battle">battles</span> against larger numbers of zombies.</p><p>Built in the direct surrounding of a battle, they offer a decent amount of protection as well as dealing some passive damage to attacking enemies.</p><p>Similar to <span class="keyword" data-content="fireplace">fireplaces</span>, barricades remain in place where they are crafted.</p>'
   },
   'everyman': {
     'motive': './img/characters/hero.png',
@@ -148,8 +152,8 @@ export default {
       battlesParagraph.classList.add('is--hidden');
       weaponUpgradeParagraph.classList.add('is--hidden');
 
-      if (item === 'fireplace' && type === 'item') {
-        type = 'content';
+      if ((item === 'fireplace' || item === 'barricades') && type === 'item') {
+        type = 'content'; // todo: better solution needed
       }
 
       // set title

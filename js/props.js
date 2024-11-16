@@ -153,7 +153,7 @@ var buildingProps = {
   'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'cloth', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
   'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
   'fireplace': { locked: 0, spawn: 0, items: [] },
-  'barricades': { locked: 0, spawn: 0, items: [] },
+  'barricades': { locked: 0, spawn: 0, items: [], preview: true },
   'crate': { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'] }, // always locked
   'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'bread-2', 'energy-pills', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'rope', 'wooden-club'] },
 };
@@ -1110,7 +1110,7 @@ export default {
         type: type,
         group: 'building',
         text: false,
-        actions: this.getBuildingActionsFor(buildingName, locked, forceInfested || infested),
+        actions: props.preview ? [{ id: 'got-it', label: 'Got it!' }] : this.getBuildingActionsFor(buildingName, locked, forceInfested || infested),
         items: lootItemList,
         locked: locked,
         looted: false,
@@ -1120,6 +1120,7 @@ export default {
         inreach: false,
         discovered: false,
         distance: null,
+        preview: props.preview,
         attack: undefined,
         defense: undefined, // use later for building cards in battle
         dead: undefined,
