@@ -71,7 +71,8 @@ inventoryPresets['everyman'] = {
   'snack-1': 1,
   'knife': 1,
   'energy-pills': 1,
-  'pepper': 1
+  'pepper': 1,
+  'straw-wheet': 2,
 }
 inventoryPresets['treehugger'] = {
   'mushroom-1': 2,

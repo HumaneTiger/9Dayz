@@ -420,6 +420,8 @@ export default {
         cardRef.classList.add('actions-locked');  
       }
     });
+    document.querySelector('#craft')?.classList.add('actions-locked');
+    document.querySelector('#character')?.classList.add('actions-locked');
   },
 
   enableActions: function() {
@@ -428,7 +430,9 @@ export default {
       const cardRef = document.getElementById(card.id);
       object.disabled = false;
       cardRef.classList.remove('actions-locked');  
-    });  
+    });
+    document.querySelector('#craft')?.classList.remove('actions-locked');
+    document.querySelector('#character')?.classList.remove('actions-locked');
   },
 
   removeCard: function(cardId) {
