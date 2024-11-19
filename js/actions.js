@@ -13,64 +13,183 @@ export default {
   init: function() {
   },
 
+  actionProps: {
+    'search': {
+      callback: (scope, cardId, time, energy) => { scope.simulateGathering(cardId, time, energy) },
+      oneTime: true,
+      delay: 0,
+      label: 'searching',
+    },
+    'cut': {
+      callback: (scope, cardId, time, energy) => { scope.simulateGathering(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'cutting',
+    },
+    'gather': {
+      callback: (scope, cardId, time, energy) => { scope.simulateGathering(cardId, time, energy) },
+      oneTime: true,
+      delay: 0,
+      label: 'gathering',
+    },
+    'scout-area': {
+      callback: (scope, cardId, time, energy) => { scope.simulateScouting(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'scouting',
+    },
+    'rest': {
+      callback: (scope, cardId, time, energy) => { scope.simulateResting(cardId, time, energy) },
+      oneTime: false,
+      delay: 1000,
+      label: 'resting',
+    },
+    'sleep': {
+      callback: (scope, cardId, time, energy) => { scope.simulateSleeping(cardId, time, energy) },
+      oneTime: false,
+      delay: 1000,
+      label: 'sleeping',
+    },
+    'cook': {
+      callback: (scope, cardId) => { scope.simulateCooking(cardId) },
+      oneTime: false,
+      delay: 1000,
+      label: 'cooking',
+    },
+    'equip': {
+      callback: (scope, cardId) => { scope.simulateEquipping(cardId) },
+      oneTime: true,
+      delay: 1000,
+      label: 'equipping',
+    },
+    'cut-down': {
+      callback: (scope, cardId, time, energy) => { scope.simulateCuttingDown(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'cutting',
+    },
+    'smash-window': {
+      callback: (scope, cardId, time, energy) => { scope.simulateSmashing(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'smashing',
+    },
+    'break-door': {
+      callback: (scope, cardId, time, energy) => { scope.simulateBreaking(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'breaking',
+    },
+    'break-lock': {
+      callback: (scope, cardId, time, energy) => { scope.simulateBreaking(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'breaking',
+    },
+    'attack': {
+      callback: (scope, cardId, time, energy) => { scope.simulateAttacking(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: '',
+    },
+    'lure': {
+      callback: (scope, cardId, time, energy) => { scope.simulateLuring(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'luring',
+    },
+    'got-it': {
+      callback: (scope, cardId) => { scope.gotIt(cardId) },
+      oneTime: true,
+      delay: 0,
+      label: '',
+    },
+    'read': {
+      callback: (scope, cardId, time, energy) => { scope.reading(cardId, time, energy) },
+      oneTime: true,
+      delay: 1000,
+      label: 'reading',
+    },
+    'drink': {
+      callback: (scope, cardId, time, energy) => { scope.drinking(cardId, time, energy) },
+      oneTime: false,
+      delay: 1000,
+      label: 'drinking',
+    },
+    'fish': {
+      callback: (scope, cardId, time, energy) => { scope.fishing(cardId, time, energy) },
+      oneTime: false,
+      delay: 1000,
+      label: 'fishing',
+    },
+  },
+  
   goToAndAction: function(cardId, action) {
-    window.setTimeout((cardId, action) => {
-      const object = Props.getObject(cardId);
-      const actionObject = object.actions.find(singleAction => singleAction.id === action);
-      if (actionObject) {
-        if (action === 'search') {
-          this.simulateGathering(cardId, actionObject.time, actionObject.energy);
-        } if (action === 'cut') {
-          this.simulateGathering(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'gather') {
-          this.simulateGathering(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'scout-area') {
-          this.simulateScouting(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'rest') {
-          this.simulateResting(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'sleep') {
-          this.simulateSleeping(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'cook') {
-          this.simulateCooking(cardId);
-        } else if (action === 'equip') {
-          this.simulateEquipping(cardId);
-        } else if (action === 'cut-down') {
-          this.simulateCuttingDown(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'smash-window') {
-          this.simulateSmashing(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'break-door' || action === 'break-lock') {
-          this.simulateBreaking(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'attack') {
-          this.simulateAttacking(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'lure') {
-          this.simulateLuring(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'got-it') {
-          this.gotIt(cardId);
-        } else if (action === 'read') {
-          this.reading(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'drink') {
-          this.drinking(cardId, actionObject.time, actionObject.energy);
-        } else if (action === 'fish') {
-          this.fishing(cardId, actionObject.time, actionObject.energy);
-        } else {
-          console.log('Unknown action: ' + action);
-        }        
+    const object = Props.getObject(cardId);
+    const actionObject = object.actions.find(singleAction => singleAction.id === action);
+    const actionProps = this.actionProps[action];
+    const cardRef = Cards.getCardById(cardId);
+
+    if (actionObject && actionProps && cardRef) {
+      if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
+        this.notEnoughEnergyFeedback();
+      } else if (actionObject && actionObject.locked) {
+        this.actionLockedFeedback(cardRef);
       } else {
-        console.log('No action object for: ' + action);
+        this.prepareAction(cardId, action);
+        window.setTimeout(() => {
+          actionProps.callback(this, cardId, actionObject.time, actionObject.energy);
+        }, actionProps.delay || 0);
+        this.removeOneTimeActions(cardId, action);
       }
-      /* optional: hide 1-time actions */
-      if (action && action !== 'rest' && action !== 'sleep' && action !== 'drink' && action !== 'cook' && action !== 'fish') {
-        for (let i = object.actions.length - 1; i >= 0; i--) {
-          if (object.actions[i].id === action) {
-            if (!(object.infested && (action === 'search' || action === 'gather'))) {
-              const cardRef = Cards.getCardById(cardId);
-              cardRef.querySelector('li.' + action).remove();
-              object.actions.splice(i, 1);  
-            }
+    } else {
+      console.log('Invalid action or card reference!', action, cardId);
+    }
+  },
+
+  prepareAction: function(cardId, action) {
+    const object = Props.getObject(cardId);
+    const actionProps = this.actionProps[action];
+    Audio.sfx('click');
+    Player.lockMovement(true);
+    Cards.disableActions();
+    CardsMarkup.showActionFeedback(cardId, actionProps.label);
+    if (action !== 'lure') {
+      Player.movePlayerTo(object.x, object.y);
+    }
+  },
+
+  notEnoughEnergyFeedback: function() {
+    const energyMeter = document.querySelector('#properties li.energy');
+    energyMeter?.classList.add('heavy-shake');
+    window.setTimeout(() => {
+      energyMeter?.classList.remove('heavy-shake');
+    }, 200);    
+    Audio.sfx('nope');
+  },
+
+  actionLockedFeedback: function(cardRef) {
+    cardRef?.classList.add('card-shake');
+    window.setTimeout(() => {
+      cardRef?.classList.remove('card-shake');
+    }, 200);    
+    Audio.sfx('nope');
+  },
+
+  removeOneTimeActions: function(cardId, action) {
+    const object = Props.getObject(cardId);
+    const actionProps = this.actionProps[action];
+    const cardRef = Cards.getCardById(cardId);
+    if (actionProps.oneTime) {
+      for (let i = object.actions.length - 1; i >= 0; i--) {
+        if (object.actions[i].id === action) {
+          if (!(object.infested && (action === 'search' || action === 'gather'))) {
+            cardRef.querySelector('li.' + action).remove();
+            object.actions.splice(i, 1);  
           }
         }
       }
-    }, (action === 'got-it' || action === 'gather' || action === 'search') ? 0 : 1000, cardId, action);
+    }
   },
 
   goBackFromAction: function(cardId) {
@@ -97,6 +216,36 @@ export default {
         callbackfunction.call(this, cardId, energy);
       }, ticks * newSpeed, defaultSpeed, cardId);  
     }
+  },
+
+  grabItem: function(cardId, container, itemName) {
+    const object = Props.getObject(cardId);
+    const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
+    const itemProps = Props.getItem(itemName);
+    let cardRef = Cards.getCardById(cardId);
+    if (itemProps && itemProps[0] === 'extra') {
+      // spawn weapon as card
+      Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
+    } else if (itemName === 'crate') {            
+      Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, [itemName]);
+    } else {
+      Props.addItemToInventory(itemName, itemAmount);
+    }
+    object.items.find(singleItem => singleItem.name === itemName).amount = 0;
+    container.classList.add('transfer');
+    Items.inventoryChangeFeedback();
+    Items.fillInventorySlots();
+    Audio.sfx('pick', 0, 0.1);
+    window.setTimeout((container) => {
+      if (cardRef) {
+        container.classList.add('is--hidden');
+        if (itemName === 'crate' || itemProps[0] === 'extra') { Player.findAndHandleObjects(); } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
+        if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
+            !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
+          Cards.renderCardDeck();
+        }
+      }
+    }, 400, container);
   },
 
   simulateGathering: function(cardId, time, energy) {
@@ -216,10 +365,8 @@ export default {
   },
 
   simulateSleeping: function(cardId, time, energy) {
-
     Map.showScoutMarkerFor(cardId);
     if (Props.getGameProp('timeMode') === 'night') { energy += 20 };
-
     this.fastForward(function(cardId, energy) {
       Player.changeProps('energy', energy);
       Player.changeProps('health', Math.floor(energy / 2));
@@ -231,7 +378,6 @@ export default {
   },
 
   simulateCooking: function(cardId) {
-    /* simulate cooking inside Fireplace Card */
     const cardRef = Cards.getCardById(cardId);
     window.setTimeout(() => {
       Cooking.start(cardRef);

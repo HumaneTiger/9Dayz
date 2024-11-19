@@ -11,7 +11,7 @@ var events = {
     title: 'Gather',
     text: 'There are some trees growing here. You should look around them for useful things and pick everything up. Watch your stats - hunger and thirst are a constant threat in this broken world.'
   },
-  '18-42': {
+  '13-41': {
     title: 'Almanac',
     text: 'The Almanac provides details about all items.<br><img src="./img/almanac/almanac.png"><br>Just right-click item slots and crafting buttons.'
   },
@@ -45,8 +45,8 @@ var specialEvents = {
     text: 'The building is invested by giant rats! Scout the place before searching to avoid an immediate confrontation.<br><img src="./img/card/status-infested.png">'
   },
   'locked-building': {
-    title: 'Locked Building',
-    text: 'The building is locked. You need an axe to break the door.<br><img src="./img/card/status-locked.png">'
+    title: 'Locked',
+    text: 'The content of the crate should make your tutorial run easier, but it is locked. Equip the axe to break it.<br><img src="./img/card/status-locked.png">'
   },
   'locked-car': {
     title: 'Locked Car',

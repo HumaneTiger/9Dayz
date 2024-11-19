@@ -1,6 +1,7 @@
 import { default as Audio } from './audio.js'
 import { default as Props } from './props.js'
 import { default as Player } from './player.js'
+import { default as Cards } from './cards.js'
 import { default as Map } from './map.js'
 import { default as Cooking } from './cooking.js'
 import { default as Character } from './character.js'
@@ -340,14 +341,14 @@ export default {
     });
   },
 
-  showActionFeedback: function(cardRef, actionId) {
-    let text = Props.mapActionsToText(actionId);
+  showActionFeedback: function(cardId, actionLabel) {
+    const cardRef = Cards.getCardById(cardId);
     if (cardRef) {
       /* hide actions and show feedback */
       cardRef.querySelector('div.banner')?.classList.add('is--hidden');
       cardRef.querySelector('ul.actions')?.classList.add('is--hidden');
       if (cardRef.querySelector('p.activity') !== null) {
-        cardRef.querySelector('p.activity').textContent = text;
+        cardRef.querySelector('p.activity').textContent = actionLabel;
         cardRef.querySelector('p.activity')?.classList.remove('is--hidden');
         /* hide "dead" banner while activity is shown */
         cardRef.querySelector('div.dead')?.classList.add('is--hidden');

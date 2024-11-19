@@ -44,62 +44,13 @@ export default {
 
       if (actionButton && leftMouseButton && !object.disabled) {
         const action = actionButton.dataset.action;
-        const actionObject = object.actions.find(singleAction => singleAction.id === action);
-
-        if (actionObject) {
-          if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
-            document.querySelector('#properties li.energy')?.classList.add('heavy-shake');
-            window.setTimeout(() => {
-              document.querySelector('#properties li.energy')?.classList.remove('heavy-shake');
-            }, 200);    
-            Audio.sfx('nope');
-          } else if (actionObject && !actionObject.locked) {
-            Audio.sfx('click');
-            Player.lockMovement(true);
-            this.disableActions();  
-            CardsMarkup.showActionFeedback(cardRef, action);
-            if (action !== 'lure') {
-              Player.movePlayerTo(object.x, object.y);
-            }
-            Actions.goToAndAction(cardId, action);
-          } else {
-            cardRef?.classList.add('card-shake');
-            window.setTimeout(() => {
-              cardRef?.classList.remove('card-shake');
-            }, 200);    
-            Audio.sfx('nope');
-          }  
-        }
-      }
-      if (itemContainer) {
+        Actions.goToAndAction(cardId, action);
+      } else if (itemContainer) {
         const itemName = itemContainer?.dataset.item;
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
         const itemProps = Props.getItem(itemName);
-
         if (itemAmount && leftMouseButton) {
-          if (itemProps && itemProps[0] === 'extra') {
-            // spawn weapon as card
-            Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
-          } else if (itemName === 'crate') {            
-            Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, [itemName]);
-          } else {
-            Props.addItemToInventory(itemName, itemAmount);
-          }
-          object.items.find(singleItem => singleItem.name === itemName).amount = 0;
-          itemContainer.classList.add('transfer');
-          Items.inventoryChangeFeedback();
-          Items.fillInventorySlots();
-          Audio.sfx('pick', 0, 0.1);
-          window.setTimeout((itemContainer) => {
-            if (cardRef) {
-              itemContainer.classList.add('is--hidden');
-              if (itemName === 'crate' || itemProps[0] === 'extra') { Player.findAndHandleObjects(); } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
-              if (object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
-                  !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length) {
-                this.renderCardDeck();
-              }
-            }
-          }, 400, itemContainer);
+          Actions.grabItem(cardId, itemContainer, itemName);
         } else if (itemAmount && rightMouseButton) {
           // make item known to inventory
           if (itemProps && itemProps[0] === 'extra') {

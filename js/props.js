@@ -72,7 +72,6 @@ inventoryPresets['everyman'] = {
   'knife': 1,
   'energy-pills': 1,
   'pepper': 1,
-  'straw-wheet': 2,
 }
 inventoryPresets['treehugger'] = {
   'mushroom-1': 2,
@@ -415,25 +414,6 @@ var itemModifiers = {
     'snack-2': [-15, 0, -8],
     'tomato': [4, 5, 7]
   }
-}
-
-const actionTextMapping = {
-  'break-door': 'breaking',
-  'search': 'searching',
-  'scout-area': 'scouting',
-  'rest': 'resting',
-  'sleep': 'sleeping',
-  'smash-window': 'smashing',
-  'gather': 'gathering',
-  'read': 'reading',
-  'drink': 'drinking',
-  'fish': 'fishing',
-  'cook': 'cooking',
-  'attack': 'attacking',
-  'lure': 'luring',
-  'craft': 'crafting',
-  'cut-down': 'cutting',
-  'equip': 'equipping'  
 }
 
 export default {
@@ -793,6 +773,11 @@ export default {
   },
   
   setupAllBuildings: function() {
+    // ONLY FOR TUTORIAL
+    if (this.getGameProp('tutorial')) {
+      this.setupBuilding(18, 44, ['crate'], ['drink-5', 'bread-1', 'wooden-club']);
+      this.setupWeapon(18, 44, 'axe');
+    }
     // GAS STATION
     this.setupBuilding(17, 25, ['gas-station']);
     this.setupBuilding(36, 16, ['gas-station']);
@@ -1405,10 +1390,6 @@ export default {
     }  
   },
 
-  mapActionsToText: function(action) {
-    return actionTextMapping[action];
-  },
-    
   getBuildingActionsFor: function(buildingName, locked, infested) {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
