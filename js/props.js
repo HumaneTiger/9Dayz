@@ -131,7 +131,7 @@ var buildingProps = {
   'signpost-5': { locked: 0, spawn: 0, items: [] },
   'signpost-6': { locked: 0, spawn: 0, items: [] },
   'signpost-7': { locked: 0, spawn: 0, items: [] },
-  'old-villa': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'wine', 'exodus', 'books'] },
+  'old-villa': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'rope', 'exodus', 'books'] },
   'car-2': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
   'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'], amount: 2 },
   'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'], amount: 2 },
@@ -253,9 +253,9 @@ var weaponPropsUpgrades = {
     durability: { amount: 1, item: 'tape' },
   },
   'wrench': { 
-    durability: { amount: 1, item: 'tape' },
-    defense: { amount: 1, item: 'spanner' },
+    attack: { amount: 1, item: 'spanner' },
     defense: { amount: 1, item: 'brush' },
+    durability: { amount: 1, item: 'tape' },
   },
   'axe': { 
     attack: { amount: 1, item: 'fail' },
@@ -754,7 +754,7 @@ export default {
         energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]
       }
     } else {
-      console.log('No props for item ' + item);
+      console.log('No props for item ' + item); // no props for item crate and duck
     }
   },
   
