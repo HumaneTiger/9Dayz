@@ -1,13 +1,13 @@
-import Audio from './audio.js'
-import Binding from './binding.js'
-import Props from './props.js'
-import Player from './player.js'
-import Cards from './cards.js'
-import CardsMarkup from './cards-markup.js'
-import Actions from './actions.js'
-import Items from './items.js'
-import Crafting from './crafting.js'
-import Character from './character.js'
+import Audio from './audio.js';
+import Binding from './binding.js';
+import Props from './props.js';
+import Player from './player.js';
+import Cards from './cards.js';
+import CardsMarkup from './cards-markup.js';
+import Actions from './actions.js';
+import Items from './items.js';
+import Crafting from './crafting.js';
+import Character from './character.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -20,44 +20,43 @@ let cardZedDeck = [];
 let battleDeck = [];
 let allDrawPileCards = [];
 let battleDeckProps = {
-  number: 0
+  number: 0,
 };
 
 export default {
-  
-  init: function() {
+  init: function () {
     this.bind();
-    document.querySelector('#battle-cards .end-turn').addEventListener('click', this.endTurn.bind(this));
+    document
+      .querySelector('#battle-cards .end-turn')
+      .addEventListener('click', this.endTurn.bind(this));
   },
 
-  bind: function() {
+  bind: function () {
     new Binding({
       object: battleDeckProps,
       property: 'number',
-      element: document.getElementById('draw-amount')
-    })
+      element: document.getElementById('draw-amount'),
+    });
   },
 
   shuffle: function (array) {
-    let currentIndex = array.length,  randomIndex;
-  
+    let currentIndex = array.length,
+      randomIndex;
+
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
-  
       // Pick a remaining element.
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
-  
+
       // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
-  
+
     return array;
   },
 
   startBattle(surprised, singleZedId) {
-
     Props.setGameProp('battle', true);
     Props.pauseGame(true);
 
@@ -69,8 +68,8 @@ export default {
     }
 
     if (cardZedDeck.length > 0) {
-      const spaceX = 400 - (cardZedDeck.length * 15);
-      cardZedDeck.forEach(function(zedId, index) {
+      const spaceX = 400 - cardZedDeck.length * 15;
+      cardZedDeck.forEach(function (zedId, index) {
         let zedCardRef = Cards.getCardById(zedId);
         const zedObject = Props.getObject(zedId);
         zedObject.fighting = true;
@@ -78,7 +77,8 @@ export default {
         zedCardRef.classList.add('fight');
         zedCardRef.style.transform = '';
         zedCardRef.style.zIndex = null;
-        zedCardRef.style.left = (2135/2) - (cardZedDeck.length * spaceX / 2) + (index * spaceX) + 'px';
+        zedCardRef.style.left =
+          2135 / 2 - (cardZedDeck.length * spaceX) / 2 + index * spaceX + 'px';
       });
 
       document.getElementById('inventory').classList.remove('active');
@@ -112,7 +112,7 @@ export default {
     }
   },
 
-  renderDrawPile: function() {
+  renderDrawPile: function () {
     const pileSize = Math.min(battleDeck.length, 24);
     for (let card = 0; card < pileSize; card += 1) {
       if (card < battleDeckProps.number) {
@@ -121,25 +121,32 @@ export default {
         allDrawPileCards[card].classList.add('is--hidden');
       }
     }
-    document.getElementById('draw-amount').style.left = (200 + Math.min(battleDeckProps.number, 24) * 4) + 'px';
+    document.getElementById('draw-amount').style.left =
+      200 + Math.min(battleDeckProps.number, 24) * 4 + 'px';
     if (battleDeckProps.number === 0) {
       document.getElementById('draw-amount').classList.add('is--hidden');
     } else {
       document.getElementById('draw-amount').classList.remove('is--hidden');
     }
-    battleDrawContainer.style.width = (160 + pileSize * 4) + 'px';
+    battleDrawContainer.style.width = 160 + pileSize * 4 + 'px';
   },
 
-  spawnBattleDeck: function(surprised) {
+  spawnBattleDeck: function (surprised) {
     let sparedTools = 0;
     for (const item in inventory.items) {
       for (var i = 0; i < inventory.items[item].amount; i += 1) {
         if (
           Props.getGameProp('character') === 'craftsmaniac' &&
-          (item === 'fail' || item === 'hacksaw' || item === 'knife' || item === 'mallet' || item === 'pincers' || item === 'spanner' || item === 'nails')
+          (item === 'fail' ||
+            item === 'hacksaw' ||
+            item === 'knife' ||
+            item === 'mallet' ||
+            item === 'pincers' ||
+            item === 'spanner' ||
+            item === 'nails')
         ) {
           // craftsmaniac won't use their tools in battles
-          sparedTools +=1;
+          sparedTools += 1;
         } else {
           battleDeck.push(inventory.items[item]);
         }
@@ -158,7 +165,8 @@ export default {
       }
     }
     for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
-      battleDrawContainer.innerHTML += '<div class="battle-card-back is--hidden" style="left: ' + (card * 4) + 'px"></div>';
+      battleDrawContainer.innerHTML +=
+        '<div class="battle-card-back is--hidden" style="left: ' + card * 4 + 'px"></div>';
     }
     allDrawPileCards = battleDrawContainer.querySelectorAll('.battle-card-back');
     this.renderDrawPile();
@@ -170,14 +178,13 @@ export default {
       this.showBattleMessage('Oh no! You walked into them!', 2000);
       window.setTimeout(() => {
         this.zedAttack();
-      }, 600);  
+      }, 600);
     } else {
       this.nextTurn();
     }
   },
 
-  endBattle: function() {
-
+  endBattle: function () {
     battleDeck = [];
 
     // Hide Battle UI
@@ -198,8 +205,8 @@ export default {
     window.setTimeout(() => {
       Player.changeProps('energy', -15);
       document.querySelector('#cards .cards-blocker').classList.add('is--hidden');
-      
-      cardZedDeck.forEach(function(zedId) {
+
+      cardZedDeck.forEach(function (zedId) {
         let zedCardRef = Cards.getCardById(zedId);
         const zedObject = Props.getObject(zedId);
         zedObject.fighting = false;
@@ -210,7 +217,9 @@ export default {
             zedObject.actions.splice(i, 1);
           } else {
             // show search action
-            zedCardRef.querySelector('li.' + zedObject.actions[i].id)?.classList.remove('is--hidden');
+            zedCardRef
+              .querySelector('li.' + zedObject.actions[i].id)
+              ?.classList.remove('is--hidden');
           }
         }
         Props.setGameProp('battle', false);
@@ -225,7 +234,7 @@ export default {
     }, 100);
   },
 
-  nextTurn: function() {
+  nextTurn: function () {
     Player.changeProps('protection', -100);
     Player.changeProps('actions', -100);
     Player.changeProps('actions', 3);
@@ -253,57 +262,93 @@ export default {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (var i = 0; i < maxItems; i += 1) {
         const item = Items.getItemByName(battleDeck[i].name);
-        const modifyDamageMarkup = battleDeck[i].modifyDamage > 0 ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>' : '';
-        const maxDurabilityChars = Props.getWeaponProps(item.name) ? '◈'.repeat(Props.getWeaponProps(item.name).durability) : '';
-        const durabilityMarkup = item.durability ?  '<span class="durability">' +
-                                                      maxDurabilityChars.substring(0, item.durability) + '<u>' +  maxDurabilityChars.substring(0, maxDurabilityChars.length - item.durability) + '</u>' +
-                                                    '</span>' : '';
+        const modifyDamageMarkup =
+          battleDeck[i].modifyDamage > 0
+            ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>'
+            : '';
+        const maxDurabilityChars = Props.getWeaponProps(item.name)
+          ? '◈'.repeat(Props.getWeaponProps(item.name).durability)
+          : '';
+        const durabilityMarkup = item.durability
+          ? '<span class="durability">' +
+            maxDurabilityChars.substring(0, item.durability) +
+            '<u>' +
+            maxDurabilityChars.substring(0, maxDurabilityChars.length - item.durability) +
+            '</u>' +
+            '</span>'
+          : '';
 
-        battlePlayContainer.innerHTML += '<div class="battle-card inactive" data-item="' + item.name + '"><div class="inner">' +
-                                          (item.type !== 'extra' ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">' : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
-                                          '<div class="attack">' + (item.damage + item.modifyDamage) + modifyDamageMarkup + '</div><div class="shield">' + item.protection + '</div>' +
-                                          durabilityMarkup +
-                                          '</div></div>';
+        battlePlayContainer.innerHTML +=
+          '<div class="battle-card inactive" data-item="' +
+          item.name +
+          '"><div class="inner">' +
+          (item.type !== 'extra'
+            ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
+            : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
+          '<div class="attack">' +
+          (item.damage + item.modifyDamage) +
+          modifyDamageMarkup +
+          '</div><div class="shield">' +
+          item.protection +
+          '</div>' +
+          durabilityMarkup +
+          '</div></div>';
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (var i = 0; i < battlePlayContainer.children.length; i += 1) {
-        window.setTimeout((index, child, totalCards) => {
-          child.style.left = (index * 170) + 'px';
-          child.classList.remove('inactive');
-          battleDeckProps.number = totalCards + index;
-          this.renderDrawPile();
-        }, 500 + i * 300, battlePlayContainer.children.length - i - 1, battlePlayContainer.children[i], battleDeck.length-battlePlayContainer.children.length);
-      }  
+        window.setTimeout(
+          (index, child, totalCards) => {
+            child.style.left = index * 170 + 'px';
+            child.classList.remove('inactive');
+            battleDeckProps.number = totalCards + index;
+            this.renderDrawPile();
+          },
+          500 + i * 300,
+          battlePlayContainer.children.length - i - 1,
+          battlePlayContainer.children[i],
+          battleDeck.length - battlePlayContainer.children.length
+        );
+      }
     } else {
       this.endTurn();
     }
   },
 
-  resolveMultiAttack: function(dragEl, dragTarget) {
+  resolveMultiAttack: function (dragEl, dragTarget) {
     const zedId = dragTarget.id;
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
     const item = Items.getItemByName(dragEl.dataset.item);
 
     /* hit 3 potential targets */
     let potentialTargets = [];
-    cardZedDeck[targetPositionInDeck - 1] !== undefined ? potentialTargets.push(cardZedDeck[targetPositionInDeck - 1]) : false;
-    cardZedDeck[targetPositionInDeck] !== undefined ? potentialTargets.push(cardZedDeck[targetPositionInDeck]) : false;
-    cardZedDeck[targetPositionInDeck + 1] !== undefined ? potentialTargets.push(cardZedDeck[targetPositionInDeck + 1]) : false;
+    cardZedDeck[targetPositionInDeck - 1] !== undefined
+      ? potentialTargets.push(cardZedDeck[targetPositionInDeck - 1])
+      : false;
+    cardZedDeck[targetPositionInDeck] !== undefined
+      ? potentialTargets.push(cardZedDeck[targetPositionInDeck])
+      : false;
+    cardZedDeck[targetPositionInDeck + 1] !== undefined
+      ? potentialTargets.push(cardZedDeck[targetPositionInDeck + 1])
+      : false;
 
     /* do this only once upfront for all attacks */
     Player.changeProps('protection', item.protection);
-    Player.changeProps('actions', -1);  
+    Player.changeProps('actions', -1);
     if (item.durability && item.durability > 0) {
       item.durability -= 1;
     }
     potentialTargets.forEach((targetId, index) => {
-      window.setTimeout((targetId) => {
-        this.resolveAttack(dragEl, Cards.getCardById(targetId), true);
-      }, index * 150, targetId);
-    })
+      window.setTimeout(
+        targetId => {
+          this.resolveAttack(dragEl, Cards.getCardById(targetId), true);
+        },
+        index * 150,
+        targetId
+      );
+    });
   },
 
-  resolveAttack: function(dragEl, dragTarget, multiAttack) {
+  resolveAttack: function (dragEl, dragTarget, multiAttack) {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
     const zedCardRef = Cards.getCardById(zedId);
@@ -317,7 +362,7 @@ export default {
     this.showBattleStats('+' + item.protection, 'blue');
     Audio.sfx('punch');
 
-    zedObject.defense -= (item.damage + item.modifyDamage);
+    zedObject.defense -= item.damage + item.modifyDamage;
     if (zedObject.defense <= 0) {
       zedCardRef.classList.add('dead');
       zedObject.dead = true;
@@ -353,11 +398,17 @@ export default {
     dragEl.classList.add('resolve');
 
     // cleanup
-    window.setTimeout((scratch, dragEl, zedCardRef) => {
-      scratch.classList.remove('anim-scratch');
-      dragEl.remove();
-      zedCardRef.classList.remove('card-heavy-shake');
-    }, 200, scratch, dragEl, zedCardRef);
+    window.setTimeout(
+      (scratch, dragEl, zedCardRef) => {
+        scratch.classList.remove('anim-scratch');
+        dragEl.remove();
+        zedCardRef.classList.remove('card-heavy-shake');
+      },
+      200,
+      scratch,
+      dragEl,
+      zedCardRef
+    );
 
     if (this.zedIsDead()) {
       window.setTimeout(() => {
@@ -368,14 +419,14 @@ export default {
     }
   },
 
-  zedIsDead: function() {
-    const zedIsDead = (id) => Props.getObject(id).dead;
-    return cardZedDeck.every(function(id) {
+  zedIsDead: function () {
+    const zedIsDead = id => Props.getObject(id).dead;
+    return cardZedDeck.every(function (id) {
       return zedIsDead(id);
     });
   },
 
-  endTurn: function() {
+  endTurn: function () {
     const allBattleCards = battlePlayContainer.querySelectorAll('.battle-card');
     battleDeckProps.number = battleDeck.length;
     this.renderDrawPile();
@@ -391,12 +442,11 @@ export default {
       this.showBattleMessage('Enemies Turn', 800);
       window.setTimeout(() => {
         this.zedAttack();
-      }, 400);  
+      }, 400);
     }
   },
 
-  zedAttack: function(zeroItems) {
-
+  zedAttack: function (zeroItems) {
     const delay = battleDeck.length <= 0 ? 400 : 1200;
     const allAttackingZeds = cardZedDeck.filter(zed => Props.getObject(zed).fighting);
 
@@ -407,88 +457,100 @@ export default {
 
       zedCardRef.classList.add('attack');
 
-      window.setTimeout(() => {
-        let ratAteFood = false;
-        if (zedObject.name === 'rat') {
-          let foodItem = Items.getFirstItemOfType('eat');
-          if (foodItem !== undefined) {
-            ratAteFood = true;
-            zedObject.defense += foodItem.protection;
-            zedCardRef.querySelector('.health').textContent = zedObject.defense;
-            //remove item from inventory
-            Props.addItemToInventory(foodItem.name, -1);
-            //remove item from battle deck
-            for (var i = 0; i < battleDeck.length; i += 1) {
-              if (battleDeck[i].name === foodItem.name) {
-                battleDeck.splice(i, 1);
-                break;
+      window.setTimeout(
+        () => {
+          let ratAteFood = false;
+          if (zedObject.name === 'rat') {
+            let foodItem = Items.getFirstItemOfType('eat');
+            if (foodItem !== undefined) {
+              ratAteFood = true;
+              zedObject.defense += foodItem.protection;
+              zedCardRef.querySelector('.health').textContent = zedObject.defense;
+              //remove item from inventory
+              Props.addItemToInventory(foodItem.name, -1);
+              //remove item from battle deck
+              for (var i = 0; i < battleDeck.length; i += 1) {
+                if (battleDeck[i].name === foodItem.name) {
+                  battleDeck.splice(i, 1);
+                  break;
+                }
               }
+              battleDeckProps.number = battleDeck.length;
+              this.renderDrawPile();
+              this.showBattleStats(foodItem.name, 'image');
             }
-            battleDeckProps.number = battleDeck.length;
-            this.renderDrawPile();
-            this.showBattleStats(foodItem.name, 'image');
           }
-        }
-        if (!ratAteFood) {
-          const attack = zedObject.attack;
-          const dmg = Player.getProp('protection') - attack;
-          if (dmg < 0) {
-            Player.changeProps('health', dmg);  
-            this.showBattleStats(dmg, 'red');
-          } else {
-            this.showBattleStats(-1 * attack, 'blue');
+          if (!ratAteFood) {
+            const attack = zedObject.attack;
+            const dmg = Player.getProp('protection') - attack;
+            if (dmg < 0) {
+              Player.changeProps('health', dmg);
+              this.showBattleStats(dmg, 'red');
+            } else {
+              this.showBattleStats(-1 * attack, 'blue');
+            }
+            Player.changeProps('protection', -1 * attack);
+            battleHealthMeter.classList.add('heavy-shake');
           }
-          Player.changeProps('protection', -1 * attack);
-          battleHealthMeter.classList.add('heavy-shake');  
-        }
-      }, (delay / 3) + index * delay);
+        },
+        delay / 3 + index * delay
+      );
 
       // single zed attacks
-      window.setTimeout(() => {
-        zedCardRef.classList.add('anim-punch');
-        battleHealthMeter.classList.remove('heavy-shake');
-        if (zedObject.name === 'rat') {
-          Audio.sfx('rat-attacks');
-        } else if (zedObject.name === 'bee') {
-          Audio.sfx('bee-attacks');
-        } else {
-          Audio.sfx('zed-attacks');
-        }
-      }, (delay / 4) + index * delay);
-    };
+      window.setTimeout(
+        () => {
+          zedCardRef.classList.add('anim-punch');
+          battleHealthMeter.classList.remove('heavy-shake');
+          if (zedObject.name === 'rat') {
+            Audio.sfx('rat-attacks');
+          } else if (zedObject.name === 'bee') {
+            Audio.sfx('bee-attacks');
+          } else {
+            Audio.sfx('zed-attacks');
+          }
+        },
+        delay / 4 + index * delay
+      );
+    }
 
     // players turn after all zeds attacked
-    window.setTimeout(() => {
-      allAttackingZeds.forEach(function(zedId) {
-        let zedCardRef = Cards.getCardById(zedId);
-        zedCardRef.classList.remove('attack');
-        zedCardRef.classList.remove('anim-punch');
-      });
-      if (!Player.checkForDeath(false)) {
-        this.nextTurn();
-      }
-    }, (delay / 4) + allAttackingZeds.length * delay);
-
+    window.setTimeout(
+      () => {
+        allAttackingZeds.forEach(function (zedId) {
+          let zedCardRef = Cards.getCardById(zedId);
+          zedCardRef.classList.remove('attack');
+          zedCardRef.classList.remove('anim-punch');
+        });
+        if (!Player.checkForDeath(false)) {
+          this.nextTurn();
+        }
+      },
+      delay / 4 + allAttackingZeds.length * delay
+    );
   },
 
-  showBattleStats: function(stat, type) {
+  showBattleStats: function (stat, type) {
     const battleStats = document.querySelector('#battle-stats span.' + type);
     if (type === 'image') {
       battleStats.innerHTML = '<img width="60" height="auto" src="./img/items/' + stat + '.PNG">';
     } else {
-      battleStats.innerHTML = stat;    
+      battleStats.innerHTML = stat;
     }
     battleStats.classList.add('active');
-    window.setTimeout((battleStats) => {
-      battleStats.classList.remove('active');
-    }, 500, battleStats);
+    window.setTimeout(
+      battleStats => {
+        battleStats.classList.remove('active');
+      },
+      500,
+      battleStats
+    );
   },
 
-  showBattleMessage: function(message, delay) {
+  showBattleMessage: function (message, delay) {
     document.querySelector('#battle-message').innerHTML = message;
     document.querySelector('#battle-message').classList.add('active');
     window.setTimeout(() => {
       document.querySelector('#battle-message').classList.remove('active');
     }, delay);
-  }
-}
+  },
+};

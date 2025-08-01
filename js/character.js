@@ -1,8 +1,8 @@
-import Props from './props.js'
-import Player from './player.js'
-import Items from './items.js'
-import Almanac from './almanac.js'
-import Audio from './audio.js'
+import Props from './props.js';
+import Player from './player.js';
+import Items from './items.js';
+import Almanac from './almanac.js';
+import Audio from './audio.js';
 
 const inventory = Props.getInventory();
 const characterContainer = document.getElementById('character');
@@ -10,24 +10,22 @@ const slot1 = characterContainer.querySelector('.slot-1');
 const slot2 = characterContainer.querySelector('.slot-2');
 
 export default {
-  
-  init: function() {
+  init: function () {
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
   },
 
-  checkForSlotHover: function(ev) {
+  checkForSlotHover: function () {
     return;
   },
 
-  checkForSlotClick: function(ev) {
-
+  checkForSlotClick: function (ev) {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');
     const upgradeButton = target.closest('div.upgrade:not(.nope)');
-    const leftMouseButton = (ev.button === 0);
-    const rightMouseButton = (ev.button === 2);
-    const cardSlot = target.closest('.card');    
+    const leftMouseButton = ev.button === 0;
+    const rightMouseButton = ev.button === 2;
+    const cardSlot = target.closest('.card');
 
     if (actionButton && leftMouseButton) {
       const action = actionButton.dataset.action;
@@ -35,14 +33,15 @@ export default {
       const playerPosition = Player.getPlayerPosition();
       if (action === 'unequip' && weaponName && inventory.items[weaponName].amount) {
         // re-spawn it at players location
-        Props.setupWeapon(playerPosition.x, playerPosition.y, weaponName,
-        {
+        Props.setupWeapon(playerPosition.x, playerPosition.y, weaponName, {
           attack: inventory.items[weaponName].damage,
           defense: inventory.items[weaponName].protection,
-          durability: inventory.items[weaponName].durability
+          durability: inventory.items[weaponName].durability,
         });
         // set weapon amount in inventory to 0 and set durability to 0
-        Props.addWeaponToInventory(weaponName, -1, {durability: -1 * inventory.items[weaponName].durability});
+        Props.addWeaponToInventory(weaponName, -1, {
+          durability: -1 * inventory.items[weaponName].durability,
+        });
         Items.checkCraftingPrerequisits(); // make weapon re-craftable again
       }
       this.updateWeaponState();
@@ -50,17 +49,20 @@ export default {
     } else if (upgradeButton && leftMouseButton) {
       const weapon = cardSlot.dataset?.item;
       const upgradeItem = Props.getWeaponPropsUpgrades(weapon);
-      const preserveResources = (Props.getGameProp('character') === 'craftsmaniac' && (Math.random() * 10) <= 2.25) ? true : false;
+      const preserveResources =
+        Props.getGameProp('character') === 'craftsmaniac' && Math.random() * 10 <= 2.25
+          ? true
+          : false;
       if (upgradeItem) {
         if (upgradeButton.classList.contains('attack-upgrade')) {
           if (Items.inventoryContains(upgradeItem.attack.item)) {
             inventory.items[weapon].damage += upgradeItem.attack.amount;
             Audio.sfx('improve-weapon');
             if (!preserveResources) {
-              Props.addItemToInventory(upgradeItem.attack.item, -1); 
+              Props.addItemToInventory(upgradeItem.attack.item, -1);
               Items.inventoryChangeFeedback();
             }
-            Items.fillInventorySlots();  
+            Items.fillInventorySlots();
           }
         } else if (upgradeButton.classList.contains('defense-upgrade')) {
           inventory.items[weapon].protection += upgradeItem.defense.amount;
@@ -78,12 +80,18 @@ export default {
             Items.inventoryChangeFeedback();
           }
           Items.fillInventorySlots();
-        }  
+        }
       }
     } else if (cardSlot && rightMouseButton) {
       if (cardSlot.dataset.item === 'improvised-axe' || cardSlot.dataset.item === 'wooden-club') {
         Almanac.showPage(cardSlot.dataset.item, 'item', cardSlot, characterContainer);
-      } else if (cardSlot.dataset.item === 'axe' || cardSlot.dataset.item === 'baseball-bat' || cardSlot.dataset.item === 'wrench' || cardSlot.dataset.item === 'improvised-whip' || cardSlot.dataset.item === 'fishing-rod') {
+      } else if (
+        cardSlot.dataset.item === 'axe' ||
+        cardSlot.dataset.item === 'baseball-bat' ||
+        cardSlot.dataset.item === 'wrench' ||
+        cardSlot.dataset.item === 'improvised-whip' ||
+        cardSlot.dataset.item === 'fishing-rod'
+      ) {
         Almanac.showPage(cardSlot.dataset.item, 'content', cardSlot, characterContainer);
       } else if (cardSlot.classList.contains('slot-hero')) {
         Almanac.showPage(Props.getGameProp('character'), 'content', cardSlot, characterContainer);
@@ -91,13 +99,19 @@ export default {
     }
   },
 
-  numberFilledSlots: function() {
-    return (slot1.classList.contains('active') ? 1 : 0) + (slot2.classList.contains('active') ? 1 : 0);
+  numberFilledSlots: function () {
+    return (
+      (slot1.classList.contains('active') ? 1 : 0) + (slot2.classList.contains('active') ? 1 : 0)
+    );
   },
 
-  updateWeaponSlot: function(slot, weapon, item) {
+  updateWeaponSlot: function (slot, weapon, item) {
     const maxDurabilityChars = '◈'.repeat(Props.getWeaponProps(item).durability);
-    const durability = maxDurabilityChars.substring(0, weapon.durability) + '<u>' +  maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) + '</u>';
+    const durability =
+      maxDurabilityChars.substring(0, weapon.durability) +
+      '<u>' +
+      maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) +
+      '</u>';
     slot.querySelector('.distance').innerHTML = durability;
     slot.querySelector('.attack').textContent = inventory.items[item].damage;
     slot.querySelector('.shield').textContent = inventory.items[item].protection;
@@ -112,7 +126,9 @@ export default {
         attackUpgrade.classList.remove('is--hidden');
         attackUpgrade.dataset.item = upgradeItem.attack.item;
         if (Items.inventoryContains(upgradeItem.attack.item)) {
-          if (attackUpgrade.classList.contains('nope')) { changeFeedback = true; }
+          if (attackUpgrade.classList.contains('nope')) {
+            changeFeedback = true;
+          }
           attackUpgrade.classList.remove('nope');
         } else {
           attackUpgrade.classList.add('nope');
@@ -126,7 +142,9 @@ export default {
         defenseUpgrade.classList.remove('is--hidden');
         defenseUpgrade.dataset.item = upgradeItem.defense.item;
         if (Items.inventoryContains(upgradeItem.defense.item)) {
-          if (defenseUpgrade.classList.contains('nope')) { changeFeedback = true; }
+          if (defenseUpgrade.classList.contains('nope')) {
+            changeFeedback = true;
+          }
           defenseUpgrade.classList.remove('nope');
         } else {
           defenseUpgrade.classList.add('nope');
@@ -141,9 +159,11 @@ export default {
         if (Items.inventoryContains(upgradeItem.durability.item)) {
           if (Props.getWeaponProps(item).durability > inventory.items[item].durability) {
             // upgrade possible
-            if (durabilityUpgrade.classList.contains('nope')) { changeFeedback = true; }
+            if (durabilityUpgrade.classList.contains('nope')) {
+              changeFeedback = true;
+            }
             durabilityUpgrade.querySelector('.durability').textContent = `+◈`;
-            durabilityUpgrade.classList.remove('nope');  
+            durabilityUpgrade.classList.remove('nope');
           } else {
             // upgrade maxed out
             durabilityUpgrade.classList.add('nope');
@@ -168,7 +188,7 @@ export default {
     }
   },
 
-  updateWeaponState: function() {
+  updateWeaponState: function () {
     for (var item in inventory.items) {
       if (inventory.items[item].type === 'extra') {
         const weaponName = inventory.items[item].name;
@@ -191,14 +211,16 @@ export default {
           if (!slot1.classList.contains('active')) {
             freeSlot = slot1;
             freeSlot.setAttribute('class', 'card weapon slot-1'); // reset
-          } else if(!slot2.classList.contains('active')) {
+          } else if (!slot2.classList.contains('active')) {
             freeSlot = slot2;
             freeSlot.setAttribute('class', 'card weapon slot-2'); // reset
           }
           if (freeSlot && inventory.items[item].amount > 0) {
             freeSlot.classList.add('active');
             freeSlot.dataset.item = weaponName;
-            freeSlot.querySelector('img.motive')?.setAttribute('src', './img/weapons/' + weaponName + '.png');
+            freeSlot
+              .querySelector('img.motive')
+              ?.setAttribute('src', './img/weapons/' + weaponName + '.png');
             this.updateWeaponSlot(freeSlot, inventory.items[item], item);
           }
         }
@@ -209,6 +231,5 @@ export default {
     } else {
       slot2.classList.remove('moveToSlot1');
     }
-  }
-}
-
+  },
+};

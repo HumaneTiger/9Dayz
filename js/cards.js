@@ -1,39 +1,37 @@
-import Audio from './audio.js'
-import Props from './props.js'
-import Player from './player.js'
-import Items from './items.js'
-import Character from './character.js'
-import Map from './map.js'
-import Actions from './actions.js'
-import Tutorial from './tutorial.js'
-import Ui from './ui.js'
-import CardsMarkup from './cards-markup.js'
-import Almanac from './almanac.js'
+import Audio from './audio.js';
+import Props from './props.js';
+import Player from './player.js';
+import Items from './items.js';
+import Character from './character.js';
+import Map from './map.js';
+import Actions from './actions.js';
+import Tutorial from './tutorial.js';
+import Ui from './ui.js';
+import CardsMarkup from './cards-markup.js';
+import Almanac from './almanac.js';
 
 var cardDeck = [];
 var lastHoverTarget;
 
 export default {
-  
-  init: function() {
+  init: function () {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
   },
 
-  hourlyTasks: function(hour) {
+  hourlyTasks: function (hour) {
     if (hour === 21 || hour === 5) {
       this.switchDayNight();
     }
   },
 
-  checkForCardClick: function(ev) {
-
+  checkForCardClick: function (ev) {
     const target = ev.target;
     const cardId = target.closest('div.card')?.id;
     const actionButton = target.closest('div.action-button');
     const itemContainer = target.closest('li.item:not(.is--hidden)');
-    const leftMouseButton = (ev.button === 0);
-    const rightMouseButton = (ev.button === 2);
+    const leftMouseButton = ev.button === 0;
+    const rightMouseButton = ev.button === 2;
 
     if (cardId && !Props.getGameProp('gamePaused')) {
       const object = Props.getObject(cardId);
@@ -54,9 +52,9 @@ export default {
         } else if (itemAmount && rightMouseButton) {
           // make item known to inventory
           if (itemProps && itemProps[0] === 'extra') {
-            Props.addWeaponToInventory(itemName, 0, {durability: 0});
+            Props.addWeaponToInventory(itemName, 0, { durability: 0 });
           } else {
-            Props.addItemToInventory(itemName, 0); 
+            Props.addItemToInventory(itemName, 0);
           }
           Almanac.showPage(itemName, 'item', itemContainer.closest('ul.items'), cardRef);
         }
@@ -64,8 +62,7 @@ export default {
     }
   },
 
-  checkForCardHover: function(ev) {
-
+  checkForCardHover: function (ev) {
     const target = ev.target;
 
     const cardId = target.closest ? target.closest('div.card')?.id : null;
@@ -80,7 +77,7 @@ export default {
           }
           delete cardRef.dataset.oldZindex;
           Map.noHighlightObject(lastHoverTarget);
-          lastHoverTarget = undefined;  
+          lastHoverTarget = undefined;
         }
       }
       if (cardId) {
@@ -89,13 +86,13 @@ export default {
           const cardRef = this.getCardById(cardId);
           if (!Props.getGameProp('battle')) {
             cardRef.dataset.oldZindex = cardRef.style.zIndex;
-            cardRef.style.zIndex = 200;  
+            cardRef.style.zIndex = 200;
           }
           if (hoverButton) {
             cardRef.classList.add('hover-button');
           } else {
             cardRef.classList.remove('hover-button');
-          }  
+          }
           Map.highlightObject(cardId);
         }
         if (hoverButton) {
@@ -106,36 +103,40 @@ export default {
         } else {
           Player.resetPreviewProps();
         }
-      }  
+      }
     }
   },
 
-  previewStatsChange: function(action, cardId) {
+  previewStatsChange: function (action, cardId) {
     const object = Props.getObject(cardId);
     const actionObject = object.actions.find(singleAction => singleAction.id === action);
     if (!actionObject.locked) {
       let energy = actionObject.energy;
       if (actionObject.id === 'rest') {
-        if (Props.getGameProp('timeMode') === 'night') { energy += 5 };
+        if (Props.getGameProp('timeMode') === 'night') {
+          energy += 5;
+        }
         Player.previewProps('health', Math.floor(energy / 2));
         Player.previewProps('food', -10);
         Player.previewProps('thirst', -14);
-        Player.previewProps('energy', energy);      
+        Player.previewProps('energy', energy);
       } else if (actionObject.id === 'sleep') {
-        if (Props.getGameProp('timeMode') === 'night') { energy += 20 };
+        if (Props.getGameProp('timeMode') === 'night') {
+          energy += 20;
+        }
         Player.previewProps('health', Math.floor(energy / 2));
         Player.previewProps('food', -18);
         Player.previewProps('thirst', -24);
-        Player.previewProps('energy', energy);      
+        Player.previewProps('energy', energy);
       }
     }
   },
 
-  getCardById: function(cardId) {
+  getCardById: function (cardId) {
     return document.getElementById(cardId);
   },
 
-  getAllZedsNearbyIds: function() {
+  getAllZedsNearbyIds: function () {
     let allZeds = [];
     cardDeck?.forEach(card => {
       const id = card.id;
@@ -147,7 +148,7 @@ export default {
     return allZeds;
   },
 
-  showAllZedsNearby: function() {
+  showAllZedsNearby: function () {
     cardDeck?.forEach(card => {
       let object = Props.getObject(card.id);
       if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
@@ -159,30 +160,30 @@ export default {
     });
   },
 
-  addObjectsByIds: function(objectIds) {
+  addObjectsByIds: function (objectIds) {
     if (objectIds !== undefined) {
       objectIds?.forEach(objectId => {
         let object = Props.getObject(objectId);
         if (!object.discovered && !object.removed) {
           cardDeck.push({
             id: objectId,
-            distance: 0
-          })
+            distance: 0,
+          });
         }
       });
     }
     this.renderCardDeck();
   },
 
-  calculateCardDeckProperties: function() {
-
+  calculateCardDeckProperties: function () {
     const playerPosition = Player.getPlayerPosition();
 
     cardDeck?.forEach((card, index) => {
-
       const id = card.id;
       let object = Props.getObject(id);
-      let distance = Math.sqrt( Math.pow((playerPosition.x - object.x), 2) + Math.pow((playerPosition.y - object.y), 2) );
+      let distance = Math.sqrt(
+        Math.pow(playerPosition.x - object.x, 2) + Math.pow(playerPosition.y - object.y, 2)
+      );
 
       // show event cards always first
       if (object.group === 'event') {
@@ -210,8 +211,8 @@ export default {
       // zedNearby
       if (object.type !== 'signpost') {
         const allFoundObjectIds = Player.findObjects(object.x, object.y);
-        object.zednearby = allFoundObjectIds.some(function(id) {
-          return (Props.getObject(id).group === 'zombie' && !Props.getObject(id).dead);
+        object.zednearby = allFoundObjectIds.some(function (id) {
+          return Props.getObject(id).group === 'zombie' && !Props.getObject(id).dead;
         });
       } else {
         object.zednearby = false;
@@ -226,7 +227,14 @@ export default {
         if (!object.inreach && object.group !== 'event') {
           action.locked = true;
         }
-        if (object.zednearby && object.group !== 'event' && object.group !== 'zombie' && action.id !== 'scout-area' && action.id !== 'read' && action.id !== 'equip') {
+        if (
+          object.zednearby &&
+          object.group !== 'event' &&
+          object.group !== 'zombie' &&
+          action.id !== 'scout-area' &&
+          action.id !== 'read' &&
+          action.id !== 'equip'
+        ) {
           action.locked = true;
         }
         if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
@@ -235,11 +243,20 @@ export default {
         if (action.energy && Player.getProp('energy') + action.energy < 0) {
           action.locked = true;
         }
-        if (action.id === 'equip' && object.group === 'weapon' && (Items.inventoryContains(object.name) || Character.numberFilledSlots() >= 2)) {
+        if (
+          action.id === 'equip' &&
+          object.group === 'weapon' &&
+          (Items.inventoryContains(object.name) || Character.numberFilledSlots() >= 2)
+        ) {
           action.locked = true;
         }
         if (action.id === 'smash-window') {
-          if (!Items.inventoryContains('stone') && !Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe') && !Items.inventoryContains('wrench')) {
+          if (
+            !Items.inventoryContains('stone') &&
+            !Items.inventoryContains('axe') &&
+            !Items.inventoryContains('improvised-axe') &&
+            !Items.inventoryContains('wrench')
+          ) {
             action.locked = true;
           }
         }
@@ -260,26 +277,31 @@ export default {
         }
       });
 
-      if (object.actions.filter(singleAction => (singleAction.id === 'search' || singleAction.id === 'gather')).length === 0 && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
+      if (
+        object.actions.filter(
+          singleAction => singleAction.id === 'search' || singleAction.id === 'gather'
+        ).length === 0 &&
+        object.items.filter(singleItem => singleItem.amount > 0).length === 0
+      ) {
         object.looted = true;
       }
 
       // no actions and items left: remove Card
-      if (!object.actions?.length && object.items.filter(singleItem => singleItem.amount > 0).length === 0) {
+      if (
+        !object.actions?.length &&
+        object.items.filter(singleItem => singleItem.amount > 0).length === 0
+      ) {
         object.removed = true;
       }
-
     });
-
   },
 
-  renderCardDeck: function() {
-
+  renderCardDeck: function () {
     this.calculateCardDeckProperties();
     this.addSpecialEventCards();
     cardDeck.sort(this.compare);
-    
-    cardDeck?.forEach(card => {  
+
+    cardDeck?.forEach(card => {
       const object = Props.getObject(card.id);
       if (!object.discovered) {
         object.discovered = true;
@@ -309,11 +331,11 @@ export default {
     this.logDeck();
   },
 
-  updateCardDeck: function() {
+  updateCardDeck: function () {
     CardsMarkup.updateCardDeckMarkup(cardDeck);
   },
 
-  cleanupRemovedCards: function() {
+  cleanupRemovedCards: function () {
     // removing all removed ids at the very end outside the foreach
     // doing it the very old school "go backward" way, as this is the most solid approach to avoid any kind of crazy problems
     for (let i = cardDeck.length - 1; i >= 0; i--) {
@@ -324,10 +346,8 @@ export default {
     }
   },
 
-  addSpecialEventCards: function() {
-
+  addSpecialEventCards: function () {
     if (Props.getGameProp('tutorial')) {
-
       const specialEventObjectIds = Tutorial.checkForSpecialEvents(cardDeck);
 
       specialEventObjectIds?.forEach(objectId => {
@@ -335,17 +355,17 @@ export default {
         if (!object.discovered && !object.removed) {
           cardDeck.push({
             id: objectId,
-            distance: -1
-          })
+            distance: -1,
+          });
         }
       });
     }
   },
 
-  logDeck: function() {},
+  logDeck: function () {},
 
-  switchDayNight: function() {
-    cardDeck?.forEach((card) => {
+  switchDayNight: function () {
+    cardDeck?.forEach(card => {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       if (!object.removed) {
@@ -362,43 +382,42 @@ export default {
     });
   },
 
-  disableActions: function() {
-    cardDeck.forEach(function(card, index) {
+  disableActions: function () {
+    cardDeck.forEach(function (card, index) {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       if (object.group !== 'event') {
         object.disabled = true;
-        cardRef.classList.add('actions-locked');  
+        cardRef.classList.add('actions-locked');
       }
     });
     document.querySelector('#craft')?.classList.add('actions-locked');
     document.querySelector('#character')?.classList.add('actions-locked');
   },
 
-  enableActions: function() {
-    cardDeck.forEach(function(card, index) {
+  enableActions: function () {
+    cardDeck.forEach(function (card, index) {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       object.disabled = false;
-      cardRef.classList.remove('actions-locked');  
+      cardRef.classList.remove('actions-locked');
     });
     document.querySelector('#craft')?.classList.remove('actions-locked');
     document.querySelector('#character')?.classList.remove('actions-locked');
   },
 
-  removeCard: function(cardId) {
+  removeCard: function (cardId) {
     const object = Props.getObject(cardId);
     object.removed = true;
   },
 
-  compare: function( a, b ) {
-    if ( a.distance < b.distance ){
+  compare: function (a, b) {
+    if (a.distance < b.distance) {
       return -1;
     }
-    if ( a.distance > b.distance ){
+    if (a.distance > b.distance) {
       return 1;
     }
     return 0;
-  }
-
-}
+  },
+};

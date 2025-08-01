@@ -1,22 +1,20 @@
-import Props from './props.js'
-import Items from './items.js'
-import Player from './player.js'
-import Almanac from './almanac.js'
+import Props from './props.js';
+import Items from './items.js';
+import Player from './player.js';
+import Almanac from './almanac.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
 const craftingRecipes = Props.getCraftingRecipes();
 
 export default {
-  
-  init: function() {
+  init: function () {
     craftContainer.addEventListener('mouseover', this.checkCraftActionHover.bind(this));
     craftContainer.addEventListener('mousedown', this.checkCraftActionClick.bind(this));
     this.checkCraftingPrerequisits();
   },
 
-  checkCraftActionHover: function(ev) {
-
+  checkCraftActionHover: function (ev) {
     const target = ev.target;
     const hoverButton = target.closest('.button-craft');
 
@@ -24,26 +22,28 @@ export default {
     // const item = clickButton.dataset.item;
     if (hoverButton) {
       if (hoverButton.classList.contains('active')) {
-        craftContainer.querySelector('p.info').textContent = "Click to " + hoverButton.dataset.action + " (right-click for info)";
+        craftContainer.querySelector('p.info').textContent =
+          'Click to ' + hoverButton.dataset.action + ' (right-click for info)';
       } else if (hoverButton.classList.contains('only1')) {
         craftContainer.querySelector('p.info').textContent = "Can't do - can carry only one";
       } else {
-        craftContainer.querySelector('p.info').textContent = "Can't do - items missing (right-click for info)";
-      }  
+        craftContainer.querySelector('p.info').textContent =
+          "Can't do - items missing (right-click for info)";
+      }
     } else {
-      craftContainer.querySelector('p.info').textContent = "";
+      craftContainer.querySelector('p.info').textContent = '';
     }
   },
 
-  checkCraftActionClick: function(ev) {
-
+  checkCraftActionClick: function (ev) {
     const target = ev.target;
     const clickButton = target.closest('.button-craft');
     const navButton = target.closest('.button-next') || target.closest('.button-prev');
-    const leftMouseButton = (ev.button === 0);
-    const rightMouseButton = (ev.button === 2);
+    const leftMouseButton = ev.button === 0;
+    const rightMouseButton = ev.button === 2;
 
-    if (clickButton && clickButton.classList.contains('active') && leftMouseButton) { // relying heavily on active class for verification
+    if (clickButton && clickButton.classList.contains('active') && leftMouseButton) {
+      // relying heavily on active class for verification
       const item = clickButton.dataset.item;
       const itemRecipe = craftingRecipes[item];
       if (itemRecipe !== undefined) {
@@ -97,7 +97,7 @@ export default {
     }
   },
 
-  preserveCraftingItem: function(item) {
+  preserveCraftingItem: function (item) {
     if (item === 'knife') {
       return true;
     } else {
@@ -105,35 +105,41 @@ export default {
     }
   },
 
-  checkCraftingPrerequisits: function() {
-    
+  checkCraftingPrerequisits: function () {
     let craftingOptionsTotal = 0;
 
     for (const recipe in craftingRecipes) {
       const itemRecipe = craftingRecipes[recipe];
       let prerequisitsFulfilled = true;
       for (const recipeItem in itemRecipe.items) {
-        prerequisiteCondition:
-        if (itemRecipe.items[recipeItem].length === 1) {
+        prerequisiteCondition: if (itemRecipe.items[recipeItem].length === 1) {
           if (Items.inventoryContains(itemRecipe.items[recipeItem][0])) {
-            craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
-              el.classList.add('is--hidden');
-            });
+            craftContainer
+              .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
+              .forEach(el => {
+                el.classList.add('is--hidden');
+              });
           } else {
-            craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
-              el.classList.remove('is--hidden');
-            });
+            craftContainer
+              .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
+              .forEach(el => {
+                el.classList.remove('is--hidden');
+              });
             prerequisitsFulfilled = false;
           }
         } else {
           for (const orItem in itemRecipe.items[recipeItem]) {
-            craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
-              el.classList.remove('is--hidden');
-            });
-            if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
-              craftContainer.querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0]).forEach((el) => {
-                el.classList.add('is--hidden');
+            craftContainer
+              .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
+              .forEach(el => {
+                el.classList.remove('is--hidden');
               });
+            if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
+              craftContainer
+                .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
+                .forEach(el => {
+                  el.classList.add('is--hidden');
+                });
               break prerequisiteCondition;
             }
           }
@@ -142,27 +148,41 @@ export default {
       }
       if (prerequisitsFulfilled) {
         if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
-          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.remove('active');
-          craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('only1');
+          craftContainer
+            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            ?.classList.remove('active');
+          craftContainer
+            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            ?.classList.add('only1');
         } else {
           // small hack needed here
           if (recipe === 'rope') {
             if (Items.inventoryItemAmount('straw-wheet') === 1) {
               craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
-              craftContainer.querySelector('.nope.straw-wheet.additional')?.classList.remove('is--hidden');
+              craftContainer
+                .querySelector('.nope.straw-wheet.additional')
+                ?.classList.remove('is--hidden');
             } else {
               craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
-              craftContainer.querySelector('.nope.straw-wheet.additional')?.classList.add('is--hidden');
-              craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('active');
-              craftingOptionsTotal += 1;  
+              craftContainer
+                .querySelector('.nope.straw-wheet.additional')
+                ?.classList.add('is--hidden');
+              craftContainer
+                .querySelector('.button-craft[data-item="' + recipe + '"]')
+                ?.classList.add('active');
+              craftingOptionsTotal += 1;
             }
           } else {
-            craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.add('active');
-            craftingOptionsTotal += 1;  
+            craftContainer
+              .querySelector('.button-craft[data-item="' + recipe + '"]')
+              ?.classList.add('active');
+            craftingOptionsTotal += 1;
           }
         }
       } else {
-        craftContainer.querySelector('.button-craft[data-item="' + recipe + '"]')?.classList.remove('active');
+        craftContainer
+          .querySelector('.button-craft[data-item="' + recipe + '"]')
+          ?.classList.remove('active');
       }
     }
 
@@ -170,22 +190,25 @@ export default {
       craftingOptions.total = craftingOptionsTotal;
       this.craftingChangeFeedback();
     }
-    
   },
 
-  isItemPartOfCrafting: function(item) {
+  isItemPartOfCrafting: function (item) {
     for (const recipe in craftingRecipes) {
-      if (craftingRecipes[recipe].items[0]?.includes(item) || craftingRecipes[recipe].items[1]?.includes(item) || craftingRecipes[recipe].items[2]?.includes(item)) {
+      if (
+        craftingRecipes[recipe].items[0]?.includes(item) ||
+        craftingRecipes[recipe].items[1]?.includes(item) ||
+        craftingRecipes[recipe].items[2]?.includes(item)
+      ) {
         return true;
       }
     }
     return false;
   },
 
-  craftingChangeFeedback: function() {
+  craftingChangeFeedback: function () {
     document.querySelector('#actions .craft').classList.add('transfer');
     window.setTimeout(() => {
       document.querySelector('#actions .craft').classList.remove('transfer');
     }, 400);
-  }
-}
+  },
+};

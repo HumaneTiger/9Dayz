@@ -1,4 +1,4 @@
-import Binding from './binding.js'
+import Binding from './binding.js';
 
 const mapSize = { width: 49, height: 45 };
 
@@ -6,11 +6,11 @@ var inventory = {
   items: new Array(),
   itemNumbers: 0,
   leftHand: null,
-  rightHand: null
+  rightHand: null,
 };
 
 var crafting = {
-  total: 0
+  total: 0,
 };
 
 var game = {
@@ -37,12 +37,14 @@ var game = {
   firstCorpse: false,
   firstLowEnergy: false,
   firstDeadAnimal: false,
-  firstInventoryOpen: false
-}
+  firstInventoryOpen: false,
+};
 
 // all generated ids go in here
 var objectIdsAt = new Array(mapSize.width);
-for (var i = 0; i < objectIdsAt.length; i += 1) { objectIdsAt[i] = new Array(mapSize.height); }
+for (var i = 0; i < objectIdsAt.length; i += 1) {
+  objectIdsAt[i] = new Array(mapSize.height);
+}
 
 // all object properties go in here
 // id
@@ -62,68 +64,131 @@ var objectsIdCounter = 0;
 var zedCounter = 1;
 
 var paths = new Array(mapSize.width);
-for (var i = 0; i < paths.length; i += 1) { paths[i] = new Array(mapSize.height); }
+for (var i = 0; i < paths.length; i += 1) {
+  paths[i] = new Array(mapSize.height);
+}
 
 var inventoryPresets = [];
 inventoryPresets['everyman'] = {
-  'tomato': 2,
+  tomato: 2,
   'drink-2': 1,
   'snack-1': 1,
-  'knife': 1,
+  knife: 1,
   'energy-pills': 1,
-  'pepper': 1,
-}
+  pepper: 1,
+};
 inventoryPresets['treehugger'] = {
   'mushroom-1': 2,
-  'acorn': 1,
-  'branch': 1,
+  acorn: 1,
+  branch: 1,
   'fruit-2': 2,
-  'knife': 1,
-}
+  knife: 1,
+};
 inventoryPresets['snackivore'] = {
   'snack-1': 3,
   'drink-5': 1,
-  'snack-2': 1
-}
+  'snack-2': 1,
+};
 inventoryPresets['craftsmaniac'] = {
-  'spanner': 1,
-  'tape': 1,
-  'knife': 1,
+  spanner: 1,
+  tape: 1,
+  knife: 1,
   'drink-2': 1,
-  'pincers': 1,
-  'nails': 1,
-}
-inventoryPresets['furbuddy'] = {}
-inventoryPresets['hardcharger'] = {}
-inventoryPresets['cashmeister'] = {}
+  pincers: 1,
+  nails: 1,
+};
+inventoryPresets['furbuddy'] = {};
+inventoryPresets['hardcharger'] = {};
+inventoryPresets['cashmeister'] = {};
 
 var buildingTypes = {
-  'house': ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
-  'car': ['car-1', 'car-2'],
-  'farm': ['field', 'compost', 'scarecrow', 'beehive'],
-  'tree': [ 'small-tree', 'big-tree'],
-  'church': [ 'church' ],
-  'signpost': [ 'signpost-1', 'signpost-2', 'signpost-3', 'signpost-4', 'signpost-5', 'signpost-6', 'signpost-7' ],
-  'place': [ 'milton', 'sobor' ],
-  'train': [ 'train-wreck-2', 'train-wreck-1' ],
-  'shop': ['market', 'gas-station'],
-  'industrial': ['tool-shed', 'garage'],
-  'water': ['well', 'jetty', 'pump'],
-  'container': ['crate'],
-  'camping': ['seating', 'log-cabine', 'outhouse', 'fireplace', 'barricades'],
-  'corpse': ['human-corpse-1']
+  house: ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],
+  car: ['car-1', 'car-2'],
+  farm: ['field', 'compost', 'scarecrow', 'beehive'],
+  tree: ['small-tree', 'big-tree'],
+  church: ['church'],
+  signpost: [
+    'signpost-1',
+    'signpost-2',
+    'signpost-3',
+    'signpost-4',
+    'signpost-5',
+    'signpost-6',
+    'signpost-7',
+  ],
+  place: ['milton', 'sobor'],
+  train: ['train-wreck-2', 'train-wreck-1'],
+  shop: ['market', 'gas-station'],
+  industrial: ['tool-shed', 'garage'],
+  water: ['well', 'jetty', 'pump'],
+  container: ['crate'],
+  camping: ['seating', 'log-cabine', 'outhouse', 'fireplace', 'barricades'],
+  corpse: ['human-corpse-1'],
 };
 
 var buildingProps = {
-  'barn': { locked: 1.2, spawn: 2, items: ['claw', 'duck', 'straw-wheet', 'pumpkin', 'nails'] },
-  'big-tree': { locked: 0, spawn: 3, items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'], amount: 2 },
-  'outhouse': { locked: 0, spawn: 1, items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'] },
-  'pump': { locked: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
-  'house': { locked: 2, spawn: 3, items: ['bread-1', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus', 'cloth'] },
-  'basement': { locked: 0, spawn: 3, items: ['wine', 'tape', 'cloth', 'hacksaw', 'bones', 'spanner', 'books', 'nails'] },
-  'farm-house': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'pumpkin', 'carrot', 'knife', 'pepper', 'tomato', 'exodus', 'nails'] },
-  'town-house': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-5', 'exodus', 'cloth'] },
-  'car-1': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner', 'cloth'] },
+  barn: { locked: 1.2, spawn: 2, items: ['claw', 'duck', 'straw-wheet', 'pumpkin', 'nails'] },
+  'big-tree': {
+    locked: 0,
+    spawn: 3,
+    items: ['acorn', 'branch', 'fruit-1', 'fruit-2', 'fruit-3', 'mushroom-1', 'stone'],
+    amount: 2,
+  },
+  outhouse: {
+    locked: 0,
+    spawn: 1,
+    items: ['exodus', 'acorn', 'hawthorn', 'rosehip', 'straw-wheet'],
+  },
+  pump: { locked: 0, spawn: 1, items: ['branch', 'physalis', 'reef', 'spanner'] },
+  house: {
+    locked: 2,
+    spawn: 3,
+    items: [
+      'bread-1',
+      'wine',
+      'snack-1',
+      'snack-2',
+      'energy-pills',
+      'knife',
+      'tape',
+      'drink-2',
+      'drink-5',
+      'exodus',
+      'cloth',
+    ],
+  },
+  basement: {
+    locked: 0,
+    spawn: 3,
+    items: ['wine', 'tape', 'cloth', 'hacksaw', 'bones', 'spanner', 'books', 'nails'],
+  },
+  'farm-house': {
+    locked: 2,
+    spawn: 3,
+    items: ['bread-2', 'wine', 'pumpkin', 'carrot', 'knife', 'pepper', 'tomato', 'exodus', 'nails'],
+  },
+  'town-house': {
+    locked: 3,
+    spawn: 3,
+    items: [
+      'bread-2',
+      'wine',
+      'snack-1',
+      'snack-2',
+      'energy-pills',
+      'knife',
+      'tape',
+      'drink-2',
+      'drink-5',
+      'exodus',
+      'cloth',
+    ],
+  },
+  'car-1': {
+    locked: 2,
+    spawn: 2,
+    items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner', 'cloth'],
+  },
   'signpost-1': { locked: 0, spawn: 0, items: [] },
   'signpost-2': { locked: 0, spawn: 0, items: [] },
   'signpost-3': { locked: 0, spawn: 0, items: [] },
@@ -131,119 +196,221 @@ var buildingProps = {
   'signpost-5': { locked: 0, spawn: 0, items: [] },
   'signpost-6': { locked: 0, spawn: 0, items: [] },
   'signpost-7': { locked: 0, spawn: 0, items: [] },
-  'old-villa': { locked: 3, spawn: 3, items: ['bread-2', 'wine', 'knife', 'rope', 'exodus', 'books'] },
-  'car-2': { locked: 2, spawn: 2, items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'] },
-  'field': { locked: 0, spawn: 3, items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'], buidlings: ['scarecrow'], amount: 2 },
-  'compost': { locked: 0, spawn: 1, items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'], amount: 2 },
-  'scarecrow': { locked: 0, spawn: 1, items: ['straw-wheet', 'straw-wheet', 'pumpkin', 'cloth'], amount: 2 },
-  'beehive': { locked: 0, spawn: 1, items: ['honey'], amount: 5 },
-  'small-tree': { locked: 0, spawn: 2, items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone', 'straw-wheet'] },
-  'church': { locked: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
-  'milton': { locked: 0, spawn: 0, items: [] },
-  'sobor': { locked: 0, spawn: 0, items: [] },
+  'old-villa': {
+    locked: 3,
+    spawn: 3,
+    items: ['bread-2', 'wine', 'knife', 'rope', 'exodus', 'books'],
+  },
+  'car-2': {
+    locked: 2,
+    spawn: 2,
+    items: ['snack-1', 'snack-2', 'energy-pills', 'drink-3', 'drink-4', 'tape', 'spanner'],
+  },
+  field: {
+    locked: 0,
+    spawn: 3,
+    items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'],
+    buidlings: ['scarecrow'],
+    amount: 2,
+  },
+  compost: {
+    locked: 0,
+    spawn: 1,
+    items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'tomato'],
+    amount: 2,
+  },
+  scarecrow: {
+    locked: 0,
+    spawn: 1,
+    items: ['straw-wheet', 'straw-wheet', 'pumpkin', 'cloth'],
+    amount: 2,
+  },
+  beehive: { locked: 0, spawn: 1, items: ['honey'], amount: 5 },
+  'small-tree': {
+    locked: 0,
+    spawn: 2,
+    items: ['branch', 'hawthorn', 'physalis', 'rosehip', 'mushroom-1', 'stone', 'straw-wheet'],
+  },
+  church: { locked: 2, spawn: 3, items: ['books', 'wine', 'bread-2'] },
+  milton: { locked: 0, spawn: 0, items: [] },
+  sobor: { locked: 0, spawn: 0, items: [] },
   'train-wreck-2': { locked: 0, spawn: 2, items: ['energy-pills', 'pincers', 'spanner'] },
-  'train-wreck-1': { locked: 0, spawn: 3, items: ['snack-1', 'snack-2', 'drink-2', 'drink-5', 'wine'] },
-  'market': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-3', 'drink-4', 'exodus'] },
-  'gas-station': { locked: 2, spawn: 3, items: ['bread-1', 'bread-2', 'wine', 'snack-1', 'snack-2', 'energy-pills', 'knife', 'tape', 'drink-2', 'drink-1', 'exodus'] },
-  'tool-shed': { locked: 2, spawn: 2, items: ['cloth', 'rope', 'fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'tape'] },
-  'garage': { locked: 3, spawn: 3, items: ['cloth', 'rope', 'fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'tape', 'nails'] },
-  'well': { locked: 0, spawn: 1, items: ['rosehip', 'bones', 'mushroom-1', 'stone', 'froggy'], amount: 2 },
-  'jetty': { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck', 'froggy'], amount: 2 },
-  'seating': { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
-  'log-cabine': { locked: 1.4, spawn: 2, items: ['stump', 'straw-wheet', 'branch', 'cloth', 'drink-3', 'drink-4', 'snack-1', 'snack-2'] },
-  'cottage': { locked: 2, spawn: 3, items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'] },
-  'fireplace': { locked: 0, spawn: 0, items: [] },
-  'barricades': { locked: 0, spawn: 0, items: [], preview: true },
-  'crate': { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'] }, // always locked
-  'human-corpse-1': { locked: 0, spawn: 3, items: ['wine', 'snack-1', 'bread-2', 'energy-pills', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus', 'cloth', 'rope', 'wooden-club'] },
+  'train-wreck-1': {
+    locked: 0,
+    spawn: 3,
+    items: ['snack-1', 'snack-2', 'drink-2', 'drink-5', 'wine'],
+  },
+  market: {
+    locked: 2,
+    spawn: 3,
+    items: [
+      'bread-1',
+      'bread-2',
+      'wine',
+      'snack-1',
+      'snack-2',
+      'energy-pills',
+      'knife',
+      'tape',
+      'drink-3',
+      'drink-4',
+      'exodus',
+    ],
+  },
+  'gas-station': {
+    locked: 2,
+    spawn: 3,
+    items: [
+      'bread-1',
+      'bread-2',
+      'wine',
+      'snack-1',
+      'snack-2',
+      'energy-pills',
+      'knife',
+      'tape',
+      'drink-2',
+      'drink-1',
+      'exodus',
+    ],
+  },
+  'tool-shed': {
+    locked: 2,
+    spawn: 2,
+    items: ['cloth', 'rope', 'fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'tape'],
+  },
+  garage: {
+    locked: 3,
+    spawn: 3,
+    items: ['cloth', 'rope', 'fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'tape', 'nails'],
+  },
+  well: {
+    locked: 0,
+    spawn: 1,
+    items: ['rosehip', 'bones', 'mushroom-1', 'stone', 'froggy'],
+    amount: 2,
+  },
+  jetty: { locked: 0, spawn: 1, items: ['reef', 'rosehip', 'stone', 'duck', 'froggy'], amount: 2 },
+  seating: { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
+  'log-cabine': {
+    locked: 1.4,
+    spawn: 2,
+    items: ['stump', 'straw-wheet', 'branch', 'cloth', 'drink-3', 'drink-4', 'snack-1', 'snack-2'],
+  },
+  cottage: {
+    locked: 2,
+    spawn: 3,
+    items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'],
+  },
+  fireplace: { locked: 0, spawn: 0, items: [] },
+  barricades: { locked: 0, spawn: 0, items: [], preview: true },
+  crate: { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'] }, // always locked
+  'human-corpse-1': {
+    locked: 0,
+    spawn: 3,
+    items: [
+      'wine',
+      'snack-1',
+      'bread-2',
+      'energy-pills',
+      'snack-2',
+      'knife',
+      'drink-2',
+      'drink-5',
+      'exodus',
+      'cloth',
+      'rope',
+      'wooden-club',
+    ],
+  },
 };
 
 var buildingActions = {
-  'house': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+60' ],
-  'car': [ 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20' ],
-  'farm': [ 'gather|15|-10','scout area|30' ],
-  'tree': [ 'gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15' ],
-  'church': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30' ],
-  'signpost': [ 'read|1' ],
-  'place': [ 'head toward|0', 'quick travel|0' ],
-  'train': [ 'search|20|-5', 'scout area|30' ],
-  'shop': [ 'break door|30|-20', 'search|20|-10', 'scout area|30' ],
-  'industrial': [ 'break door|30|-20', 'search|20|-15', 'scout area|30' ],
-  'water': [ 'gather|15|-5', 'drink|10', 'fish|30|-5' ],
-  'camping': [ 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20' ],
-  'corpse': ['search|15|-5'],
-  'container': ['break lock|30|-20', 'search|15|-5'],
+  house: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+60'],
+  car: ['smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20'],
+  farm: ['gather|15|-10', 'scout area|30'],
+  tree: ['gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15'],
+  church: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30'],
+  signpost: ['read|1'],
+  place: ['head toward|0', 'quick travel|0'],
+  train: ['search|20|-5', 'scout area|30'],
+  shop: ['break door|30|-20', 'search|20|-10', 'scout area|30'],
+  industrial: ['break door|30|-20', 'search|20|-15', 'scout area|30'],
+  water: ['gather|15|-5', 'drink|10', 'fish|30|-5'],
+  camping: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20'],
+  corpse: ['search|15|-5'],
+  container: ['break lock|30|-20', 'search|15|-5'],
 };
 
 var cookingRecipes = {
-  'roasted-meat': [ 'meat','sharp-stick', 1, 'roast' ],
-  'roasted-pepper': [ 'pepper','sharp-stick', 1, 'roast' ],
-  'roasted-mushroom': [ 'mushroom-1-2','sharp-stick', 1, 'roast' ],
-  'roasted-pumpkin': [ 'pumpkin','knife', 4, 'roast' ],
-  'glue': [ 'bones','drink-1-2', 1, 'cook' ],
+  'roasted-meat': ['meat', 'sharp-stick', 1, 'roast'],
+  'roasted-pepper': ['pepper', 'sharp-stick', 1, 'roast'],
+  'roasted-mushroom': ['mushroom-1-2', 'sharp-stick', 1, 'roast'],
+  'roasted-pumpkin': ['pumpkin', 'knife', 4, 'roast'],
+  glue: ['bones', 'drink-1-2', 1, 'cook'],
 };
 
 var craftingRecipes = {
-  'wooden-club': { 
-    items: [ ['fail','hacksaw'], ['stump'] ],
+  'wooden-club': {
+    items: [['fail', 'hacksaw'], ['stump']],
     exclusive: true,
-    result: 'weapon'
+    result: 'weapon',
   },
   'improvised-axe': {
-    items: [ ['tape'], ['branch'], ['stone'] ],
+    items: [['tape'], ['branch'], ['stone']],
     exclusive: true,
-    result: 'weapon'
+    result: 'weapon',
   },
   'improvised-whip': {
-    items: [ ['rope'], ['branch'] ],
+    items: [['rope'], ['branch']],
     exclusive: true,
-    result: 'weapon'
+    result: 'weapon',
   },
   'fishing-rod': {
-    items: [ ['rope'], ['branch'], ['bone-hook'] ],
+    items: [['rope'], ['branch'], ['bone-hook']],
     exclusive: true,
-    result: 'weapon'
+    result: 'weapon',
   },
-  'fireplace': {
-    items: [ ['stone'], ['stump'], ['straw-wheet'] ],
+  fireplace: {
+    items: [['stone'], ['stump'], ['straw-wheet']],
     exclusive: false,
-    result: 'building'
+    result: 'building',
   },
-  'barricades': {
-    items: [ ['rope'], ['stump'], ['sharp-stick'] ],
+  barricades: {
+    items: [['rope'], ['stump'], ['sharp-stick']],
     exclusive: false,
-    result: 'building'
+    result: 'building',
   },
-  'tape': {
-    items: [ ['cloth'], ['glue'] ],
+  tape: {
+    items: [['cloth'], ['glue']],
     exclusive: false,
-    result: 'inventory'
+    result: 'inventory',
   },
   'sharp-stick': {
-    items: [ ['branch'], ['knife'] ],
+    items: [['branch'], ['knife']],
     exclusive: false,
-    result: 'inventory'
+    result: 'inventory',
   },
   'bone-hook': {
-    items: [ ['bones'], ['knife'] ],
+    items: [['bones'], ['knife']],
     exclusive: false,
-    result: 'inventory'
+    result: 'inventory',
   },
-  'rope': {
-    items: [ ['straw-wheet'], ['straw-wheet'] ],
+  rope: {
+    items: [['straw-wheet'], ['straw-wheet']],
     exclusive: false,
-    result: 'inventory'
-  }
+    result: 'inventory',
+  },
 };
 
 var weaponProps = {
-  'baseball-bat': {attack: 10, defense: 3, durability: 4},
-  'wrench': {attack: 14, defense: 4, durability: 4},
-  'axe': {attack: 12, defense: 6, durability: 4},
-  'improvised-axe': {attack: 8, defense: 4, durability: 3},
-  'wooden-club': {attack: 6, defense: 3, durability: 3},
-  'improvised-whip': {attack: 3, defense: 3, durability: 3},
-  'fishing-rod': {attack: 2, defense: 1, durability: 4},
+  'baseball-bat': { attack: 10, defense: 3, durability: 4 },
+  wrench: { attack: 14, defense: 4, durability: 4 },
+  axe: { attack: 12, defense: 6, durability: 4 },
+  'improvised-axe': { attack: 8, defense: 4, durability: 3 },
+  'wooden-club': { attack: 6, defense: 3, durability: 3 },
+  'improvised-whip': { attack: 3, defense: 3, durability: 3 },
+  'fishing-rod': { attack: 2, defense: 1, durability: 4 },
 };
 
 var weaponPropsUpgrades = {
@@ -252,17 +419,17 @@ var weaponPropsUpgrades = {
     defense: { amount: 2, item: 'glue' },
     durability: { amount: 1, item: 'tape' },
   },
-  'wrench': { 
+  wrench: {
     attack: { amount: 1, item: 'spanner' },
     defense: { amount: 1, item: 'brush' },
     durability: { amount: 1, item: 'tape' },
   },
-  'axe': { 
+  axe: {
     attack: { amount: 1, item: 'fail' },
     defense: { amount: 2, item: 'glue' },
     durability: { amount: 1, item: 'tape' },
   },
-  'improvised-axe': { 
+  'improvised-axe': {
     attack: { amount: 1, item: 'pincers' },
     defense: { amount: 2, item: 'knife' },
     durability: { amount: 1, item: 'tape' },
@@ -284,40 +451,40 @@ var weaponPropsUpgrades = {
 
 var targetLocations = {
   'Lakeside Camp Resort': [5, 37],
-  'Rocksprings': [22, 34],
+  Rocksprings: [22, 34],
   'Haling Cove': [16, 8],
-  'Litchfield': [15, 23],
-  'Greenleafton': [33, 35],
+  Litchfield: [15, 23],
+  Greenleafton: [33, 35],
   'Billibalds Farm': [40, 30],
   'Camp Silverlake': [28, 22],
-  'Harbor Gas Station': [34, 16]
+  'Harbor Gas Station': [34, 16],
 };
 
 /* ['type', hunger, thirst, energy, attack, defense] */
 var items = {
-  'acorn': ['eat', 1, 0, 0],
-  'rosehip': ['eat', 2, 2, 0],
-  'hawthorn': ['eat', 2, 2, 0],
-  'physalis': ['eat', 2, 2, 0],
-  'branch': ['craft', 0, 0, 0, 1, 1],
-  'stone': ['craft', 0, 0, 0, 4, 1],
+  acorn: ['eat', 1, 0, 0],
+  rosehip: ['eat', 2, 2, 0],
+  hawthorn: ['eat', 2, 2, 0],
+  physalis: ['eat', 2, 2, 0],
+  branch: ['craft', 0, 0, 0, 1, 1],
+  stone: ['craft', 0, 0, 0, 4, 1],
   'straw-wheet': ['craft', 0, 0, 0, 0, 0],
-  'stump': ['craft', 0, 0, 0, 3, 3],
-  'reef': ['craft', 0, 0, 0, 1, 1],
+  stump: ['craft', 0, 0, 0, 3, 3],
+  reef: ['craft', 0, 0, 0, 1, 1],
   'fruit-1': ['eat', 2, 8, 2],
   'fruit-2': ['eat', 4, 8, 2],
   'fruit-3': ['eat', 3, 8, 2],
   'mushroom-1': ['eat', 2, 2, 0],
   'mushroom-2': ['eat', 4, 3, 0],
   'roasted-mushroom': ['eat', 11, 5, 10],
-  'pumpkin': ['eat', 15, 15, 10],
+  pumpkin: ['eat', 15, 15, 10],
   'roasted-pumpkin': ['eat', 8, 6, 7],
-  'pepper': ['eat', 8, 5, 0],
+  pepper: ['eat', 8, 5, 0],
   'roasted-pepper': ['eat', 22, 5, 20],
-  'meat': ['eat', 3, 5, 0],
+  meat: ['eat', 3, 5, 0],
   'roasted-meat': ['eat', 30, 15, 30],
-  'tomato': ['eat', 4, 8, 3],
-  'carrot': ['eat', 6, 4, 0],
+  tomato: ['eat', 4, 8, 3],
+  carrot: ['eat', 6, 4, 0],
   'drink-1': ['drink', 0, 30, 0],
   'drink-2': ['drink', 0, 35, 0],
   'drink-3': ['drink', 5, 25, 5],
@@ -327,40 +494,75 @@ var items = {
   'snack-2': ['eat', 25, 0, 10],
   'bread-1': ['eat', 45, 0, 20],
   'bread-2': ['eat', 40, 0, 20],
-  'wine': ['drink', 5, 35, 20],
-  'honey': ['eat', 15, 5, 25, 3, 2],
+  wine: ['drink', 5, 35, 20],
+  honey: ['eat', 15, 5, 25, 3, 2],
   'energy-pills': ['eat', 0, 0, 50, 1, 1],
-  'bones': ['craft', 0, 0, 0, 2, 0],
-  'cloth': ['craft', 0, 0, 0, 4, 2],
-  'glue': ['craft', 0, 0, 0, 5, 2],
-  'knife': ['craft', 0, 0, 0, 4, 1],
-  'fail': ['craft', 0, 0, 0, 3, 2],
-  'hacksaw': ['craft', 0, 0, 0, 3, 2],
-  'tape': ['craft', 0, 0, 0, 1, 0],
+  bones: ['craft', 0, 0, 0, 2, 0],
+  cloth: ['craft', 0, 0, 0, 4, 2],
+  glue: ['craft', 0, 0, 0, 5, 2],
+  knife: ['craft', 0, 0, 0, 4, 1],
+  fail: ['craft', 0, 0, 0, 3, 2],
+  hacksaw: ['craft', 0, 0, 0, 3, 2],
+  tape: ['craft', 0, 0, 0, 1, 0],
   'sharp-stick': ['craft', 0, 0, 0, 3, 3],
-  'pincers': ['craft', 0, 0, 0, 3, 2],
-  'spanner': ['craft', 0, 0, 0, 3, 1],
-  'nails': ['craft', 0, 0, 0, 2, 1],
-  'books': ['craft', 0, 0, 0, 0, 2],
-  'claw': ['craft', 0, 0, 0, 4, 2],
-  'exodus': ['craft', 0, 0, 0, 4, 2],
-  'mallet': ['craft', 0, 0, 0, 5, 1],
-  'rope': ['craft', 0, 0, 0, 3, 1],
+  pincers: ['craft', 0, 0, 0, 3, 2],
+  spanner: ['craft', 0, 0, 0, 3, 1],
+  nails: ['craft', 0, 0, 0, 2, 1],
+  books: ['craft', 0, 0, 0, 0, 2],
+  claw: ['craft', 0, 0, 0, 4, 2],
+  exodus: ['craft', 0, 0, 0, 4, 2],
+  mallet: ['craft', 0, 0, 0, 5, 1],
+  rope: ['craft', 0, 0, 0, 3, 1],
   'bone-hook': ['craft', 0, 0, 0, 2, 2],
-  'improvised-axe': ['extra', 0, 0, 0, weaponProps['improvised-axe'].attack, weaponProps['improvised-axe'].defense],
-  'wooden-club': ['extra', 0, 0, 0, weaponProps['wooden-club'].attack, weaponProps['wooden-club'].defense],
-  'wrench': ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
-  'baseball-bat': ['extra', 0, 0, 0, weaponProps['baseball-bat'].attack, weaponProps['baseball-bat'].defense],
-  'axe': ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense],
-  'improvised-whip': ['extra', 0, 0, 0, weaponProps['improvised-whip'].attack, weaponProps['improvised-whip'].defense],
-  'fishing-rod': ['extra', 0, 0, 0, weaponProps['fishing-rod'].attack, weaponProps['fishing-rod'].defense],
+  'improvised-axe': [
+    'extra',
+    0,
+    0,
+    0,
+    weaponProps['improvised-axe'].attack,
+    weaponProps['improvised-axe'].defense,
+  ],
+  'wooden-club': [
+    'extra',
+    0,
+    0,
+    0,
+    weaponProps['wooden-club'].attack,
+    weaponProps['wooden-club'].defense,
+  ],
+  wrench: ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
+  'baseball-bat': [
+    'extra',
+    0,
+    0,
+    0,
+    weaponProps['baseball-bat'].attack,
+    weaponProps['baseball-bat'].defense,
+  ],
+  axe: ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense],
+  'improvised-whip': [
+    'extra',
+    0,
+    0,
+    0,
+    weaponProps['improvised-whip'].attack,
+    weaponProps['improvised-whip'].defense,
+  ],
+  'fishing-rod': [
+    'extra',
+    0,
+    0,
+    0,
+    weaponProps['fishing-rod'].attack,
+    weaponProps['fishing-rod'].defense,
+  ],
 };
 var itemModifiers = {
-  'snackivore': {
-    'acorn': [-1, 0, 0],
+  snackivore: {
+    acorn: [-1, 0, 0],
     'bread-1': [5, 0, 10],
     'bread-2': [5, 0, 10],
-    'carrot': [-4, -2, 0],
+    carrot: [-4, -2, 0],
     'drink-3': [10, 20, 10],
     'drink-4': [10, 20, 10],
     'drink-5': [15, 30, 15],
@@ -368,27 +570,27 @@ var itemModifiers = {
     'fruit-2': [-2, -4, -2],
     'fruit-3': [-2, -4, -2],
     'energy-pills': [0, 0, +25],
-    'hawthorn': [-2, -2, 0],
-    'meat': [-3, -5, 0],
+    hawthorn: [-2, -2, 0],
+    meat: [-3, -5, 0],
     'roasted-meat': [15, 15, 20],
-    'pepper': [-4, -2, 0],
+    pepper: [-4, -2, 0],
     'roasted-pepper': [-5, -5, -5],
-    'physalis': [-2, -2, 0],
-    'pumpkin': [-10, -10, -10],
+    physalis: [-2, -2, 0],
+    pumpkin: [-10, -10, -10],
     'roasted-pumpkin': [-5, -5, -5],
-    'rosehip': [-2, -2, 0],
+    rosehip: [-2, -2, 0],
     'mushroom-1': [-2, -2, 0],
     'mushroom-2': [-4, -3, 0],
     'roasted-mushroom': [1, 1, 1],
     'snack-1': [20, 0, 25],
     'snack-2': [20, 0, 25],
-    'tomato': [-2, -4, -3]
+    tomato: [-2, -4, -3],
   },
-  'treehugger': {
-    'acorn': [2, 0, 0],
+  treehugger: {
+    acorn: [2, 0, 0],
     'bread-1': [-15, 0, -10],
     'bread-2': [-20, 0, -10],
-    'carrot': [4, 2, 0],
+    carrot: [4, 2, 0],
     'drink-1': [0, 0, 0],
     'drink-2': [0, 0, 0],
     'drink-3': [-3, -10, -3],
@@ -398,27 +600,26 @@ var itemModifiers = {
     'fruit-2': [3, 5, 5],
     'fruit-3': [3, 5, 5],
     'energy-pills': [0, 0, -25],
-    'hawthorn': [3, 5, 3],
-    'meat': [3, 3, 5],
+    hawthorn: [3, 5, 3],
+    meat: [3, 3, 5],
     'roasted-meat': [10, 5, 10],
-    'pepper': [5, 5, 5],
+    pepper: [5, 5, 5],
     'roasted-pepper': [5, 5, 5],
-    'physalis': [2, 3, 2],
-    'pumpkin': [5, 5, 10],
+    physalis: [2, 3, 2],
+    pumpkin: [5, 5, 10],
     'roasted-pumpkin': [4, 3, 4],
-    'rosehip': [2, 2, 4],
+    rosehip: [2, 2, 4],
     'mushroom-1': [2, 2, 4],
     'mushroom-2': [2, 2, 4],
     'roasted-mushroom': [2, 3, 5],
     'snack-1': [-15, 0, -8],
     'snack-2': [-15, 0, -8],
-    'tomato': [4, 5, 7]
-  }
-}
+    tomato: [4, 5, 7],
+  },
+};
 
 export default {
-  
-  init: function() {
+  init: function () {
     this.setupAllPaths();
     this.bind();
     this.preloadBuidlings();
@@ -426,25 +627,25 @@ export default {
     this.preloadZombies();
   },
 
-  bind: function() {
+  bind: function () {
     new Binding({
-        object: inventory,
-        property: 'itemNumbers',
-        element: document.getElementById('inventory-numbers')
-    })
+      object: inventory,
+      property: 'itemNumbers',
+      element: document.getElementById('inventory-numbers'),
+    });
     new Binding({
       object: crafting,
       property: 'total',
-      element: document.getElementById('crafting-total')
-    })
+      element: document.getElementById('crafting-total'),
+    });
     new Binding({
       object: game,
       property: 'character',
-      element: document.getElementById('character').querySelector('.slot-hero h2')
-    })
+      element: document.getElementById('character').querySelector('.slot-hero h2'),
+    });
   },
 
-  hourlyTasks: function(hour) {
+  hourlyTasks: function (hour) {
     if (hour === 21) {
       this.setGameProp('timeMode', 'night');
     }
@@ -455,7 +656,7 @@ export default {
 
   /* ==================== the good ones ==================== */
 
-  preloadBuidlings: function() {
+  preloadBuidlings: function () {
     let images = [];
     for (const prop in buildingProps) {
       images[i] = new Image();
@@ -476,22 +677,22 @@ export default {
       } else {
         images[i].src = './img/buildings/' + prop + '.png';
       }
-    };
+    }
   },
 
-  preloadItems: function() {
+  preloadItems: function () {
     let images = [];
     for (const prop in items) {
       images[i] = new Image();
       if (items[prop][0] !== 'extra') {
-        images[i].src = './img/items/'+prop+'.PNG';
+        images[i].src = './img/items/' + prop + '.PNG';
       } else {
-        images[i].src = './img/weapons/'+prop+'.png';
+        images[i].src = './img/weapons/' + prop + '.png';
       }
-    };
+    }
   },
 
-  preloadUI: function() {
+  preloadUI: function () {
     let images = [];
     images[1] = new Image();
     images[1].src = './img/ui/logo.png';
@@ -521,7 +722,7 @@ export default {
     images[13].src = './img/ui/day-teaser-right.png';
   },
 
-  preloadZombies: function() {
+  preloadZombies: function () {
     let images = [];
     images[1] = new Image();
     images[1].src = './img/zombies/zombie-1.png';
@@ -541,7 +742,7 @@ export default {
     images[8].src = './img/zombies/dead.png';
   },
 
-  modifyObjectProperties: function() {
+  modifyObjectProperties: function () {
     if (this.getGameProp('character') === 'treehugger') {
       buildingActions['tree'][3] = 'rest|60|+20';
       buildingActions['house'][3] = 'rest|60|+10';
@@ -550,37 +751,43 @@ export default {
     }
   },
 
-  saveCheckpoint: function(targetLocationName, playerPosition, playerStats) {
+  saveCheckpoint: function (targetLocationName, playerPosition, playerStats) {
     let saveCheckpoint = {
       targetLocationName: targetLocationName,
       gameTime: window.timeIsUnity,
       playerCharacter: this.getGameProp('character'),
       playerPosition: playerPosition,
       playerStats: playerStats,
-      inventoryItems: {}
-    }
+      inventoryItems: {},
+    };
     // https://stackoverflow.com/questions/29585812/json-stringify-does-not-stringify-nested-arrays
     for (let item in inventory.items) {
       if (inventory.items[item].amount && inventory.items[item].amount > 0) {
         saveCheckpoint.inventoryItems[item] = inventory.items[item];
       }
     }
-    localStorage.setItem("saveCheckpoint", JSON.stringify(saveCheckpoint));
-    document.getElementById('actions').querySelector('li.mixed .game-saved').classList.add('active');
+    localStorage.setItem('saveCheckpoint', JSON.stringify(saveCheckpoint));
+    document
+      .getElementById('actions')
+      .querySelector('li.mixed .game-saved')
+      .classList.add('active');
     window.setTimeout(() => {
-      document.getElementById('actions').querySelector('li.mixed .game-saved').classList.remove('active');
+      document
+        .getElementById('actions')
+        .querySelector('li.mixed .game-saved')
+        .classList.remove('active');
     }, 2000);
   },
 
-  getGameProp: function(prop) {
+  getGameProp: function (prop) {
     return game[prop];
   },
 
-  setGameProp: function(prop, value) {
+  setGameProp: function (prop, value) {
     game[prop] = value;
   },
 
-  pauseGame: function(pause) {
+  pauseGame: function (pause) {
     this.setGameProp('gamePaused', pause);
     if (pause) {
       document.body.classList.add('is--paused');
@@ -590,45 +797,51 @@ export default {
   },
 
   /* inventory */
-  getAllItems: function() {
+  getAllItems: function () {
     return items;
   },
 
-  getItem: function(item) {
+  getItem: function (item) {
     return items[item];
   },
 
-  getItemModifier: function(type, item) {
+  getItemModifier: function (type, item) {
     // returns item modifiers for [hunger, thirst, energy]
     if (itemModifiers[type]) {
       return itemModifiers[type][item];
     }
   },
 
-  extractItemName: function(item) {
-    return item.replace('-', ' ').replace(' 1-2', '').replace(' 1', '').replace(' 2', '').replace(' 3', '').replace(' 4', '');
+  extractItemName: function (item) {
+    return item
+      .replace('-', ' ')
+      .replace(' 1-2', '')
+      .replace(' 1', '')
+      .replace(' 2', '')
+      .replace(' 3', '')
+      .replace(' 4', '');
   },
 
   /* active crafting number */
-  getCrafting: function() {
+  getCrafting: function () {
     return crafting;
   },
 
-  getCookingRecipes: function() {
+  getCookingRecipes: function () {
     return cookingRecipes;
   },
 
-  getCraftingRecipes: function() {
+  getCraftingRecipes: function () {
     return craftingRecipes;
   },
 
-  getObjectIdsAt: function(x, y) {
+  getObjectIdsAt: function (x, y) {
     if (objectIdsAt[x] !== undefined) {
       return objectIdsAt[x][y];
     }
   },
 
-  getObjectsAt: function(x, y) {
+  getObjectsAt: function (x, y) {
     let allObjectsAt = [];
     this.getObjectIdsAt(x, y)?.forEach(id => {
       allObjectsAt.push(this.getObject(id));
@@ -636,7 +849,7 @@ export default {
     return allObjectsAt;
   },
 
-  addObjectIdAt: function(x, y) {
+  addObjectIdAt: function (x, y) {
     const id = objectsIdCounter;
     if (objectIdsAt[x][y] !== undefined) {
       objectIdsAt[x][y].push(id);
@@ -647,45 +860,45 @@ export default {
     objectsIdCounter += 1;
     return id;
   },
-  
-  getObject: function(id) {
+
+  getObject: function (id) {
     return objects[id];
   },
 
-  setObject: function(id, data) {
+  setObject: function (id, data) {
     objects[id] = data;
   },
 
-  getAllPaths: function() {
+  getAllPaths: function () {
     return paths;
   },
 
-  getAllTargetLocations: function() {
+  getAllTargetLocations: function () {
     return targetLocations;
   },
-  
-  getInventory: function() {
+
+  getInventory: function () {
     return inventory;
   },
 
-  getInventoryPresets: function(character) {
+  getInventoryPresets: function (character) {
     return inventoryPresets[character];
   },
-  
-  addWeaponToInventory: function(item, addAmount, setWeaponProps) {
+
+  addWeaponToInventory: function (item, addAmount, setWeaponProps) {
     const amount = parseInt(addAmount),
-          setDamage = setWeaponProps.damage,
-          setProtection = setWeaponProps.protection,
-          setDurability = setWeaponProps.durability,
-          itemProps = items[item];
+      setDamage = setWeaponProps.damage,
+      setProtection = setWeaponProps.protection,
+      setDurability = setWeaponProps.durability,
+      itemProps = items[item];
 
     if (inventory.items[item] !== undefined) {
       // weapon was added to inventory before
       inventory.items[item].amount += amount;
-      inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
-      
-      setDamage ? inventory.items[item].damage = setDamage : false;
-      setProtection ? inventory.items[item].protection = setProtection : false;
+      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
+
+      setDamage ? (inventory.items[item].damage = setDamage) : false;
+      setProtection ? (inventory.items[item].protection = setProtection) : false;
 
       if (setDurability !== undefined) {
         inventory.items[item].durability += setDurability;
@@ -705,22 +918,22 @@ export default {
         amount: amount,
         damage: setDamage || this.calcItemDamage(item),
         protection: setProtection || this.calcItemProtection(item),
-        durability: setDurability
-      }
+        durability: setDurability,
+      };
     } else {
       console.log('adding weapon "' + item + '" to inventory failed');
     }
     this.calcTotalInventoryItems();
   },
-  
-  addItemToInventory: function(item, addAmount) {
+
+  addItemToInventory: function (item, addAmount) {
     const amount = parseInt(addAmount),
-          itemProps = items[item];
+      itemProps = items[item];
 
     if (inventory.items[item] !== undefined) {
       // item was added to inventory before
       inventory.items[item].amount += amount;
-      inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
+      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
     } else if (itemProps !== undefined) {
       // item is added first time to inventory
       inventory.items[item] = {
@@ -728,24 +941,28 @@ export default {
         name: item,
         amount: amount,
         damage: this.calcItemDamage(item), // props for battle mode
-        protection: this.calcItemProtection(item) // props for battle mode
-      }
+        protection: this.calcItemProtection(item), // props for battle mode
+      };
     } else {
       console.log('adding item "' + item + '" to inventory failed');
     }
     this.calcTotalInventoryItems();
   },
 
-  calcTotalInventoryItems: function() {
+  calcTotalInventoryItems: function () {
     inventory.itemNumbers = 0;
     for (let item in inventory.items) {
-      if (inventory.items[item].type !== 'extra' && inventory.items[item].amount && inventory.items[item].amount > 0) {
+      if (
+        inventory.items[item].type !== 'extra' &&
+        inventory.items[item].amount &&
+        inventory.items[item].amount > 0
+      ) {
         inventory.itemNumbers += inventory.items[item].amount;
       }
     }
   },
 
-  calcItemProps: function(item) {
+  calcItemProps: function (item) {
     const itemProps = this.getItem(item);
     const itemMods = this.getItemModifier(this.getGameProp('character'), item);
     if (itemProps) {
@@ -755,28 +972,30 @@ export default {
         protection: this.calcItemProtection(item),
         food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
         drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
-        energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3]
-      }
+        energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3],
+      };
     } else {
       console.log('No props for item ' + item); // no props for item crate and duck
     }
   },
-  
-  calcItemDamage: function(item) {
+
+  calcItemDamage: function (item) {
     const itemProps = items[item];
     return itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10);
   },
-  
-  calcItemProtection: function(item) {
+
+  calcItemProtection: function (item) {
     const itemProps = items[item];
     if (itemProps[5]) {
       return itemProps[5];
     } else {
-      return itemProps[1] > itemProps[2] ? Math.round(itemProps[1] / 10) : Math.round(itemProps[2] / 10);
+      return itemProps[1] > itemProps[2]
+        ? Math.round(itemProps[1] / 10)
+        : Math.round(itemProps[2] / 10);
     }
   },
-  
-  setupAllBuildings: function() {
+
+  setupAllBuildings: function () {
     // ONLY FOR TUTORIAL
     if (this.getGameProp('tutorial')) {
       this.setupBuilding(18, 44, ['crate'], ['drink-5', 'bread-1', 'wooden-club']);
@@ -972,7 +1191,7 @@ export default {
     this.setupBuilding(28, 6, ['small-tree', 'big-tree']);
   },
 
-  setupAllZeds: function() {
+  setupAllZeds: function () {
     this.setZedAt(31, 36, 1);
     this.setZedAt(30, 35, 1);
     this.setZedAt(30, 34, 1);
@@ -1017,7 +1236,7 @@ export default {
     this.setZedAt(35, 18, 1);
   },
 
-  getLootBuildingProbability: function(buildingName) {
+  getLootBuildingProbability: function (buildingName) {
     // returns [firstItemChance, nextItemsChance]
     const type = this.getBuildingTypeOf(buildingName);
 
@@ -1026,7 +1245,13 @@ export default {
     }
     // house, car, farm, tree, church, train, shop, industrial, water, camping, corpse
     if (this.getGameProp('character') === 'treehugger') {
-      if (type === 'house' || type === 'car' || type === 'train' || type === 'shop' || type === 'industrial') {
+      if (
+        type === 'house' ||
+        type === 'car' ||
+        type === 'train' ||
+        type === 'shop' ||
+        type === 'industrial'
+      ) {
         return [7, 3];
       } else if (type === 'farm' || type === 'tree' || type === 'water' || type === 'camping') {
         return [11, 8];
@@ -1038,7 +1263,12 @@ export default {
         return [7, 3];
       }
     } else if (this.getGameProp('character') === 'craftsmaniac') {
-      if (type === 'industrial' || type === 'car' || type === 'train' || buildingName === 'basement') {
+      if (
+        type === 'industrial' ||
+        type === 'car' ||
+        type === 'train' ||
+        buildingName === 'basement'
+      ) {
         return [11, 8];
       }
     } else if (this.getGameProp('character') === 'cashmeister') {
@@ -1048,59 +1278,70 @@ export default {
     return [9, 6];
   },
 
-  forceLootItemList: function(forceItems, maxAmount) {
+  forceLootItemList: function (forceItems, maxAmount) {
     let lootItemList = [];
     for (var i = 0; i < forceItems.length; i += 1) {
       lootItemList.push({
         name: JSON.parse(JSON.stringify(forceItems[i])),
-        amount: Math.round(Math.random() * maxAmount) || 1
+        amount: Math.round(Math.random() * maxAmount) || 1,
       });
     }
     return lootItemList;
   },
 
-  createLootItemList: function(spawn, allItems, allProbabilities, amount) {
+  createLootItemList: function (spawn, allItems, allProbabilities, amount) {
     const maxAmount = amount || 1;
     let lootItemList = [];
     let probability = allProbabilities[0];
-    
+
     for (var i = 0; i < spawn; i += 1) {
       let randomItem = Math.floor(Math.random() * allItems.length);
-      if ((Math.random() * 10) < probability) {
+      if (Math.random() * 10 < probability) {
         lootItemList.push({
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
-          amount: Math.round(Math.random() * maxAmount) || 1
+          amount: Math.round(Math.random() * maxAmount) || 1,
         });
         probability = allProbabilities[1];
       } else {
         lootItemList.push({
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
-          amount: 0
-        });        
+          amount: 0,
+        });
       }
       allItems.splice(randomItem, 1);
     }
     return lootItemList;
   },
 
-  setupBuilding: function(x, y, buildingNamesArray, forceItems, forceInfested) {
+  setupBuilding: function (x, y, buildingNamesArray, forceItems, forceInfested) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
-      const lootItemList = forceItems ? this.forceLootItemList(forceItems, props.amount) : this.createLootItemList(props.spawn, JSON.parse(JSON.stringify(props.items)), this.getLootBuildingProbability(buildingName, true), props.amount);
-      const locked = (Math.random() * props.locked > 1) ? true : false;
+      const lootItemList = forceItems
+        ? this.forceLootItemList(forceItems, props.amount)
+        : this.createLootItemList(
+            props.spawn,
+            JSON.parse(JSON.stringify(props.items)),
+            this.getLootBuildingProbability(buildingName, true),
+            props.amount
+          );
+      const locked = Math.random() * props.locked > 1 ? true : false;
       const type = this.getBuildingTypeOf(buildingName);
-      const infested = (type === 'house' && (Math.random() < 0.5)) ? true : false;
+      const infested = type === 'house' && Math.random() < 0.5 ? true : false;
 
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
       this.setObject(currentObjectsIdCounter, {
         x: x,
         y: y,
         name: buildingName,
-        title: buildingName.startsWith('signpost-') ? 'signpost' : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
+        title: buildingName.startsWith('signpost-')
+          ? 'signpost'
+          : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
         type: type,
         group: 'building',
         text: false,
-        actions: props.preview ? [{ id: 'got-it', label: 'Got it!' }] : this.getBuildingActionsFor(buildingName, locked, forceInfested || infested),
+        actions: props.preview
+          ? [{ id: 'got-it', label: 'Got it!' }]
+          : this.getBuildingActionsFor(buildingName, locked, forceInfested || infested),
         items: lootItemList,
         locked: locked,
         looted: false,
@@ -1115,19 +1356,34 @@ export default {
         defense: undefined, // use later for building cards in battle
         dead: undefined,
         disabled: false,
-        removed: false
+        removed: false,
       });
     });
   },
 
-  setZedAt: function(x, y, amount) {
+  setZedAt: function (x, y, amount) {
     for (var i = 0; i < amount; i += 1) {
-      let attack = Math.floor(Math.random()*6+4);
-      let lootItemList = this.createLootItemList(3, ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'tape', 'snack-1', 'drink-1', 'nails'], [10, attack >= 10 ? 9 : 5]);
+      let attack = Math.floor(Math.random() * 6 + 4);
+      let lootItemList = this.createLootItemList(
+        3,
+        [
+          'fail',
+          'hacksaw',
+          'knife',
+          'mallet',
+          'pincers',
+          'spanner',
+          'tape',
+          'snack-1',
+          'drink-1',
+          'nails',
+        ],
+        [10, attack >= 10 ? 9 : 5]
+      );
       let name = 'zombie-' + zedCounter;
 
       zedCounter += 1;
-      zedCounter > 3 ? zedCounter = 1 : false;
+      zedCounter > 3 ? (zedCounter = 1) : false;
 
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
       this.setObject(currentObjectsIdCounter, {
@@ -1141,7 +1397,7 @@ export default {
         actions: [
           { id: 'lure', label: 'Lure', time: 20, energy: -15 },
           { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-          { id: 'search', label: 'Search', time: 20, energy: -5 }
+          { id: 'search', label: 'Search', time: 20, energy: -5 },
         ],
         items: lootItemList,
         locked: undefined,
@@ -1153,16 +1409,16 @@ export default {
         discovered: false,
         distance: null,
         attack: attack,
-        defense: Math.floor(Math.random()*10+6),
+        defense: Math.floor(Math.random() * 10 + 6),
         dead: false,
         fighting: false,
         disabled: false,
-        removed: false
-      });  
+        removed: false,
+      });
     }
   },
 
-  setRatAt: function(x, y) {
+  setRatAt: function (x, y) {
     let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
     let name = 'rat';
 
@@ -1178,7 +1434,7 @@ export default {
       actions: [
         { id: 'lure', label: 'Lure', time: 20, energy: -15 },
         { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 }
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
       ],
       items: lootItemList,
       locked: undefined,
@@ -1189,16 +1445,16 @@ export default {
       inreach: false,
       discovered: false,
       distance: null,
-      attack: Math.floor(Math.random()*3+1),
-      defense: Math.floor(Math.random()*4+2),
+      attack: Math.floor(Math.random() * 3 + 1),
+      defense: Math.floor(Math.random() * 4 + 2),
       dead: false,
       fighting: false,
       disabled: false,
-      removed: false
-    });  
+      removed: false,
+    });
   },
 
-  setBeeAt: function(x, y) {
+  setBeeAt: function (x, y) {
     let lootItemList = this.createLootItemList(1, ['meat'], [7, 5], 1);
     let name = 'bee';
 
@@ -1214,7 +1470,7 @@ export default {
       actions: [
         { id: 'lure', label: 'Lure', time: 20, energy: -15 },
         { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 }
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
       ],
       items: lootItemList,
       locked: undefined,
@@ -1225,16 +1481,16 @@ export default {
       inreach: false,
       discovered: false,
       distance: null,
-      attack: Math.floor(Math.random()*3+1),
-      defense: Math.floor(Math.random()*4+2),
+      attack: Math.floor(Math.random() * 3 + 1),
+      defense: Math.floor(Math.random() * 4 + 2),
       dead: false,
       fighting: false,
       disabled: false,
-      removed: false
-    });  
+      removed: false,
+    });
   },
 
-  spawnRatsAt: function(x, y) {
+  spawnRatsAt: function (x, y) {
     const amount = Math.round(Math.random() * 5) || 3;
     let spawnedRatIds = [];
     for (var i = 0; i < amount; i += 1) {
@@ -1244,7 +1500,7 @@ export default {
     return spawnedRatIds;
   },
 
-  spawnBeesAt: function(x, y) {
+  spawnBeesAt: function (x, y) {
     const amount = Math.round(Math.random() * 2) + 4;
     let spawnedBeesIds = [];
     for (var i = 0; i < amount; i += 1) {
@@ -1254,7 +1510,7 @@ export default {
     return spawnedBeesIds;
   },
 
-  spawnAnimalAt: function(name, x, y) {
+  spawnAnimalAt: function (name, x, y) {
     let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(currentObjectsIdCounter, {
@@ -1267,7 +1523,7 @@ export default {
       text: false,
       actions: [
         //{ id: 'catch', label: 'Catch', time: 20, energy: -20 },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 }
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
       ],
       items: lootItemList,
       locked: undefined,
@@ -1283,11 +1539,11 @@ export default {
       dead: true,
       fighting: false,
       disabled: false,
-      removed: false
-    });  
+      removed: false,
+    });
   },
 
-  setupWeapon: function(x, y, weaponName, forceStats) {
+  setupWeapon: function (x, y, weaponName, forceStats) {
     let props = weaponProps[weaponName];
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(currentObjectsIdCounter, {
@@ -1298,7 +1554,9 @@ export default {
       type: undefined,
       group: 'weapon',
       text: false,
-      actions: props.preview ? [{ id: 'got-it', label: 'Got it!' }] : [{ id: 'equip', label: 'Equip' }],
+      actions: props.preview
+        ? [{ id: 'got-it', label: 'Got it!' }]
+        : [{ id: 'equip', label: 'Equip' }],
       items: [],
       locked: undefined,
       looted: false,
@@ -1313,60 +1571,88 @@ export default {
       dead: undefined,
       preview: props.preview,
       disabled: false,
-      removed: false
+      removed: false,
     });
   },
 
-  setupAllPaths: function() {
-    this.setupPathVer(18, 2, 44); this.setupPathVer(13, 8, 9); this.setupPathVer(28, 22, 29); this.setupPathVer(41, 26, 33); this.setupPathVer(35, 14, 17);
-    this.setupPathVer(7, 14, 16); this.setupPathVer(7, 34, 38); this.setupPathVer(35, 31, 43);
-    this.setupPathHor(16, 19, 3); this.setupPathHor(19, 23, 37); this.setupPathHor(15, 17, 15);
-    this.setupPathHor(25, 35, 37); this.setupPathHor(9, 17, 10); this.setupPathHor(16, 19, 8); this.setupPathHor(21, 26, 5); this.setupPathHor(19, 22, 14);
-    this.setupPathHor(12, 17, 21); this.setupPathHor(9, 17, 32); this.setupPathHor(28, 43, 30); this.setupPathHor(13, 17, 41); this.setupPathHor(32, 36, 41);
-    this.setupPathDiaDown(8, 11, 17); this.setupPathDiaDown(19, 24, 31); this.setupPathDiaDown(4, 12, 36); this.setupPathDiaDown(28, 32, 32);
-    this.setupPathDiaDown(27, 34, 6); this.setupPathDiaDown(26, 27, 20); this.setupPathDiaDown(30, 32, 7);
-    this.setupPathDiaUp(8, 10, 13); this.setupPathDiaUp(29, 34, 23);
+  setupAllPaths: function () {
+    this.setupPathVer(18, 2, 44);
+    this.setupPathVer(13, 8, 9);
+    this.setupPathVer(28, 22, 29);
+    this.setupPathVer(41, 26, 33);
+    this.setupPathVer(35, 14, 17);
+    this.setupPathVer(7, 14, 16);
+    this.setupPathVer(7, 34, 38);
+    this.setupPathVer(35, 31, 43);
+    this.setupPathHor(16, 19, 3);
+    this.setupPathHor(19, 23, 37);
+    this.setupPathHor(15, 17, 15);
+    this.setupPathHor(25, 35, 37);
+    this.setupPathHor(9, 17, 10);
+    this.setupPathHor(16, 19, 8);
+    this.setupPathHor(21, 26, 5);
+    this.setupPathHor(19, 22, 14);
+    this.setupPathHor(12, 17, 21);
+    this.setupPathHor(9, 17, 32);
+    this.setupPathHor(28, 43, 30);
+    this.setupPathHor(13, 17, 41);
+    this.setupPathHor(32, 36, 41);
+    this.setupPathDiaDown(8, 11, 17);
+    this.setupPathDiaDown(19, 24, 31);
+    this.setupPathDiaDown(4, 12, 36);
+    this.setupPathDiaDown(28, 32, 32);
+    this.setupPathDiaDown(27, 34, 6);
+    this.setupPathDiaDown(26, 27, 20);
+    this.setupPathDiaDown(30, 32, 7);
+    this.setupPathDiaUp(8, 10, 13);
+    this.setupPathDiaUp(29, 34, 23);
     // fill gaps
-    this.setupPath(31, 9); this.setupPath(8, 33); this.setupPath(29, 31); this.setupPath(12, 42); 
-    this.setupPath(20, 4); this.setupPath(7, 8); this.setupPath(8, 9); 
+    this.setupPath(31, 9);
+    this.setupPath(8, 33);
+    this.setupPath(29, 31);
+    this.setupPath(12, 42);
+    this.setupPath(20, 4);
+    this.setupPath(7, 8);
+    this.setupPath(8, 9);
     // remove paths player shouldn't walk
     this.removePath(18, 40);
-    this.removePath(18, 11); this.removePath(18, 12);
+    this.removePath(18, 11);
+    this.removePath(18, 12);
   },
 
-  setupPath: function(x, y) {
+  setupPath: function (x, y) {
     paths[x][y] = true;
   },
 
-  setupPathVer: function(x, y1, y2) {
+  setupPathVer: function (x, y1, y2) {
     for (var vert = y1; vert <= y2; vert += 1) {
       paths[x][vert] = true;
     }
   },
 
-  setupPathHor: function(x1, x2, y) {
+  setupPathHor: function (x1, x2, y) {
     for (var hor = x1; hor <= x2; hor += 1) {
       paths[hor][y] = true;
     }
   },
 
-  setupPathDiaDown: function(x1, x2, y) {
+  setupPathDiaDown: function (x1, x2, y) {
     for (var dia = 0; dia <= x2 - x1; dia += 1) {
       paths[x1 + dia][y + dia] = true;
     }
   },
 
-  setupPathDiaUp: function(x1, x2, y) {
+  setupPathDiaUp: function (x1, x2, y) {
     for (var dia = 0; dia <= x2 - x1; dia += 1) {
       paths[x1 + dia][y - dia] = true;
     }
   },
 
-  removePath: function(x, y) {
+  removePath: function (x, y) {
     paths[x][y] = undefined;
   },
 
-  getWeaponProps: function(itemName) {
+  getWeaponProps: function (itemName) {
     if (itemName) {
       return weaponProps[itemName];
     } else {
@@ -1374,7 +1660,7 @@ export default {
     }
   },
 
-  getWeaponPropsUpgrades: function(itemName) {
+  getWeaponPropsUpgrades: function (itemName) {
     if (itemName) {
       return weaponPropsUpgrades[itemName];
     } else {
@@ -1382,69 +1668,82 @@ export default {
     }
   },
 
-  getBuildingProps: function() {
+  getBuildingProps: function () {
     return buildingProps;
   },
 
-  getBuildingTypeOf: function(buildingName) {
+  getBuildingTypeOf: function (buildingName) {
     for (const type in buildingTypes) {
       if (buildingTypes[type].includes(buildingName)) {
         return type;
       }
-    }  
+    }
   },
 
-  getBuildingActionsFor: function(buildingName, locked, infested) {
+  getBuildingActionsFor: function (buildingName, locked, infested) {
     const buildingType = this.getBuildingTypeOf(buildingName);
     const actions = buildingActions[buildingType];
     let actionSet = [];
     // adding actions for certain character <-> building combos
     if (buildingName === 'fireplace') {
-      if (this.getGameProp('character') !== 'craftsmaniac' && this.getGameProp('character') !== 'cashmeister') actionSet.push({id: 'cook', label: 'cook', time: 30});
-      if (this.getGameProp('character') === 'treehugger') actionSet.push({id: 'sleep', label: 'sleep', time: 120, energy: 60});
+      if (
+        this.getGameProp('character') !== 'craftsmaniac' &&
+        this.getGameProp('character') !== 'cashmeister'
+      )
+        actionSet.push({ id: 'cook', label: 'cook', time: 30 });
+      if (this.getGameProp('character') === 'treehugger')
+        actionSet.push({ id: 'sleep', label: 'sleep', time: 120, energy: 60 });
     }
     if (actions !== undefined) {
       actions.forEach(action => {
         let singleAction = {};
-        singleAction.name = action.split("|")[0]; // old
-        singleAction.label = action.split("|")[0]; // new
-        singleAction.id = action.split("|")[0].replaceAll(' ', '-'); // new
-        if ((buildingName === 'pump' && singleAction.id === 'fish') ||
-            (buildingName === 'outhouse' && singleAction.id === 'break-door') ||
-            (buildingName === 'small-tree' && singleAction.id === 'rest') ||
-            (buildingName === 'big-tree' && singleAction.id === 'cut-down') ||
-            (buildingName === 'fireplace' && singleAction.id === 'break-door') ||
-            (buildingName === 'fireplace' && singleAction.id === 'scout-area') ||
-            (buildingName === 'fireplace' && singleAction.id === 'search') ||
-            (buildingName === 'barricades' && singleAction.id === 'break-door') ||
-            (buildingName === 'barricades' && singleAction.id === 'scout-area') ||
-            (buildingName === 'barricades' && singleAction.id === 'search') ||
-            (buildingName === 'seating' && singleAction.id === 'break-door') ||
-            (buildingName === 'seating' && singleAction.id === 'scout-area') ||
-            (buildingName === 'seating' && singleAction.id === 'sleep') ||
-            (buildingName === 'well' && singleAction.id === 'fish')) {
+        singleAction.name = action.split('|')[0]; // old
+        singleAction.label = action.split('|')[0]; // new
+        singleAction.id = action.split('|')[0].replaceAll(' ', '-'); // new
+        if (
+          (buildingName === 'pump' && singleAction.id === 'fish') ||
+          (buildingName === 'outhouse' && singleAction.id === 'break-door') ||
+          (buildingName === 'small-tree' && singleAction.id === 'rest') ||
+          (buildingName === 'big-tree' && singleAction.id === 'cut-down') ||
+          (buildingName === 'fireplace' && singleAction.id === 'break-door') ||
+          (buildingName === 'fireplace' && singleAction.id === 'scout-area') ||
+          (buildingName === 'fireplace' && singleAction.id === 'search') ||
+          (buildingName === 'barricades' && singleAction.id === 'break-door') ||
+          (buildingName === 'barricades' && singleAction.id === 'scout-area') ||
+          (buildingName === 'barricades' && singleAction.id === 'search') ||
+          (buildingName === 'seating' && singleAction.id === 'break-door') ||
+          (buildingName === 'seating' && singleAction.id === 'scout-area') ||
+          (buildingName === 'seating' && singleAction.id === 'sleep') ||
+          (buildingName === 'well' && singleAction.id === 'fish')
+        ) {
           // these are exceptions for certain building <-> action combos that make no sense
-        } else if ((!locked && singleAction.id === 'smash-window') ||
-                   (!locked && singleAction.id === 'break-door')) {
+        } else if (
+          (!locked && singleAction.id === 'smash-window') ||
+          (!locked && singleAction.id === 'break-door')
+        ) {
           // these are exceptions for certain stats <-> action combos that make no sense
-        } else if (this.getGameProp('character') === 'snackivore' &&  singleAction.id === 'drink' ||
-                   this.getGameProp('character') === 'furbuddy' &&  singleAction.id === 'cut') {
+        } else if (
+          (this.getGameProp('character') === 'snackivore' && singleAction.id === 'drink') ||
+          (this.getGameProp('character') === 'furbuddy' && singleAction.id === 'cut')
+        ) {
           // removing actions for certain character <-> building combos
           // see fireplace above for craftsmaniac/cooking
         } else {
-          singleAction.time = parseInt(action.split("|")[1]);
-          singleAction.energy = parseInt(action.split("|")[2] || 0);
+          singleAction.time = parseInt(action.split('|')[1]);
+          singleAction.energy = parseInt(action.split('|')[2] || 0);
           actionSet.push(singleAction);
         }
 
-        if (singleAction.id === 'gather' ||
-            singleAction.id === 'search' ||
-            singleAction.id === 'rest' ||
-            singleAction.id === 'sleep' ||
-            singleAction.id === 'cut-down' ||
-            singleAction.id === 'cook' ||
-            singleAction.id === 'drink' ||
-            singleAction.id === 'read') {
+        if (
+          singleAction.id === 'gather' ||
+          singleAction.id === 'search' ||
+          singleAction.id === 'rest' ||
+          singleAction.id === 'sleep' ||
+          singleAction.id === 'cut-down' ||
+          singleAction.id === 'cook' ||
+          singleAction.id === 'drink' ||
+          singleAction.id === 'read'
+        ) {
           singleAction.needsUnlock = true;
         } else {
           singleAction.needsUnlock = false;
@@ -1456,5 +1755,5 @@ export default {
       });
     }
     return actionSet;
-  }
-}
+  },
+};

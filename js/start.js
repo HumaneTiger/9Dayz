@@ -1,17 +1,16 @@
-import { default as Audio } from './audio.js'
-import { default as Player } from './player.js'
-import { default as Props } from './props.js'
-import { default as Items } from './items.js'
-import { default as Crafting } from './crafting.js'
-import { default as Tutorial } from './tutorial.js'
-import { default as Ui } from './ui.js'
+import { default as Audio } from './audio.js';
+import { default as Player } from './player.js';
+import { default as Props } from './props.js';
+import { default as Items } from './items.js';
+import { default as Crafting } from './crafting.js';
+import { default as Tutorial } from './tutorial.js';
+import { default as Ui } from './ui.js';
 
-const saveCheckpoint = JSON.parse(localStorage.getItem("saveCheckpoint"));
+const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
 
 export default {
-  
-  init: function() {
+  init: function () {
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('keypress', this.handleKeypress.bind(this));
     startscreenContainer.addEventListener('mousemove', this.handleMove.bind(this));
@@ -36,15 +35,19 @@ export default {
     this.initCharacterSelection();
   },
 
-  initCharacterSelection: function() {
+  initCharacterSelection: function () {
     const character = Props.getGameProp('character');
     // preselect game character
-    document.querySelector('.button[data-character="' + character + '"]')?.parentNode.classList.add('is--selected');
-    document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
+    document
+      .querySelector('.button[data-character="' + character + '"]')
+      ?.parentNode.classList.add('is--selected');
+    document
+      .querySelector('.screen__menu div[data-character="' + character + '"]')
+      ?.classList.add('is--selected');
     this.presetCharacterInventory();
   },
 
-  presetCharacterInventory: function() {
+  presetCharacterInventory: function () {
     const character = Props.getGameProp('character');
     const inventoryPresets = Props.getInventoryPresets(character);
     const inventoryPresetsContainer = document.getElementById('inventory-presets');
@@ -52,8 +55,13 @@ export default {
       document.querySelector('.screen__menu .button.start-game').classList.remove('not--available');
       inventoryPresetsContainer.innerHTML = '';
       for (let item in inventoryPresets) {
-        inventoryPresetsContainer.innerHTML += '<li class="filled"><span class="amount">' + inventoryPresets[item] + '</span><img class="item" src="img/items/' + item + '.PNG"></li>';
-      };
+        inventoryPresetsContainer.innerHTML +=
+          '<li class="filled"><span class="amount">' +
+          inventoryPresets[item] +
+          '</span><img class="item" src="img/items/' +
+          item +
+          '.PNG"></li>';
+      }
       for (let i = 0; i < 6 - Object.keys(inventoryPresets).length; i += 1) {
         inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
       }
@@ -66,8 +74,7 @@ export default {
     }
   },
 
-  initProps: function() {
-    
+  initProps: function () {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
@@ -88,10 +95,10 @@ export default {
     Props.addItemToInventory('sharp-stick', 0);
     Props.addItemToInventory('rope', 0);
     Props.addItemToInventory('bone-hook', 0);
-    Props.addWeaponToInventory('wooden-club', 0, {durability: 0});
-    Props.addWeaponToInventory('improvised-axe', 0, {durability: 0});
-    Props.addWeaponToInventory('improvised-whip', 0, {durability: 0});
-    Props.addWeaponToInventory('fishing-rod', 0, {durability: 0});
+    Props.addWeaponToInventory('wooden-club', 0, { durability: 0 });
+    Props.addWeaponToInventory('improvised-axe', 0, { durability: 0 });
+    Props.addWeaponToInventory('improvised-whip', 0, { durability: 0 });
+    Props.addWeaponToInventory('fishing-rod', 0, { durability: 0 });
 
     Props.modifyObjectProperties();
     Items.generateInventorySlots();
@@ -104,7 +111,7 @@ export default {
 
     Player.setPlayerPosition(18, 44);
     //Player.setPlayerPosition(18, 37);
-    
+
     Player.changeProps('health', 100);
     Player.changeProps('food', 65);
     Player.changeProps('thirst', 70);
@@ -114,24 +121,26 @@ export default {
     Items.init();
   },
 
-  restoreCheckpoint: function(saveCheckpoint) {
+  restoreCheckpoint: function (saveCheckpoint) {
     if (saveCheckpoint) {
       const inventoryItems = saveCheckpoint.inventoryItems;
-        
+
       // add zero items to present crafting options in Almanac
       Props.addItemToInventory('tape', 0);
       Props.addItemToInventory('sharp-stick', 0);
-      Props.addWeaponToInventory('wooden-club', 0, {durability: 0});
-      Props.addWeaponToInventory('improvised-axe', 0, {durability: 0});
-  
+      Props.addWeaponToInventory('wooden-club', 0, { durability: 0 });
+      Props.addWeaponToInventory('improvised-axe', 0, { durability: 0 });
+
       for (var key in inventoryItems) {
         if (inventoryItems[key].durability !== undefined) {
-          Props.addWeaponToInventory(inventoryItems[key].name, inventoryItems[key].amount, {durability: inventoryItems[key].durability});
+          Props.addWeaponToInventory(inventoryItems[key].name, inventoryItems[key].amount, {
+            durability: inventoryItems[key].durability,
+          });
         } else {
           Props.addItemToInventory(inventoryItems[key].name, inventoryItems[key].amount);
         }
       }
-  
+
       if (saveCheckpoint.playerCharacter) {
         Props.setGameProp('character', saveCheckpoint.playerCharacter);
       }
@@ -144,7 +153,7 @@ export default {
       // generate all buildings and zeds
       Props.setupAllBuildings();
       Props.setupAllZeds();
-  
+
       Player.setPlayerPosition(saveCheckpoint.playerPosition.x, saveCheckpoint.playerPosition.y);
 
       Player.changeProps('health', saveCheckpoint.playerStats.health);
@@ -160,13 +169,13 @@ export default {
       Props.setGameProp('startDay', saveCheckpoint.gameTime.gameDays);
 
       this.adjustDayTimeUI();
-  
+
       Player.init();
-      Items.init();  
+      Items.init();
     }
   },
 
-  adjustDayTimeUI: function() {
+  adjustDayTimeUI: function () {
     Ui.updateDayNightLayers(window.timeIsUnity.todayHours);
     if (window.timeIsUnity.todayHours >= 21 || window.timeIsUnity.todayHours < 5) {
       Ui.switchDayNight(21);
@@ -178,11 +187,10 @@ export default {
     }
   },
 
-  handleClick: function(ev) {
-
+  handleClick: function (ev) {
     const target = ev.target;
     const startscreenAction = target.closest('#startscreen');
-    const leftMouseButton = (ev.button === 0);
+    const leftMouseButton = ev.button === 0;
 
     if (Props.getGameProp('startMode') === 1) {
       this.switchToScreen2();
@@ -197,7 +205,7 @@ export default {
         if (action) {
           if (action.classList.contains('start-real')) {
             Audio.sfx('click');
-            localStorage.removeItem("saveCheckpoint");
+            localStorage.removeItem('saveCheckpoint');
             this.prepareGameStart();
             this.chooseCharacter();
           } else if (action.classList.contains('start-game')) {
@@ -233,9 +241,15 @@ export default {
             this.startTutorial();
           } else if (character) {
             Audio.sfx('click');
-            document.querySelector('.screen__menu div[data-character].is--selected')?.classList.remove('is--selected');
-            document.querySelector('.screen__menu div[data-character="' + character + '"]')?.classList.add('is--selected');
-            document.querySelector('#startscreen .character__button.is--selected')?.classList.remove('is--selected');
+            document
+              .querySelector('.screen__menu div[data-character].is--selected')
+              ?.classList.remove('is--selected');
+            document
+              .querySelector('.screen__menu div[data-character="' + character + '"]')
+              ?.classList.add('is--selected');
+            document
+              .querySelector('#startscreen .character__button.is--selected')
+              ?.classList.remove('is--selected');
             target.closest('.character__button').classList.add('is--selected');
             Props.setGameProp('character', character);
             this.presetCharacterInventory();
@@ -254,22 +268,22 @@ export default {
           }
         }
         if (href && href !== '#') {
-          window.open( href, '_blank');
+          window.open(href, '_blank');
         }
       }
     }
   },
 
-  handleMove: function(ev) {
-    let translateX = (window.innerWidth / 2 - ev.clientX),
-        translateY = (window.innerHeight / 2 - ev.clientY),
-        translateRatio = window.innerWidth / 80;
+  handleMove: function (ev) {
+    let translateX = window.innerWidth / 2 - ev.clientX,
+      translateY = window.innerHeight / 2 - ev.clientY,
+      translateRatio = window.innerWidth / 80;
 
-    startscreenContainer.style.backgroundPositionX = (translateX / translateRatio - 50) + 'px';
-    startscreenContainer.style.backgroundPositionY = (translateY / translateRatio - 30) + 'px';
+    startscreenContainer.style.backgroundPositionX = translateX / translateRatio - 50 + 'px';
+    startscreenContainer.style.backgroundPositionY = translateY / translateRatio - 30 + 'px';
   },
 
-  prepareGameStart: function() {
+  prepareGameStart: function () {
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     if (document.getElementById('touchsupport')?.classList.contains('on')) {
       document.getElementById('touchcontrols')?.classList.remove('is--hidden');
@@ -282,24 +296,24 @@ export default {
     }
   },
 
-  chooseCharacter: function() {
+  chooseCharacter: function () {
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.remove('is--hidden');
   },
 
-  startReal: function() {
+  startReal: function () {
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     this.startGame();
   },
 
-  startTutorial: function() {
+  startTutorial: function () {
     Props.setGameProp('tutorial', true);
     this.initProps();
     this.startGame();
   },
 
-  startGame: function() {
+  startGame: function () {
     startscreenContainer.style.opacity = 0;
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
@@ -312,13 +326,13 @@ export default {
     }, 1500);
   },
 
-  handleKeypress: function(ev) {
+  handleKeypress: function (ev) {
     if (Props.getGameProp('startMode') === 1) {
       this.switchToScreen2();
     }
   },
 
-  switchToScreen2: function() {
+  switchToScreen2: function () {
     Props.setGameProp('startMode', 2);
     document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
@@ -326,13 +340,12 @@ export default {
     document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
   },
 
-  switchToScreen3: function() {
+  switchToScreen3: function () {
     Audio.sfx('shuffle-paper');
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
     document.getElementById('tutorial-beginning').classList.remove('is--hidden');
-  }
-
-}
+  },
+};

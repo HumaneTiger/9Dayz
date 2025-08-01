@@ -1,27 +1,25 @@
-import Props from './props.js'
-import Start from './start.js'
-import Ui from './ui.js'
-import Items from './items.js'
-import Map from './map.js'
-import Player from './player.js'
+import Props from './props.js';
+import Start from './start.js';
+import Ui from './ui.js';
+import Items from './items.js';
+import Map from './map.js';
+import Player from './player.js';
 
-
-let squareX = 0, squareY = 0;
+let squareX = 0,
+  squareY = 0;
 let squareFreeze = true;
 
 export default {
-  
-  init: function() {
+  init: function () {
     document.body.addEventListener('click', this.handleClick.bind(this));
     this.initDevConsole();
   },
 
-  handleClick: function(ev) {
-
+  handleClick: function (ev) {
     const target = ev.target;
-    const leftMouseButton = (ev.button === 0);
+    const leftMouseButton = ev.button === 0;
 
-    if (leftMouseButton) {  
+    if (leftMouseButton) {
       if (target.closest('#card-console')) {
         if (target.classList.contains('handle')) {
           document.getElementById('card-console').classList.toggle('out');
@@ -39,7 +37,15 @@ export default {
               Props.setZedAt(squareX, squareY, 1);
             } else if (selectedObject === 'rats') {
               Props.spawnRatsAt(squareX, squareY);
-            } else if (selectedObject === 'improvised-axe' || selectedObject === 'axe' || selectedObject === 'wooden-club' || selectedObject === 'baseball-bat' || selectedObject === 'wrench' || selectedObject === 'improvised-whip' || selectedObject === 'fishing-rod') {
+            } else if (
+              selectedObject === 'improvised-axe' ||
+              selectedObject === 'axe' ||
+              selectedObject === 'wooden-club' ||
+              selectedObject === 'baseball-bat' ||
+              selectedObject === 'wrench' ||
+              selectedObject === 'improvised-whip' ||
+              selectedObject === 'fishing-rod'
+            ) {
               Props.setupWeapon(squareX, squareY, selectedObject);
             } else if (selectedObject === 'care-package') {
               Props.addItemToInventory('tomato', 1);
@@ -73,7 +79,7 @@ export default {
           const selectedDay = parseInt(document.querySelector('#card-console .select-day').value);
           const todayHours = 7;
           window.timeIsUnity.gameTick = 0;
-          window.timeIsUnity.gameHours = (24 * selectedDay) + todayHours;
+          window.timeIsUnity.gameHours = 24 * selectedDay + todayHours;
           window.timeIsUnity.gameDays = selectedDay;
           window.timeIsUnity.todayHours = todayHours;
           window.timeIsUnity.todayTime = `0${todayHours}:00`;
@@ -85,7 +91,7 @@ export default {
     }
   },
 
-  initDevConsole: function() {
+  initDevConsole: function () {
     const selectObject = document.querySelector('#card-console .select-object');
     const allBuildings = Props.getBuildingProps();
     const allWeapons = Props.getWeaponProps();
@@ -123,14 +129,18 @@ export default {
     }
   },
 
-  showSquare: function(ev) {
+  showSquare: function (ev) {
     const viewportRect = document.getElementById('viewport').getBoundingClientRect();
     const playerPosition = Player.getPlayerPosition();
     let mouseX, mouseY;
 
     if (!squareFreeze) {
-      mouseX = Math.floor(((ev.clientX - viewportRect.left) / Props.getGameProp('scaleFactor')) / 44.4);
-      mouseY = Math.floor(((ev.clientY - 23 - viewportRect.top) / Props.getGameProp('scaleFactor')) / 44.4);
+      mouseX = Math.floor(
+        (ev.clientX - viewportRect.left) / Props.getGameProp('scaleFactor') / 44.4
+      );
+      mouseY = Math.floor(
+        (ev.clientY - 23 - viewportRect.top) / Props.getGameProp('scaleFactor') / 44.4
+      );
 
       squareX = mouseX;
       if (playerPosition.y < 20) {
@@ -140,17 +150,18 @@ export default {
       } else {
         squareY = mouseY + (21 - (40 - playerPosition.y));
       }
-      document.querySelector('#card-console .selected-square').textContent = '('+squareX+', '+squareY+')';
-      document.getElementById('square-marker').style.left = (mouseX * 44.4) + 'px';
-      document.getElementById('square-marker').style.top = (mouseY * 44.4 + 23) + 'px';
+      document.querySelector('#card-console .selected-square').textContent =
+        '(' + squareX + ', ' + squareY + ')';
+      document.getElementById('square-marker').style.left = mouseX * 44.4 + 'px';
+      document.getElementById('square-marker').style.top = mouseY * 44.4 + 23 + 'px';
       Map.mapUncoverAt(squareX, squareY);
     }
   },
 
-  selectSquare: function(ev) {
+  selectSquare: function (ev) {
     if (squareX || squareY) {
       squareFreeze = true;
       document.getElementById('square-marker').classList.add('freeze');
     }
-  }
-}
+  },
+};

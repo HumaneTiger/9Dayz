@@ -1,14 +1,14 @@
-import Props from './props.js'
-import Battle from './battle.js'
-import Audio from './audio.js'
-import Player from './player.js'
-import Almanac from './almanac.js'
-import Cards from './cards.js'
-import Items from './items.js'
-import Character from './character.js'
+import Props from './props.js';
+import Battle from './battle.js';
+import Audio from './audio.js';
+import Player from './player.js';
+import Almanac from './almanac.js';
+import Cards from './cards.js';
+import Items from './items.js';
+import Character from './character.js';
 
-const viewport = document.getElementById("viewport");
-const mapBorder = document.getElementById("map-border");
+const viewport = document.getElementById('viewport');
+const mapBorder = document.getElementById('map-border');
 const mapHigh = document.querySelector('.map-high img');
 const morningLight = document.querySelectorAll('.morning-light');
 const eveningLight = document.querySelectorAll('.evening-light');
@@ -19,7 +19,12 @@ const battleCardsContainer = document.getElementById('battle-cards');
 const inventoryContainer = document.getElementById('inventory');
 const craftContainer = document.getElementById('craft');
 
-let newPosX = 0, newPosY = 0, startPosX = 0, startPosY = 0, initialStyleLeft = 0, initialStyleTop = 0;
+let newPosX = 0,
+  newPosY = 0,
+  startPosX = 0,
+  startPosY = 0,
+  initialStyleLeft = 0,
+  initialStyleTop = 0;
 let dragMode = false;
 let dragEl = null;
 let topIndex = 1;
@@ -27,9 +32,7 @@ let zoom = 1;
 let maxZoom = 1.9;
 
 export default {
-  
-  init: function() {
-
+  init: function () {
     window.addEventListener('resize', this.resizeViewport.bind(this));
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('mouseover', this.mouseOver);
@@ -39,87 +42,100 @@ export default {
     document.body.addEventListener('keydown', this.handleKeydown.bind(this));
     document.body.addEventListener('wheel', this.handleMouseWheel.bind(this));
 
-    document.body.addEventListener("contextmenu", (ev) => { 
+    document.body.addEventListener('contextmenu', ev => {
       if (Props.getGameProp('local') === false) {
         ev.preventDefault();
       }
     });
-
   },
 
-  handleKeydown: function(ev) {
+  handleKeydown: function (ev) {
     const actionsPanel = document.getElementById('actions');
     const actionsPanelActive = actionsPanel.classList.contains('active');
     if (!Props.getGameProp('battle') && ev.key) {
       if (ev.key.toLowerCase() === 'i' && actionsPanelActive) {
-        actionsPanel.querySelector('li.inventory')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        actionsPanel
+          .querySelector('li.inventory')
+          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'c' && actionsPanelActive) {
-        actionsPanel.querySelector('li.craft')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        actionsPanel
+          .querySelector('li.craft')
+          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'm') {
         if (actionsPanelActive) {
-          actionsPanel.querySelector('li.map')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+          actionsPanel
+            .querySelector('li.map')
+            ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
         } else {
           this.handleMapClick();
         }
       } else if (ev.key.toLowerCase() === 'e' && actionsPanelActive) {
-        actionsPanel.querySelector('li.settings')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        actionsPanel
+          .querySelector('li.settings')
+          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'q' && actionsPanelActive) {
-        actionsPanel.querySelector('li.quit')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        actionsPanel
+          .querySelector('li.quit')
+          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if (ev.key.toLowerCase() === 'f' && actionsPanelActive) {
-        actionsPanel.querySelector('li.fullscreen')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        actionsPanel
+          .querySelector('li.fullscreen')
+          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       } else if ((ev.key.toLowerCase() === 'p' || ev.code === 'Space') && actionsPanelActive) {
-        actionsPanel.querySelector('li.mixed span.pause')?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        actionsPanel
+          .querySelector('li.mixed span.pause')
+          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
   },
 
-  handleMouseWheel: function(ev) {
+  handleMouseWheel: function (ev) {
     this.zoomMap(ev.deltaY);
   },
 
-  zoomMap: function(deltaY, limitZoom) {
+  zoomMap: function (deltaY, limitZoom) {
     if (limitZoom) {
       if (zoom > limitZoom) zoom = limitZoom;
       maxZoom = limitZoom;
     } else if (deltaY > 0) {
-      zoom > 1 ? zoom -= 0.1 : false;
+      zoom > 1 ? (zoom -= 0.1) : false;
     } else if (zoom < maxZoom) {
       zoom += 0.1;
     }
-    viewport.querySelector('#maximap .inner').style.transform = 'scale('+zoom+')';
+    viewport.querySelector('#maximap .inner').style.transform = 'scale(' + zoom + ')';
   },
 
-  resetZoom: function() {
+  resetZoom: function () {
     maxZoom = 1.9;
   },
 
-  mouseOver: function(ev) {
+  mouseOver: function (ev) {
     const target = ev.target;
     const battleCard = target.closest ? target.closest('div.battle-card') : null,
-    item = battleCard?.dataset.item;
+      item = battleCard?.dataset.item;
     if (dragMode === false && battleCard) {
-      battleCardsContainer.querySelector('p.item-info').innerHTML = Items.getItemInfoMarkup(item, true);
+      battleCardsContainer.querySelector('p.item-info').innerHTML = Items.getItemInfoMarkup(
+        item,
+        true
+      );
     } else {
       battleCardsContainer.querySelector('p.item-info').innerHTML = '';
     }
   },
 
-  mouseDown: function(ev) {
-    
+  mouseDown: function (ev) {
     let target = ev.target;
-    const leftMouseButton = (ev.button === 0);
+    const leftMouseButton = ev.button === 0;
 
     if (target && leftMouseButton) {
-
       if (dragMode === false && target.closest('div.battle-card')) {
-
         dragMode = true;
 
         dragEl = target.closest('div.battle-card');
 
         dragEl.style.zIndex = topIndex++;
         dragEl.classList.add('grabbed');
-        
+
         startPosX = dragEl.clientX;
         startPosY = dragEl.clientY;
 
@@ -128,12 +144,11 @@ export default {
       }
 
       if (dragMode === false && target.closest('#almanac') && target.classList.contains('title')) {
-
         dragMode = true;
 
         dragEl = target.closest('#almanac');
         dragEl.classList.add('grabbed');
-        
+
         startPosX = dragEl.clientX;
         startPosY = dragEl.clientY;
 
@@ -143,26 +158,24 @@ export default {
     }
   },
 
-  mouseMove: function(e) {
-
+  mouseMove: function (e) {
     e.preventDefault;
     e.stopPropagation();
-    
-    if (dragMode) {
 
+    if (dragMode) {
       let scale = window.innerHeight / 1200;
       // calculate the new position
       newPosX = (startPosX - e.clientX) / scale;
       newPosY = (startPosY - e.clientY) / scale;
-  
+
       // with each move we also want to update the start X and Y
       startPosX = e.clientX;
       startPosY = e.clientY;
 
       if (dragEl) {
         // set the element's new position:
-        dragEl.style.top = (dragEl.offsetTop - newPosY) + "px";
-        dragEl.style.left = (dragEl.offsetLeft - newPosX) + "px";  
+        dragEl.style.top = dragEl.offsetTop - newPosY + 'px';
+        dragEl.style.left = dragEl.offsetLeft - newPosX + 'px';
         let dragTarget = this.getDragTarget(e);
         if (dragTarget) {
           dragTarget.classList.add('active');
@@ -170,10 +183,10 @@ export default {
         // remove item info when card is dragged
         battleCardsContainer.querySelector('p.item-info').innerHTML = '';
       }
-    }  
+    }
   },
 
-  mouseUp: function(e) {
+  mouseUp: function (e) {
     if (dragMode) {
       let dragTarget = this.getDragTarget(e);
       if (dragTarget) {
@@ -196,14 +209,13 @@ export default {
     }
   },
 
-  resetDraggedElement: function(el) {
+  resetDraggedElement: function (el) {
     el.style.left = initialStyleLeft;
     el.style.top = initialStyleTop;
     el.classList.remove('grabbed');
   },
 
-  getDragTarget: function(e) {
-
+  getDragTarget: function (e) {
     let targetCandidateFound;
     let mouseX = e.clientX;
     let mouseY = e.clientY;
@@ -211,32 +223,29 @@ export default {
     let targetCards = document.querySelectorAll('.card.zombie.fight');
 
     targetCards.forEach(candidate => {
-
       let viewportOffset = candidate.getBoundingClientRect();
       candidate.classList.remove('active');
 
-      if (mouseX >= viewportOffset.left &&
-          mouseX <= viewportOffset.right &&
-          mouseY >= viewportOffset.top &&
-          mouseY <= viewportOffset.bottom) {
-          
-          targetCandidateFound = candidate;
+      if (
+        mouseX >= viewportOffset.left &&
+        mouseX <= viewportOffset.right &&
+        mouseY >= viewportOffset.top &&
+        mouseY <= viewportOffset.bottom
+      ) {
+        targetCandidateFound = candidate;
       }
-
     });
 
     return targetCandidateFound;
-
   },
-  
-  handleClick: function(ev) {
 
+  handleClick: function (ev) {
     const target = ev.target;
     const clickAction = target.closest('#actions');
     const clickProperty = target.closest('#properties');
     const mapClick = target.closest('#maximap');
-    const leftMouseButton = (ev.button === 0 || !ev.button); // 2nd part also takes keyboard shortcuts into account
-    const rightMouseButton = (ev.button === 2);
+    const leftMouseButton = ev.button === 0 || !ev.button; // 2nd part also takes keyboard shortcuts into account
+    const rightMouseButton = ev.button === 2;
 
     if (clickAction && leftMouseButton && !Props.getGameProp('battle')) {
       Audio.sfx('click');
@@ -273,7 +282,7 @@ export default {
           } else {
             document.exitFullscreen();
           }
-        }  
+        }
       }
     } else if (clickProperty && rightMouseButton) {
       const property = target.closest('li');
@@ -299,7 +308,7 @@ export default {
     }
   },
 
-  toggleInventory: function() {
+  toggleInventory: function () {
     const inventoryActive = inventoryContainer.classList.contains('active');
     if (inventoryActive) {
       inventoryContainer.classList.remove('active');
@@ -309,7 +318,7 @@ export default {
     }
   },
 
-  toggleCrafting: function(forceOpen) {
+  toggleCrafting: function (forceOpen) {
     const craftingActive = craftContainer.classList.contains('active');
     if (craftingActive && !forceOpen) {
       craftContainer.classList.remove('active');
@@ -319,7 +328,7 @@ export default {
     }
   },
 
-  quitConfirmation: function() {
+  quitConfirmation: function () {
     let startScreen = document.getElementById('startscreen');
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
@@ -334,13 +343,13 @@ export default {
     }, 300);
   },
 
-  handleMapClick: function() {
+  handleMapClick: function () {
     craftContainer.classList.remove('active');
     inventoryContainer.classList.remove('active');
     this.showUI();
   },
 
-  hideUI: function() {
+  hideUI: function () {
     craftContainer.classList.remove('active');
     inventoryContainer.classList.remove('active');
     Almanac.close(true);
@@ -352,25 +361,30 @@ export default {
     document.getElementById('card-console').classList.add('out');
   },
 
-  showUI: function() {
+  showUI: function () {
     document.getElementById('properties').classList.add('active');
     document.getElementById('character').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.getElementById('cards').classList.add('active');
   },
 
-  showMapBorder: function() {
+  showMapBorder: function () {
     mapBorder.classList.add('in-front');
   },
 
-  resizeViewport: function() {
+  resizeViewport: function () {
     const viewWidth = window.innerWidth,
-          viewHeight = window.innerHeight;
+      viewHeight = window.innerHeight;
 
     if (viewWidth / viewHeight < 1.73) {
       Props.setGameProp('scaleFactor', viewWidth / 2135);
       Props.setGameProp('viewMode', 'vertical');
-      mapBorder.style.transform = 'scale3d('+ (Props.getGameProp('scaleFactor') * 1.173) +','+ (Props.getGameProp('scaleFactor') * 1.173) +', 1) translate3d(-5%, -50% , 0)';
+      mapBorder.style.transform =
+        'scale3d(' +
+        Props.getGameProp('scaleFactor') * 1.173 +
+        ',' +
+        Props.getGameProp('scaleFactor') * 1.173 +
+        ', 1) translate3d(-5%, -50% , 0)';
     } else {
       Props.setGameProp('scaleFactor', viewHeight / 1200);
       Props.setGameProp('viewMode', 'horizontal');
@@ -378,29 +392,34 @@ export default {
     }
     mapBorder.classList.remove('horizontal', 'vertical');
     mapBorder.classList.add(Props.getGameProp('viewMode'));
-    viewport.style.transform = 'scale3d('+Props.getGameProp('scaleFactor')+','+Props.getGameProp('scaleFactor')+', 1) translate3d(-50%, -50% , 0)';
+    viewport.style.transform =
+      'scale3d(' +
+      Props.getGameProp('scaleFactor') +
+      ',' +
+      Props.getGameProp('scaleFactor') +
+      ', 1) translate3d(-50%, -50% , 0)';
     this.handleFullscreenChange();
   },
 
-  handleFullscreenChange: function() {
+  handleFullscreenChange: function () {
     if (document.fullscreenElement) {
       document.querySelector('#actions .fullscreen .fullscreen--on').classList.add('is--hidden');
-      document.querySelector('#actions .fullscreen .fullscreen--off').classList.remove('is--hidden');
+      document
+        .querySelector('#actions .fullscreen .fullscreen--off')
+        .classList.remove('is--hidden');
     } else {
       document.querySelector('#actions .fullscreen .fullscreen--on').classList.remove('is--hidden');
       document.querySelector('#actions .fullscreen .fullscreen--off').classList.add('is--hidden');
     }
   },
 
-  hourlyTasks: function(hour) {
-
+  hourlyTasks: function (hour) {
     this.updateDayNightLayers(hour);
     this.switchDayNight(hour);
     this.showNewDay(hour);
-
   },
 
-  switchDayNight: function(hour) {
+  switchDayNight: function (hour) {
     if (hour === 21) {
       // switch to night time
       document.querySelector('#actions li.mixed').classList.remove('day');
@@ -415,17 +434,18 @@ export default {
     }
   },
 
-  dailyTasks: function(days) {
+  dailyTasks: function (days) {
     if (days > 9) {
       Player.playerDead();
     }
   },
 
-  showNewDay: function(hour, force) {
+  showNewDay: function (hour, force) {
     if (force || (timeIsUnity.gameDays > Props.getGameProp('startDay') && hour === 7)) {
       const dayTeaser = document.getElementById('day-teaser');
       if (dayTeaser) {
-        dayTeaser.querySelector('.content').innerHTML = 'Day <span>' + timeIsUnity.gameDays + '</span>';
+        dayTeaser.querySelector('.content').innerHTML =
+          'Day <span>' + timeIsUnity.gameDays + '</span>';
         dayTeaser.classList.add('open');
         dayTeaser.style.zIndex = '60';
         window.setTimeout(() => {
@@ -439,8 +459,7 @@ export default {
     }
   },
 
-  updateDayNightLayers: function(hour) {
-
+  updateDayNightLayers: function (hour) {
     var shortShadowPos = 0;
     var shortShadowSize = 0;
     var longShadowPos = 0;
@@ -448,9 +467,9 @@ export default {
 
     var stunde = Math.floor(hour);
 
-    document.querySelector('.time').innerHTML = stunde + ":00";
+    document.querySelector('.time').innerHTML = stunde + ':00';
 
-    if (hour >= 5 && hour <= 19) {        
+    if (hour >= 5 && hour <= 19) {
       let timeTillNoon = (12 - hour) * -1;
       if (hour >= 5 && hour <= 9) {
         for (const light of morningLight) {
@@ -465,21 +484,34 @@ export default {
       shortShadowSize = Math.round(timeTillNoon * 1);
       longShadowPos = Math.round(timeTillNoon * 4);
       longShadowSize = Math.round(timeTillNoon * 1.3);
-      mapHigh.style.filter = "drop-shadow(" + shortShadowPos + "px " + Math.abs(shortShadowPos / 2) + "px " + Math.abs(shortShadowSize) + "px rgba(0, 0, 0, 0.5)) drop-shadow(" + longShadowPos + "px " + Math.abs(longShadowPos / 2) + "px " + Math.abs(longShadowSize) + "px rgba(0, 0, 0, 0.4))";        
+      mapHigh.style.filter =
+        'drop-shadow(' +
+        shortShadowPos +
+        'px ' +
+        Math.abs(shortShadowPos / 2) +
+        'px ' +
+        Math.abs(shortShadowSize) +
+        'px rgba(0, 0, 0, 0.5)) drop-shadow(' +
+        longShadowPos +
+        'px ' +
+        Math.abs(longShadowPos / 2) +
+        'px ' +
+        Math.abs(longShadowSize) +
+        'px rgba(0, 0, 0, 0.4))';
     }
     if (hour >= 20 && hour <= 22) {
       for (const light of nightLight) {
-        light.style.opacity = 1 - Math.round((23 - hour) / 2 * 10) / 10 + 0.3; // / 2 -> completely dark
+        light.style.opacity = 1 - Math.round(((23 - hour) / 2) * 10) / 10 + 0.3; // / 2 -> completely dark
       }
       for (const light of nightCover) {
-        light.style.opacity = 1 - Math.round((21 - hour) / 2 * 10) / 10; // / 2 -> completely dark
+        light.style.opacity = 1 - Math.round(((21 - hour) / 2) * 10) / 10; // / 2 -> completely dark
       }
     } else if (hour >= 4 && hour <= 7) {
       for (const light of nightLight) {
-        light.style.opacity = 0.9 - Math.round((hour - 4) / 3 * 10) / 10;
+        light.style.opacity = 0.9 - Math.round(((hour - 4) / 3) * 10) / 10;
       }
       for (const light of nightCover) {
-        light.style.opacity = 1 - Math.round((hour - 4) / 3 * 10) / 10;
+        light.style.opacity = 1 - Math.round(((hour - 4) / 3) * 10) / 10;
       }
     }
     if (hour === 23) {
@@ -487,8 +519,8 @@ export default {
     }
   },
 
-  triggerNight: function() {
-    mapHigh.style.filter = "";
+  triggerNight: function () {
+    mapHigh.style.filter = '';
     for (const light of morningLight) {
       light.style.opacity = 0;
     }
@@ -500,6 +532,6 @@ export default {
     }
     for (const light of nightCover) {
       light.style.opacity = 1;
-    }  
-  }
-}
+    }
+  },
+};
