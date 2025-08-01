@@ -469,6 +469,10 @@ export default {
         images[i].src = './img/buildings/big-tree-1.png';
         images[i] = new Image();
         images[i].src = './img/buildings/big-tree-2.png';
+      } else if (prop === 'field') {
+        images[i].src = './img/buildings/field-1.png';
+        images[i] = new Image();
+        images[i].src = './img/buildings/field-2.png';
       } else {
         images[i].src = './img/buildings/' + prop + '.png';
       }

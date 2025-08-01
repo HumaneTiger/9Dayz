@@ -10,7 +10,7 @@ const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.8;
 const zIndexBase = 200;
 
-let smallTreeCounter = 1, bigTreeCounter = 1;
+let smallTreeCounter = 1, bigTreeCounter = 1, fieldCounter = 1;
 
 export default {
   
@@ -31,6 +31,9 @@ export default {
     } else if (object.name === 'big-tree') {
       buildingName = buildingName + '-' + bigTreeCounter;
       bigTreeCounter === 1 ? bigTreeCounter = 2 : bigTreeCounter = 1;
+    } else if (object.name === 'field') {
+      buildingName = buildingName + '-' + fieldCounter;
+      fieldCounter === 1 ? fieldCounter = 2 : fieldCounter = 1;
     }
 
     let cardMarkupPre = `<div id="${id}" class="card ${(object.locked ? 'locked ' : '')} ${(object.dead ? 'dead ' : '')} ${(object.preview ? 'preview ' : '')} ${object.group}" style="left: ${Math.round(object.x * 44.4 - 120)}px; top: 600px; transform: scale(0.4);">` +
