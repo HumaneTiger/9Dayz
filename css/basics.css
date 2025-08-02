@@ -1,53 +1,53 @@
 .is--hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .spacing--top {
-    margin-top: 2em;
+  margin-top: 2em;
 }
 
 .align--center {
-    text-align: center;
+  text-align: center;
 }
 
 .align--right {
-    text-align: right;
+  text-align: right;
 }
 
 .align--block {
-    text-align: justify;
+  text-align: justify;
 }
 
 .text--tiny {
-    font-size: 12px;
-    filter: brightness(85%);
+  font-size: 12px;
+  filter: brightness(85%);
 }
 
 .text--small {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 
 .text--ssmedium {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 .text--smedium {
-    font-size: 1.5em;
+  font-size: 1.5em;
 }
 
 .text--medium {
-    font-size: 2em;
-    line-height: 1em;
+  font-size: 2em;
+  line-height: 1em;
 }
 
 .text--large {
-    font-size: 3em;
-    line-height: 1.3em;
+  font-size: 3em;
+  line-height: 1.3em;
 }
 
 .text--uppercase {
-    text-transform: uppercase;
-    font-weight: normal;
+  text-transform: uppercase;
+  font-weight: normal;
 }
 
 em {
@@ -55,73 +55,90 @@ em {
 }
 
 hr.spacing {
-    border: 0 none;
-    padding: 4px 0;
+  border: 0 none;
+  padding: 4px 0;
 }
 
 hr.spacing--small {
-    border: 0 none;
-    padding: 5px 0;
-    margin: 0;
+  border: 0 none;
+  padding: 5px 0;
+  margin: 0;
 }
 
 small {
-    text-transform: uppercase;
-    font-size: 10px;
-    filter: brightness(85%);
+  text-transform: uppercase;
+  font-size: 10px;
+  filter: brightness(85%);
 }
 
 /* use margin for cards, as transform would interfere with other card transform props */
 .card-shake {
-    animation: card-shake linear 0.1s 3 forwards;
+  animation: card-shake linear 0.1s 3 forwards;
 }
 @keyframes card-shake {
-    0% { margin-left: 0; }
-    33% { margin-left: 8px; }
-    66% { margin-left: -12px; }
-    100% { margin-left: 4px; }
+  0% {
+    margin-left: 0;
+  }
+  33% {
+    margin-left: 8px;
+  }
+  66% {
+    margin-left: -12px;
+  }
+  100% {
+    margin-left: 4px;
+  }
 }
 
 .card-heavy-shake {
-    animation: card-heavy-shake 0.3s cubic-bezier(.2,.1,.2,.97) both;
+  animation: card-heavy-shake 0.3s cubic-bezier(0.2, 0.1, 0.2, 0.97) both;
 }
 @keyframes card-heavy-shake {
-    10%, 90% {
-        margin-left: -8px;
-    }
+  10%,
+  90% {
+    margin-left: -8px;
+  }
 
-    20%, 80% {
-        margin-left: 16px;
-    }
+  20%,
+  80% {
+    margin-left: 16px;
+  }
 
-    30%, 50%, 70% {
-        margin-left: -30px;
-    }
+  30%,
+  50%,
+  70% {
+    margin-left: -30px;
+  }
 
-    40%, 60% {
-        margin-left: 30px;
-    }
+  40%,
+  60% {
+    margin-left: 30px;
+  }
 }
-  
+
 .heavy-shake {
-  animation: heavy-shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+  animation: heavy-shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @keyframes heavy-shake {
-  10%, 90% {
+  10%,
+  90% {
     transform: translateX(-5px);
   }
-  
-  20%, 80% {
+
+  20%,
+  80% {
     transform: translateX(10px);
   }
 
-  30%, 50%, 70% {
-    transform: translateX(-20px);    
+  30%,
+  50%,
+  70% {
+    transform: translateX(-20px);
   }
 
-  40%, 60% {
+  40%,
+  60% {
     transform: translateX(20px);
   }
 }
-

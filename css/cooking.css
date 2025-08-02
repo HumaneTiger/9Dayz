@@ -92,7 +92,9 @@ ul.cooking .slot.active .unknown {
 }
 ul.cooking .slot span.amount {
   color: rgba(53, 35, 26, 0.8);
-  text-shadow: 0 0 5px#fffefb, 0 0 3px #fffefb;
+  text-shadow:
+    0 0 5px#fffefb,
+    0 0 3px #fffefb;
   font-size: 18px;
   position: absolute;
   top: 2px;
@@ -122,7 +124,9 @@ ul.cooking p.info {
 }
 
 ul.cooking .slot span.action {
-  text-shadow: 0 0 5px rgb(53, 35, 26), 0 0 3px rgb(53, 35, 26);
+  text-shadow:
+    0 0 5px rgb(53, 35, 26),
+    0 0 3px rgb(53, 35, 26);
   text-transform: capitalize;
   display: inline-block;
   padding: 3px 6px 2px;

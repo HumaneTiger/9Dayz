@@ -7,7 +7,10 @@
   border-radius: 5px;
   background-color: #ffbc97;
   border: 1px rgba(255, 140, 0, 1) solid;
-  transition: left 1s linear, top 1s linear, transform 0.1s ease-out;
+  transition:
+    left 1s linear,
+    top 1s linear,
+    transform 0.1s ease-out;
 }
 #player.highlight {
   transform: scale(2);
@@ -21,7 +24,10 @@
   height: 150px;
   background-image: url(../img/ui/you.png);
   background-size: 100% auto;
-  transition: left 1s linear, top 1s linear, transform 0.1s ease-out;
+  transition:
+    left 1s linear,
+    top 1s linear,
+    transform 0.1s ease-out;
 }
 .horde-warning-1,
 .horde-warning-2 {
@@ -42,4 +48,3 @@
   left: 1494px;
   top: 134px;
 }
-

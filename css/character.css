@@ -30,7 +30,9 @@
 #character .slot-1,
 #character .slot-2 {
   bottom: -100vh;
-  transition: right 0.35s ease-out, transform 0.1s ease-out;
+  transition:
+    right 0.35s ease-out,
+    transform 0.1s ease-out;
 }
 
 #character .slot-1 {
@@ -73,7 +75,9 @@
   width: 90px;
   height: 90px;
   opacity: 0;
-  transition: opacity 0.5s ease-out, transform 0.1s ease-out;
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.1s ease-out;
   z-index: 10;
 }
 
@@ -152,7 +156,9 @@
   box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0, #fffefb 2px, #fffefb 100%);
   opacity: 0;
-  transition: transform 0.1s ease-out, height 0.1s ease-in;
+  transition:
+    transform 0.1s ease-out,
+    height 0.1s ease-in;
   position: absolute;
   z-index: -1;
 }
@@ -162,8 +168,18 @@
   display: inline-block;
   line-height: 1;
   font-size: 70px;
-  text-shadow: 0 1px 1px #fcfaf6, 0 -1px 1px #fcfaf6, 1px 0 1px #fcfaf6, -1px 0 1px #fcfaf6, 0 0 6px #fcfaf6;
-  text-shadow: 0 1px 1px #fcfaf6, 0 -1px 1px #fcfaf6, 1px 0 1px #fcfaf6, -1px 0 1px #fcfaf6, 0 0 6px #fcfaf6;
+  text-shadow:
+    0 1px 1px #fcfaf6,
+    0 -1px 1px #fcfaf6,
+    1px 0 1px #fcfaf6,
+    -1px 0 1px #fcfaf6,
+    0 0 6px #fcfaf6;
+  text-shadow:
+    0 1px 1px #fcfaf6,
+    0 -1px 1px #fcfaf6,
+    1px 0 1px #fcfaf6,
+    -1px 0 1px #fcfaf6,
+    0 0 6px #fcfaf6;
   position: absolute;
   left: 16px;
   z-index: 3;
@@ -193,37 +209,37 @@
   left: 0;
   top: 0;
 }
-#character .card div[data-item="nails"] .upgrade-item::after {
+#character .card div[data-item='nails'] .upgrade-item::after {
   background-image: url(../img/items/nails.PNG);
 }
-#character .card div[data-item="tape"] .upgrade-item::after {
+#character .card div[data-item='tape'] .upgrade-item::after {
   background-image: url(../img/items/tape.PNG);
 }
-#character .card div[data-item="brush"] .upgrade-item::after {
+#character .card div[data-item='brush'] .upgrade-item::after {
   background-image: url(../img/items/brush.PNG);
 }
-#character .card div[data-item="fail"] .upgrade-item::after {
+#character .card div[data-item='fail'] .upgrade-item::after {
   background-image: url(../img/items/fail.PNG);
 }
-#character .card div[data-item="pincers"] .upgrade-item::after {
+#character .card div[data-item='pincers'] .upgrade-item::after {
   background-image: url(../img/items/pincers.PNG);
 }
-#character .card div[data-item="knife"] .upgrade-item::after {
+#character .card div[data-item='knife'] .upgrade-item::after {
   background-image: url(../img/items/knife.PNG);
 }
-#character .card div[data-item="hacksaw"] .upgrade-item::after {
+#character .card div[data-item='hacksaw'] .upgrade-item::after {
   background-image: url(../img/items/hacksaw.PNG);
 }
-#character .card div[data-item="glue"] .upgrade-item::after {
+#character .card div[data-item='glue'] .upgrade-item::after {
   background-image: url(../img/items/glue.PNG);
 }
-#character .card div[data-item="spanner"] .upgrade-item::after {
+#character .card div[data-item='spanner'] .upgrade-item::after {
   background-image: url(../img/items/spanner.PNG);
 }
-#character .card div[data-item="bone-hook"] .upgrade-item::after {
+#character .card div[data-item='bone-hook'] .upgrade-item::after {
   background-image: url(../img/items/bone-hook.PNG);
 }
-#character .card div[data-item="rope"] .upgrade-item::after {
+#character .card div[data-item='rope'] .upgrade-item::after {
   background-image: url(../img/items/rope.PNG);
 }
 
@@ -238,7 +254,7 @@
 #character .card div.upgrade:not(.nope):hover .shield::before,
 #character .card div.upgrade:not(.nope):hover .durabilityr::before {
   box-shadow: 0 2px 6px rgba(53, 35, 26, 0.8);
-}  
+}
 
 #character .card div.upgrade:not(.nope):hover,
 #character .card div.upgrade:not(.nope):hover,

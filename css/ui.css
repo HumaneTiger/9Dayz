@@ -66,17 +66,23 @@ ul#properties span.meter {
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  transition: width 0.1s ease-out, padding 0.1s ease-out;
+  transition:
+    width 0.1s ease-out,
+    padding 0.1s ease-out;
 }
 ul#properties span.meter em {
   padding: 10px 0 0 10px;
   display: inline-block;
 }
 ul#properties li.low span.meter {
-  box-shadow: 0 0 6px #fc9f71, inset 0 0 0 3px #fc9f71;
+  box-shadow:
+    0 0 6px #fc9f71,
+    inset 0 0 0 3px #fc9f71;
 }
 ul#properties li.very-low span.meter {
-  box-shadow: 0 0 7px red, inset 0 0 0 4px red;
+  box-shadow:
+    0 0 7px red,
+    inset 0 0 0 4px red;
 }
 ul#properties li.low:after,
 ul#properties li.very-low:after {
@@ -123,7 +129,7 @@ ul#properties li.health.in-battle {
   margin-left: -322px;
   top: 722px;
 }
-ul#properties li.health.in-battle #protection{
+ul#properties li.health.in-battle #protection {
   display: block;
 }
 ul#properties li.food {
@@ -221,7 +227,7 @@ ul#properties li.time {
   cursor: default;
   opacity: 0.75;
   color: #dc6452;
-  background-color: rgba(255, 254, 251, 1);  
+  background-color: rgba(255, 254, 251, 1);
 }
 #craft .button-craft:not(.active) .locked {
   display: inline-block;
@@ -229,50 +235,50 @@ ul#properties li.time {
   line-height: 0.8;
   vertical-align: top;
 }
-.button-craft[data-item="meat"] {
+.button-craft[data-item='meat'] {
   left: 90px;
   top: 240px;
 }
-.button-craft[data-item="wooden-club"] {
+.button-craft[data-item='wooden-club'] {
   left: 200px;
   top: 120px;
 }
-.button-craft[data-item="improvised-axe"] {
+.button-craft[data-item='improvised-axe'] {
   left: 580px;
   top: 130px;
 }
-.button-craft[data-item="fireplace"] {
+.button-craft[data-item='fireplace'] {
   left: 332px;
   top: 303px;
 }
-.button-craft[data-item="sharp-stick"] {
+.button-craft[data-item='sharp-stick'] {
   left: 25px;
   top: 272px;
 }
-.button-craft[data-item="tape"] {
+.button-craft[data-item='tape'] {
   left: 588px;
   top: 396px;
 }
 
 /* crafting 2 */
 
-.button-craft[data-item="improvised-whip"] {
+.button-craft[data-item='improvised-whip'] {
   left: 230px;
   top: 140px;
 }
-.button-craft[data-item="fishing-rod"] {
+.button-craft[data-item='fishing-rod'] {
   left: 590px;
   top: 145px;
 }
-.button-craft[data-item="rope"] {
+.button-craft[data-item='rope'] {
   left: 80px;
   top: 295px;
 }
-.button-craft[data-item="barricades"] {
+.button-craft[data-item='barricades'] {
   left: 290px;
   top: 240px;
 }
-.button-craft[data-item="bone-hook"] {
+.button-craft[data-item='bone-hook'] {
   left: 595px;
   top: 395px;
 }
@@ -311,7 +317,9 @@ ul#properties li.time {
 }
 #inventory .slot span.amount {
   color: rgba(53, 35, 26, 0.8);
-  text-shadow: 0 0 5px#fffefb, 0 0 3px #fffefb;
+  text-shadow:
+    0 0 5px#fffefb,
+    0 0 3px #fffefb;
   font-size: 18px;
   position: absolute;
   top: 2px;
@@ -385,7 +393,9 @@ p.item-info small {
   display: inline-block;
 }
 #inventory .slot span.action {
-  text-shadow: 0 0 5px rgb(53, 35, 26), 0 0 3px rgb(53, 35, 26);
+  text-shadow:
+    0 0 5px rgb(53, 35, 26),
+    0 0 3px rgb(53, 35, 26);
   display: inline-block;
   padding: 3px 6px 2px;
   border-radius: 3px;
@@ -464,7 +474,9 @@ ul#actions li {
   text-align: center;
   cursor: pointer;
   opacity: 0.75;
-  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  transition:
+    transform 0.1s ease-out,
+    opacity 0.1s ease-out;
 }
 
 ul#actions li.transfer,
@@ -597,7 +609,9 @@ ul#actions li.fullscreen span {
   background-image: url(../img/ui/mobile-touch.png);
   background-size: 100%;
   opacity: 0.3;
-  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  transition:
+    transform 0.1s ease-out,
+    opacity 0.1s ease-out;
 }
 
 #touchcontrols .move:active {

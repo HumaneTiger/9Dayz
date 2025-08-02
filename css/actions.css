@@ -17,7 +17,9 @@ ul.actions li {
   margin: 16px 0;
   opacity: 0;
   transform: translateY(-12px);
-  transition: opacity 0.2s ease-out, transform 0.3s ease-out;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.3s ease-out;
 }
 #craft.actions-locked .button-craft,
 #character.actions-locked ul.actions .action-button,
@@ -32,7 +34,7 @@ ul.actions li {
 }
 ul.actions li.critical .action-button,
 ul.actions li.critical span.additional {
-  color: #dc6452;  
+  color: #dc6452;
 }
 ul.actions li.critical .material-symbols-outlined.alert {
   display: inline-block;
@@ -97,7 +99,11 @@ ul.actions .action-button {
   line-height: 0.9em;
   vertical-align: top;
   transform: scale(0.9);
-  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background-color 0.3s ease-out,  opacity 0.2s ease-in;
+  transition:
+    transform 0.1s ease-out,
+    box-shadow 0.1s ease-out,
+    background-color 0.3s ease-out,
+    opacity 0.2s ease-in;
 }
 #almanac .button.half--size {
   font-size: 20px;
@@ -138,7 +144,9 @@ ul.actions .action-button span.additional {
   color: rgba(91, 155, 213, 1);
   opacity: 0;
   margin-top: -24px;
-  transition: opacity 0.1s ease-out, margin-top 0.1s ease-out;
+  transition:
+    opacity 0.1s ease-out,
+    margin-top 0.1s ease-out;
 }
 
 ul.actions .action-button span.additional {
@@ -167,9 +175,24 @@ ul.actions .action-button span.additional {
 
 @keyframes glow {
   from {
-    text-shadow: 0 0 3px #fff, 0 0 5px #fff, 0 0 8px #fff, 0 0 12px #fffefb, 0 0 20px #dff, 0 0 25px #dff, 0 0 30px #dff;
+    text-shadow:
+      0 0 3px #fff,
+      0 0 5px #fff,
+      0 0 8px #fff,
+      0 0 12px #fffefb,
+      0 0 20px #dff,
+      0 0 25px #dff,
+      0 0 30px #dff;
   }
   to {
-    text-shadow: 0 0 6px #fff, 0 0 15px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff, 0 0 60px #dff, 0 0 70px #dff, 0 0 80px #dff;
+    text-shadow:
+      0 0 6px #fff,
+      0 0 15px #fff,
+      0 0 30px #fff,
+      0 0 40px #fff,
+      0 0 50px #fff,
+      0 0 60px #dff,
+      0 0 70px #dff,
+      0 0 80px #dff;
   }
 }

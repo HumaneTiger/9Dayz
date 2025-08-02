@@ -41,7 +41,11 @@
   background-size: cover;
   background-repeat: no-repeat;
   transform: scale(0.8);
-  transition: transform 0.1s ease-out, top 0.3s ease-out, left 0.3s ease-out, opacity 0.4s ease-in;
+  transition:
+    transform 0.1s ease-out,
+    top 0.3s ease-out,
+    left 0.3s ease-out,
+    opacity 0.4s ease-in;
 }
 .card.out-of-queue {
   display: none;
@@ -86,7 +90,9 @@
 }
 #dismantle-card.active,
 .card.fight.active {
-  box-shadow: 0 0 5px 4px #dc6452, 0 0 12px 8px #dc6452;
+  box-shadow:
+    0 0 5px 4px #dc6452,
+    0 0 12px 8px #dc6452;
 }
 .card div.attack,
 .card div.shield,
@@ -129,19 +135,24 @@
 }
 .card.zombie .distance {
   background-color: #dc6452;
-  background: linear-gradient(to bottom, rgba(0,0,0, 0.4) 0, #dc6452 8px, #dc6452 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0, #dc6452 8px, #dc6452 100%);
   color: #fff;
 }
 .card.event .distance {
   background-color: rgba(91, 155, 213, 1);
-  background: linear-gradient(to bottom, rgba(0,0,0, 0.4) 0, rgba(91, 155, 213, 1) 8px, rgba(91, 155, 213, 1) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0,
+    rgba(91, 155, 213, 1) 8px,
+    rgba(91, 155, 213, 1) 100%
+  );
   color: #fff;
 }
 
 .card .distance {
   display: inline-block;
   pointer-events: none;
-  background-color: #f0e4da ;
+  background-color: #f0e4da;
   color: rgba(91, 155, 213, 1);
   padding: 11px 24px 4px;
   line-height: 1em;
@@ -233,7 +244,9 @@
   left: 5%;
   width: 90%;
   height: auto;
-  transition: opacity 0.1s ease-out, filter 0.1s ease-out;
+  transition:
+    opacity 0.1s ease-out,
+    filter 0.1s ease-out;
 }
 .card.fight span.distance,
 .card.fight ul.actions {
@@ -262,7 +275,9 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   color: rgba(137, 110, 102, 0.8);
   text-align: center;
   text-transform: capitalize;
-  transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+  transition:
+    opacity 0.1s ease-out,
+    transform 0.1s ease-out;
 }
 
 #cards .banner img {
@@ -308,7 +323,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   background-position: center center;
   background-image: url(../img/card/chip.png);
   background-size: cover;
-  background-repeat: no-repeat;  
+  background-repeat: no-repeat;
 }
 
 .card.weapon .extensions li span {
@@ -342,7 +357,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
 
 .card.weapon .dmg.chip {
   background-color: #ed7d31;
-  box-shadow: 0 2px 3px rgba(137, 110, 102,0.6);
+  box-shadow: 0 2px 3px rgba(137, 110, 102, 0.6);
   color: white;
   position: absolute;
   top: 32px;
@@ -365,4 +380,3 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   padding: 0;
   vertical-align: top;
 }
-

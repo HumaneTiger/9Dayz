@@ -4,7 +4,12 @@
   height: 42px;
   font-size: 20px;
   z-index: 1;
-  text-shadow: 0 1px 1px #fcfaf6, 0 -1px 1px #fcfaf6, 1px 0 1px #fcfaf6, -1px 0 1px #fcfaf6, 0 0 6px #fcfaf6;
+  text-shadow:
+    0 1px 1px #fcfaf6,
+    0 -1px 1px #fcfaf6,
+    1px 0 1px #fcfaf6,
+    -1px 0 1px #fcfaf6,
+    0 0 6px #fcfaf6;
 }
 #craft .nope::before {
   content: '✗';

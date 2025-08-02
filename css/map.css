@@ -17,7 +17,7 @@
 #maximap .inner span.quadrant {
   position: absolute;
   color: #ffff00;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   font-family: Calibri;
   font-size: 16px;
   font-weight: bold;
@@ -61,7 +61,7 @@
 }
 
 .night-light {
-  z-index: 22;  
+  z-index: 22;
   background-color: rgba(0, 0, 0, 0.9);
 }
 
@@ -107,7 +107,9 @@
   width: 24px;
   height: 24px;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
-  transition: transform 0.2s ease-out, filter 0.2s ease-out;
+  transition:
+    transform 0.2s ease-out,
+    filter 0.2s ease-out;
 }
 
 #maximap .inner .map-buildings .icon.highlight img {
@@ -185,7 +187,13 @@
   font-size: 20px;
   position: absolute;
   z-index: 1;
-  text-shadow: 0 2px 2px #fff, 0 -2px 2px #fff, 2px 0 2px #fff, -2px 0 2px #fff, 0 0 2px #fff, 0 0 4px #fff;
+  text-shadow:
+    0 2px 2px #fff,
+    0 -2px 2px #fff,
+    2px 0 2px #fff,
+    -2px 0 2px #fff,
+    0 0 2px #fff,
+    0 0 4px #fff;
 }
 
 #maximap .inner .map-cover .cover .location:before {
@@ -200,7 +208,8 @@
 }
 
 #maximap .inner .map-high img {
-  filter: drop-shadow(-7px 3px 7px rgba(0, 0, 0, 0.5)) drop-shadow(-21px 10px 7px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(-7px 3px 7px rgba(0, 0, 0, 0.5))
+    drop-shadow(-21px 10px 7px rgba(0, 0, 0, 0.4));
   transition: filter 4500ms linear;
 }
 

@@ -17,7 +17,9 @@
   user-select: initial;
   opacity: 1;
   transform: translate(-35%, -110%);
-  transition: opacity 0.15s ease-out, box-shadow 0.15s ease-out;
+  transition:
+    opacity 0.15s ease-out,
+    box-shadow 0.15s ease-out;
 }
 
 #almanac .title {
@@ -42,7 +44,9 @@
   left: 50%;
   transform: translateX(-50%);
   box-shadow: 0 -1px 1px rgba(53, 35, 26, 0.6);
-  transition: opacity 0.15s ease-out, box-shadow 0.15s ease-out;
+  transition:
+    opacity 0.15s ease-out,
+    box-shadow 0.15s ease-out;
   z-index: -1;
 }
 

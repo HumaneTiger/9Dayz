@@ -52,18 +52,18 @@
 }
 .pulsate {
   animation: pulsate 4s ease-out;
-  animation-iteration-count: infinite; 
+  animation-iteration-count: infinite;
   opacity: 0.5;
 }
 @keyframes pulsate {
-  0% { 
-      opacity: 0.2;
+  0% {
+    opacity: 0.2;
   }
-  50% { 
-      opacity: 1.0;
+  50% {
+    opacity: 1;
   }
-  100% { 
-      opacity: 0.2;
+  100% {
+    opacity: 0.2;
   }
 }
 #startscreen .screen__menu {
@@ -90,7 +90,9 @@
   text-shadow: 0 1px 2px black;
   font-size: 16px;
   padding: 8px 24px;
-  transition: opacity 0.2s ease-out, left 0.2s ease-out;
+  transition:
+    opacity 0.2s ease-out,
+    left 0.2s ease-out;
 }
 #startscreen .button.start-game {
   position: relative;
@@ -127,25 +129,25 @@
   border-radius: 4px;
   transform: rotate(10deg) translateY(-50%);
 }
-#startscreen div[data-character="everyman"] {
+#startscreen div[data-character='everyman'] {
   top: 11%;
 }
-#startscreen div[data-character="treehugger"] {
+#startscreen div[data-character='treehugger'] {
   top: 13%;
 }
-#startscreen div[data-character="snackivore"] {
+#startscreen div[data-character='snackivore'] {
   top: 20%;
 }
-#startscreen div[data-character="craftsmaniac"] {
+#startscreen div[data-character='craftsmaniac'] {
   top: 23%;
 }
-#startscreen div[data-character="furbuddy"] {
+#startscreen div[data-character='furbuddy'] {
   top: 30%;
 }
-#startscreen div[data-character="hardcharger"] {
+#startscreen div[data-character='hardcharger'] {
   top: 34%;
 }
-#startscreen div[data-character="cashmeister"] {
+#startscreen div[data-character='cashmeister'] {
   top: 39%;
 }
 #startscreen div[data-character].not--available::before {
@@ -189,7 +191,7 @@
   font-size: 21px;
 }
 #startscreen .screen__menu .container {
-    position: absolute;
+  position: absolute;
   width: 100%;
   top: 48%;
   transform: translateY(-50%);
@@ -250,7 +252,10 @@
   text-align: center;
   text-decoration: none;
   line-height: 0.9em;
-  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.2s ease-out;
+  transition:
+    transform 0.1s ease-out,
+    box-shadow 0.1s ease-out,
+    opacity 0.2s ease-out;
 }
 #startscreen .button.full-width {
   display: block;
@@ -368,7 +373,9 @@
   height: 37px;
   margin: 1px;
   opacity: 0.5;
-  transition: margin 0.1s ease-out, opacity 0.1s ease-out;
+  transition:
+    margin 0.1s ease-out,
+    opacity 0.1s ease-out;
 }
 #startscreen .screen__option .slider:hover .knob {
   opacity: 0.65;
@@ -378,8 +385,8 @@
   margin-left: 40px;
 }
 #startscreen .screen__option .label {
-    vertical-align: top;
-    padding: 6px 10px;
+  vertical-align: top;
+  padding: 6px 10px;
 }
 #startscreen .screen__option .label small {
   line-height: 3em;

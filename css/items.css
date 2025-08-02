@@ -20,11 +20,13 @@
   background-position: center center;
   background-image: url(../img/card/chip.png);
   background-size: cover;
-  background-repeat: no-repeat;  
+  background-repeat: no-repeat;
 }
 .card ul.items li.item {
   cursor: pointer;
-  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+  transition:
+    transform 0.4s ease-out,
+    opacity 0.4s ease-out;
 }
 .card ul.items li.transfer {
   transform: scale(1.5);
@@ -54,14 +56,18 @@
 }
 .card ul.items li span.amount {
   color: rgba(53, 35, 26, 0.8);
-  text-shadow: 0 0 5px#fffefb, 0 0 3px #fffefb;
+  text-shadow:
+    0 0 5px#fffefb,
+    0 0 3px #fffefb;
   font-size: 18px;
   position: absolute;
   top: 8px;
   left: 10px;
 }
 .card ul.items li span.grab {
-  text-shadow: 0 0 5px rgb(53, 35, 26), 0 0 3px rgb(53, 35, 26);
+  text-shadow:
+    0 0 5px rgb(53, 35, 26),
+    0 0 3px rgb(53, 35, 26);
   display: inline-block;
   padding: 3px 6px 2px;
   border-radius: 3px;
@@ -137,4 +143,3 @@
     opacity: 0;
   }
 }
-

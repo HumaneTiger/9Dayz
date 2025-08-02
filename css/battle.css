@@ -67,7 +67,9 @@
   text-align: center;
   text-shadow: rgba(53, 35, 26, 0.5) 0 4px 4px;
   color: rgba(255, 254, 251, 1);
-  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  transition:
+    transform 0.5s ease-out,
+    opacity 0.5s ease-out;
   opacity: 0;
   bottom: -20px;
 }
@@ -189,7 +191,11 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
   border-radius: 16px;
-  transition: box-shadow 0.2s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out, margin-left 0.2s ease-out;
+  transition:
+    box-shadow 0.2s ease-out,
+    transform 0.2s ease-out,
+    opacity 0.2s ease-out,
+    margin-left 0.2s ease-out;
 }
 #battle-cards .battle-card.resolve {
   transform: scale(2);
@@ -198,7 +204,7 @@
 #battle-cards .battle-card .durability {
   display: inline-block;
   pointer-events: none;
-  background-color: #f0e4da ;
+  background-color: #f0e4da;
   color: rgba(91, 155, 213, 1);
   padding: 6px 8px 2px;
   line-height: 1em;
@@ -211,7 +217,7 @@
   left: 50%;
   transform: translateX(-50%);
   box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
-  background: linear-gradient(to bottom, #AD9D7E 0, #fffefb 8px, #fffefb 100%);
+  background: linear-gradient(to bottom, #ad9d7e 0, #fffefb 8px, #fffefb 100%);
   z-index: -1;
 }
 #battle-cards .battle-card .durability u {
@@ -234,11 +240,13 @@
   font-size: 24px;
 }
 #battle-cards .battle-card * {
-    pointer-events: none;
+  pointer-events: none;
 }
 #battle-cards .battle-card:not(.wont--use):hover {
   transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 0 5px 4px rgba(145, 211, 242, 1), 0 0 12px 8px rgba(145, 211, 242, 1);
+  box-shadow:
+    0 0 5px 4px rgba(145, 211, 242, 1),
+    0 0 12px 8px rgba(145, 211, 242, 1);
 }
 #battle-cards .battle-card.inactive {
   opacity: 0;
