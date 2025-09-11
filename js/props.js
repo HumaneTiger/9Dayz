@@ -122,6 +122,7 @@ var buildingTypes = {
   industrial: ['tool-shed', 'garage'],
   water: ['well', 'jetty', 'pump'],
   container: ['crate'],
+  collectable: ['key'],
   camping: ['seating', 'log-cabine', 'outhouse', 'fireplace', 'barricades'],
   corpse: ['human-corpse-1'],
 };
@@ -323,26 +324,28 @@ var buildingProps = {
       'wooden-club',
     ],
   },
+  key: { locked: 0, spawn: 0, items: [] },
 };
 
-var buildingActions = {
-  house: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+60'],
-  car: ['smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20'],
+let buildingActions = {
+  house: ['break door|10|-15', 'unlock door|10|-5', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+60'],
+  car: ['unlock door|10|-5', 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20'],
   farm: ['gather|15|-10', 'scout area|30'],
   tree: ['gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15'],
-  church: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30'],
+  church: ['unlock door|10|-5', 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30'],
   signpost: ['read|1'],
   place: ['head toward|0', 'quick travel|0'],
   train: ['search|20|-5', 'scout area|30'],
-  shop: ['break door|30|-20', 'search|20|-10', 'scout area|30'],
-  industrial: ['break door|30|-20', 'search|20|-15', 'scout area|30'],
+  shop: ['unlock door|10|-5', 'break door|30|-20', 'search|20|-10', 'scout area|30'],
+  industrial: ['unlock door|10|-5', 'break door|30|-20', 'search|20|-15', 'scout area|30'],
   water: ['gather|15|-5', 'drink|10', 'fish|30|-5'],
   camping: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20'],
   corpse: ['search|15|-5'],
   container: ['break lock|30|-20', 'search|15|-5'],
+  collectable: ['collect|0'],
 };
 
-var cookingRecipes = {
+let cookingRecipes = {
   'roasted-meat': ['meat', 'sharp-stick', 1, 'roast'],
   'roasted-pepper': ['pepper', 'sharp-stick', 1, 'roast'],
   'roasted-mushroom': ['mushroom-1-2', 'sharp-stick', 1, 'roast'],
@@ -350,7 +353,7 @@ var cookingRecipes = {
   glue: ['bones', 'drink-1-2', 1, 'cook'],
 };
 
-var craftingRecipes = {
+let craftingRecipes = {
   'wooden-club': {
     items: [['fail', 'hacksaw'], ['stump']],
     exclusive: true,
@@ -403,7 +406,7 @@ var craftingRecipes = {
   },
 };
 
-var weaponProps = {
+let weaponProps = {
   'baseball-bat': { attack: 10, defense: 3, durability: 4 },
   wrench: { attack: 14, defense: 4, durability: 4 },
   axe: { attack: 12, defense: 6, durability: 4 },
@@ -413,7 +416,7 @@ var weaponProps = {
   'fishing-rod': { attack: 2, defense: 1, durability: 4 },
 };
 
-var weaponPropsUpgrades = {
+let weaponPropsUpgrades = {
   'baseball-bat': {
     attack: { amount: 1, item: 'nails' },
     defense: { amount: 2, item: 'glue' },
@@ -449,7 +452,7 @@ var weaponPropsUpgrades = {
   },
 };
 
-var targetLocations = {
+let targetLocations = {
   'Lakeside Camp Resort': [5, 37],
   Rocksprings: [22, 34],
   'Haling Cove': [16, 8],
@@ -461,7 +464,7 @@ var targetLocations = {
 };
 
 /* ['type', hunger, thirst, energy, attack, defense] */
-var items = {
+let items = {
   acorn: ['eat', 1, 0, 0],
   rosehip: ['eat', 2, 2, 0],
   hawthorn: ['eat', 2, 2, 0],
@@ -514,6 +517,7 @@ var items = {
   mallet: ['craft', 0, 0, 0, 5, 1],
   rope: ['craft', 0, 0, 0, 3, 1],
   'bone-hook': ['craft', 0, 0, 0, 2, 2],
+  key: ['craft', 0, 0, 0, 1, 1],
   'improvised-axe': [
     'extra',
     0,
@@ -557,7 +561,7 @@ var items = {
     weaponProps['fishing-rod'].defense,
   ],
 };
-var itemModifiers = {
+let itemModifiers = {
   snackivore: {
     acorn: [-1, 0, 0],
     'bread-1': [5, 0, 10],
@@ -895,10 +899,10 @@ export default {
     if (inventory.items[item] !== undefined) {
       // weapon was added to inventory before
       inventory.items[item].amount += amount;
-      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
+      inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
 
-      setDamage ? (inventory.items[item].damage = setDamage) : false;
-      setProtection ? (inventory.items[item].protection = setProtection) : false;
+      setDamage ? inventory.items[item].damage = setDamage : false;
+      setProtection ? inventory.items[item].protection = setProtection : false;
 
       if (setDurability !== undefined) {
         inventory.items[item].durability += setDurability;
@@ -1703,15 +1707,19 @@ export default {
         if (
           (buildingName === 'pump' && singleAction.id === 'fish') ||
           (buildingName === 'outhouse' && singleAction.id === 'break-door') ||
+          (buildingName === 'outhouse' && singleAction.id === 'unlock-door') ||
           (buildingName === 'small-tree' && singleAction.id === 'rest') ||
           (buildingName === 'big-tree' && singleAction.id === 'cut-down') ||
           (buildingName === 'fireplace' && singleAction.id === 'break-door') ||
+          (buildingName === 'fireplace' && singleAction.id === 'unlock-door') ||
           (buildingName === 'fireplace' && singleAction.id === 'scout-area') ||
           (buildingName === 'fireplace' && singleAction.id === 'search') ||
           (buildingName === 'barricades' && singleAction.id === 'break-door') ||
+          (buildingName === 'barricades' && singleAction.id === 'unlock-door') ||
           (buildingName === 'barricades' && singleAction.id === 'scout-area') ||
           (buildingName === 'barricades' && singleAction.id === 'search') ||
           (buildingName === 'seating' && singleAction.id === 'break-door') ||
+          (buildingName === 'seating' && singleAction.id === 'unlock-door') ||
           (buildingName === 'seating' && singleAction.id === 'scout-area') ||
           (buildingName === 'seating' && singleAction.id === 'sleep') ||
           (buildingName === 'well' && singleAction.id === 'fish')
@@ -1719,6 +1727,7 @@ export default {
           // these are exceptions for certain building <-> action combos that make no sense
         } else if (
           (!locked && singleAction.id === 'smash-window') ||
+          (!locked && singleAction.id === 'unlock-door') ||
           (!locked && singleAction.id === 'break-door')
         ) {
           // these are exceptions for certain stats <-> action combos that make no sense

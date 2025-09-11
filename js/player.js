@@ -7,9 +7,9 @@ import Ui from './ui.js';
 
 const allPaths = Props.getAllPaths();
 
-var player = document.getElementById('player');
-var playerPosition = {};
-var playerProps = {
+let player = document.getElementById('player');
+let playerPosition = {};
+let playerProps = {
   health: 0,
   food: 0,
   thirst: 0,
@@ -18,8 +18,8 @@ var playerProps = {
   actions: 0,
 };
 
-var moveLocked = false;
-var moving = false;
+let moveLocked = false;
+let moving = false;
 
 export default {
   init: function () {
@@ -63,8 +63,8 @@ export default {
 
   changeProps: function (prop, change) {
     playerProps[prop] += parseInt(change);
-    playerProps[prop] < 0 ? (playerProps[prop] = 0) : false;
-    playerProps[prop] > 100 ? (playerProps[prop] = 100) : false;
+    if (playerProps[prop] < 0) playerProps[prop] = 0;
+    if (playerProps[prop] > 100) playerProps[prop] = 100;
     const propMeter = document.querySelector(
       '#properties li.' + prop + ' span.meter:not(.preview)'
     );
@@ -410,33 +410,32 @@ export default {
     x = parseInt(x);
     y = parseInt(y);
 
-    Props.getObjectIdsAt(x, y)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x, y)))
-      : false;
-    Props.getObjectIdsAt(x, y - 1)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x, y - 1)))
-      : false;
-    Props.getObjectIdsAt(x + 1, y - 1)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x + 1, y - 1)))
-      : false;
-    Props.getObjectIdsAt(x + 1, y)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x + 1, y)))
-      : false;
-    Props.getObjectIdsAt(x + 1, y + 1)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x + 1, y + 1)))
-      : false;
-    Props.getObjectIdsAt(x, y + 1)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x, y + 1)))
-      : false;
-    Props.getObjectIdsAt(x - 1, y + 1)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x - 1, y + 1)))
-      : false;
-    Props.getObjectIdsAt(x - 1, y)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x - 1, y)))
-      : false;
-    Props.getObjectIdsAt(x - 1, y - 1)
-      ? (allFoundObjectIds = allFoundObjectIds.concat(Props.getObjectIdsAt(x - 1, y - 1)))
-      : false;
+    let ids = Props.getObjectIdsAt(x, y);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x, y - 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x + 1, y - 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x + 1, y);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x + 1, y + 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x, y + 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x - 1, y + 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x - 1, y);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = Props.getObjectIdsAt(x - 1, y - 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
 
     return allFoundObjectIds;
   },

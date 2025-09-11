@@ -189,7 +189,7 @@ export default {
   },
 
   updateWeaponState: function () {
-    for (var item in inventory.items) {
+    for (let item in inventory.items) {
       if (inventory.items[item].type === 'extra') {
         const weaponName = inventory.items[item].name;
         // find suitable slot for the weapon in inventory

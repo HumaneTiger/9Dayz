@@ -36,6 +36,14 @@ export default {
       delay: 0,
       label: 'gathering',
     },
+    collect: {
+      callback: (scope, cardId, time, energy) => {
+        scope.simulateCollecting(cardId, time, energy);
+      },
+      oneTime: true,
+      delay: 1000,
+      label: 'collecting',
+    },
     'scout-area': {
       callback: (scope, cardId, time, energy) => {
         scope.simulateScouting(cardId, time, energy);
@@ -99,6 +107,14 @@ export default {
       oneTime: true,
       delay: 1000,
       label: 'breaking',
+    },
+    'unlock-door': {
+      callback: (scope, cardId, time, energy) => {
+        scope.simulateOpening(cardId, time, energy);
+      },
+      oneTime: true,
+      delay: 1000,
+      label: 'opening',
     },
     'break-lock': {
       callback: (scope, cardId, time, energy) => {
@@ -167,14 +183,22 @@ export default {
     if (actionObject && actionProps && cardRef) {
       if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
         this.notEnoughEnergyFeedback();
-      } else if (actionObject && actionObject.locked) {
+      } else if (actionObject?.locked) {
         this.actionLockedFeedback(cardRef);
       } else {
         this.prepareAction(cardId, action);
         window.setTimeout(() => {
           actionProps.callback(this, cardId, actionObject.time, actionObject.energy);
         }, actionProps.delay || 0);
-        this.removeOneTimeActions(cardId, action);
+        if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
+          // they all have the same effect
+          // if one is done and removed, all others have to be removed as well
+          this.removeOneTimeActions(cardId, 'unlock-door');
+          this.removeOneTimeActions(cardId, 'break-door');
+          this.removeOneTimeActions(cardId, 'smash-window');
+        } else {
+          this.removeOneTimeActions(cardId, action);
+        }
       }
     } else {
       console.log('Invalid action or card reference!', action, cardId);
@@ -411,6 +435,7 @@ export default {
         this.goBackFromAction(cardId);
         const allFoundObjectIds = Player.findObjects(object.x, object.y);
         Player.handleFoundObjectIds(allFoundObjectIds);
+        this.searchForKey(object);
         Map.hideScoutMarker();
         Player.changeProps('energy', energy);
         this.checkForInfested(cardId);
@@ -420,6 +445,15 @@ export default {
       800,
       energy
     );
+  },
+
+  searchForKey: function(object) {
+    if (object.locked) {
+      const randomFound = Math.random();
+      if (randomFound > 0) {
+        Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, ['key']);
+      }
+    }
   },
 
   simulateResting: function (cardId, time, energy) {
@@ -470,6 +504,23 @@ export default {
       Cooking.start(cardRef);
       this.goBackFromAction(cardId);
     }, 800);
+  },
+
+  simulateCollecting: function (cardId, energy) {
+    const object = Props.getObject(cardId);
+    Props.addItemToInventory(object.name, 1);
+    object.removed = true;
+    window.setTimeout(
+      (cardId, energy) => {
+        Items.fillInventorySlots();
+        Items.checkCraftingPrerequisits();
+        Player.changeProps('energy', energy);
+        this.goBackFromAction(cardId);
+      },
+      800,
+      cardId,
+      energy
+    );
   },
 
   simulateEquipping: function (cardId) {
@@ -618,10 +669,33 @@ export default {
     );
   },
 
+  simulateOpening: function (cardId, time, energy) {
+    Audio.sfx('pick');
+
+    this.fastForward(
+      function (cardId, energy) {
+        const object = Props.getObject(cardId);
+        object.locked = false;
+        if (Items.inventoryContains('key')) {
+          Props.addItemToInventory('key', -1);
+        }
+        Items.fillInventorySlots();
+        Items.checkCraftingPrerequisits();
+        Player.changeProps('energy', energy);
+        this.goBackFromAction(cardId);
+        this.checkForInfested(cardId);
+      },
+      cardId,
+      time,
+      800,
+      energy
+    );
+  },
+
   checkForInfested: function (cardId) {
     const cardRef = Cards.getCardById(cardId);
     const object = Props.getObject(cardId);
-    if (object.infested && !(object.name === 'beehive') && !object.locked) {
+    if (object.infested && object.name !== 'beehive' && !object.locked) {
       const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
       console.log(ratObjectIds);
       cardRef.classList.remove('infested');

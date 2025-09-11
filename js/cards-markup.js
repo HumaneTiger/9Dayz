@@ -371,6 +371,8 @@ export default {
             actionRef.querySelector('.additional-locked').textContent = 'Infested';
           } else if (action.id === 'cut-down' || action.id === 'break-door') {
             actionRef.querySelector('.additional-locked').textContent = 'Axe needed';
+          } else if (action.id === 'unlock-door') {
+            actionRef.querySelector('.additional-locked').textContent = 'Key needed';
           } else if (action.id === 'cut') {
             actionRef.querySelector('.additional-locked').textContent = 'Knife needed';
           } else if (action.id === 'smash-window') {
@@ -390,7 +392,7 @@ export default {
         } else {
           actionRef.classList.remove('locked');
         }
-        if ((action.id === 'search' || action.id === 'cut') && object.dead === false) {
+        if ((action.id === 'search' || action.id === 'cut') && (object.dead === false || object.locked === true)) {
           actionRef.classList.add('is--hidden');
         } else {
           actionRef.classList.remove('is--hidden');

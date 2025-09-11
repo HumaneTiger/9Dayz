@@ -265,6 +265,11 @@ export default {
             action.locked = true;
           }
         }
+        if (action.id === 'unlock-door') {
+          if (!Items.inventoryContains('key')) {
+            action.locked = true;
+          }
+        }
         if (action.id === 'cut') {
           if (!Items.inventoryContains('knife')) {
             action.locked = true;

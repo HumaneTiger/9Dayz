@@ -256,7 +256,7 @@ export default {
   },
 
   generateInventorySlots: function () {
-    for (var item in items) {
+    for (let item in items) {
       if (items[item][0] !== 'extra') {
         inventoryContainer.querySelector('.inner').innerHTML +=
           '<div class="slot unknown ' +
@@ -298,7 +298,7 @@ export default {
   },
 
   fillInventorySlots: function () {
-    for (var item in inventory.items) {
+    for (let item in inventory.items) {
       this.fillItemSlot(
         inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name),
         inventory.items[item].amount,
