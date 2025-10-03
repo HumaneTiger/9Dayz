@@ -42,7 +42,7 @@ var events = {
 var specialEvents = {
   infestation: {
     title: 'Infestation',
-    text: 'The building is invested by giant rats! Scout the place before searching to avoid an immediate confrontation.<br><img src="./img/card/status-infested.png">',
+    text: 'The building is infested by giant rats! Scout the place before searching to avoid an immediate confrontation.<br><img src="./img/card/status-infested.png">',
   },
   'locked-building': {
     title: 'Locked',
