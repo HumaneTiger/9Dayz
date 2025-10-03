@@ -450,7 +450,7 @@ export default {
   searchForKey: function (object) {
     if (object.locked) {
       const randomFound = Math.random();
-      if (randomFound > 0) {
+      if (randomFound >= 0.5) {
         Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, ['key']);
       }
     }
