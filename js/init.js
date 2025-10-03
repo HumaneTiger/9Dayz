@@ -46,44 +46,46 @@ window.timeIsUnity = {
 
 function bind() {
   new Binding({
-    object: timeIsUnity,
+    object: window.timeIsUnity,
     property: 'gameDays',
     element: document.getElementById('gametime-days'),
   });
   new Binding({
-    object: timeIsUnity,
+    object: window.timeIsUnity,
     property: 'todayTime',
     element: document.getElementById('gametime-hours'),
   });
 }
 
 function triggerGameTick() {
-  timeIsUnity.gameTick += 1;
+  window.timeIsUnity.gameTick += 1;
 
   /* TICKY TASKS */
-  if (timeIsUnity.gameTick % ticksPerHour === 0) {
-    timeIsUnity.gameHours += 1;
+  if (window.timeIsUnity.gameTick % ticksPerHour === 0) {
+    window.timeIsUnity.gameHours += 1;
 
     /* HOURLY TASKS */
     /* order matters */
-    Props.hourlyTasks(timeIsUnity.todayHours);
-    Ui.hourlyTasks(timeIsUnity.todayHours);
-    Cards.hourlyTasks(timeIsUnity.todayHours);
+    Props.hourlyTasks(window.timeIsUnity.todayHours);
+    Ui.hourlyTasks(window.timeIsUnity.todayHours);
+    Cards.hourlyTasks(window.timeIsUnity.todayHours);
 
     //Day.updateBrightness(timeIsUnity.todayHours);
 
-    if (timeIsUnity.gameHours % 24 === 0) {
-      timeIsUnity.gameDays += 1;
+    if (window.timeIsUnity.gameHours % 24 === 0) {
+      window.timeIsUnity.gameDays += 1;
 
       /* DAILY TASKS */
-      Ui.dailyTasks(timeIsUnity.gameDays);
+      Ui.dailyTasks(window.timeIsUnity.gameDays);
     }
   }
 
-  timeIsUnity.todayHours = timeIsUnity.gameHours - timeIsUnity.gameDays * 24;
-  timeIsUnity.todayTime =
-    timeIsUnity.todayHours < 10 ? '0' + timeIsUnity.todayHours + ':' : timeIsUnity.todayHours + ':';
-  timeIsUnity.todayTime += (timeIsUnity.gameTick % 6) + '0';
+  window.timeIsUnity.todayHours = window.timeIsUnity.gameHours - window.timeIsUnity.gameDays * 24;
+  window.timeIsUnity.todayTime =
+    window.timeIsUnity.todayHours < 10
+      ? '0' + window.timeIsUnity.todayHours + ':'
+      : window.timeIsUnity.todayHours + ':';
+  window.timeIsUnity.todayTime += (window.timeIsUnity.gameTick % 6) + '0';
 }
 
 function initiateMainGameLoop() {

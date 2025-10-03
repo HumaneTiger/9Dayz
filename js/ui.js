@@ -3,9 +3,7 @@ import Battle from './battle.js';
 import Audio from './audio.js';
 import Player from './player.js';
 import Almanac from './almanac.js';
-import Cards from './cards.js';
 import Items from './items.js';
-import Character from './character.js';
 
 const viewport = document.getElementById('viewport');
 const mapBorder = document.getElementById('map-border');
@@ -441,11 +439,11 @@ export default {
   },
 
   showNewDay: function (hour, force) {
-    if (force || (timeIsUnity.gameDays > Props.getGameProp('startDay') && hour === 7)) {
+    if (force || (window.timeIsUnity.gameDays > Props.getGameProp('startDay') && hour === 7)) {
       const dayTeaser = document.getElementById('day-teaser');
       if (dayTeaser) {
         dayTeaser.querySelector('.content').innerHTML =
-          'Day <span>' + timeIsUnity.gameDays + '</span>';
+          'Day <span>' + window.timeIsUnity.gameDays + '</span>';
         dayTeaser.classList.add('open');
         dayTeaser.style.zIndex = '60';
         window.setTimeout(() => {

@@ -42,7 +42,7 @@ var game = {
 
 // all generated ids go in here
 var objectIdsAt = new Array(mapSize.width);
-for (var i = 0; i < objectIdsAt.length; i += 1) {
+for (let i = 0; i < objectIdsAt.length; i += 1) {
   objectIdsAt[i] = new Array(mapSize.height);
 }
 
@@ -64,7 +64,7 @@ var objectsIdCounter = 0;
 var zedCounter = 1;
 
 var paths = new Array(mapSize.width);
-for (var i = 0; i < paths.length; i += 1) {
+for (let i = 0; i < paths.length; i += 1) {
   paths[i] = new Array(mapSize.height);
 }
 
@@ -676,23 +676,23 @@ export default {
   preloadBuidlings: function () {
     let images = [];
     for (const prop in buildingProps) {
-      images[i] = new Image();
+      images[prop] = new Image();
       if (prop.startsWith('signpost-')) {
-        images[i].src = './img/buildings/signpost.png';
+        images[prop].src = './img/buildings/signpost.png';
       } else if (prop === 'small-tree') {
-        images[i].src = './img/buildings/small-tree-1.png';
-        images[i] = new Image();
-        images[i].src = './img/buildings/small-tree-2.png';
+        images[prop].src = './img/buildings/small-tree-1.png';
+        images[prop] = new Image();
+        images[prop].src = './img/buildings/small-tree-2.png';
       } else if (prop === 'big-tree') {
-        images[i].src = './img/buildings/big-tree-1.png';
-        images[i] = new Image();
-        images[i].src = './img/buildings/big-tree-2.png';
+        images[prop].src = './img/buildings/big-tree-1.png';
+        images[prop] = new Image();
+        images[prop].src = './img/buildings/big-tree-2.png';
       } else if (prop === 'field') {
-        images[i].src = './img/buildings/field-1.png';
-        images[i] = new Image();
-        images[i].src = './img/buildings/field-2.png';
+        images[prop].src = './img/buildings/field-1.png';
+        images[prop] = new Image();
+        images[prop].src = './img/buildings/field-2.png';
       } else {
-        images[i].src = './img/buildings/' + prop + '.png';
+        images[prop].src = './img/buildings/' + prop + '.png';
       }
     }
   },
@@ -700,11 +700,11 @@ export default {
   preloadItems: function () {
     let images = [];
     for (const prop in items) {
-      images[i] = new Image();
+      images[prop] = new Image();
       if (items[prop][0] !== 'extra') {
-        images[i].src = './img/items/' + prop + '.PNG';
+        images[prop].src = './img/items/' + prop + '.PNG';
       } else {
-        images[i].src = './img/weapons/' + prop + '.png';
+        images[prop].src = './img/weapons/' + prop + '.png';
       }
     }
   },
@@ -1297,7 +1297,7 @@ export default {
 
   forceLootItemList: function (forceItems, maxAmount) {
     let lootItemList = [];
-    for (var i = 0; i < forceItems.length; i += 1) {
+    for (let i = 0; i < forceItems.length; i += 1) {
       lootItemList.push({
         name: JSON.parse(JSON.stringify(forceItems[i])),
         amount: Math.round(Math.random() * maxAmount) || 1,
@@ -1311,7 +1311,7 @@ export default {
     let lootItemList = [];
     let probability = allProbabilities[0];
 
-    for (var i = 0; i < spawn; i += 1) {
+    for (let i = 0; i < spawn; i += 1) {
       let randomItem = Math.floor(Math.random() * allItems.length);
       if (Math.random() * 10 < probability) {
         lootItemList.push({

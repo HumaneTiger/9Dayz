@@ -326,7 +326,7 @@ export default {
     }, 1500);
   },
 
-  handleKeypress: function (ev) {
+  handleKeypress: function () {
     if (Props.getGameProp('startMode') === 1) {
       this.switchToScreen2();
     }

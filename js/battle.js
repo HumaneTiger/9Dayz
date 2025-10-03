@@ -13,7 +13,6 @@ const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
 const battleHealthMeter = document.querySelector('#properties li.health');
 
-const items = Props.getAllItems();
 const inventory = Props.getInventory();
 
 let cardZedDeck = [];
@@ -260,7 +259,7 @@ export default {
     if (battleDeck.length < maxItems) maxItems = battleDeck.length;
     if (maxItems > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
-      for (var i = 0; i < maxItems; i += 1) {
+      for (let i = 0; i < maxItems; i += 1) {
         const item = Items.getItemByName(battleDeck[i].name);
         const modifyDamageMarkup =
           battleDeck[i].modifyDamage > 0
@@ -295,7 +294,7 @@ export default {
           '</div></div>';
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
-      for (var i = 0; i < battlePlayContainer.children.length; i += 1) {
+      for (let i = 0; i < battlePlayContainer.children.length; i += 1) {
         window.setTimeout(
           (index, child, totalCards) => {
             child.style.left = index * 170 + 'px';
@@ -446,7 +445,7 @@ export default {
     }
   },
 
-  zedAttack: function (zeroItems) {
+  zedAttack: function () {
     const delay = battleDeck.length <= 0 ? 400 : 1200;
     const allAttackingZeds = cardZedDeck.filter(zed => Props.getObject(zed).fighting);
 

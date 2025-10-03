@@ -99,30 +99,30 @@ export default {
     document.getElementById('viewport').addEventListener('mousemove', this.showSquare.bind(this));
     document.getElementById('viewport').addEventListener('mousedown', this.selectSquare.bind(this));
 
-    var opt = document.createElement('option');
-    opt.value = 'care-package';
-    opt.innerHTML = 'Care Package';
-    selectObject.appendChild(opt);
+    let optCare = document.createElement('option');
+    optCare.value = 'care-package';
+    optCare.innerHTML = 'Care Package';
+    selectObject.appendChild(optCare);
 
-    var opt = document.createElement('option');
-    opt.value = 'zombie';
-    opt.innerHTML = 'Zombie';
-    selectObject.appendChild(opt);
+    let optZombie = document.createElement('option');
+    optZombie.value = 'zombie';
+    optZombie.innerHTML = 'Zombie';
+    selectObject.appendChild(optZombie);
 
-    var opt = document.createElement('option');
-    opt.value = 'rats';
-    opt.innerHTML = 'Rats';
-    selectObject.appendChild(opt);
+    let optRats = document.createElement('option');
+    optRats.value = 'rats';
+    optRats.innerHTML = 'Rats';
+    selectObject.appendChild(optRats);
 
     for (const weapon in allWeapons) {
-      var opt = document.createElement('option');
+      let opt = document.createElement('option');
       opt.value = weapon;
       opt.innerHTML = Items.capitalizeFirstLetter(weapon.replaceAll('-', ' '));
       selectObject.appendChild(opt);
     }
 
     for (const building in allBuildings) {
-      var opt = document.createElement('option');
+      let opt = document.createElement('option');
       opt.value = building;
       opt.innerHTML = Items.capitalizeFirstLetter(building.replaceAll('-', ' '));
       selectObject.appendChild(opt);
@@ -158,7 +158,7 @@ export default {
     }
   },
 
-  selectSquare: function (ev) {
+  selectSquare: function () {
     if (squareX || squareY) {
       squareFreeze = true;
       document.getElementById('square-marker').classList.add('freeze');

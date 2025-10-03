@@ -388,7 +388,7 @@ export default {
   },
 
   disableActions: function () {
-    cardDeck.forEach(function (card, index) {
+    cardDeck.forEach(function (card) {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       if (object.group !== 'event') {
@@ -401,7 +401,7 @@ export default {
   },
 
   enableActions: function () {
-    cardDeck.forEach(function (card, index) {
+    cardDeck.forEach(function (card) {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       object.disabled = false;
