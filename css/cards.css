@@ -218,6 +218,10 @@
   text-align: center;
   text-transform: capitalize;
 }
+.card h2::first-letter {
+  text-transform: uppercase;
+}
+
 #cards .card li.close,
 #cards .card li.got-it {
   margin-top: 340px;
