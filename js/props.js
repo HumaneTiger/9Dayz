@@ -328,11 +328,24 @@ var buildingProps = {
 };
 
 let buildingActions = {
-  house: ['break door|10|-15', 'unlock door|10|-5', 'search|20|-10', 'scout area|30', 'rest|60|+30', 'sleep|120|+60'],
+  house: [
+    'break door|10|-15',
+    'unlock door|10|-5',
+    'search|20|-10',
+    'scout area|30',
+    'rest|60|+30',
+    'sleep|120|+60',
+  ],
   car: ['unlock door|10|-5', 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20'],
   farm: ['gather|15|-10', 'scout area|30'],
   tree: ['gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15'],
-  church: ['unlock door|10|-5', 'break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+30'],
+  church: [
+    'unlock door|10|-5',
+    'break door|10|-15',
+    'search|20|-10',
+    'scout area|30',
+    'rest|60|+30',
+  ],
   signpost: ['read|1'],
   place: ['head toward|0', 'quick travel|0'],
   train: ['search|20|-5', 'scout area|30'],
@@ -899,10 +912,10 @@ export default {
     if (inventory.items[item] !== undefined) {
       // weapon was added to inventory before
       inventory.items[item].amount += amount;
-      inventory.items[item].amount < 0 ? inventory.items[item].amount = 0 : false;
+      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
 
-      setDamage ? inventory.items[item].damage = setDamage : false;
-      setProtection ? inventory.items[item].protection = setProtection : false;
+      setDamage ? (inventory.items[item].damage = setDamage) : false;
+      setProtection ? (inventory.items[item].protection = setProtection) : false;
 
       if (setDurability !== undefined) {
         inventory.items[item].durability += setDurability;

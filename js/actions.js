@@ -447,7 +447,7 @@ export default {
     );
   },
 
-  searchForKey: function(object) {
+  searchForKey: function (object) {
     if (object.locked) {
       const randomFound = Math.random();
       if (randomFound > 0) {
@@ -670,7 +670,7 @@ export default {
   },
 
   simulateOpening: function (cardId, time, energy) {
-    Audio.sfx('pick');
+    Audio.sfx('unlock', 0, 0.6);
 
     this.fastForward(
       function (cardId, energy) {

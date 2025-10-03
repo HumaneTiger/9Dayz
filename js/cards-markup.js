@@ -392,7 +392,10 @@ export default {
         } else {
           actionRef.classList.remove('locked');
         }
-        if ((action.id === 'search' || action.id === 'cut') && (object.dead === false || object.locked === true)) {
+        if (
+          (action.id === 'search' || action.id === 'cut') &&
+          (object.dead === false || object.locked === true)
+        ) {
           actionRef.classList.add('is--hidden');
         } else {
           actionRef.classList.remove('is--hidden');
