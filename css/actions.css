@@ -165,7 +165,11 @@ ul.actions .action-button span.additional {
   z-index: 1;
 }
 
-.card p.activity:after {
+.card p.activity::first-letter {
+  text-transform: uppercase;
+}
+
+.card p.activity::after {
   content: '...';
 }
 
