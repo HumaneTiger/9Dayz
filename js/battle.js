@@ -253,45 +253,21 @@ export default {
       document.querySelector('#action-points')?.classList.add('low-energy');
     }
 
+    // draw up to 5 cards
+    // split deck into 2 parts, weapons and others
+    let weaponsDeck = battleDeck.filter(item => Props.getWeaponProps(item.name));
+    let itemsDeck = battleDeck.filter(item => !Props.getWeaponProps(item.name));
     this.shuffle(battleDeck);
     battlePlayContainer.innerHTML = '';
-    let maxItems = 5;
-    if (battleDeck.length < maxItems) maxItems = battleDeck.length;
-    if (maxItems > 0) {
+    let maxItems = 5 - weaponsDeck.length;
+    if (itemsDeck.length < maxItems) maxItems = itemsDeck.length;
+    if (maxItems + weaponsDeck.length > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (let i = 0; i < maxItems; i += 1) {
-        const item = Items.getItemByName(battleDeck[i].name);
-        const modifyDamageMarkup =
-          battleDeck[i].modifyDamage > 0
-            ? '<span class="modify">(+' + battleDeck[i].modifyDamage + ')<span>'
-            : '';
-        const maxDurabilityChars = Props.getWeaponProps(item.name)
-          ? '◈'.repeat(Props.getWeaponProps(item.name).durability)
-          : '';
-        const durabilityMarkup = item.durability
-          ? '<span class="durability">' +
-            maxDurabilityChars.substring(0, item.durability) +
-            '<u>' +
-            maxDurabilityChars.substring(0, maxDurabilityChars.length - item.durability) +
-            '</u>' +
-            '</span>'
-          : '';
-
-        battlePlayContainer.innerHTML +=
-          '<div class="battle-card inactive" data-item="' +
-          item.name +
-          '"><div class="inner">' +
-          (item.type !== 'extra'
-            ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
-            : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
-          '<div class="attack">' +
-          (item.damage + item.modifyDamage) +
-          modifyDamageMarkup +
-          '</div><div class="shield">' +
-          item.protection +
-          '</div>' +
-          durabilityMarkup +
-          '</div></div>';
+        this.addCardToPlay(itemsDeck[i]);
+      }
+      for (let i = 0; i < weaponsDeck.length; i += 1) {
+        this.addCardToPlay(weaponsDeck[i]);
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (let i = 0; i < battlePlayContainer.children.length; i += 1) {
@@ -311,6 +287,41 @@ export default {
     } else {
       this.endTurn();
     }
+  },
+
+  addCardToPlay: function (item) {
+    const modifyDamageMarkup =
+      item.modifyDamage > 0 ? '<span class="modify">(+' + item.modifyDamage + ')<span>' : '';
+    const maxDurabilityChars = Props.getWeaponProps(item.name)
+      ? '◈'.repeat(Props.getWeaponProps(item.name).durability)
+      : '';
+    const durabilityMarkup = item.durability
+      ? '<span class="durability">' +
+        maxDurabilityChars.substring(0, item.durability) +
+        '<u>' +
+        maxDurabilityChars.substring(0, maxDurabilityChars.length - item.durability) +
+        '</u>' +
+        '</span>'
+      : '';
+
+    battlePlayContainer.innerHTML +=
+      '<div class="battle-card inactive" data-item="' +
+      item.name +
+      '"><div class="inner">' +
+      (item.type !== 'extra'
+        ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
+        : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
+      (item.type === 'extra' && item.durability === 1
+        ? '<img class="last-use" src="./img/weapons/last-use.png">'
+        : '') +
+      '<div class="attack">' +
+      (item.damage + item.modifyDamage) +
+      modifyDamageMarkup +
+      '</div><div class="shield">' +
+      item.protection +
+      '</div>' +
+      durabilityMarkup +
+      '</div></div>';
   },
 
   resolveMultiAttack: function (dragEl, dragTarget) {

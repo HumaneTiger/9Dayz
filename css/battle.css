@@ -270,7 +270,12 @@
   height: auto;
   margin: 30% 12%;
 }
-
+#battle-cards .battle-card img.last-use {
+  position: absolute;
+  width: 100%;
+  top: 15%;
+  left: 0%;
+}
 #battle-cards .battle-card .attack,
 #battle-cards .battle-card .shield {
   position: absolute;
