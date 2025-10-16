@@ -70,6 +70,18 @@ export default {
             "<img src='./img/icons/weapons/" +
             group +
             ".png'></span>";
+        } else if (group === 'animal') {
+          buidingsContainer.innerHTML +=
+            "<span class='icon icon-" +
+            objectId +
+            "' style='top: " +
+            Math.round(y * 44.4 + 3) +
+            'px; left: ' +
+            Math.round(x * 44.4 + 12) +
+            "px;'>" +
+            "<img src='./img/icons/animals/" +
+            group +
+            ".png'></span>";
         } else if (group === 'zombie') {
           if (!object.dead) {
             highlightsContainer.innerHTML +=
