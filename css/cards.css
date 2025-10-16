@@ -3,6 +3,7 @@
   width: 100%;
   height: 0%; /* was 50% before, but why? */
   transform: translateY(-600px);
+  left: -25px; /* use gap caused by the card downscaling */
   z-index: 5;
   transition: transform 0.8s ease-out;
 }
@@ -34,13 +35,13 @@
   box-shadow: 0 4px 4px rgba(53, 35, 26, 0.5);
   border-radius: 32px;
   opacity: 1;
-  top: 60px;
+  top: 40px;
   background-color: transparent;
   background-position: center center;
   background-image: url(../img/card/card-bg.png);
   background-size: cover;
   background-repeat: no-repeat;
-  transform: scale(0.8);
+  transform: scale(0.7);
   transition:
     transform 0.1s ease-out,
     top 0.3s ease-out,
@@ -70,21 +71,27 @@
 .card.day .at-night {
   display: none;
 }
-.card .dead {
+.card .dead,
+.battle-card .dead {
   width: 100%;
   position: absolute;
   top: 22%;
   display: none;
 }
 .card.preview .dead,
-.card.dead .dead {
+.card.dead .dead,
+.battle-card.dead .dead {
   display: block;
 }
 .card.dead div.health,
-.card.dead div.attack {
+.card.dead div.attack,
+.battle-card.dead div.shield,
+.battle-card.dead div.health,
+.battle-card.dead div.attack {
   display: none !important;
 }
-.card .dead img {
+.card .dead img,
+.battle-card .dead img {
   width: 100%;
   height: auto;
 }
@@ -168,6 +175,11 @@
   box-shadow: 0 2px 4px rgba(53, 35, 26, 0.4);
   background: linear-gradient(to bottom, rgba(53, 35, 26, 0.1) 0, #fffefb 8px, #fffefb 100%);
   z-index: -1;
+}
+
+.card .distance.health {
+  color: rgba(225, 127, 106, 1);
+  letter-spacing: 0.2em;
 }
 .card .inner {
   position: absolute;
@@ -257,10 +269,10 @@
   display: none;
 }
 body:not(.is--paused) .card:not(.fight):hover {
-  transform: scale(0.9);
+  transform: scale(0.8);
   z-index: 201;
 }
-.card.fight.attack {
+.card.fight.attacking {
   transform: scale(0.9);
 }
 body:not(.is--paused) #cards .card:not(.fight):hover img.motive {

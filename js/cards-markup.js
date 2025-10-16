@@ -7,7 +7,7 @@ import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 
 const cardsContainer = document.getElementById('cards');
-const cardWidth = 380 * 0.8;
+const cardWidth = 380 * 0.7;
 const zIndexBase = 200;
 
 let smallTreeCounter = 1,
@@ -239,7 +239,6 @@ export default {
     cardDeck?.forEach((card, index) => {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
-
       if (!object.removed) {
         if (object.active) {
           // move new cards into place
@@ -258,7 +257,7 @@ export default {
                   delete cardRef.dataset.oldZindex;
                 }
               }
-              if (activeCardIndex < 13) {
+              if (activeCardIndex < 14) {
                 cardRef.classList.remove('out-of-queue');
                 if (activeCardDeckSize < 7) {
                   cardLeftPosition += Math.floor(cardWidth);
@@ -266,10 +265,10 @@ export default {
                   if (activeCardIndex < 3) {
                     cardLeftPosition += Math.floor(cardWidth);
                   } else {
-                    cardLeftPosition += Math.floor(cardWidth - activeCardIndex * 20);
+                    cardLeftPosition += Math.floor(cardWidth - activeCardIndex * 10);
                   }
                 } else {
-                  let additionalLeft = Math.floor(cardWidth - (activeCardIndex + 1.5) * 20);
+                  let additionalLeft = Math.floor(cardWidth - (activeCardIndex + 1.5) * 15);
                   if (additionalLeft < 100) {
                     additionalLeft = 100;
                   }
@@ -294,7 +293,8 @@ export default {
             !(
               object.name.startsWith('signpost') ||
               object.name === 'fireplace' ||
-              object.name === 'bee'
+              object.name === 'bee' ||
+              object.name === 'key'
             )
           ) {
             // mega bug: when bees contains no item from the beginning (amount=0), ul.item will be removed and cut/gather/search won't work
@@ -400,6 +400,11 @@ export default {
         } else {
           actionRef.classList.remove('is--hidden');
         }
+        // doggy card spawns new when dead, so here is the safest place to remove the actions
+        if (object.dead && object.name === 'doggy') {
+          Cards.removeAction('pet', cardRef, object);
+          Cards.removeAction('scare', cardRef, object);
+        }
         if (action.critical) {
           actionRef.classList.add('critical');
           actionRef.querySelector('span.text').innerHTML =
@@ -407,6 +412,9 @@ export default {
         } else {
           actionRef.classList.remove('critical');
           actionRef.querySelector('span.text').innerHTML = action.label;
+        }
+        if (action.id === 'chomp' && !Props.getCompanion().active) {
+          actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
         }
       });
 
