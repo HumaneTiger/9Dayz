@@ -175,6 +175,27 @@ export default {
     this.renderCardDeck();
   },
 
+  removeAction(actionId, cardRef, object) {
+    // find index and remove if present
+    if (!object.actions) {
+      console.log('object has no actions', object);
+      return;
+    }
+    const idx = object.actions.findIndex(a => a.id === actionId);
+    if (idx !== -1) {
+      object.actions.splice(idx, 1);
+    }
+    cardRef.querySelector('li.' + actionId)?.remove();
+    CardsMarkup.hideActionFeedback(cardRef);
+  },
+
+  revealAction(actionId, cardRef, object) {
+    // only reveal if action exists on the object
+    if (object.actions.some(a => a.id === actionId)) {
+      cardRef.querySelector('li.' + actionId)?.classList.remove('is--hidden');
+    }
+  },
+
   calculateCardDeckProperties: function () {
     const playerPosition = Player.getPlayerPosition();
 
@@ -209,7 +230,7 @@ export default {
       }
 
       // zedNearby
-      if (object.type !== 'signpost') {
+      if (object.type !== 'signpost' && object.name !== 'key') {
         const allFoundObjectIds = Player.findObjects(object.x, object.y);
         object.zednearby = allFoundObjectIds.some(function (id) {
           return Props.getObject(id).group === 'zombie' && !Props.getObject(id).dead;
@@ -233,6 +254,7 @@ export default {
           object.group !== 'zombie' &&
           action.id !== 'scout-area' &&
           action.id !== 'read' &&
+          action.id !== 'collect' &&
           action.id !== 'equip'
         ) {
           action.locked = true;
@@ -279,6 +301,9 @@ export default {
           if (!Items.inventoryContains('fishing-rod')) {
             action.locked = true;
           }
+        }
+        if (action.id === 'chomp' && Props.getCompanion().active === false) {
+          action.locked = true;
         }
       });
 
