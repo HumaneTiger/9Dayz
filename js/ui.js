@@ -316,6 +316,14 @@ export default {
     }
   },
 
+  showFeedingInventory: function () {
+    Props.setGameProp('feedingCompanion', true);
+    Items.fillInventorySlots();
+    inventoryContainer.classList.add('active');
+    craftContainer.classList.remove('active');
+    document.getElementById('inventory').classList.add('feeding-companion');
+  },
+
   toggleCrafting: function (forceOpen) {
     const craftingActive = craftContainer.classList.contains('active');
     if (craftingActive && !forceOpen) {

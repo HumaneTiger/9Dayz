@@ -168,17 +168,19 @@ export default {
         }
       } else {
         Player.resetPreviewProps();
-        if (itemProps.food > 0 && this.inventoryContains(item)) {
-          document.querySelector('#properties li.food').classList.add('transfer');
-          Player.previewProps('food', itemProps.food);
-        }
-        if (itemProps.drink > 0 && this.inventoryContains(item)) {
-          document.querySelector('#properties li.thirst').classList.add('transfer');
-          Player.previewProps('thirst', itemProps.drink);
-        }
-        if (itemProps.energy > 0 && this.inventoryContains(item)) {
-          document.querySelector('#properties li.energy').classList.add('transfer');
-          Player.previewProps('energy', itemProps.energy);
+        if (!Props.getGameProp('feedingCompanion')) {
+          if (itemProps.food > 0 && this.inventoryContains(item)) {
+            document.querySelector('#properties li.food').classList.add('transfer');
+            Player.previewProps('food', itemProps.food);
+          }
+          if (itemProps.drink > 0 && this.inventoryContains(item)) {
+            document.querySelector('#properties li.thirst').classList.add('transfer');
+            Player.previewProps('thirst', itemProps.drink);
+          }
+          if (itemProps.energy > 0 && this.inventoryContains(item)) {
+            document.querySelector('#properties li.energy').classList.add('transfer');
+            Player.previewProps('energy', itemProps.energy);
+          }
         }
       }
     } else {
@@ -194,53 +196,66 @@ export default {
       itemDrink = itemProps.drink,
       itemEnergy = itemProps.energy || 0;
 
-    let itemInfoMarkup = '<span class="name">' + Props.extractItemName(item) + '</span>';
+    let itemInfoMarkup = Props.getGameProp('feedingCompanion')
+      ? `<span class="name">Feeding ${Props.extractItemName(item)} gives</span>`
+      : `<span class="name">${Props.extractItemName(item)}</span>`;
 
-    if (itemMods !== undefined && itemMods[0] !== 0) {
-      itemFood += '<small>(' + (itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]) + ')</small>';
-    }
-    if (itemMods !== undefined && itemMods[1] !== 0) {
-      itemDrink += '<small>(' + (itemMods[1] > 0 ? '+' + itemMods[1] : itemMods[1]) + ')</small>';
-    }
-    if (itemMods !== undefined && itemMods[2] !== 0) {
-      itemEnergy += '<small>(' + (itemMods[2] > 0 ? '+' + itemMods[2] : itemMods[2]) + ')</small>';
-    }
-
-    if (action === 'craft' && itemActive) {
-      itemInfoMarkup +=
-        '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
-      if (Crafting.isItemPartOfCrafting(item)) {
-        itemInfoMarkup +=
-          '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
+    if (!Props.getGameProp('feedingCompanion')) {
+      if (itemMods !== undefined && itemMods[0] !== 0) {
+        itemFood += '<small>(' + (itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]) + ')</small>';
       }
-      if (Cooking.isItemPartOfRecipe(item)) {
+      if (itemMods !== undefined && itemMods[1] !== 0) {
+        itemDrink += '<small>(' + (itemMods[1] > 0 ? '+' + itemMods[1] : itemMods[1]) + ')</small>';
+      }
+      if (itemMods !== undefined && itemMods[2] !== 0) {
+        itemEnergy +=
+          '<small>(' + (itemMods[2] > 0 ? '+' + itemMods[2] : itemMods[2]) + ')</small>';
+      }
+
+      if (action === 'craft' && itemActive) {
         itemInfoMarkup +=
-          '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+          '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
+        if (Crafting.isItemPartOfCrafting(item)) {
+          itemInfoMarkup +=
+            '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
+        }
+        if (Cooking.isItemPartOfRecipe(item)) {
+          itemInfoMarkup +=
+            '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+        }
+      } else {
+        if (itemProps.food > 0 && this.inventoryContains(item)) {
+          itemInfoMarkup +=
+            '<span class="food">' +
+            itemFood +
+            '<span class="material-symbols-outlined">lunch_dining</span></span>';
+        }
+        if (itemProps.drink > 0 && this.inventoryContains(item)) {
+          itemInfoMarkup +=
+            '<span class="drink">' +
+            itemDrink +
+            '<span class="material-symbols-outlined">water_medium</span></span>';
+        }
+        if (itemProps.energy > 0 && this.inventoryContains(item)) {
+          itemInfoMarkup +=
+            '<span class="energy">' +
+            itemEnergy +
+            '<span class="material-symbols-outlined">flash_on</span></span>';
+        }
+        if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
+          itemInfoMarkup +=
+            '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+        }
       }
     } else {
       if (itemProps.food > 0 && this.inventoryContains(item)) {
         itemInfoMarkup +=
           '<span class="food">' +
-          itemFood +
-          '<span class="material-symbols-outlined">lunch_dining</span></span>';
-      }
-      if (itemProps.drink > 0 && this.inventoryContains(item)) {
-        itemInfoMarkup +=
-          '<span class="drink">' +
-          itemDrink +
-          '<span class="material-symbols-outlined">water_medium</span></span>';
-      }
-      if (itemProps.energy > 0 && this.inventoryContains(item)) {
-        itemInfoMarkup +=
-          '<span class="energy">' +
-          itemEnergy +
-          '<span class="material-symbols-outlined">flash_on</span></span>';
-      }
-      if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
-        itemInfoMarkup +=
-          '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
+          Math.round(itemFood / 10) +
+          '<span class="material-symbols-outlined">favorite</span></span>';
       }
     }
+
     return itemInfoMarkup;
   },
 
@@ -274,12 +289,21 @@ export default {
     }
   },
 
-  fillItemSlot: function (itemSlots, amount, crafting) {
+  fillItemSlot: function (itemSlots, amount, crafting, itemProps) {
     if (itemSlots) {
       for (let i = 0; i < itemSlots.length; i += 1) {
         const itemSlot = itemSlots[i];
         itemSlot.classList.remove('unknown');
-        if (amount > 0) {
+        if (Props.getGameProp('feedingCompanion')) {
+          if (itemProps?.food > 0 && amount > 0) {
+            itemSlot.classList.remove('inactive');
+            itemSlot.classList.add('active');
+            itemSlot.querySelector('.amount').textContent = amount;
+          } else {
+            itemSlot.classList.remove('active');
+            itemSlot.classList.add('inactive');
+          }
+        } else if (amount > 0) {
           itemSlot.classList.remove('inactive');
           itemSlot.classList.add('active');
           itemSlot.querySelector('.amount').textContent = amount;
@@ -302,7 +326,8 @@ export default {
       this.fillItemSlot(
         inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name),
         inventory.items[item].amount,
-        Crafting.isItemPartOfCrafting(item)
+        Crafting.isItemPartOfCrafting(item),
+        Props.calcItemProps(item)
       );
     }
     Character.updateWeaponState();

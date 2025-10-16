@@ -421,7 +421,8 @@ p.item-info small {
 #inventory .slot.active span.unknown {
   display: none;
 }
-#inventory .slot.inactive img.bg {
+#inventory .slot.inactive img.bg,
+#inventory .slot.inactive .amount {
   opacity: 0.2;
 }
 #inventory .slot.inactive span.amount {
@@ -443,6 +444,13 @@ p.item-info small {
 #inventory .slot.active.craft.already:hover span.action,
 #inventory .slot.active.drink:hover span.action {
   opacity: 1;
+}
+#inventory.feeding-companion .slot.active.eat:hover span.action {
+  font-size: 0;
+}
+#inventory.feeding-companion .slot.active.eat:hover span.action::after {
+  content: 'feed';
+  font-size: 18px;
 }
 
 ul#actions {
@@ -595,7 +603,7 @@ ul#actions li.fullscreen span {
 #touchcontrols {
   position: fixed;
   right: -35px;
-  bottom: 82px;
+  bottom: 350px;
   width: 350px;
   height: 350px;
   z-index: 101;
