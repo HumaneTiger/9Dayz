@@ -13,6 +13,17 @@ var crafting = {
   total: 0,
 };
 
+var companion = {
+  active: false,
+  sort: undefined,
+  name: 'doggy',
+  damage: undefined,
+  health: undefined,
+  maxHealth: undefined,
+  protection: undefined,
+  dead: false,
+};
+
 var game = {
   mode: 'real',
   character: 'everyman',
@@ -26,6 +37,8 @@ var game = {
   gamePaused: true,
   local: location.href.startsWith('http://127.0.0.1'),
   speed: 4000, // 4000
+  playerPosition: { x: 18, y: 44 },
+  feedingCompanion: false,
   firstUserInteraction: false,
   firstFight: false,
   firstInfestation: false,
@@ -38,6 +51,7 @@ var game = {
   firstLowEnergy: false,
   firstDeadAnimal: false,
   firstInventoryOpen: false,
+  firstCompanion: false,
 };
 
 // all generated ids go in here
@@ -822,6 +836,10 @@ export default {
     return items[item];
   },
 
+  getCompanion: function () {
+    return companion;
+  },
+
   getItemModifier: function (type, item) {
     // returns item modifiers for [hunger, thirst, energy]
     if (itemModifiers[type]) {
@@ -941,6 +959,17 @@ export default {
       console.log('adding weapon "' + item + '" to inventory failed');
     }
     this.calcTotalInventoryItems();
+  },
+
+  addCompanion: function (objectId) {
+    const object = this.getObject(objectId);
+    companion.active = true;
+    companion.sort = object.sort;
+    companion.name = object.name;
+    companion.damage = object.attack;
+    companion.health = object.health;
+    companion.maxHealth = object.maxHealth;
+    companion.protection = object.defense;
   },
 
   addItemToInventory: function (item, addAmount) {
@@ -1380,7 +1409,13 @@ export default {
 
   setZedAt: function (x, y, amount) {
     for (var i = 0; i < amount; i += 1) {
-      let attack = Math.floor(Math.random() * 6 + 4);
+      const distance = Math.sqrt(
+        Math.pow(this.getGameProp('playerPosition').x - x, 2) +
+          Math.pow(this.getGameProp('playerPosition').y - y, 2)
+      );
+
+      let attack = Math.floor(Math.random() * 6 + Math.min(distance / 3, 10) + 1); // increase attack with distance
+      let defense = Math.floor(Math.random() * 9 + Math.min(distance / 2.5, 10)); // increase defense with distance
       let lootItemList = this.createLootItemList(
         3,
         [
@@ -1415,6 +1450,7 @@ export default {
           { id: 'lure', label: 'Lure', time: 20, energy: -15 },
           { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
           { id: 'search', label: 'Search', time: 20, energy: -5 },
+          { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
         ],
         items: lootItemList,
         locked: undefined,
@@ -1426,7 +1462,7 @@ export default {
         discovered: false,
         distance: null,
         attack: attack,
-        defense: Math.floor(Math.random() * 10 + 6),
+        defense: defense,
         dead: false,
         fighting: false,
         disabled: false,
@@ -1558,6 +1594,44 @@ export default {
       disabled: false,
       removed: false,
     });
+  },
+
+  spawnDoggyAt: function (x, y, optCompanionProps) {
+    const currentObjectsIdCounter = this.addObjectIdAt(x, y);
+    const lootItemList = this.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
+    this.setObject(currentObjectsIdCounter, {
+      x: x,
+      y: y,
+      name: optCompanionProps?.name ?? 'doggy',
+      title: '',
+      type: undefined,
+      group: 'animal',
+      text: false,
+      actions: [
+        { id: 'pet', label: 'Pet', time: 5, energy: -5 },
+        { id: 'scare', label: 'Scare Away', time: 5, energy: -5 },
+        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+      ],
+      items: lootItemList,
+      locked: undefined,
+      looted: false,
+      infested: false,
+      zednearby: null,
+      active: true,
+      inreach: false,
+      discovered: false,
+      distance: null,
+      attack: optCompanionProps?.damage ?? 4,
+      defense: optCompanionProps?.defense ?? 0,
+      maxHealth: optCompanionProps?.maxHealth ?? 10,
+      health: optCompanionProps?.health ?? 6,
+      dead: optCompanionProps?.dead ?? false,
+      fighting: false,
+      disabled: false,
+      removed: false,
+    });
+
+    return currentObjectsIdCounter;
   },
 
   setupWeapon: function (x, y, weaponName, forceStats) {

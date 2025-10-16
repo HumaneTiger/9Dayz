@@ -28,7 +28,7 @@ const almanacContent = {
   food: {
     motive: './img/almanac/food.png',
     markup:
-      '<p>Hunger and starvation are a constant threat. Gather trees or search vehicles and buildings for all sorts of food. Cut dead animals to get their <span class="keyword" data-item="meat">meat</span>.</p><p>When ever you can, cook raw food at a <span class="keyword" data-content="fireplace">fireplace</span> to get high-quality meals.</p>',
+      '<p>Hunger and starvation are a constant threat. Gather around trees or search vehicles and buildings for all sorts of food. Cut dead animals to get their <span class="keyword" data-item="meat">meat</span>.</p><p>When ever you can, cook raw food at a <span class="keyword" data-content="fireplace">fireplace</span> to get high-quality meals.</p>',
   },
   thirst: {
     motive: './img/almanac/drink.png',
@@ -74,6 +74,11 @@ const almanacContent = {
     motive: './img/almanac/barricades.png',
     markup:
       '<p>Barricades offer a strategic option for preparing <span class="keyword" data-content="battle">battles</span> against larger numbers of zombies.</p><p>Built in the direct surrounding of a battle, they offer a decent amount of protection as well as dealing some passive damage to attacking enemies.</p><p>Similar to <span class="keyword" data-content="fireplace">fireplaces</span>, barricades remain in place where they are crafted.</p>',
+  },
+  doggy: {
+    motive: './img/animals/doggy.png',
+    markup:
+      '<p>Unlocks the "Chomp!" command which lets your furry friend rush into <span class="keyword" data-content="battle">battles</span> against enemies.</p><p>Your companions will take damage in battles, which can be healed by feeding them <span class="keyword" data-content="food">food</span>.</p>',
   },
   everyman: {
     motive: './img/characters/hero.png',
@@ -298,6 +303,7 @@ export default {
         }
       }
       if (type === 'content') {
+        console.log(item, almanacContent[item]);
         if (almanacContent[item] !== undefined) {
           almanacContainer
             .querySelector('img.motive')

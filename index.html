@@ -520,6 +520,23 @@
               </div>
             </div>
           </div>
+          <div class="card weapon slot-companion">
+            <div class="inner">
+              <div class="attack"></div>
+              <div class="shield"></div>
+              <img class="motive" src="./img/animals/doggy.png">
+              <ul class="actions">
+                <li>
+                  <div data-action="feed" class="action-button"><span class="text">feed</span></div>
+                </li>
+                <li>
+                  <div data-action="leave" class="action-button"><span class="text">leave</span>
+                  </div>
+                </li>
+              </ul>
+              <span class="distance health">♥♥♥♥♥♥♥♥♥♥</span>
+            </div>
+          </div>
         </div>
         <div id="inventory">
           <div class="inner"></div>
@@ -620,6 +637,7 @@
         </div>
         <div id="items"></div>
         <div class="scratch"><img src="./img/zombies/scratch.png"></div>
+        <div id="companion-cards" class="is--hidden"></div>
         <div id="battle-cards" class="is--hidden">
           <div class="end-turn">End Turn</div>
           <em id="draw-amount">0</em>
@@ -718,6 +736,8 @@
       <audio class="sfx-repair-weapon" src="./audio/fx/duct-tape.mp3" preload></audio>
       <audio class="sfx-improve-weapon" src="./audio/fx/improve-weapon.mp3" preload></audio>
       <audio class="sfx-unlock" src="./audio/fx/door-unlock.mp3" preload></audio>
+      <audio class="sfx-bark" src="./audio/fx/bark.mp3" preload></audio>
+      <audio class="sfx-aggro-bark" src="./audio/fx/aggro-bark.mp3" preload></audio>
     </div>
   
     <script src="js/init.js" type="module"></script>

@@ -2,12 +2,15 @@ import Props from './props.js';
 import Player from './player.js';
 import Items from './items.js';
 import Almanac from './almanac.js';
+import Ui from './ui.js';
 import Audio from './audio.js';
 
 const inventory = Props.getInventory();
 const characterContainer = document.getElementById('character');
 const slot1 = characterContainer.querySelector('.slot-1');
 const slot2 = characterContainer.querySelector('.slot-2');
+const slotCompanion = characterContainer.querySelector('.slot-companion');
+const companion = Props.getCompanion();
 
 export default {
   init: function () {
@@ -43,8 +46,15 @@ export default {
           durability: -1 * inventory.items[weaponName].durability,
         });
         Items.checkCraftingPrerequisits(); // make weapon re-craftable again
+        this.updateWeaponState();
+      } else if (action === 'leave' && companion.active) {
+        this.removeCompanion();
+        this.updateCompanionSlot();
+      } else if (action === 'feed' && companion.active) {
+        cardSlot.classList.add('feeding');
+        cardSlot.querySelector('ul.actions').classList.add('is--hidden');
+        Ui.showFeedingInventory();
       }
-      this.updateWeaponState();
       Player.updatePlayer();
     } else if (upgradeButton && leftMouseButton) {
       const weapon = cardSlot.dataset?.item;
@@ -90,7 +100,8 @@ export default {
         cardSlot.dataset.item === 'baseball-bat' ||
         cardSlot.dataset.item === 'wrench' ||
         cardSlot.dataset.item === 'improvised-whip' ||
-        cardSlot.dataset.item === 'fishing-rod'
+        cardSlot.dataset.item === 'fishing-rod' ||
+        cardSlot.dataset.item === 'doggy'
       ) {
         Almanac.showPage(cardSlot.dataset.item, 'content', cardSlot, characterContainer);
       } else if (cardSlot.classList.contains('slot-hero')) {
@@ -186,6 +197,46 @@ export default {
         // todo: show animation similar to inventory/crafting button
       }
     }
+  },
+
+  updateCompanionSlot: function () {
+    if (!companion) return;
+    if (companion.active && companion.health > 0) {
+      characterContainer.classList.add('companion-active');
+      slotCompanion.classList.add('active');
+      slotCompanion.dataset.item = companion.name;
+      slotCompanion
+        .querySelector('img.motive')
+        .setAttribute('src', './img/animals/' + companion.name.toLowerCase() + '.png');
+      slotCompanion.querySelector('.attack').textContent = companion.damage;
+      if (companion.protection) {
+        slotCompanion.querySelector('.shield').classList.remove('is--hidden');
+        slotCompanion.querySelector('.shield').textContent = companion.protection;
+      } else {
+        slotCompanion.querySelector('.shield').classList.add('is--hidden');
+      }
+      const maxHealthChars = '♥'.repeat(companion.maxHealth);
+      const health =
+        maxHealthChars.substring(0, companion.health) +
+        '<u>' +
+        maxHealthChars.substring(0, maxHealthChars.length - companion.health) +
+        '</u>';
+      slotCompanion.querySelector('.distance').innerHTML = health;
+    } else if (companion.health <= 0) {
+      this.removeCompanion();
+      characterContainer.classList.remove('companion-active');
+      slotCompanion.classList.remove('active');
+      delete slotCompanion.dataset.item;
+    } else {
+      characterContainer.classList.remove('companion-active');
+      slotCompanion.classList.remove('active');
+      delete slotCompanion.dataset.item;
+    }
+  },
+
+  removeCompanion: function () {
+    companion.active = false;
+    Props.spawnDoggyAt(Player.getPlayerPosition().x, Player.getPlayerPosition().y, companion);
   },
 
   updateWeaponState: function () {

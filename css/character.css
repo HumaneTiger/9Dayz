@@ -13,9 +13,6 @@
 #character.character-at-top {
   top: 105px;
 }
-#character.touchcontrols {
-  right: 200px;
-}
 #character .card {
   position: absolute;
   bottom: 0;
@@ -25,14 +22,21 @@
 
 #character .slot-hero {
   right: 0;
-  z-index: 5;
+  z-index: 6;
 }
 #character .slot-1,
-#character .slot-2 {
+#character .slot-2,
+#character .slot-companion {
   bottom: -100vh;
   transition:
     right 0.35s ease-out,
-    transform 0.1s ease-out;
+    transform 0.1s ease-out,
+    margin 0.35s ease-out;
+}
+
+#character.companion-active .slot-1,
+#character.companion-active .slot-2 {
+  margin-right: 190px;
 }
 
 #character .slot-1 {
@@ -42,6 +46,14 @@
 #character .slot-2 {
   right: 190px;
   z-index: 3;
+}
+#character .slot-companion {
+  right: 0;
+  z-index: 5;
+}
+
+#character .card.active:hover .motive {
+  filter: blur(4px);
 }
 
 #character .slot-1.active {
@@ -54,10 +66,17 @@
   display: initial;
   bottom: 0;
 }
+#character .slot-companion.active {
+  right: 190px;
+  display: initial;
+  bottom: 0;
+}
 #character .slot-1.active:hover,
-#character .slot-2.active:hover {
+#character .slot-2.active:hover,
+#character .slot-companion.active:hover,
+#character .slot-companion.feeding {
   transform: scale(0.6);
-  z-index: 5;
+  z-index: 7;
 }
 #character .slot-2:not(.moveToSlot1).active {
   right: 380px;

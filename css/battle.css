@@ -1,4 +1,5 @@
-#battle-cards {
+#battle-cards,
+#companion-cards {
   position: absolute;
   bottom: 200px;
   height: 220px;
@@ -49,6 +50,9 @@
 .anim-punch {
   animation: punch 0.3s ease-in-out;
 }
+.anim-punch-reverse {
+  animation: punch-reverse 0.3s ease-in-out;
+}
 @keyframes punch {
   0% {
     transform: translate(0, 0) scale(0.9);
@@ -58,6 +62,17 @@
   }
   100% {
     transform: translate(0, 0) scale(0.9);
+  }
+}
+@keyframes punch-reverse {
+  0% {
+    transform: translate(0, 0) scale(1.4);
+  }
+  70% {
+    transform: translate(0, -100px) scale(1.4);
+  }
+  100% {
+    transform: translate(0, 0) scale(1.4);
   }
 }
 #battle-message {
@@ -180,7 +195,17 @@
   transform: translateX(-50%);
   z-index: 4;
 }
-#battle-cards .battle-card {
+
+#companion-cards {
+  pointer-events: none;
+  bottom: 350px;
+  position: absolute;
+  width: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.battle-card {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -197,11 +222,14 @@
     opacity 0.2s ease-out,
     margin-left 0.2s ease-out;
 }
-#battle-cards .battle-card.resolve {
+.battle-card.resolve {
   transform: scale(2);
   opacity: 0;
 }
-#battle-cards .battle-card .durability {
+.battle-card.attacking {
+  transform: scale(1.4);
+}
+.battle-card .durability {
   display: inline-block;
   pointer-events: none;
   background-color: #f0e4da;
@@ -220,7 +248,7 @@
   background: linear-gradient(to bottom, #ad9d7e 0, #fffefb 8px, #fffefb 100%);
   z-index: -1;
 }
-#battle-cards .battle-card .durability u {
+.battle-card .durability u {
   color: rgba(53, 35, 26, 0.2);
   text-decoration: none;
 }
@@ -256,7 +284,7 @@
   transform: translateY(-5px);
 }
 
-#battle-cards .battle-card .inner {
+.battle-card .inner {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -265,19 +293,20 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
-#battle-cards .battle-card img.item-pic {
+.battle-card img.item-pic {
   width: 76%;
   height: auto;
   margin: 30% 12%;
 }
-#battle-cards .battle-card img.last-use {
+.battle-card img.last-use {
   position: absolute;
   width: 100%;
   top: 15%;
   left: 0%;
 }
-#battle-cards .battle-card .attack,
-#battle-cards .battle-card .shield {
+.battle-card .attack,
+.battle-card .shield,
+.battle-card .health {
   position: absolute;
   width: 40px;
   height: 40px;
@@ -287,25 +316,32 @@
   font-size: 32px;
   line-height: 1.4em;
 }
-#battle-cards .battle-card .attack {
+.battle-card .attack {
   left: 15px;
   top: 15px;
   color: white;
   background-color: rgba(237, 125, 49, 0.66);
   border: 1px rgba(237, 125, 49, 0.25) solid;
 }
-#battle-cards .battle-card .attack .modify {
+.battle-card .attack .modify {
   font-size: 20px;
   position: absolute;
   color: rgba(237, 125, 49, 0.66);
   left: 40px;
 }
-#battle-cards .battle-card .shield {
+.battle-card .shield {
   right: 15px;
   bottom: 15px;
   color: white;
   background-color: rgba(145, 211, 242, 0.9);
   border: 1px rgba(75, 153, 190, 0.25) solid;
+}
+.battle-card .health {
+  right: 15px;
+  top: 15px;
+  color: white;
+  background-color: rgba(94, 195, 85, 0.66);
+  border: 1px rgba(94, 195, 195, 0.2) solid;
 }
 #action-points {
   width: 120px;

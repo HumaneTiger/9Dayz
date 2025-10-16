@@ -7,6 +7,7 @@ import Map from './map.js';
 import Items from './items.js';
 import Battle from './battle.js';
 import Cooking from './cooking.js';
+import Character from './character.js';
 
 export default {
   init: function () {},
@@ -27,6 +28,22 @@ export default {
       oneTime: true,
       delay: 1000,
       label: 'cutting',
+    },
+    pet: {
+      callback: (scope, cardId, time, energy) => {
+        scope.simulatePetting(cardId, time, energy);
+      },
+      oneTime: true,
+      delay: 1000,
+      label: 'petting',
+    },
+    scare: {
+      callback: (scope, cardId, time, energy) => {
+        scope.simulateScaring(cardId, time, energy);
+      },
+      oneTime: true,
+      delay: 1000,
+      label: 'scaring',
     },
     gather: {
       callback: (scope, cardId, time, energy) => {
@@ -171,6 +188,14 @@ export default {
       oneTime: false,
       delay: 1000,
       label: 'fishing',
+    },
+    chomp: {
+      callback: (scope, cardId, time, energy) => {
+        scope.chomping(cardId, time, energy);
+      },
+      oneTime: true,
+      delay: 0,
+      label: 'Dog attacks',
     },
   },
 
@@ -425,17 +450,49 @@ export default {
     }
   },
 
+  simulatePetting: function (cardId, time, energy) {
+    this.fastForward(
+      function (cardId, energy) {
+        const object = Props.getObject(cardId);
+        object.removed = true;
+        Props.addCompanion(cardId);
+        Character.updateCompanionSlot();
+        this.goBackFromAction(cardId);
+        Player.changeProps('energy', energy);
+      },
+      cardId,
+      time,
+      2000,
+      energy
+    );
+  },
+
+  simulateScaring: function (cardId, time, energy) {
+    const object = Props.getObject(cardId);
+    object.removed = true;
+    this.fastForward(
+      function (cardId, energy) {
+        this.goBackFromAction(cardId);
+        Player.changeProps('energy', energy);
+      },
+      cardId,
+      time,
+      800,
+      energy
+    );
+  },
+
   simulateScouting: function (cardId, time, energy) {
     Map.showScoutMarkerFor(cardId);
 
     this.fastForward(
       function (cardId, energy) {
         const object = Props.getObject(cardId);
+        this.searchForKey(object);
         /* if (object.x % 4 === 0 || object.y % 4 === 0) { Map.mapUncoverAt(x, y); } */
         this.goBackFromAction(cardId);
         const allFoundObjectIds = Player.findObjects(object.x, object.y);
         Player.handleFoundObjectIds(allFoundObjectIds);
-        this.searchForKey(object);
         Map.hideScoutMarker();
         Player.changeProps('energy', energy);
         this.checkForInfested(cardId);
@@ -450,7 +507,7 @@ export default {
   searchForKey: function (object) {
     if (object.locked) {
       const randomFound = Math.random();
-      if (randomFound >= 0.5) {
+      if (randomFound >= 0.33) {
         Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, ['key']);
       }
     }
@@ -509,6 +566,7 @@ export default {
   simulateCollecting: function (cardId, energy) {
     const object = Props.getObject(cardId);
     Props.addItemToInventory(object.name, 1);
+    Items.inventoryChangeFeedback();
     object.removed = true;
     window.setTimeout(
       (cardId, energy) => {
@@ -751,8 +809,9 @@ export default {
         Player.changeProps('thirst', -10);
         // always success for now, add minigame later
         // baits would be nice as well
-        // eslint-disable-next-line no-constant-condition
-        if (true) {
+
+        if (Math.random() < 0.75) {
+          // 3/4 chance to catch a fish
           const object = Props.getObject(cardId);
           Props.spawnAnimalAt('fish', object.x, object.y);
           Props.addWeaponToInventory('fishing-rod', 0, { durability: -1 });
@@ -764,6 +823,29 @@ export default {
       cardId,
       time,
       800,
+      energy
+    );
+  },
+
+  chomping: function (cardId, time, energy) {
+    Player.lockMovement(true);
+    Cards.disableActions();
+    Audio.sfx('bark');
+
+    const scoutMarker = document.getElementById('scoutmarker');
+    scoutMarker.style.left = Math.round(Player.getPlayerPosition().x * 44.4) + 'px';
+    scoutMarker.style.top = Math.round(Player.getPlayerPosition().y * 44.4) + 'px';
+    scoutMarker.classList.remove('is--hidden');
+
+    this.fastForward(
+      function (cardId) {
+        this.endAction(cardId);
+        Map.hideScoutMarker();
+        Battle.startCompanionBattle(cardId);
+      },
+      cardId,
+      time,
+      400,
       energy
     );
   },
