@@ -122,7 +122,7 @@ export default {
         scope.simulateBreaking(cardId, time, energy);
       },
       oneTime: true,
-      delay: 1000,
+      delay: 500,
       label: 'breaking',
     },
     'unlock-door': {
@@ -507,7 +507,7 @@ export default {
   searchForKey: function (object) {
     if (object.locked) {
       const randomFound = Math.random();
-      if (randomFound >= 0.33) {
+      if (randomFound >= 0.5) {
         Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, ['key']);
       }
     }
@@ -755,7 +755,6 @@ export default {
     const object = Props.getObject(cardId);
     if (object.infested && object.name !== 'beehive' && !object.locked) {
       const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
-      console.log(ratObjectIds);
       cardRef.classList.remove('infested');
       object.infested = false;
       object.actions?.forEach(action => {
