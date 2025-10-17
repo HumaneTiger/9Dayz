@@ -22,6 +22,7 @@ export default {
       document.getElementById('start-option-new').classList.remove('is--hidden');
       document.getElementById('start-option-continue').classList.add('is--hidden');
     }
+    // start game immediately in local dev mode
     /*
     if (Props.getGameProp('local')) {
       document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
@@ -31,7 +32,7 @@ export default {
       this.initProps();
       this.startReal();
     }
-    */
+*/
     this.initCharacterSelection();
   },
 
@@ -78,12 +79,14 @@ export default {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
-
     if (Props.getGameProp('local')) {
+      /*
       Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
+      Props.addItemToInventory('bones', 2);
+      Props.addItemToInventory('meat', 2);
+    */
     }
-
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {
         Props.addItemToInventory(item, inventoryPresets[item]);
@@ -105,11 +108,16 @@ export default {
     Items.fillInventorySlots();
     Crafting.checkCraftingPrerequisits();
 
+    Props.spawnDoggyAt(12, 44);
+
     // generate all buildings and zeds
     Props.setupAllBuildings();
     Props.setupAllZeds();
 
-    Player.setPlayerPosition(18, 44);
+    Player.setPlayerPosition(
+      Props.getGameProp('playerPosition').x,
+      Props.getGameProp('playerPosition').y
+    );
     //Player.setPlayerPosition(18, 37);
 
     Player.changeProps('health', 100);
