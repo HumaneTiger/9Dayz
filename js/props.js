@@ -1013,6 +1013,7 @@ export default {
     const itemMods = this.getItemModifier(this.getGameProp('character'), item);
     if (itemProps) {
       return {
+        name: item,
         type: itemProps[0],
         damage: this.calcItemDamage(item),
         protection: this.calcItemProtection(item),
@@ -1045,7 +1046,11 @@ export default {
     // ONLY FOR TUTORIAL
     if (this.getGameProp('tutorial')) {
       this.setupBuilding(18, 44, ['crate'], ['drink-5', 'bread-1', 'wooden-club']);
-      this.setupWeapon(18, 44, 'axe');
+      this.setupWeapon(18, 44, 'axe', {
+        attack: this.getWeaponProps('axe').attack / 2,
+        defense: this.getWeaponProps('axe').defense / 2,
+        durability: this.getWeaponProps('axe').durability / 2,
+      });
     }
     // GAS STATION
     this.setupBuilding(17, 25, ['gas-station']);
@@ -1487,6 +1492,7 @@ export default {
       actions: [
         { id: 'lure', label: 'Lure', time: 20, energy: -15 },
         { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+        { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
         { id: 'cut', label: 'Cut', time: 20, energy: -15 },
       ],
       items: lootItemList,
@@ -1523,6 +1529,7 @@ export default {
       actions: [
         { id: 'lure', label: 'Lure', time: 20, energy: -15 },
         { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+        { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
         { id: 'cut', label: 'Cut', time: 20, energy: -15 },
       ],
       items: lootItemList,
