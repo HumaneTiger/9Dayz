@@ -445,10 +445,10 @@ p.item-info small {
 #inventory .slot.active.drink:hover span.action {
   opacity: 1;
 }
-#inventory.feeding-companion .slot.active.eat:hover span.action {
+#inventory.feeding-companion .slot.active:hover span.action {
   font-size: 0;
 }
-#inventory.feeding-companion .slot.active.eat:hover span.action::after {
+#inventory.feeding-companion .slot.active:hover span.action::after {
   content: 'feed';
   font-size: 18px;
 }

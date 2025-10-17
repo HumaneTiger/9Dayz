@@ -101,44 +101,88 @@ export default {
     // start auto battle after short delay
     window.setTimeout(() => {
       this.spawnCompanionDeck(Props.getCompanion());
-      this.startAutoBattle(
-        Cards.getCardById(singleZedId),
-        document.querySelector('#companion-cards .battle-card'),
-        Props.getObject(singleZedId),
-        Props.getCompanion()
-      );
+      const enemyObject = Props.getObject(singleZedId);
+      if (enemyObject.name === 'rat' || enemyObject.name === 'bee') {
+        this.startAutoBattleEnemyFirst(
+          Cards.getCardById(singleZedId),
+          document.querySelector('#companion-cards .battle-card'),
+          enemyObject,
+          Props.getCompanion()
+        );
+      } else {
+        this.startAutoBattleCompanionFirst(
+          Cards.getCardById(singleZedId),
+          document.querySelector('#companion-cards .battle-card'),
+          enemyObject,
+          Props.getCompanion()
+        );
+      }
     }, 600);
   },
 
-  startAutoBattle(enemyRef, companionRef, enemyObject, companionObject) {
+  resolveAutoBattle: function (enemyRef, companionRef, enemyObject, companionObject) {
+    if (enemyObject.defense <= 0) {
+      // enemy is dead
+      enemyRef.classList.add('dead');
+      enemyObject.dead = true;
+      enemyObject.fighting = false;
+      window.setTimeout(() => {
+        Character.updateCompanionSlot();
+        this.endBattle();
+      }, 880);
+      return true;
+    } else if (companionObject.health <= 0) {
+      // companion is dead
+      companionRef.classList.add('dead');
+      companionObject.dead = true;
+      window.setTimeout(async () => {
+        Character.updateCompanionSlot();
+        this.endBattle();
+      }, 800);
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companionObject) {
     window.setTimeout(async () => {
       await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
       enemyObject.defense -= companionObject.damage;
-      if (enemyObject.defense <= 0) {
-        enemyRef.classList.add('dead');
-        enemyObject.dead = true;
-        enemyObject.fighting = false;
-        window.setTimeout(() => {
-          Character.updateCompanionSlot();
-          this.endBattle();
-        }, 880);
-      } else {
+      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
         enemyRef.querySelector('.health').textContent = enemyObject.defense;
         window.setTimeout(async () => {
           await this.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
           companionObject.health -= enemyObject.attack;
-          if (companionObject.health <= 0) {
-            // companion is dead
-            companionRef.classList.add('dead');
-            companionObject.dead = true;
-            window.setTimeout(async () => {
-              Character.updateCompanionSlot();
-              this.endBattle();
-            }, 800);
-          } else {
+          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
             companionRef.querySelector('.health').textContent = companionObject.health;
             window.setTimeout(() => {
-              this.startAutoBattle(enemyRef, companionRef, enemyObject, companionObject);
+              this.startAutoBattleCompanionFirst(
+                enemyRef,
+                companionRef,
+                enemyObject,
+                companionObject
+              );
+            }, 880);
+          }
+        }, 1800);
+      }
+    }, 500);
+  },
+
+  startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companionObject) {
+    window.setTimeout(async () => {
+      await this.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
+      companionObject.health -= enemyObject.attack;
+      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
+        companionRef.querySelector('.health').textContent = companionObject.health;
+        window.setTimeout(async () => {
+          await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
+          enemyObject.defense -= companionObject.damage;
+          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
+            enemyRef.querySelector('.health').textContent = enemyObject.defense;
+            window.setTimeout(() => {
+              this.startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companionObject);
             }, 880);
           }
         }, 1800);

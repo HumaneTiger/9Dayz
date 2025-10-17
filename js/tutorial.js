@@ -15,17 +15,21 @@ var events = {
     title: 'Almanac',
     text: 'The Almanac provides details about all items.<br><img src="./img/almanac/almanac.png"><br>Just right-click item slots and crafting buttons.',
   },
-  '18-40': {
+  '18-40-a': {
     title: 'Zombies!',
-    text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – better deal with them later.',
+    text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – maybe deal with them later.',
   },
-  '12-44': {
+  '18-40-b': {
     title: 'Zombie 101',
     text: 'Try to lure Zeds towards you. Attacking them will cause others in the area join the fight. When you walk right into them, they  will attack you first.',
   },
-  '11-43': {
+  '18-41': {
     title: 'Be prepared',
-    text: 'Any weapon is better than no weapon. Check your inventory. Sharp sticks, tools or stones are good - improvised weapons are better. Check item properties in the Almanac.',
+    text: 'Any weapon is better than no weapon. Check your inventory. Sharp sticks, tools or stones are good – improvised weapons are better. Check item properties in the Almanac.',
+  },
+  '10-44': {
+    title: 'A companion!',
+    text: '<img src="./img/animals/doggy-portrait.png"><br>A small dog is bravely facing one of these monsters! He looks like he could be a little down.',
   },
   '30-7': {
     title: 'You found it!',

@@ -98,30 +98,40 @@ export default {
       const item = hoverSlot.dataset.item;
       const itemProps = Props.calcItemProps(item);
 
-      if (itemProps.food > 0) {
-        Player.changeProps('food', itemProps.food);
-      }
-      if (itemProps.drink > 0) {
-        Player.changeProps('thirst', itemProps.drink);
-      }
-      if (itemProps.energy > 0) {
-        Player.changeProps('energy', itemProps.energy);
-        // with enough new energy, certain actions become unlocked
-        Cards.calculateCardDeckProperties();
-        Cards.updateCardDeck();
-      }
-      /* not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
-      hoverSlot.style.pointerEvents = 'none';
-      setTimeout(() => {
-        hoverSlot.style.removeProperty('pointer-events');
-      }, 0);
-      /* /not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
-      if (items[item][0] === 'drink') {
-        Audio.sfx('drink', 0, 0.7);
-      } else if (items[item][0] === 'eat') {
+      if (!Props.getGameProp('feedingCompanion')) {
+        if (itemProps.food > 0) {
+          Player.changeProps('food', itemProps.food);
+        }
+        if (itemProps.drink > 0) {
+          Player.changeProps('thirst', itemProps.drink);
+        }
+        if (itemProps.energy > 0) {
+          Player.changeProps('energy', itemProps.energy);
+          // with enough new energy, certain actions become unlocked
+          Cards.calculateCardDeckProperties();
+          Cards.updateCardDeck();
+        }
+        /* not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
+        hoverSlot.style.pointerEvents = 'none';
+        setTimeout(() => {
+          hoverSlot.style.removeProperty('pointer-events');
+        }, 0);
+        /* /not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */
+        if (items[item][0] === 'drink') {
+          Audio.sfx('drink', 0, 0.7);
+        } else if (items[item][0] === 'eat') {
+          Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
+        }
+        if (itemProps.food || itemProps.drink || itemProps.energy) {
+          Props.addItemToInventory(item, -1);
+          this.fillInventorySlots();
+          if (!this.inventoryContains(item)) {
+            this.resetInventorySlotHoverEffect();
+          }
+        }
+      } else {
         Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
-      }
-      if (itemProps.food || itemProps.drink || itemProps.energy) {
+        Character.feedCompanion(item, itemProps.food);
         Props.addItemToInventory(item, -1);
         this.fillInventorySlots();
         if (!this.inventoryContains(item)) {
@@ -134,7 +144,8 @@ export default {
       leftMouseButton &&
       hoverSlot.classList.contains('active') &&
       hoverSlot.classList.contains('craft') &&
-      hoverSlot.classList.contains('already')
+      hoverSlot.classList.contains('already') &&
+      !Props.getGameProp('feedingCompanion')
     ) {
       Audio.sfx('click');
       Ui.toggleCrafting();
@@ -248,11 +259,9 @@ export default {
         }
       }
     } else {
-      if (itemProps.food > 0 && this.inventoryContains(item)) {
-        itemInfoMarkup +=
-          '<span class="food">' +
-          Math.round(itemFood / 10) +
-          '<span class="material-symbols-outlined">favorite</span></span>';
+      if (Character.getCompanionFoodValue(itemProps.name) !== -1 && this.inventoryContains(item)) {
+        itemInfoMarkup += `<span class="food">${Character.getCompanionFoodValue(itemProps.name)}
+              <span class="material-symbols-outlined">favorite</span></span>`;
       }
     }
 
@@ -295,7 +304,7 @@ export default {
         const itemSlot = itemSlots[i];
         itemSlot.classList.remove('unknown');
         if (Props.getGameProp('feedingCompanion')) {
-          if (itemProps?.food > 0 && amount > 0) {
+          if ((itemProps?.food > 0 || itemProps.name === 'bones') && amount > 0) {
             itemSlot.classList.remove('inactive');
             itemSlot.classList.add('active');
             itemSlot.querySelector('.amount').textContent = amount;

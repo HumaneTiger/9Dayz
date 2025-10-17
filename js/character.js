@@ -22,6 +22,17 @@ export default {
     return;
   },
 
+  toggleCompanionFeedingState: function (isFeeding) {
+    if (isFeeding) {
+      slotCompanion.classList.add('feeding');
+      slotCompanion.querySelector('ul.actions').classList.add('is--hidden');
+      Ui.showFeedingInventory();
+    } else {
+      slotCompanion.classList.remove('feeding');
+      slotCompanion.querySelector('ul.actions').classList.remove('is--hidden');
+    }
+  },
+
   checkForSlotClick: function (ev) {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');
@@ -51,9 +62,7 @@ export default {
         this.removeCompanion();
         this.updateCompanionSlot();
       } else if (action === 'feed' && companion.active) {
-        cardSlot.classList.add('feeding');
-        cardSlot.querySelector('ul.actions').classList.add('is--hidden');
-        Ui.showFeedingInventory();
+        this.toggleCompanionFeedingState(true);
       }
       Player.updatePlayer();
     } else if (upgradeButton && leftMouseButton) {
@@ -199,6 +208,28 @@ export default {
     }
   },
 
+  getCompanionFoodValue: function (itemName) {
+    const itemProps = Props.calcItemProps(itemName);
+    if (itemName === 'bones') {
+      return 2; // bones are always worth 2 food point
+    } else if (itemName === 'meat') {
+      return 3; // raw meat is always worth 3 food point
+    } else if (itemProps && itemProps.food) {
+      return Math.round(itemProps.food / 10);
+    } else {
+      return -1; // not edible for companion
+    }
+  },
+
+  feedCompanion: function (itemName) {
+    if (!companion || !companion.active) return;
+    companion.health += this.getCompanionFoodValue(itemName);
+    if (companion.health > companion.maxHealth) {
+      companion.health = companion.maxHealth;
+    }
+    this.updateCompanionSlot();
+  },
+
   updateCompanionSlot: function () {
     if (!companion) return;
     if (companion.active && companion.health > 0) {
@@ -222,6 +253,10 @@ export default {
         maxHealthChars.substring(0, maxHealthChars.length - companion.health) +
         '</u>';
       slotCompanion.querySelector('.distance').innerHTML = health;
+      /*if (!Props.getGameProp('firstCompanion')) {
+        Props.setGameProp('firstCompanion', true);
+        Almanac.showPage('doggy', 'content', slotCompanion, characterContainer);
+      }*/
     } else if (companion.health <= 0) {
       this.removeCompanion();
       characterContainer.classList.remove('companion-active');

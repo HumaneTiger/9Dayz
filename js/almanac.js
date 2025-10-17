@@ -303,7 +303,6 @@ export default {
         }
       }
       if (type === 'content') {
-        console.log(item, almanacContent[item]);
         if (almanacContent[item] !== undefined) {
           almanacContainer
             .querySelector('img.motive')
