@@ -2,6 +2,7 @@ import Props from './props.js';
 import Battle from './battle.js';
 import Audio from './audio.js';
 import Player from './player.js';
+import Character from './character.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
 
@@ -309,28 +310,45 @@ export default {
   toggleInventory: function () {
     const inventoryActive = inventoryContainer.classList.contains('active');
     if (inventoryActive) {
-      inventoryContainer.classList.remove('active');
+      this.closeInventory();
     } else {
-      inventoryContainer.classList.add('active');
-      craftContainer.classList.remove('active');
+      this.openInventory();
     }
+  },
+
+  openInventory: function () {
+    inventoryContainer.classList.add('active');
+    this.closeCrafting();
+  },
+
+  closeInventory: function () {
+    inventoryContainer.classList.remove('active');
+    if (Props.getGameProp('feedingCompanion')) {
+      document.getElementById('inventory').classList.remove('feeding-companion');
+      Character.toggleCompanionFeedingState(false);
+      Props.setGameProp('feedingCompanion', false);
+      Items.fillInventorySlots();
+    }
+  },
+
+  closeCrafting: function () {
+    craftContainer.classList.remove('active');
   },
 
   showFeedingInventory: function () {
     Props.setGameProp('feedingCompanion', true);
     Items.fillInventorySlots();
-    inventoryContainer.classList.add('active');
-    craftContainer.classList.remove('active');
+    this.openInventory();
     document.getElementById('inventory').classList.add('feeding-companion');
   },
 
   toggleCrafting: function (forceOpen) {
     const craftingActive = craftContainer.classList.contains('active');
     if (craftingActive && !forceOpen) {
-      craftContainer.classList.remove('active');
+      this.closeCrafting();
     } else {
       craftContainer.classList.add('active');
-      inventoryContainer.classList.remove('active');
+      this.closeInventory();
     }
   },
 
@@ -350,14 +368,14 @@ export default {
   },
 
   handleMapClick: function () {
-    craftContainer.classList.remove('active');
-    inventoryContainer.classList.remove('active');
+    this.closeCrafting();
+    this.closeInventory();
     this.showUI();
   },
 
   hideUI: function () {
-    craftContainer.classList.remove('active');
-    inventoryContainer.classList.remove('active');
+    this.closeCrafting();
+    this.closeInventory();
     Almanac.close(true);
     document.getElementById('properties').classList.remove('active');
     document.getElementById('character').classList.remove('active');
