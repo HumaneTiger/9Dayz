@@ -1,4 +1,6 @@
 import Binding from './binding.js';
+import buildingData from '../data/map/building-instances.js';
+import zombieData from '../data/map/zombie-instances.js';
 
 const mapSize = { width: 49, height: 45 };
 
@@ -1044,7 +1046,7 @@ export default {
   },
 
   setupAllBuildings: function () {
-    // ONLY FOR TUTORIAL
+    // ONLY FOR TUTORIAL (hardcoded - special case)
     if (this.getGameProp('tutorial')) {
       this.setupBuilding(18, 44, ['crate'], ['drink-5', 'bread-1', 'wooden-club']);
       this.setupWeapon(18, 44, 'axe', {
@@ -1053,239 +1055,18 @@ export default {
         durability: this.getWeaponProps('axe').durability / 2,
       });
     }
-    // GAS STATION
-    this.setupBuilding(17, 25, ['gas-station']);
-    this.setupBuilding(36, 16, ['gas-station']);
-    this.setupBuilding(9, 9, ['gas-station']);
-    this.setupBuilding(15, 22, ['garage']);
-    // TOOL SHED
-    this.setupBuilding(19, 39, ['tool-shed']);
-    this.setupBuilding(34, 39, ['tool-shed']);
-    this.setupBuilding(17, 31, ['tool-shed']);
-    this.setupBuilding(13, 22, ['tool-shed']);
-    // JETTY
-    this.setupBuilding(4, 36, ['jetty']);
-    this.setupBuilding(26, 20, ['jetty']);
-    // MARKETS
-    this.setupBuilding(30, 31, ['market']);
-    this.setupBuilding(21, 32, ['market']);
-    this.setupBuilding(17, 22, ['market']);
-    this.setupBuilding(7, 7, ['market']);
-    this.setupBuilding(15, 9, ['market']);
-    // FIELDS
-    this.setupBuilding(28, 33, ['field']);
-    this.setupBuilding(17, 38, ['field']);
-    this.setupBuilding(17, 37, ['beehive'], false, true);
-    this.setupBuilding(42, 28, ['beehive'], false, true);
-    this.setupBuilding(26, 38, ['field']);
-    this.setupBuilding(27, 38, ['field']);
-    this.setupBuilding(38, 31, ['field']);
-    this.setupBuilding(39, 31, ['scarecrow']);
-    this.setupBuilding(40, 31, ['field']);
-    this.setupBuilding(42, 31, ['field']);
-    this.setupBuilding(43, 31, ['field']);
-    this.setupBuilding(40, 32, ['field']);
-    this.setupBuilding(36, 38, ['field']);
-    this.setupBuilding(8, 12, ['field']);
-    this.setupBuilding(9, 11, ['field', 'big-tree']);
-    this.setupBuilding(40, 33, ['compost']);
-    this.setupBuilding(29, 34, ['compost']);
-    this.setupBuilding(44, 31, ['compost']);
-    this.setupBuilding(25, 38, ['compost']);
-    this.setupBuilding(42, 32, ['compost', 'compost']);
-    this.setupBuilding(43, 29, ['well']);
-    this.setupBuilding(29, 22, ['well', 'small-tree']);
-    // TOWN HOUSES
-    this.setupBuilding(17, 9, ['town-house']);
-    this.setupBuilding(17, 7, ['town-house']);
-    this.setupBuilding(21, 6, ['town-house']);
-    this.setupBuilding(19, 5, ['town-house']);
-    // HOUSES
-    this.setupBuilding(31, 34, ['house']);
-    this.setupBuilding(10, 41, ['house']);
-    this.setupBuilding(17, 39, ['house']);
-    this.setupBuilding(22, 35, ['house']);
-    this.setupBuilding(23, 36, ['house']);
-    this.setupBuilding(34, 42, ['house']);
-    this.setupBuilding(19, 23, ['house']);
-    this.setupBuilding(19, 9, ['house']);
-    this.setupBuilding(17, 5, ['house']);
-    // OLD VILLA
-    this.setupBuilding(36, 43, ['old-villa']);
-    this.setupBuilding(23, 14, ['old-villa']);
-    // FARM HOUSES
-    this.setupBuilding(29, 32, ['farm-house']);
-    this.setupBuilding(20, 33, ['farm-house']);
-    this.setupBuilding(24, 37, ['farm-house']);
-    this.setupBuilding(44, 30, ['farm-house']);
-    // COTTAGES
-    this.setupBuilding(6, 39, ['cottage']);
-    this.setupBuilding(28, 21, ['cottage']);
-    this.setupBuilding(14, 15, ['cottage']);
-    this.setupBuilding(20, 8, ['cottage']);
-    // LOG CABINE
-    this.setupBuilding(6, 37, ['log-cabine']);
-    this.setupBuilding(4, 37, ['log-cabine']);
-    this.setupBuilding(5, 36, ['log-cabine']);
-    this.setupBuilding(26, 22, ['log-cabine', 'small-tree']);
-    this.setupBuilding(27, 20, ['log-cabine', 'small-tree']);
-    // SEATING
-    this.setupBuilding(5, 38, ['seating']);
-    this.setupBuilding(19, 22, ['seating']);
-    this.setupBuilding(34, 16, ['seating']);
-    this.setupBuilding(27, 22, ['seating', 'small-tree']);
-    // OUTHOUSE
-    this.setupBuilding(6, 35, ['outhouse']);
-    this.setupBuilding(29, 21, ['outhouse']);
-    // BARNS
-    this.setupBuilding(33, 36, ['barn']);
-    this.setupBuilding(26, 36, ['barn']);
-    this.setupBuilding(29, 35, ['barn']);
-    this.setupBuilding(42, 29, ['barn']);
-    this.setupBuilding(36, 39, ['barn']);
-    this.setupBuilding(10, 12, ['barn']);
-    // CHURCHES
-    this.setupBuilding(34, 31, ['church']);
-    this.setupBuilding(23, 34, ['church']);
-    this.setupBuilding(14, 8, ['church']);
-    // CARs
-    this.setupBuilding(31, 35, ['car-1']);
-    this.setupBuilding(35, 37, ['car-1']);
-    this.setupBuilding(8, 39, ['car-1']);
-    this.setupBuilding(18, 40, ['car-1']);
-    this.setupBuilding(19, 41, ['signpost-1']);
-    this.setupBuilding(16, 31, ['signpost-2']);
-    this.setupBuilding(19, 36, ['signpost-3']);
-    this.setupBuilding(19, 21, ['signpost-4']);
-    this.setupBuilding(36, 31, ['signpost-5']);
-    this.setupBuilding(29, 29, ['signpost-6']);
-    this.setupBuilding(31, 22, ['signpost-7']);
-    this.setupBuilding(23, 35, ['car-1']);
-    this.setupBuilding(35, 41, ['car-1']);
-    this.setupBuilding(32, 30, ['car-2']);
-    this.setupBuilding(6, 38, ['car-2']);
-    this.setupBuilding(26, 37, ['car-2']);
-    this.setupBuilding(43, 30, ['car-2']);
-    this.setupBuilding(18, 41, ['car-2']);
-    this.setupBuilding(17, 23, ['car-1', 'car-2']);
-    this.setupBuilding(28, 24, ['car-1']);
-    this.setupBuilding(28, 23, ['car-2']);
-    this.setupBuilding(34, 15, ['car-2']);
-    this.setupBuilding(21, 14, ['car-1']);
-    this.setupBuilding(18, 12, ['car-1', 'car-2']);
-    this.setupBuilding(18, 11, ['car-1']);
-    this.setupBuilding(8, 10, ['car-1']);
-    this.setupBuilding(18, 6, ['car-1']);
-    this.setupBuilding(18, 2, ['car-2']);
-    this.setupBuilding(7, 9, ['car-2']);
-    // TRAIN
-    this.setupBuilding(19, 40, ['train-wreck-1']);
-    this.setupBuilding(20, 40, ['train-wreck-2']);
-    // TREES
-    this.setupBuilding(17, 43, ['big-tree'], ['stone', 'branch']);
-    this.setupBuilding(17, 44, ['small-tree']);
-    this.setupBuilding(19, 44, ['small-tree']);
-    this.setupBuilding(30, 33, ['big-tree', 'small-tree']);
-    this.setupBuilding(30, 35, ['small-tree']);
-    this.setupBuilding(30, 36, ['big-tree']);
-    this.setupBuilding(36, 37, ['big-tree']);
-    this.setupBuilding(36, 36, ['small-tree']);
-    this.setupBuilding(36, 35, ['small-tree']);
-    this.setupBuilding(34, 33, ['big-tree', 'small-tree']);
-    this.setupBuilding(12, 43, ['big-tree']);
-    this.setupBuilding(19, 38, ['small-tree']);
-    this.setupBuilding(9, 42, ['small-tree']);
-    this.setupBuilding(10, 43, ['small-tree']);
-    this.setupBuilding(11, 44, ['small-tree']);
-    this.setupBuilding(7, 40, ['big-tree']);
-    this.setupBuilding(4, 38, ['big-tree', 'small-tree']);
-    this.setupBuilding(6, 36, ['small-tree', 'big-tree']);
-    this.setupBuilding(17, 33, ['big-tree', 'small-tree']);
-    this.setupBuilding(17, 34, ['small-tree', 'big-tree']);
-    this.setupBuilding(17, 35, ['big-tree']);
-    this.setupBuilding(16, 33, ['small-tree']);
-    this.setupBuilding(19, 33, ['big-tree']);
-    this.setupBuilding(19, 32, ['big-tree', 'small-tree']);
-    this.setupBuilding(21, 34, ['small-tree']);
-    this.setupBuilding(22, 33, ['small-tree', 'big-tree']);
-    this.setupBuilding(25, 36, ['big-tree', 'small-tree']);
-    this.setupBuilding(34, 44, ['small-tree', 'big-tree']);
-    this.setupBuilding(35, 44, ['small-tree']);
-    this.setupBuilding(36, 44, ['big-tree']);
-    this.setupBuilding(36, 42, ['big-tree']);
-    this.setupBuilding(40, 29, ['big-tree', 'small-tree']);
-    this.setupBuilding(40, 28, ['small-tree', 'big-tree']);
-    this.setupBuilding(40, 27, ['small-tree', 'big-tree']);
-    this.setupBuilding(14, 22, ['big-tree', 'small-tree']);
-    this.setupBuilding(29, 24, ['big-tree']);
-    this.setupBuilding(36, 14, ['big-tree']);
-    this.setupBuilding(35, 13, ['small-tree']);
-    this.setupBuilding(34, 14, ['small-tree']);
-    this.setupBuilding(33, 13, ['big-tree', 'small-tree']);
-    this.setupBuilding(22, 13, ['small-tree']);
-    this.setupBuilding(34, 14, ['small-tree']);
-    this.setupBuilding(21, 15, ['small-tree', 'big-tree']);
-    this.setupBuilding(22, 15, ['big-tree']);
-    this.setupBuilding(16, 16, ['small-tree', 'big-tree']);
-    this.setupBuilding(15, 14, ['big-tree', 'small-tree']);
-    this.setupBuilding(16, 14, ['small-tree']);
-    this.setupBuilding(15, 16, ['big-tree', 'small-tree']);
-    this.setupBuilding(14, 16, ['small-tree', 'big-tree']);
-    this.setupBuilding(12, 9, ['big-tree', 'small-tree']);
-    this.setupBuilding(12, 8, ['small-tree']);
-    this.setupBuilding(16, 8, ['big-tree', 'small-tree']);
-    this.setupBuilding(19, 7, ['small-tree', 'big-tree']);
-    this.setupBuilding(19, 6, ['small-tree']);
-    this.setupBuilding(23, 6, ['small-tree']);
-    this.setupBuilding(24, 6, ['small-tree', 'big-tree']);
-    this.setupBuilding(27, 7, ['small-tree', 'big-tree']);
-    this.setupBuilding(28, 8, ['small-tree']);
-    this.setupBuilding(28, 6, ['small-tree', 'big-tree']);
+
+    // Setup all regular buildings from imported JSON
+    buildingData.buildings.forEach(entry => {
+      this.setupBuilding(entry.x, entry.y, entry.buildings, entry.items, entry.infested);
+    });
   },
 
   setupAllZeds: function () {
-    this.setZedAt(31, 36, 1);
-    this.setZedAt(30, 35, 1);
-    this.setZedAt(30, 34, 1);
-    this.setZedAt(17, 40, 1);
-    this.setZedAt(18, 40, 1);
-    this.setZedAt(4, 36, 1);
-    this.setZedAt(5, 38, 1);
-    this.setZedAt(7, 37, 1);
-    this.setZedAt(7, 34, 1);
-    this.setZedAt(12, 44, 1);
-    this.setZedAt(36, 43, 1);
-    this.setZedAt(32, 41, 1);
-    this.setZedAt(36, 41, 1);
-    this.setZedAt(17, 38, 1);
-    this.setZedAt(35, 37, 2);
-    this.setZedAt(33, 31, 2);
-    this.setZedAt(33, 30, 1);
-    this.setZedAt(32, 29, 1);
-    this.setZedAt(42, 33, 1);
-    this.setZedAt(43, 31, 1);
-    this.setZedAt(44, 30, 1);
-    this.setZedAt(24, 35, 2);
-    this.setZedAt(24, 36, 1);
-    this.setZedAt(21, 34, 1);
-    this.setZedAt(27, 37, 1);
-    this.setZedAt(18, 32, 1);
-    this.setZedAt(17, 33, 1);
-    this.setZedAt(22, 33, 1);
-    this.setZedAt(26, 20, 1);
-    this.setZedAt(28, 22, 1);
-    this.setZedAt(27, 22, 2);
-    // HORDE 1
-    this.setZedAt(18, 26, 1);
-    this.setZedAt(17, 27, 2);
-    this.setZedAt(18, 27, 2);
-    this.setZedAt(19, 27, 2);
-    this.setZedAt(18, 28, 1);
-    // HORDE 2 (5 should be painfully enough)
-    this.setZedAt(34, 17, 1);
-    this.setZedAt(35, 17, 2);
-    this.setZedAt(36, 17, 1);
-    this.setZedAt(35, 18, 1);
+    // Setup all zombies from imported JSON
+    zombieData.zombies.forEach(entry => {
+      this.setZedAt(entry.x, entry.y, entry.amount);
+    });
   },
 
   getLootBuildingProbability: function (buildingName) {
