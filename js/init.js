@@ -11,6 +11,7 @@ import Cooking from './cooking.js';
 import Crafting from './crafting.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
+import Preloading from './preloading.js';
 
 let startHour = 7; // 7
 let ticksPerHour = 6; // 6
@@ -42,6 +43,8 @@ window.timeIsUnity = {
   bind();
   Ui.resizeViewport();
   initiateMainGameLoop();
+  /* preloading goes here */
+  Preloading.init();
 }
 
 function bind() {

@@ -6,11 +6,32 @@ import buildingDefinitions from '../data/definitions/building-definitions.js';
 import characterDefinitions from '../data/definitions/character-definitions.js';
 import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
 import recipeDefinitions from '../data/definitions/recipe-definitions.js';
+import {
+  getBuildingTypeOf,
+  getLootBuildingProbability,
+  getBuildingActionsFor,
+} from '../data/utils/building-utils.js';
+import { createLootItemList, forceLootItemList } from '../data/utils/loot-utils.js';
+import {
+  calcItemDamage,
+  calcItemProtection,
+  calcItemProps,
+  extractItemName,
+  getItemModifier,
+} from '../data/utils/item-utils.js';
+import {
+  setupPath,
+  setupPathVer,
+  setupPathHor,
+  setupPathDiaDown,
+  setupPathDiaUp,
+  removePath,
+} from '../data/utils/path-utils.js';
 
 const mapSize = { width: 49, height: 45 };
 
 // Destructure building definitions for use throughout the file
-const { buildingTypes, buildingProps, buildingActions } = buildingDefinitions;
+const { buildingProps, buildingActions } = buildingDefinitions;
 
 // Destructure items/weapons definitions
 const { items, weaponProps, weaponPropsUpgrades } = itemsWeaponsDefinitions;
@@ -76,19 +97,6 @@ for (let i = 0; i < objectIdsAt.length; i += 1) {
   objectIdsAt[i] = new Array(mapSize.height);
 }
 
-// all object properties go in here
-// id
-// name
-// type = building, zombie, event
-// { actions }
-// locked
-// looted
-// zed nearby
-// active / inactive
-// distance
-// attack / defense
-// removed (or splice?)
-
 var objects = [];
 var objectsIdCounter = 0;
 var zedCounter = 1;
@@ -113,9 +121,6 @@ export default {
   init: function () {
     this.setupAllPaths();
     this.bind();
-    this.preloadBuidlings();
-    this.preloadItems();
-    this.preloadZombies();
   },
 
   bind: function () {
@@ -146,92 +151,6 @@ export default {
   },
 
   /* ==================== the good ones ==================== */
-
-  preloadBuidlings: function () {
-    let images = [];
-    for (const prop in buildingProps) {
-      images[prop] = new Image();
-      if (prop.startsWith('signpost-')) {
-        images[prop].src = './img/buildings/signpost.png';
-      } else if (prop === 'small-tree') {
-        images[prop].src = './img/buildings/small-tree-1.png';
-        images[prop] = new Image();
-        images[prop].src = './img/buildings/small-tree-2.png';
-      } else if (prop === 'big-tree') {
-        images[prop].src = './img/buildings/big-tree-1.png';
-        images[prop] = new Image();
-        images[prop].src = './img/buildings/big-tree-2.png';
-      } else if (prop === 'field') {
-        images[prop].src = './img/buildings/field-1.png';
-        images[prop] = new Image();
-        images[prop].src = './img/buildings/field-2.png';
-      } else {
-        images[prop].src = './img/buildings/' + prop + '.png';
-      }
-    }
-  },
-
-  preloadItems: function () {
-    let images = [];
-    for (const prop in items) {
-      images[prop] = new Image();
-      if (items[prop][0] !== 'extra') {
-        images[prop].src = './img/items/' + prop + '.PNG';
-      } else {
-        images[prop].src = './img/weapons/' + prop + '.png';
-      }
-    }
-  },
-
-  preloadUI: function () {
-    let images = [];
-    images[1] = new Image();
-    images[1].src = './img/ui/logo.png';
-    images[2] = new Image();
-    images[2].src = './img/card/card-bg.png';
-    images[3] = new Image();
-    images[3].src = './img/card/card-bg-z.png';
-    images[4] = new Image();
-    images[4].src = './img/card/border-house.png';
-    images[5] = new Image();
-    images[5].src = './img/card/border-weapon.png';
-    images[6] = new Image();
-    images[6].src = './img/card/card-back.png';
-    images[7] = new Image();
-    images[7].src = './img/card/border-neutral.png';
-    images[8] = new Image();
-    images[8].src = './img/card/card-tutorial.png';
-    images[9] = new Image();
-    images[9].src = './img/card/chip.png';
-    images[10] = new Image();
-    images[10].src = './img/card/chip-border-neutral.png';
-    images[11] = new Image();
-    images[11].src = './img/characters/hero.png';
-    images[12] = new Image();
-    images[12].src = './img/ui/day-teaser-left.png';
-    images[13] = new Image();
-    images[13].src = './img/ui/day-teaser-right.png';
-  },
-
-  preloadZombies: function () {
-    let images = [];
-    images[1] = new Image();
-    images[1].src = './img/zombies/zombie-1.png';
-    images[2] = new Image();
-    images[2].src = './img/zombies/zombie-2.png';
-    images[3] = new Image();
-    images[3].src = './img/zombies/zombie-3.png';
-    images[4] = new Image();
-    images[4].src = './img/zombies/scratch.png';
-    images[5] = new Image();
-    images[5].src = './img/zombies/rat.png';
-    images[6] = new Image();
-    images[6].src = './img/zombies/bee.png';
-    images[7] = new Image();
-    images[7].src = './img/zombies/undead.png';
-    images[8] = new Image();
-    images[8].src = './img/zombies/dead.png';
-  },
 
   modifyObjectProperties: function () {
     const character = this.getGameProp('character');
@@ -306,21 +225,11 @@ export default {
   },
 
   getItemModifier: function (type, item) {
-    // returns item modifiers for [hunger, thirst, energy]
-    const charDef = characterDefinitions[type];
-    if (charDef?.itemModifiers) {
-      return charDef.itemModifiers[item];
-    }
+    return getItemModifier(type, item);
   },
 
   extractItemName: function (item) {
-    return item
-      .replace('-', ' ')
-      .replace(' 1-2', '')
-      .replace(' 1', '')
-      .replace(' 2', '')
-      .replace(' 3', '')
-      .replace(' 4', '');
+    return extractItemName(item);
   },
 
   /* active crafting number */
@@ -475,37 +384,15 @@ export default {
   },
 
   calcItemProps: function (item) {
-    const itemProps = this.getItem(item);
-    const itemMods = this.getItemModifier(this.getGameProp('character'), item);
-    if (itemProps) {
-      return {
-        name: item,
-        type: itemProps[0],
-        damage: this.calcItemDamage(item),
-        protection: this.calcItemProtection(item),
-        food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
-        drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
-        energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3],
-      };
-    } else {
-      console.log('No props for item ' + item); // no props for item crate and duck
-    }
+    return calcItemProps(item, this.getGameProp('character'));
   },
 
   calcItemDamage: function (item) {
-    const itemProps = items[item];
-    return itemProps[4] ? itemProps[4] : 1 + Math.round(itemProps[3] / 10);
+    return calcItemDamage(item);
   },
 
   calcItemProtection: function (item) {
-    const itemProps = items[item];
-    if (itemProps[5]) {
-      return itemProps[5];
-    } else {
-      return itemProps[1] > itemProps[2]
-        ? Math.round(itemProps[1] / 10)
-        : Math.round(itemProps[2] / 10);
-    }
+    return calcItemProtection(item);
   },
 
   setupAllBuildings: function () {
@@ -533,80 +420,15 @@ export default {
   },
 
   getLootBuildingProbability: function (buildingName) {
-    // returns [firstItemChance, nextItemsChance]
-    const type = this.getBuildingTypeOf(buildingName);
-
-    if (buildingName === 'crate') {
-      return [11, 0];
-    }
-    // house, car, farm, tree, church, train, shop, industrial, water, camping, corpse
-    if (this.getGameProp('character') === 'treehugger') {
-      if (
-        type === 'house' ||
-        type === 'car' ||
-        type === 'train' ||
-        type === 'shop' ||
-        type === 'industrial'
-      ) {
-        return [7, 3];
-      } else if (type === 'farm' || type === 'tree' || type === 'water' || type === 'camping') {
-        return [11, 8];
-      }
-    } else if (this.getGameProp('character') === 'snackivore') {
-      if (type === 'house' || type === 'car' || type === 'train' || type === 'shop') {
-        return [11, 8];
-      } else if (type === 'farm' || type === 'tree' || type === 'water') {
-        return [7, 3];
-      }
-    } else if (this.getGameProp('character') === 'craftsmaniac') {
-      if (
-        type === 'industrial' ||
-        type === 'car' ||
-        type === 'train' ||
-        buildingName === 'basement'
-      ) {
-        return [11, 8];
-      }
-    } else if (this.getGameProp('character') === 'cashmeister') {
-      return [7, 3];
-    }
-    // defaults
-    return [9, 6];
+    return getLootBuildingProbability(buildingName, this.getGameProp('character'));
   },
 
   forceLootItemList: function (forceItems, maxAmount) {
-    let lootItemList = [];
-    for (let i = 0; i < forceItems.length; i += 1) {
-      lootItemList.push({
-        name: JSON.parse(JSON.stringify(forceItems[i])),
-        amount: Math.round(Math.random() * maxAmount) || 1,
-      });
-    }
-    return lootItemList;
+    return forceLootItemList(forceItems, maxAmount);
   },
 
   createLootItemList: function (spawn, allItems, allProbabilities, amount) {
-    const maxAmount = amount || 1;
-    let lootItemList = [];
-    let probability = allProbabilities[0];
-
-    for (let i = 0; i < spawn; i += 1) {
-      let randomItem = Math.floor(Math.random() * allItems.length);
-      if (Math.random() * 10 < probability) {
-        lootItemList.push({
-          name: JSON.parse(JSON.stringify(allItems[randomItem])),
-          amount: Math.round(Math.random() * maxAmount) || 1,
-        });
-        probability = allProbabilities[1];
-      } else {
-        lootItemList.push({
-          name: JSON.parse(JSON.stringify(allItems[randomItem])),
-          amount: 0,
-        });
-      }
-      allItems.splice(randomItem, 1);
-    }
-    return lootItemList;
+    return createLootItemList(spawn, allItems, allProbabilities, amount);
   },
 
   setupBuilding: function (x, y, buildingNamesArray, forceItems, forceInfested) {
@@ -923,57 +745,25 @@ export default {
     pathData.paths.forEach(path => {
       switch (path.type) {
         case 'vertical':
-          this.setupPathVer(path.x, path.y1, path.y2);
+          setupPathVer(paths, path.x, path.y1, path.y2);
           break;
         case 'horizontal':
-          this.setupPathHor(path.x1, path.x2, path.y);
+          setupPathHor(paths, path.x1, path.x2, path.y);
           break;
         case 'diagonalDown':
-          this.setupPathDiaDown(path.x1, path.x2, path.y);
+          setupPathDiaDown(paths, path.x1, path.x2, path.y);
           break;
         case 'diagonalUp':
-          this.setupPathDiaUp(path.x1, path.x2, path.y);
+          setupPathDiaUp(paths, path.x1, path.x2, path.y);
           break;
         case 'single':
-          this.setupPath(path.x, path.y);
+          setupPath(paths, path.x, path.y);
           break;
         case 'remove':
-          this.removePath(path.x, path.y);
+          removePath(paths, path.x, path.y);
           break;
       }
     });
-  },
-
-  setupPath: function (x, y) {
-    paths[x][y] = true;
-  },
-
-  setupPathVer: function (x, y1, y2) {
-    for (var vert = y1; vert <= y2; vert += 1) {
-      paths[x][vert] = true;
-    }
-  },
-
-  setupPathHor: function (x1, x2, y) {
-    for (var hor = x1; hor <= x2; hor += 1) {
-      paths[hor][y] = true;
-    }
-  },
-
-  setupPathDiaDown: function (x1, x2, y) {
-    for (var dia = 0; dia <= x2 - x1; dia += 1) {
-      paths[x1 + dia][y + dia] = true;
-    }
-  },
-
-  setupPathDiaUp: function (x1, x2, y) {
-    for (var dia = 0; dia <= x2 - x1; dia += 1) {
-      paths[x1 + dia][y - dia] = true;
-    }
-  },
-
-  removePath: function (x, y) {
-    paths[x][y] = undefined;
   },
 
   getWeaponProps: function (itemName) {
@@ -997,92 +787,10 @@ export default {
   },
 
   getBuildingTypeOf: function (buildingName) {
-    for (const type in buildingTypes) {
-      if (buildingTypes[type].includes(buildingName)) {
-        return type;
-      }
-    }
+    return getBuildingTypeOf(buildingName);
   },
 
   getBuildingActionsFor: function (buildingName, locked, infested) {
-    const buildingType = this.getBuildingTypeOf(buildingName);
-    const actions = buildingActions[buildingType];
-    let actionSet = [];
-    // adding actions for certain character <-> building combos
-    if (buildingName === 'fireplace') {
-      if (
-        this.getGameProp('character') !== 'craftsmaniac' &&
-        this.getGameProp('character') !== 'cashmeister'
-      )
-        actionSet.push({ id: 'cook', label: 'cook', time: 30 });
-      if (this.getGameProp('character') === 'treehugger')
-        actionSet.push({ id: 'sleep', label: 'sleep', time: 120, energy: 60 });
-    }
-    if (actions !== undefined) {
-      actions.forEach(action => {
-        let singleAction = {};
-        singleAction.name = action.split('|')[0]; // old
-        singleAction.label = action.split('|')[0]; // new
-        singleAction.id = action.split('|')[0].replaceAll(' ', '-'); // new
-        if (
-          (buildingName === 'pump' && singleAction.id === 'fish') ||
-          (buildingName === 'outhouse' && singleAction.id === 'break-door') ||
-          (buildingName === 'outhouse' && singleAction.id === 'unlock-door') ||
-          (buildingName === 'small-tree' && singleAction.id === 'rest') ||
-          (buildingName === 'big-tree' && singleAction.id === 'cut-down') ||
-          (buildingName === 'fireplace' && singleAction.id === 'break-door') ||
-          (buildingName === 'fireplace' && singleAction.id === 'unlock-door') ||
-          (buildingName === 'fireplace' && singleAction.id === 'scout-area') ||
-          (buildingName === 'fireplace' && singleAction.id === 'search') ||
-          (buildingName === 'barricades' && singleAction.id === 'break-door') ||
-          (buildingName === 'barricades' && singleAction.id === 'unlock-door') ||
-          (buildingName === 'barricades' && singleAction.id === 'scout-area') ||
-          (buildingName === 'barricades' && singleAction.id === 'search') ||
-          (buildingName === 'seating' && singleAction.id === 'break-door') ||
-          (buildingName === 'seating' && singleAction.id === 'unlock-door') ||
-          (buildingName === 'seating' && singleAction.id === 'scout-area') ||
-          (buildingName === 'seating' && singleAction.id === 'sleep') ||
-          (buildingName === 'well' && singleAction.id === 'fish')
-        ) {
-          // these are exceptions for certain building <-> action combos that make no sense
-        } else if (
-          (!locked && singleAction.id === 'smash-window') ||
-          (!locked && singleAction.id === 'unlock-door') ||
-          (!locked && singleAction.id === 'break-door')
-        ) {
-          // these are exceptions for certain stats <-> action combos that make no sense
-        } else if (
-          (this.getGameProp('character') === 'snackivore' && singleAction.id === 'drink') ||
-          (this.getGameProp('character') === 'furbuddy' && singleAction.id === 'cut')
-        ) {
-          // removing actions for certain character <-> building combos
-          // see fireplace above for craftsmaniac/cooking
-        } else {
-          singleAction.time = parseInt(action.split('|')[1]);
-          singleAction.energy = parseInt(action.split('|')[2] || 0);
-          actionSet.push(singleAction);
-        }
-
-        if (
-          singleAction.id === 'gather' ||
-          singleAction.id === 'search' ||
-          singleAction.id === 'rest' ||
-          singleAction.id === 'sleep' ||
-          singleAction.id === 'cut-down' ||
-          singleAction.id === 'cook' ||
-          singleAction.id === 'drink' ||
-          singleAction.id === 'read'
-        ) {
-          singleAction.needsUnlock = true;
-        } else {
-          singleAction.needsUnlock = false;
-        }
-        if (infested && (singleAction.id === 'search' || singleAction.id === 'gather')) {
-          singleAction.critical = true;
-        }
-        singleAction.locked = undefined;
-      });
-    }
-    return actionSet;
+    return getBuildingActionsFor(buildingName, locked, infested, this.getGameProp('character'));
   },
 };
