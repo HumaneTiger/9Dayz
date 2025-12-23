@@ -7,6 +7,7 @@ import Cooking from './cooking.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
 import Audio from './audio.js';
+import ItemUtils from '../data/utils/item-utils.js';
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -202,14 +203,14 @@ export default {
   getItemInfoMarkup: function (item, itemActive) {
     const action = items[item][0],
       itemProps = Props.calcItemProps(item),
-      itemMods = Props.getItemModifier(Props.getGameProp('character'), item);
+      itemMods = ItemUtils.getItemModifier(Props.getGameProp('character'), item);
     let itemFood = itemProps.food,
       itemDrink = itemProps.drink,
       itemEnergy = itemProps.energy || 0;
 
     let itemInfoMarkup = Props.getGameProp('feedingCompanion')
-      ? `<span class="name">Feeding ${Props.extractItemName(item)} gives</span>`
-      : `<span class="name">${Props.extractItemName(item)}</span>`;
+      ? `<span class="name">Feeding ${ItemUtils.extractItemName(item)} gives</span>`
+      : `<span class="name">${ItemUtils.extractItemName(item)}</span>`;
 
     if (!Props.getGameProp('feedingCompanion')) {
       if (itemMods !== undefined && itemMods[0] !== 0) {

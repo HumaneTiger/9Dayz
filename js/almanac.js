@@ -1,5 +1,6 @@
 import Props from './props.js';
 import Items from './items.js';
+import ItemUtils from '../data/utils/item-utils.js';
 
 const almanacContainer = document.getElementById('almanac');
 const markupSection = almanacContainer.querySelector('div.markup');
@@ -176,7 +177,7 @@ export default {
       }
 
       // set title
-      almanacContainer.querySelector('h3').textContent = Props.extractItemName(item);
+      almanacContainer.querySelector('h3').textContent = ItemUtils.extractItemName(item);
       if (type === 'item') {
         const itemProps = Props.calcItemProps(item);
         if (Items.inventoryKnows(item)) {
@@ -193,7 +194,7 @@ export default {
           // stats
           if (itemProps) {
             if (itemProps.food || itemProps.drink || itemProps.energy) {
-              let itemMods = Props.getItemModifier(Props.getGameProp('character'), item);
+              let itemMods = ItemUtils.getItemModifier(Props.getGameProp('character'), item);
               let itemFood = itemProps.food,
                 itemDrink = itemProps.drink,
                 itemEnergy = itemProps.energy || 0;
@@ -226,7 +227,7 @@ export default {
               statsParagraph.classList.remove('is--hidden');
             }
             if (itemProps.damage !== undefined && itemProps.protection !== undefined) {
-              let battleText = `In Battles <span class="keyword" data-item="${item}">${Props.extractItemName(item)}</span> deals <span class="keyword" data-content="battle">${itemProps.damage} Damage</span> and offers <span class="keyword" data-content="battle">${itemProps.protection} Protection</span>.`;
+              let battleText = `In Battles <span class="keyword" data-item="${item}">${ItemUtils.extractItemName(item)}</span> deals <span class="keyword" data-content="battle">${itemProps.damage} Damage</span> and offers <span class="keyword" data-content="battle">${itemProps.protection} Protection</span>.`;
               battlesParagraph.innerHTML = battleText;
               battlesParagraph.classList.remove('is--hidden');
             }
@@ -239,9 +240,9 @@ export default {
               cookingRecipes[recipe][1] === item
             ) {
               let cookingText =
-                `<span class="keyword" data-item="${recipe}">${Props.extractItemName(recipe)}</span> can be ${cookingRecipes[recipe][3]}ed over <span class="keyword" data-content="fireplace">fire</span> with ` +
-                `<span class="keyword" data-item="${cookingRecipes[recipe][0]}">${Props.extractItemName(cookingRecipes[recipe][0])}</span> and ` +
-                `<span class="keyword" data-item="${cookingRecipes[recipe][1]}">${Props.extractItemName(cookingRecipes[recipe][1])}</span>.`;
+                `<span class="keyword" data-item="${recipe}">${ItemUtils.extractItemName(recipe)}</span> can be ${cookingRecipes[recipe][3]}ed over <span class="keyword" data-content="fireplace">fire</span> with ` +
+                `<span class="keyword" data-item="${cookingRecipes[recipe][0]}">${ItemUtils.extractItemName(cookingRecipes[recipe][0])}</span> and ` +
+                `<span class="keyword" data-item="${cookingRecipes[recipe][1]}">${ItemUtils.extractItemName(cookingRecipes[recipe][1])}</span>.`;
               cookingParagraph.innerHTML = cookingText;
               cookingParagraph.classList.remove('is--hidden');
             }
@@ -249,15 +250,15 @@ export default {
           // check if crafting recipe
           for (const recipe in craftingRecipes) {
             if (recipe === item || craftingRecipes[recipe].items.flat().includes(item)) {
-              let craftingText = `<span class="keyword" data-item="${recipe}">${Props.extractItemName(recipe)}</span> can be crafted from `;
+              let craftingText = `<span class="keyword" data-item="${recipe}">${ItemUtils.extractItemName(recipe)}</span> can be crafted from `;
               for (const [i, recipeItem] of craftingRecipes[recipe].items.entries()) {
                 craftingText =
                   craftingText +
-                  `<span class="keyword" data-item="${recipeItem[0]}">${Props.extractItemName(recipeItem[0])}</span>`;
+                  `<span class="keyword" data-item="${recipeItem[0]}">${ItemUtils.extractItemName(recipeItem[0])}</span>`;
                 if (recipeItem[1] !== undefined) {
                   craftingText =
                     craftingText +
-                    ` or <span class="keyword" data-item="${recipeItem[1]}">${Props.extractItemName(recipeItem[1])}</span>`;
+                    ` or <span class="keyword" data-item="${recipeItem[1]}">${ItemUtils.extractItemName(recipeItem[1])}</span>`;
                 }
                 if (i < craftingRecipes[recipe].items.length - 1) {
                   craftingText += ' and ';
@@ -279,7 +280,7 @@ export default {
               weaponPropsUpgrades[weaponUpgrade].durability?.item === item
             ) {
               if (!weaponUpgradeText) weaponUpgradeText = `Can be used to improve`;
-              weaponUpgradeText += ` <span class="keyword" data-item="${weaponUpgrade}">${Props.extractItemName(weaponUpgrade)}</span>,`;
+              weaponUpgradeText += ` <span class="keyword" data-item="${weaponUpgrade}">${ItemUtils.extractItemName(weaponUpgrade)}</span>,`;
             }
           }
           if (weaponUpgradeText) {
