@@ -3,11 +3,15 @@ import buildingData from '../data/map/building-instances.js';
 import zombieData from '../data/map/zombie-instances.js';
 import buildingDefinitions from '../data/definitions/building-definitions.js';
 import characterDefinitions from '../data/definitions/character-definitions.js';
+import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
 
 const mapSize = { width: 49, height: 45 };
 
 // Destructure building definitions for use throughout the file
 const { buildingTypes, buildingProps, buildingActions } = buildingDefinitions;
+
+// Destructure items/weapons definitions
+const { items, weaponProps, weaponPropsUpgrades } = itemsWeaponsDefinitions;
 
 var inventory = {
   items: new Array(),
@@ -151,52 +155,6 @@ let craftingRecipes = {
   },
 };
 
-let weaponProps = {
-  'baseball-bat': { attack: 10, defense: 3, durability: 4 },
-  wrench: { attack: 14, defense: 4, durability: 4 },
-  axe: { attack: 12, defense: 6, durability: 4 },
-  'improvised-axe': { attack: 8, defense: 4, durability: 3 },
-  'wooden-club': { attack: 6, defense: 3, durability: 3 },
-  'improvised-whip': { attack: 3, defense: 3, durability: 3 },
-  'fishing-rod': { attack: 2, defense: 1, durability: 4 },
-};
-
-let weaponPropsUpgrades = {
-  'baseball-bat': {
-    attack: { amount: 1, item: 'nails' },
-    defense: { amount: 2, item: 'glue' },
-    durability: { amount: 1, item: 'tape' },
-  },
-  wrench: {
-    attack: { amount: 1, item: 'spanner' },
-    defense: { amount: 1, item: 'brush' },
-    durability: { amount: 1, item: 'tape' },
-  },
-  axe: {
-    attack: { amount: 1, item: 'fail' },
-    defense: { amount: 2, item: 'glue' },
-    durability: { amount: 1, item: 'tape' },
-  },
-  'improvised-axe': {
-    attack: { amount: 1, item: 'pincers' },
-    defense: { amount: 2, item: 'knife' },
-    durability: { amount: 1, item: 'tape' },
-  },
-  'wooden-club': {
-    attack: { amount: 1, item: 'hacksaw' },
-    defense: { amount: 1, item: 'brush' },
-    durability: { amount: 1, item: 'tape' },
-  },
-  'improvised-whip': {
-    attack: { amount: 2, item: 'rope' },
-    defense: { amount: 1, item: 'knife' },
-    durability: { amount: 1, item: 'tape' },
-  },
-  'fishing-rod': {
-    durability: { amount: 1, item: 'rope' },
-  },
-};
-
 let targetLocations = {
   'Lakeside Camp Resort': [5, 37],
   Rocksprings: [22, 34],
@@ -206,165 +164,6 @@ let targetLocations = {
   'Billibalds Farm': [40, 30],
   'Camp Silverlake': [28, 22],
   'Harbor Gas Station': [34, 16],
-};
-
-/* ['type', hunger, thirst, energy, attack, defense] */
-let items = {
-  acorn: ['eat', 1, 0, 0],
-  rosehip: ['eat', 2, 2, 0],
-  hawthorn: ['eat', 2, 2, 0],
-  physalis: ['eat', 2, 2, 0],
-  branch: ['craft', 0, 0, 0, 1, 1],
-  stone: ['craft', 0, 0, 0, 4, 1],
-  'straw-wheet': ['craft', 0, 0, 0, 0, 0],
-  stump: ['craft', 0, 0, 0, 3, 3],
-  reef: ['craft', 0, 0, 0, 1, 1],
-  'fruit-1': ['eat', 2, 8, 2],
-  'fruit-2': ['eat', 4, 8, 2],
-  'fruit-3': ['eat', 3, 8, 2],
-  'mushroom-1': ['eat', 2, 2, 0],
-  'mushroom-2': ['eat', 4, 3, 0],
-  'roasted-mushroom': ['eat', 11, 5, 10],
-  pumpkin: ['eat', 15, 15, 10],
-  'roasted-pumpkin': ['eat', 8, 6, 7],
-  pepper: ['eat', 8, 5, 0],
-  'roasted-pepper': ['eat', 22, 5, 20],
-  meat: ['eat', 3, 5, 0],
-  'roasted-meat': ['eat', 30, 15, 30],
-  tomato: ['eat', 4, 8, 3],
-  carrot: ['eat', 6, 4, 0],
-  'drink-1': ['drink', 0, 30, 0],
-  'drink-2': ['drink', 0, 35, 0],
-  'drink-3': ['drink', 5, 25, 5],
-  'drink-4': ['drink', 5, 25, 5],
-  'drink-5': ['drink', 10, 30, 10],
-  'snack-1': ['eat', 25, 0, 10],
-  'snack-2': ['eat', 25, 0, 10],
-  'bread-1': ['eat', 45, 0, 20],
-  'bread-2': ['eat', 40, 0, 20],
-  wine: ['drink', 5, 35, 20],
-  honey: ['eat', 15, 5, 25, 3, 2],
-  'energy-pills': ['eat', 0, 0, 50, 1, 1],
-  bones: ['craft', 0, 0, 0, 2, 0],
-  cloth: ['craft', 0, 0, 0, 4, 2],
-  glue: ['craft', 0, 0, 0, 5, 2],
-  knife: ['craft', 0, 0, 0, 4, 1],
-  fail: ['craft', 0, 0, 0, 3, 2],
-  hacksaw: ['craft', 0, 0, 0, 3, 2],
-  tape: ['craft', 0, 0, 0, 1, 0],
-  'sharp-stick': ['craft', 0, 0, 0, 3, 3],
-  pincers: ['craft', 0, 0, 0, 3, 2],
-  spanner: ['craft', 0, 0, 0, 3, 1],
-  nails: ['craft', 0, 0, 0, 2, 1],
-  books: ['craft', 0, 0, 0, 0, 2],
-  claw: ['craft', 0, 0, 0, 4, 2],
-  exodus: ['craft', 0, 0, 0, 4, 2],
-  mallet: ['craft', 0, 0, 0, 5, 1],
-  rope: ['craft', 0, 0, 0, 3, 1],
-  'bone-hook': ['craft', 0, 0, 0, 2, 2],
-  key: ['craft', 0, 0, 0, 1, 1],
-  'improvised-axe': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['improvised-axe'].attack,
-    weaponProps['improvised-axe'].defense,
-  ],
-  'wooden-club': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['wooden-club'].attack,
-    weaponProps['wooden-club'].defense,
-  ],
-  wrench: ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
-  'baseball-bat': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['baseball-bat'].attack,
-    weaponProps['baseball-bat'].defense,
-  ],
-  axe: ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense],
-  'improvised-whip': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['improvised-whip'].attack,
-    weaponProps['improvised-whip'].defense,
-  ],
-  'fishing-rod': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['fishing-rod'].attack,
-    weaponProps['fishing-rod'].defense,
-  ],
-};
-let itemModifiers = {
-  snackivore: {
-    acorn: [-1, 0, 0],
-    'bread-1': [5, 0, 10],
-    'bread-2': [5, 0, 10],
-    carrot: [-4, -2, 0],
-    'drink-3': [10, 20, 10],
-    'drink-4': [10, 20, 10],
-    'drink-5': [15, 30, 15],
-    'fruit-1': [-2, -4, -2],
-    'fruit-2': [-2, -4, -2],
-    'fruit-3': [-2, -4, -2],
-    'energy-pills': [0, 0, +25],
-    hawthorn: [-2, -2, 0],
-    meat: [-3, -5, 0],
-    'roasted-meat': [15, 15, 20],
-    pepper: [-4, -2, 0],
-    'roasted-pepper': [-5, -5, -5],
-    physalis: [-2, -2, 0],
-    pumpkin: [-10, -10, -10],
-    'roasted-pumpkin': [-5, -5, -5],
-    rosehip: [-2, -2, 0],
-    'mushroom-1': [-2, -2, 0],
-    'mushroom-2': [-4, -3, 0],
-    'roasted-mushroom': [1, 1, 1],
-    'snack-1': [20, 0, 25],
-    'snack-2': [20, 0, 25],
-    tomato: [-2, -4, -3],
-  },
-  treehugger: {
-    acorn: [2, 0, 0],
-    'bread-1': [-15, 0, -10],
-    'bread-2': [-20, 0, -10],
-    carrot: [4, 2, 0],
-    'drink-1': [0, 0, 0],
-    'drink-2': [0, 0, 0],
-    'drink-3': [-3, -10, -3],
-    'drink-4': [-3, -10, -3],
-    'drink-5': [-5, -10, -5],
-    'fruit-1': [3, 5, 5],
-    'fruit-2': [3, 5, 5],
-    'fruit-3': [3, 5, 5],
-    'energy-pills': [0, 0, -25],
-    hawthorn: [3, 5, 3],
-    meat: [3, 3, 5],
-    'roasted-meat': [10, 5, 10],
-    pepper: [5, 5, 5],
-    'roasted-pepper': [5, 5, 5],
-    physalis: [2, 3, 2],
-    pumpkin: [5, 5, 10],
-    'roasted-pumpkin': [4, 3, 4],
-    rosehip: [2, 2, 4],
-    'mushroom-1': [2, 2, 4],
-    'mushroom-2': [2, 2, 4],
-    'roasted-mushroom': [2, 3, 5],
-    'snack-1': [-15, 0, -8],
-    'snack-2': [-15, 0, -8],
-    tomato: [4, 5, 7],
-  },
 };
 
 export default {
@@ -565,8 +364,9 @@ export default {
 
   getItemModifier: function (type, item) {
     // returns item modifiers for [hunger, thirst, energy]
-    if (itemModifiers[type]) {
-      return itemModifiers[type][item];
+    const charDef = characterDefinitions[type];
+    if (charDef?.itemModifiers) {
+      return charDef.itemModifiers[item];
     }
   },
 
