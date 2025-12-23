@@ -1,9 +1,11 @@
 import Binding from './binding.js';
 import buildingData from '../data/map/building-instances.js';
 import zombieData from '../data/map/zombie-instances.js';
+import pathData from '../data/map/path-instances.js';
 import buildingDefinitions from '../data/definitions/building-definitions.js';
 import characterDefinitions from '../data/definitions/character-definitions.js';
 import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
+import recipeDefinitions from '../data/definitions/recipe-definitions.js';
 
 const mapSize = { width: 49, height: 45 };
 
@@ -12,6 +14,9 @@ const { buildingTypes, buildingProps, buildingActions } = buildingDefinitions;
 
 // Destructure items/weapons definitions
 const { items, weaponProps, weaponPropsUpgrades } = itemsWeaponsDefinitions;
+
+// Destructure recipe definitions
+const { cookingRecipes, craftingRecipes } = recipeDefinitions;
 
 var inventory = {
   items: new Array(),
@@ -92,68 +97,6 @@ var paths = new Array(mapSize.width);
 for (let i = 0; i < paths.length; i += 1) {
   paths[i] = new Array(mapSize.height);
 }
-
-let cookingRecipes = {
-  'roasted-meat': ['meat', 'sharp-stick', 1, 'roast'],
-  'roasted-pepper': ['pepper', 'sharp-stick', 1, 'roast'],
-  'roasted-mushroom': ['mushroom-1-2', 'sharp-stick', 1, 'roast'],
-  'roasted-pumpkin': ['pumpkin', 'knife', 4, 'roast'],
-  glue: ['bones', 'drink-1-2', 1, 'cook'],
-};
-
-let craftingRecipes = {
-  'wooden-club': {
-    items: [['fail', 'hacksaw'], ['stump']],
-    exclusive: true,
-    result: 'weapon',
-  },
-  'improvised-axe': {
-    items: [['tape'], ['branch'], ['stone']],
-    exclusive: true,
-    result: 'weapon',
-  },
-  'improvised-whip': {
-    items: [['rope'], ['branch']],
-    exclusive: true,
-    result: 'weapon',
-  },
-  'fishing-rod': {
-    items: [['rope'], ['branch'], ['bone-hook']],
-    exclusive: true,
-    result: 'weapon',
-  },
-  fireplace: {
-    items: [['stone'], ['stump'], ['straw-wheet']],
-    exclusive: false,
-    result: 'building',
-  },
-  barricades: {
-    items: [['rope'], ['stump'], ['sharp-stick']],
-    exclusive: false,
-    result: 'building',
-  },
-  tape: {
-    items: [['cloth'], ['glue']],
-    exclusive: false,
-    amount: 2,
-    result: 'inventory',
-  },
-  'sharp-stick': {
-    items: [['branch'], ['knife']],
-    exclusive: false,
-    result: 'inventory',
-  },
-  'bone-hook': {
-    items: [['bones'], ['knife']],
-    exclusive: false,
-    result: 'inventory',
-  },
-  rope: {
-    items: [['straw-wheet'], ['straw-wheet']],
-    exclusive: false,
-    result: 'inventory',
-  },
-};
 
 let targetLocations = {
   'Lakeside Camp Resort': [5, 37],
@@ -976,48 +919,29 @@ export default {
   },
 
   setupAllPaths: function () {
-    this.setupPathVer(18, 2, 44);
-    this.setupPathVer(13, 8, 9);
-    this.setupPathVer(28, 22, 29);
-    this.setupPathVer(41, 26, 33);
-    this.setupPathVer(35, 14, 17);
-    this.setupPathVer(7, 14, 16);
-    this.setupPathVer(7, 34, 38);
-    this.setupPathVer(35, 31, 43);
-    this.setupPathHor(16, 19, 3);
-    this.setupPathHor(19, 23, 37);
-    this.setupPathHor(15, 17, 15);
-    this.setupPathHor(25, 35, 37);
-    this.setupPathHor(9, 17, 10);
-    this.setupPathHor(16, 19, 8);
-    this.setupPathHor(21, 26, 5);
-    this.setupPathHor(19, 22, 14);
-    this.setupPathHor(12, 17, 21);
-    this.setupPathHor(9, 17, 32);
-    this.setupPathHor(28, 43, 30);
-    this.setupPathHor(13, 17, 41);
-    this.setupPathHor(32, 36, 41);
-    this.setupPathDiaDown(8, 11, 17);
-    this.setupPathDiaDown(19, 24, 31);
-    this.setupPathDiaDown(4, 12, 36);
-    this.setupPathDiaDown(28, 32, 32);
-    this.setupPathDiaDown(27, 34, 6);
-    this.setupPathDiaDown(26, 27, 20);
-    this.setupPathDiaDown(30, 32, 7);
-    this.setupPathDiaUp(8, 10, 13);
-    this.setupPathDiaUp(29, 34, 23);
-    // fill gaps
-    this.setupPath(31, 9);
-    this.setupPath(8, 33);
-    this.setupPath(29, 31);
-    this.setupPath(12, 42);
-    this.setupPath(20, 4);
-    this.setupPath(7, 8);
-    this.setupPath(8, 9);
-    // remove paths player shouldn't walk
-    this.removePath(18, 40);
-    this.removePath(18, 11);
-    this.removePath(18, 12);
+    // Setup all paths from imported JSON
+    pathData.paths.forEach(path => {
+      switch (path.type) {
+        case 'vertical':
+          this.setupPathVer(path.x, path.y1, path.y2);
+          break;
+        case 'horizontal':
+          this.setupPathHor(path.x1, path.x2, path.y);
+          break;
+        case 'diagonalDown':
+          this.setupPathDiaDown(path.x1, path.x2, path.y);
+          break;
+        case 'diagonalUp':
+          this.setupPathDiaUp(path.x1, path.x2, path.y);
+          break;
+        case 'single':
+          this.setupPath(path.x, path.y);
+          break;
+        case 'remove':
+          this.removePath(path.x, path.y);
+          break;
+      }
+    });
   },
 
   setupPath: function (x, y) {
