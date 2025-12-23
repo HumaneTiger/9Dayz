@@ -315,8 +315,8 @@ export default {
         if (inventory.items[item].durability <= 0) {
           // remove and reset inventory weapon props
           inventory.items[item].amount = 0;
-          inventory.items[item].damage = this.calcItemDamage(item);
-          inventory.items[item].protection = this.calcItemProtection(item);
+          inventory.items[item].damage = calcItemDamage(item);
+          inventory.items[item].protection = calcItemProtection(item);
           inventory.items[item].durability = 0;
         }
       }
@@ -326,8 +326,8 @@ export default {
         type: itemProps[0],
         name: item,
         amount: amount,
-        damage: setDamage || this.calcItemDamage(item),
-        protection: setProtection || this.calcItemProtection(item),
+        damage: setDamage || calcItemDamage(item),
+        protection: setProtection || calcItemProtection(item),
         durability: setDurability,
       };
     } else {
@@ -361,8 +361,8 @@ export default {
         type: itemProps[0],
         name: item,
         amount: amount,
-        damage: this.calcItemDamage(item), // props for battle mode
-        protection: this.calcItemProtection(item), // props for battle mode
+        damage: calcItemDamage(item), // props for battle mode
+        protection: calcItemProtection(item), // props for battle mode
       };
     } else {
       console.log('adding item "' + item + '" to inventory failed');
@@ -385,14 +385,6 @@ export default {
 
   calcItemProps: function (item) {
     return calcItemProps(item, this.getGameProp('character'));
-  },
-
-  calcItemDamage: function (item) {
-    return calcItemDamage(item);
-  },
-
-  calcItemProtection: function (item) {
-    return calcItemProtection(item);
   },
 
   setupAllBuildings: function () {
@@ -419,31 +411,19 @@ export default {
     });
   },
 
-  getLootBuildingProbability: function (buildingName) {
-    return getLootBuildingProbability(buildingName, this.getGameProp('character'));
-  },
-
-  forceLootItemList: function (forceItems, maxAmount) {
-    return forceLootItemList(forceItems, maxAmount);
-  },
-
-  createLootItemList: function (spawn, allItems, allProbabilities, amount) {
-    return createLootItemList(spawn, allItems, allProbabilities, amount);
-  },
-
   setupBuilding: function (x, y, buildingNamesArray, forceItems, forceInfested) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
       const lootItemList = forceItems
-        ? this.forceLootItemList(forceItems, props.amount)
-        : this.createLootItemList(
+        ? forceLootItemList(forceItems, props.amount)
+        : createLootItemList(
             props.spawn,
             JSON.parse(JSON.stringify(props.items)),
-            this.getLootBuildingProbability(buildingName, true),
+            getLootBuildingProbability(buildingName, true),
             props.amount
           );
       const locked = Math.random() * props.locked > 1 ? true : false;
-      const type = this.getBuildingTypeOf(buildingName);
+      const type = getBuildingTypeOf(buildingName);
       const infested = type === 'house' && Math.random() < 0.5 ? true : false;
 
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
@@ -459,7 +439,7 @@ export default {
         text: false,
         actions: props.preview
           ? [{ id: 'got-it', label: 'Got it!' }]
-          : this.getBuildingActionsFor(buildingName, locked, forceInfested || infested),
+          : getBuildingActionsFor(buildingName, locked, forceInfested || infested),
         items: lootItemList,
         locked: locked,
         looted: false,
@@ -488,7 +468,7 @@ export default {
 
       let attack = Math.floor(Math.random() * 6 + Math.min(distance / 3, 10) + 1); // increase attack with distance
       let defense = Math.floor(Math.random() * 9 + Math.min(distance / 2.5, 10)); // increase defense with distance
-      let lootItemList = this.createLootItemList(
+      let lootItemList = createLootItemList(
         3,
         [
           'fail',
@@ -544,7 +524,7 @@ export default {
   },
 
   setRatAt: function (x, y) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
+    let lootItemList = createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
     let name = 'rat';
 
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
@@ -581,7 +561,7 @@ export default {
   },
 
   setBeeAt: function (x, y) {
-    let lootItemList = this.createLootItemList(1, ['meat'], [7, 5], 1);
+    let lootItemList = createLootItemList(1, ['meat'], [7, 5], 1);
     let name = 'bee';
 
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
@@ -638,7 +618,7 @@ export default {
   },
 
   spawnAnimalAt: function (name, x, y) {
-    let lootItemList = this.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
+    let lootItemList = createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(currentObjectsIdCounter, {
       x: x,
@@ -672,7 +652,7 @@ export default {
 
   spawnDoggyAt: function (x, y, optCompanionProps) {
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    const lootItemList = this.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
+    const lootItemList = createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
     this.setObject(currentObjectsIdCounter, {
       x: x,
       y: y,
@@ -784,13 +764,5 @@ export default {
 
   getBuildingProps: function () {
     return buildingProps;
-  },
-
-  getBuildingTypeOf: function (buildingName) {
-    return getBuildingTypeOf(buildingName);
-  },
-
-  getBuildingActionsFor: function (buildingName, locked, infested) {
-    return getBuildingActionsFor(buildingName, locked, infested, this.getGameProp('character'));
   },
 };
