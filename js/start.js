@@ -32,7 +32,7 @@ export default {
       this.initProps();
       this.startReal();
     }
-*/
+    */
     this.initCharacterSelection();
   },
 
@@ -80,12 +80,10 @@ export default {
 
     // TESTING
     if (Props.getGameProp('local')) {
-      /*
       Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
       Props.addItemToInventory('bones', 2);
       Props.addItemToInventory('meat', 2);
-    */
     }
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {

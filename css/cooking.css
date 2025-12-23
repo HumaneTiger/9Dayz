@@ -1,11 +1,11 @@
 .card.cooking-mode {
-  transform: rotateY(180deg) scale(0.8);
+  transform: rotateY(180deg) scale(0.7);
 }
 .card.cooking-mode:hover {
   transform: rotateY(180deg) scale(0.9);
 }
 .card.cooking-mode.full {
-  transform: rotateY(360deg) scale(0.8);
+  transform: rotateY(360deg) scale(0.7);
 }
 .card.cooking-mode.full:hover {
   transform: rotateY(360deg) scale(0.9);

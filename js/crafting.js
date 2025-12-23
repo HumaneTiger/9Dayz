@@ -67,7 +67,7 @@ export default {
         }
         // second - create the crafting result (add inventory item or create weapon/building card)
         if (itemRecipe.result === 'inventory') {
-          Props.addItemToInventory(item, 1);
+          Props.addItemToInventory(item, itemRecipe.amount ?? 1);
         } else {
           // create a card of sort
           const here = Player.getPlayerPosition();

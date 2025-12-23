@@ -414,6 +414,7 @@ let craftingRecipes = {
   tape: {
     items: [['cloth'], ['glue']],
     exclusive: false,
+    amount: 2,
     result: 'inventory',
   },
   'sharp-stick': {
