@@ -132,34 +132,6 @@ export default {
     }
   },
 
-  saveCheckpoint: function (targetLocationName, playerPosition, playerStats) {
-    let saveCheckpoint = {
-      targetLocationName: targetLocationName,
-      gameTime: window.timeIsUnity,
-      playerCharacter: this.getGameProp('character'),
-      playerPosition: playerPosition,
-      playerStats: playerStats,
-      inventoryItems: {},
-    };
-    // https://stackoverflow.com/questions/29585812/json-stringify-does-not-stringify-nested-arrays
-    for (let item in inventory.items) {
-      if (inventory.items[item].amount && inventory.items[item].amount > 0) {
-        saveCheckpoint.inventoryItems[item] = inventory.items[item];
-      }
-    }
-    localStorage.setItem('saveCheckpoint', JSON.stringify(saveCheckpoint));
-    document
-      .getElementById('actions')
-      .querySelector('li.mixed .game-saved')
-      .classList.add('active');
-    window.setTimeout(() => {
-      document
-        .getElementById('actions')
-        .querySelector('li.mixed .game-saved')
-        .classList.remove('active');
-    }, 2000);
-  },
-
   getGameProps: function () {
     return game;
   },

@@ -8,6 +8,7 @@ import Items from './items.js';
 import Battle from './battle.js';
 import Cooking from './cooking.js';
 import Character from './character.js';
+import Checkpoint from './checkpoint.js';
 
 export default {
   init: function () {},
@@ -871,12 +872,7 @@ export default {
           Map.showTargetLocation('Harbor Gas Station');
         }
         if (Props.getGameProp('tutorial') === false) {
-          Props.saveCheckpoint(targetLocationName, Player.getPlayerPosition(), {
-            health: Player.getProp('health'),
-            food: Player.getProp('food'),
-            thirst: Player.getProp('thirst'),
-            energy: Player.getProp('energy'),
-          });
+          Checkpoint.save(targetLocationName);
         }
         this.goBackFromAction(cardId);
       },

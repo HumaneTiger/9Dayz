@@ -5,6 +5,7 @@ import { default as Items } from './items.js';
 import { default as Crafting } from './crafting.js';
 import { default as Tutorial } from './tutorial.js';
 import { default as Ui } from './ui.js';
+import { default as Checkpoint } from './checkpoint.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -128,69 +129,10 @@ export default {
   },
 
   restoreCheckpoint: function (saveCheckpoint) {
-    if (saveCheckpoint) {
-      const inventoryItems = saveCheckpoint.inventoryItems;
-
-      // add zero items to present crafting options in Almanac
-      Props.addItemToInventory('tape', 0);
-      Props.addItemToInventory('sharp-stick', 0);
-      Props.addWeaponToInventory('wooden-club', 0, { durability: 0 });
-      Props.addWeaponToInventory('improvised-axe', 0, { durability: 0 });
-
-      for (var key in inventoryItems) {
-        if (inventoryItems[key].durability !== undefined) {
-          Props.addWeaponToInventory(inventoryItems[key].name, inventoryItems[key].amount, {
-            durability: inventoryItems[key].durability,
-          });
-        } else {
-          Props.addItemToInventory(inventoryItems[key].name, inventoryItems[key].amount);
-        }
-      }
-
-      if (saveCheckpoint.playerCharacter) {
-        Props.setGameProp('character', saveCheckpoint.playerCharacter);
-      }
-
-      Props.modifyObjectProperties();
-      Items.generateInventorySlots();
-      Items.fillInventorySlots();
-      Crafting.checkCraftingPrerequisits();
-
-      // generate all buildings and zeds
-      Props.setupAllBuildings();
-      Props.setupAllZeds();
-
-      Player.setPlayerPosition(saveCheckpoint.playerPosition.x, saveCheckpoint.playerPosition.y);
-
-      Player.changeProps('health', saveCheckpoint.playerStats.health);
-      Player.changeProps('food', saveCheckpoint.playerStats.food);
-      Player.changeProps('thirst', saveCheckpoint.playerStats.thirst);
-      Player.changeProps('energy', saveCheckpoint.playerStats.energy);
-
-      window.timeIsUnity.gameTick = saveCheckpoint.gameTime.gameTick;
-      window.timeIsUnity.gameHours = saveCheckpoint.gameTime.gameHours;
-      window.timeIsUnity.gameDays = saveCheckpoint.gameTime.gameDays;
-      window.timeIsUnity.todayHours = saveCheckpoint.gameTime.todayHours;
-      window.timeIsUnity.todayTime = saveCheckpoint.gameTime.todayTime;
-      Props.setGameProp('startDay', saveCheckpoint.gameTime.gameDays);
-
-      this.adjustDayTimeUI();
-
-      Player.init();
-      Items.init();
-    }
-  },
-
-  adjustDayTimeUI: function () {
-    Ui.updateDayNightLayers(window.timeIsUnity.todayHours);
-    if (window.timeIsUnity.todayHours >= 21 || window.timeIsUnity.todayHours < 5) {
-      Ui.switchDayNight(21);
-    } else {
-      Ui.switchDayNight(5);
-    }
-    if (window.timeIsUnity.todayHours >= 23 || window.timeIsUnity.todayHours < 5) {
-      Ui.triggerNight();
-    }
+    Checkpoint.restore(saveCheckpoint);
+    // Initialize player and items
+    Player.init();
+    Items.init();
   },
 
   handleClick: function (ev) {
