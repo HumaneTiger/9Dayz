@@ -13,17 +13,19 @@ import Character from './character.js';
 import Almanac from './almanac.js';
 import Preloading from './preloading.js';
 
-let startHour = 7; // 7
-let ticksPerHour = 6; // 6
-let tickInterval = 100;
-let tickCurrent = 0;
+const timeConfig = {
+  startHour: 7,
+  ticksPerHour: 6,
+  tickInterval: 100,
+  tickCurrent: 0,
+};
 
 window.timeIsUnity = {
   gameTick: 0,
-  gameHours: 24 + startHour,
+  gameHours: 24 + timeConfig.startHour,
   gameDays: 1, // 1
-  todayHours: startHour,
-  todayTime: `0${startHour}:00`,
+  todayHours: timeConfig.startHour,
+  todayTime: `0${timeConfig.startHour}:00`,
 };
 
 // initialize everything
@@ -64,7 +66,7 @@ function triggerGameTick() {
   window.timeIsUnity.gameTick += 1;
 
   /* TICKY TASKS */
-  if (window.timeIsUnity.gameTick % ticksPerHour === 0) {
+  if (window.timeIsUnity.gameTick % timeConfig.ticksPerHour === 0) {
     window.timeIsUnity.gameHours += 1;
 
     /* HOURLY TASKS */
@@ -94,10 +96,10 @@ function triggerGameTick() {
 function initiateMainGameLoop() {
   window.setTimeout(() => {
     /* go foreward in time */
-    tickCurrent += tickInterval;
+    timeConfig.tickCurrent += timeConfig.tickInterval;
 
-    if (tickCurrent >= Props.getGameProp('speed')) {
-      tickCurrent = 0;
+    if (timeConfig.tickCurrent >= Props.getGameProp('speed')) {
+      timeConfig.tickCurrent = 0;
       triggerGameTick();
     }
 
@@ -106,7 +108,7 @@ function initiateMainGameLoop() {
     } else {
       idleLoop();
     }
-  }, tickInterval);
+  }, timeConfig.tickInterval);
 }
 
 function idleLoop() {

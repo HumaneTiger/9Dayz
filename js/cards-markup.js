@@ -5,6 +5,7 @@ import { default as Cards } from './cards.js';
 import { default as Map } from './map.js';
 import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
+import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 
 const cardsContainer = document.getElementById('cards');
 const cardWidth = 380 * 0.7;
@@ -74,7 +75,7 @@ export default {
 
     if (object.name === 'fireplace') {
       cardMarkupExtension = '<ul class="cooking">';
-      let cookingRecipes = Props.getCookingRecipes();
+      const cookingRecipes = RecipeDefinitions.cookingRecipes;
       for (const recipe in cookingRecipes) {
         cardMarkupExtension += '<li>';
         cardMarkupExtension +=

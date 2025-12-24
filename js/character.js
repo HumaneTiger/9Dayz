@@ -1,3 +1,4 @@
+import Binding from './binding.js';
 import Props from './props.js';
 import Player from './player.js';
 import Items from './items.js';
@@ -16,6 +17,15 @@ export default {
   init: function () {
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
+    this.bind();
+  },
+
+  bind: function () {
+    new Binding({
+      object: Props.getGameProps(),
+      property: 'character',
+      element: document.getElementById('character').querySelector('.slot-hero h2'),
+    });
   },
 
   checkForSlotHover: function () {

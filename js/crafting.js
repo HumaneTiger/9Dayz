@@ -1,17 +1,28 @@
+import Binding from './binding.js';
 import Props from './props.js';
 import Items from './items.js';
 import Player from './player.js';
 import Almanac from './almanac.js';
+import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
-const craftingRecipes = Props.getCraftingRecipes();
+const craftingRecipes = RecipeDefinitions.craftingRecipes;
 
 export default {
   init: function () {
     craftContainer.addEventListener('mouseover', this.checkCraftActionHover.bind(this));
     craftContainer.addEventListener('mousedown', this.checkCraftActionClick.bind(this));
+    this.bind();
     this.checkCraftingPrerequisits();
+  },
+
+  bind: function () {
+    new Binding({
+      object: Props.getCrafting(),
+      property: 'total',
+      element: document.getElementById('crafting-total'),
+    });
   },
 
   checkCraftActionHover: function (ev) {

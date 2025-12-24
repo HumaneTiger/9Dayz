@@ -1,11 +1,9 @@
-import Binding from './binding.js';
 import buildingData from '../data/map/building-instances.js';
 import zombieData from '../data/map/zombie-instances.js';
 import pathData from '../data/map/path-instances.js';
 import buildingDefinitions from '../data/definitions/building-definitions.js';
 import characterDefinitions from '../data/definitions/character-definitions.js';
 import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
-import recipeDefinitions from '../data/definitions/recipe-definitions.js';
 import BuildingUtils from '../data/utils/building-utils.js';
 import LootUtils from '../data/utils/loot-utils.js';
 import ItemUtils from '../data/utils/item-utils.js';
@@ -18,9 +16,6 @@ const { buildingProps, buildingActions } = buildingDefinitions;
 
 // Destructure items/weapons definitions
 const { items, weaponProps, weaponPropsUpgrades } = itemsWeaponsDefinitions;
-
-// Destructure recipe definitions
-const { cookingRecipes, craftingRecipes } = recipeDefinitions;
 
 var inventory = {
   items: new Array(),
@@ -42,6 +37,15 @@ var companion = {
   maxHealth: undefined,
   protection: undefined,
   dead: false,
+};
+
+var playerProps = {
+  health: 0,
+  food: 0,
+  thirst: 0,
+  energy: 0,
+  protection: 0,
+  actions: 0,
 };
 
 var game = {
@@ -103,25 +107,6 @@ let targetLocations = {
 export default {
   init: function () {
     this.setupAllPaths();
-    this.bind();
-  },
-
-  bind: function () {
-    new Binding({
-      object: inventory,
-      property: 'itemNumbers',
-      element: document.getElementById('inventory-numbers'),
-    });
-    new Binding({
-      object: crafting,
-      property: 'total',
-      element: document.getElementById('crafting-total'),
-    });
-    new Binding({
-      object: game,
-      property: 'character',
-      element: document.getElementById('character').querySelector('.slot-hero h2'),
-    });
   },
 
   hourlyTasks: function (hour) {
@@ -175,6 +160,10 @@ export default {
     }, 2000);
   },
 
+  getGameProps: function () {
+    return game;
+  },
+
   getGameProp: function (prop) {
     return game[prop];
   },
@@ -205,17 +194,13 @@ export default {
     return companion;
   },
 
+  getPlayerProps: function () {
+    return playerProps;
+  },
+
   /* active crafting number */
   getCrafting: function () {
     return crafting;
-  },
-
-  getCookingRecipes: function () {
-    return cookingRecipes;
-  },
-
-  getCraftingRecipes: function () {
-    return craftingRecipes;
   },
 
   getObjectIdsAt: function (x, y) {
@@ -268,7 +253,7 @@ export default {
     return characterDefinitions[character]?.inventoryPreset || {};
   },
 
-  createMapObject: function (overrides = {}) {
+  createGameObject: function (overrides = {}) {
     return {
       x: undefined,
       y: undefined,
@@ -434,7 +419,7 @@ export default {
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
       this.setObject(
         currentObjectsIdCounter,
-        this.createMapObject({
+        this.createGameObject({
           x: x,
           y: y,
           name: buildingName,
@@ -492,7 +477,7 @@ export default {
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
       this.setObject(
         currentObjectsIdCounter,
-        this.createMapObject({
+        this.createGameObject({
           x: x,
           y: y,
           name: name,
@@ -518,7 +503,7 @@ export default {
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(
       currentObjectsIdCounter,
-      this.createMapObject({
+      this.createGameObject({
         x: x,
         y: y,
         name: 'rat',
@@ -544,7 +529,7 @@ export default {
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(
       currentObjectsIdCounter,
-      this.createMapObject({
+      this.createGameObject({
         x: x,
         y: y,
         name: 'bee',
@@ -589,7 +574,7 @@ export default {
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(
       currentObjectsIdCounter,
-      this.createMapObject({
+      this.createGameObject({
         x: x,
         y: y,
         name: name,
@@ -611,7 +596,7 @@ export default {
     const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
     this.setObject(
       currentObjectsIdCounter,
-      this.createMapObject({
+      this.createGameObject({
         x: x,
         y: y,
         name: optCompanionProps?.name ?? 'doggy',
@@ -638,7 +623,7 @@ export default {
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     this.setObject(
       currentObjectsIdCounter,
-      this.createMapObject({
+      this.createGameObject({
         x: x,
         y: y,
         name: weaponName,

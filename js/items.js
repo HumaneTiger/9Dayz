@@ -1,3 +1,4 @@
+import Binding from './binding.js';
 import Props from './props.js';
 import Player from './player.js';
 import Ui from './ui.js';
@@ -17,6 +18,15 @@ export default {
   init: function () {
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
+    this.bind();
+  },
+
+  bind: function () {
+    new Binding({
+      object: inventory,
+      property: 'itemNumbers',
+      element: document.getElementById('inventory-numbers'),
+    });
   },
 
   capitalizeFirstLetter: function (string) {

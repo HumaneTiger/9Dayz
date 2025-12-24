@@ -6,18 +6,10 @@ import Battle from './battle.js';
 import Ui from './ui.js';
 
 const allPaths = Props.getAllPaths();
+const playerProps = Props.getPlayerProps();
+const playerPosition = Props.getGameProp('playerPosition');
 
 let player = document.getElementById('player');
-let playerPosition = {};
-let playerProps = {
-  health: 0,
-  food: 0,
-  thirst: 0,
-  energy: 0,
-  protection: 0,
-  actions: 0,
-};
-
 let moveLocked = false;
 let moving = false;
 

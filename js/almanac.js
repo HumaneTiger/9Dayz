@@ -1,6 +1,7 @@
 import Props from './props.js';
 import Items from './items.js';
 import ItemUtils from '../data/utils/item-utils.js';
+import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 
 const almanacContainer = document.getElementById('almanac');
 const markupSection = almanacContainer.querySelector('div.markup');
@@ -10,8 +11,8 @@ const cookingParagraph = almanacContainer.querySelector('p.cooking');
 const craftingParagraph = almanacContainer.querySelector('p.crafting');
 const battlesParagraph = almanacContainer.querySelector('p.battles');
 const weaponUpgradeParagraph = almanacContainer.querySelector('p.weapon-upgrades');
-const craftingRecipes = Props.getCraftingRecipes();
-const cookingRecipes = Props.getCookingRecipes();
+const craftingRecipes = RecipeDefinitions.craftingRecipes;
+const cookingRecipes = RecipeDefinitions.cookingRecipes;
 
 let almanacHistory = [];
 

@@ -2,8 +2,9 @@ import Props from './props.js';
 import Items from './items.js';
 import Almanac from './almanac.js';
 import Audio from './audio.js';
+import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 
-let cookingRecipes = Props.getCookingRecipes();
+const cookingRecipes = RecipeDefinitions.cookingRecipes;
 
 export default {
   init: function () {
