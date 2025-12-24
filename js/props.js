@@ -268,6 +268,38 @@ export default {
     return characterDefinitions[character]?.inventoryPreset || {};
   },
 
+  createMapObject: function (overrides = {}) {
+    return {
+      x: undefined,
+      y: undefined,
+      name: undefined,
+      title: '',
+      type: undefined,
+      group: undefined,
+      text: false,
+      actions: [],
+      items: [],
+      locked: undefined,
+      looted: false,
+      infested: false,
+      zednearby: null,
+      active: true,
+      inreach: false,
+      discovered: false,
+      distance: null,
+      preview: undefined,
+      attack: undefined,
+      defense: undefined,
+      dead: undefined,
+      fighting: false,
+      health: undefined,
+      maxHealth: undefined,
+      disabled: false,
+      removed: false,
+      ...overrides,
+    };
+  },
+
   addWeaponToInventory: function (item, addAmount, setWeaponProps) {
     const amount = parseInt(addAmount),
       setDamage = setWeaponProps.damage,
@@ -400,53 +432,44 @@ export default {
       const infested = type === 'house' && Math.random() < 0.5 ? true : false;
 
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-      this.setObject(currentObjectsIdCounter, {
-        x: x,
-        y: y,
-        name: buildingName,
-        title: buildingName.startsWith('signpost-')
-          ? 'signpost'
-          : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
-        type: type,
-        group: 'building',
-        text: false,
-        actions: props.preview
-          ? [{ id: 'got-it', label: 'Got it!' }]
-          : BuildingUtils.getBuildingActionsFor(
-              buildingName,
-              locked,
-              forceInfested || infested,
-              this.getGameProp('character')
-            ),
-        items: lootItemList,
-        locked: locked,
-        looted: false,
-        infested: forceInfested || infested,
-        zednearby: null,
-        active: true,
-        inreach: false,
-        discovered: false,
-        distance: null,
-        preview: props.preview,
-        attack: undefined,
-        defense: undefined, // use later for building cards in battle
-        dead: undefined,
-        disabled: false,
-        removed: false,
-      });
+      this.setObject(
+        currentObjectsIdCounter,
+        this.createMapObject({
+          x: x,
+          y: y,
+          name: buildingName,
+          title: buildingName.startsWith('signpost-')
+            ? 'signpost'
+            : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
+          type: type,
+          group: 'building',
+          actions: props.preview
+            ? [{ id: 'got-it', label: 'Got it!' }]
+            : BuildingUtils.getBuildingActionsFor(
+                buildingName,
+                locked,
+                forceInfested || infested,
+                this.getGameProp('character')
+              ),
+          items: lootItemList,
+          locked: locked,
+          infested: forceInfested || infested,
+          preview: props.preview,
+        })
+      );
     });
   },
 
   setZedAt: function (x, y, amount) {
-    for (var i = 0; i < amount; i += 1) {
+    for (let i = 0; i < amount; i += 1) {
       const distance = Math.sqrt(
         Math.pow(this.getGameProp('playerPosition').x - x, 2) +
           Math.pow(this.getGameProp('playerPosition').y - y, 2)
       );
 
-      let attack = Math.floor(Math.random() * 6 + Math.min(distance / 3, 10) + 1); // increase attack with distance
-      let defense = Math.floor(Math.random() * 9 + Math.min(distance / 2.5, 10)); // increase defense with distance
-      let lootItemList = LootUtils.createLootItemList(
+      const attack = Math.floor(Math.random() * 6 + Math.min(distance / 3, 10) + 1); // increase attack with distance
+      const defense = Math.floor(Math.random() * 9 + Math.min(distance / 2.5, 10)); // increase defense with distance
+      const lootItemList = LootUtils.createLootItemList(
         3,
         [
           'fail',
@@ -462,117 +485,83 @@ export default {
         ],
         [10, attack >= 10 ? 9 : 5]
       );
-      let name = 'zombie-' + zedCounter;
+      const name = 'zombie-' + zedCounter;
 
-      zedCounter += 1;
-      zedCounter > 3 ? (zedCounter = 1) : false;
+      zedCounter = (zedCounter % 3) + 1; // Cycle through 1, 2, 3
 
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-      this.setObject(currentObjectsIdCounter, {
-        x: x,
-        y: y,
-        name: name,
-        title: '',
-        type: undefined,
-        group: 'zombie',
-        text: false,
-        actions: [
-          { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-          { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-          { id: 'search', label: 'Search', time: 20, energy: -5 },
-          { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-        ],
-        items: lootItemList,
-        locked: undefined,
-        looted: false,
-        infested: false,
-        zednearby: null,
-        active: true,
-        inreach: false,
-        discovered: false,
-        distance: null,
-        attack: attack,
-        defense: defense,
-        dead: false,
-        fighting: false,
-        disabled: false,
-        removed: false,
-      });
+      this.setObject(
+        currentObjectsIdCounter,
+        this.createMapObject({
+          x: x,
+          y: y,
+          name: name,
+          group: 'zombie',
+          actions: [
+            { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+            { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+            { id: 'search', label: 'Search', time: 20, energy: -5 },
+            { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
+          ],
+          items: lootItemList,
+          attack: attack,
+          defense: defense,
+          dead: false,
+        })
+      );
     }
   },
 
   setRatAt: function (x, y) {
-    let lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
-    let name = 'rat';
+    const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
 
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    this.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: name,
-      title: '',
-      type: 'rat',
-      group: 'zombie',
-      text: false,
-      actions: [
-        { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-        { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-        { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-      ],
-      items: lootItemList,
-      locked: undefined,
-      looted: false,
-      infested: false,
-      zednearby: null,
-      active: true,
-      inreach: false,
-      discovered: false,
-      distance: null,
-      attack: Math.floor(Math.random() * 3 + 1),
-      defense: Math.floor(Math.random() * 4 + 2),
-      dead: false,
-      fighting: false,
-      disabled: false,
-      removed: false,
-    });
+    this.setObject(
+      currentObjectsIdCounter,
+      this.createMapObject({
+        x: x,
+        y: y,
+        name: 'rat',
+        type: 'rat',
+        group: 'zombie',
+        actions: [
+          { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+          { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+          { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
+          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+        ],
+        items: lootItemList,
+        attack: Math.floor(Math.random() * 3 + 1),
+        defense: Math.floor(Math.random() * 4 + 2),
+        dead: false,
+      })
+    );
   },
 
   setBeeAt: function (x, y) {
-    let lootItemList = LootUtils.createLootItemList(1, ['meat'], [7, 5], 1);
-    let name = 'bee';
+    const lootItemList = LootUtils.createLootItemList(1, ['meat'], [7, 5], 1);
 
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    this.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: name,
-      title: '',
-      type: 'bee',
-      group: 'zombie',
-      text: false,
-      actions: [
-        { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-        { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-        { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-      ],
-      items: lootItemList,
-      locked: undefined,
-      looted: false,
-      infested: false,
-      zednearby: null,
-      active: true,
-      inreach: false,
-      discovered: false,
-      distance: null,
-      attack: Math.floor(Math.random() * 3 + 1),
-      defense: Math.floor(Math.random() * 4 + 2),
-      dead: false,
-      fighting: false,
-      disabled: false,
-      removed: false,
-    });
+    this.setObject(
+      currentObjectsIdCounter,
+      this.createMapObject({
+        x: x,
+        y: y,
+        name: 'bee',
+        type: 'bee',
+        group: 'zombie',
+        actions: [
+          { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+          { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+          { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
+          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+        ],
+        items: lootItemList,
+        attack: Math.floor(Math.random() * 3 + 1),
+        defense: Math.floor(Math.random() * 4 + 2),
+        dead: false,
+      })
+    );
   },
 
   spawnRatsAt: function (x, y) {
@@ -596,106 +585,74 @@ export default {
   },
 
   spawnAnimalAt: function (name, x, y) {
-    let lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
+    const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    this.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: name,
-      title: '',
-      type: undefined,
-      group: 'animal',
-      text: false,
-      actions: [
-        //{ id: 'catch', label: 'Catch', time: 20, energy: -20 },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-      ],
-      items: lootItemList,
-      locked: undefined,
-      looted: false,
-      infested: false,
-      zednearby: null,
-      active: true,
-      inreach: false,
-      discovered: false,
-      distance: null,
-      attack: false,
-      defense: false,
-      dead: true,
-      fighting: false,
-      disabled: false,
-      removed: false,
-    });
+    this.setObject(
+      currentObjectsIdCounter,
+      this.createMapObject({
+        x: x,
+        y: y,
+        name: name,
+        group: 'animal',
+        actions: [
+          //{ id: 'catch', label: 'Catch', time: 20, energy: -20 },
+          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+        ],
+        items: lootItemList,
+        attack: false,
+        defense: false,
+        dead: true,
+      })
+    );
   },
 
   spawnDoggyAt: function (x, y, optCompanionProps) {
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
     const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
-    this.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: optCompanionProps?.name ?? 'doggy',
-      title: '',
-      type: undefined,
-      group: 'animal',
-      text: false,
-      actions: [
-        { id: 'pet', label: 'Pet', time: 5, energy: -5 },
-        { id: 'scare', label: 'Scare Away', time: 5, energy: -5 },
-        { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-      ],
-      items: lootItemList,
-      locked: undefined,
-      looted: false,
-      infested: false,
-      zednearby: null,
-      active: true,
-      inreach: false,
-      discovered: false,
-      distance: null,
-      attack: optCompanionProps?.damage ?? 4,
-      defense: optCompanionProps?.defense ?? 0,
-      maxHealth: optCompanionProps?.maxHealth ?? 10,
-      health: optCompanionProps?.health ?? 6,
-      dead: optCompanionProps?.dead ?? false,
-      fighting: false,
-      disabled: false,
-      removed: false,
-    });
+    this.setObject(
+      currentObjectsIdCounter,
+      this.createMapObject({
+        x: x,
+        y: y,
+        name: optCompanionProps?.name ?? 'doggy',
+        group: 'animal',
+        actions: [
+          { id: 'pet', label: 'Pet', time: 5, energy: -5 },
+          { id: 'scare', label: 'Scare Away', time: 5, energy: -5 },
+          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+        ],
+        items: lootItemList,
+        attack: optCompanionProps?.damage ?? 4,
+        defense: optCompanionProps?.defense ?? 0,
+        maxHealth: optCompanionProps?.maxHealth ?? 10,
+        health: optCompanionProps?.health ?? 6,
+        dead: optCompanionProps?.dead ?? false,
+      })
+    );
 
     return currentObjectsIdCounter;
   },
 
   setupWeapon: function (x, y, weaponName, forceStats) {
-    let props = weaponProps[weaponName];
+    const props = weaponProps[weaponName];
     const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    this.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: weaponName,
-      title: weaponName.replace('-', ' '),
-      type: undefined,
-      group: 'weapon',
-      text: false,
-      actions: props.preview
-        ? [{ id: 'got-it', label: 'Got it!' }]
-        : [{ id: 'equip', label: 'Equip' }],
-      items: [],
-      locked: undefined,
-      looted: false,
-      zednearby: null,
-      active: true,
-      inreach: false,
-      discovered: false,
-      distance: null,
-      attack: forceStats?.attack || props.attack,
-      defense: forceStats?.defense || props.defense,
-      durability: forceStats?.durability || props.durability,
-      dead: undefined,
-      preview: props.preview,
-      disabled: false,
-      removed: false,
-    });
+    this.setObject(
+      currentObjectsIdCounter,
+      this.createMapObject({
+        x: x,
+        y: y,
+        name: weaponName,
+        title: weaponName.replace('-', ' '),
+        group: 'weapon',
+        actions: props.preview
+          ? [{ id: 'got-it', label: 'Got it!' }]
+          : [{ id: 'equip', label: 'Equip' }],
+        attack: forceStats?.attack || props.attack,
+        defense: forceStats?.defense || props.defense,
+        durability: forceStats?.durability || props.durability,
+        preview: props.preview,
+      })
+    );
   },
 
   setupAllPaths: function () {
