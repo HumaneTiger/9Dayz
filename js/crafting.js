@@ -4,6 +4,7 @@ import Items from './items.js';
 import Player from './player.js';
 import Almanac from './almanac.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
+import Events, { EVENTS } from './events.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
@@ -15,6 +16,14 @@ export default {
     craftContainer.addEventListener('mousedown', this.checkCraftActionClick.bind(this));
     this.bind();
     this.checkCraftingPrerequisits();
+
+    // EVENT: React to inventory changes
+    Events.on(EVENTS.INVENTORY_CHANGED, () => {
+      this.checkCraftingPrerequisits();
+    });
+    Events.on(EVENTS.WEAPON_CHANGED, () => {
+      this.checkCraftingPrerequisits();
+    });
   },
 
   bind: function () {
@@ -90,9 +99,6 @@ export default {
           Player.findAndHandleObjects();
           craftContainer.classList.remove('active');
         }
-        // third - communicate inventory change
-        Items.inventoryChangeFeedback();
-        Items.fillInventorySlots();
       }
     } else if (clickButton && rightMouseButton) {
       const item = clickButton.dataset.item;

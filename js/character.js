@@ -5,6 +5,7 @@ import Items from './items.js';
 import Almanac from './almanac.js';
 import Ui from './ui.js';
 import Audio from './audio.js';
+import Events, { EVENTS } from './events.js';
 
 const inventory = Props.getInventory();
 const characterContainer = document.getElementById('character');
@@ -18,6 +19,14 @@ export default {
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
     this.bind();
+
+    // EVENT: React to inventory changes
+    Events.on(EVENTS.INVENTORY_CHANGED, () => {
+      this.updateWeaponState();
+    });
+    Events.on(EVENTS.WEAPON_CHANGED, () => {
+      this.updateWeaponState();
+    });
   },
 
   bind: function () {
@@ -66,8 +75,6 @@ export default {
         Props.addWeaponToInventory(weaponName, -1, {
           durability: -1 * inventory.items[weaponName].durability,
         });
-        Items.checkCraftingPrerequisits(); // make weapon re-craftable again
-        this.updateWeaponState();
       } else if (action === 'leave' && companion.active) {
         this.removeCompanion();
         this.updateCompanionSlot();
@@ -89,26 +96,20 @@ export default {
             Audio.sfx('improve-weapon');
             if (!preserveResources) {
               Props.addItemToInventory(upgradeItem.attack.item, -1);
-              Items.inventoryChangeFeedback();
             }
-            Items.fillInventorySlots();
           }
         } else if (upgradeButton.classList.contains('defense-upgrade')) {
           inventory.items[weapon].protection += upgradeItem.defense.amount;
           Audio.sfx('improve-weapon');
           if (!preserveResources) {
             Props.addItemToInventory(upgradeItem.defense.item, -1);
-            Items.inventoryChangeFeedback();
           }
-          Items.fillInventorySlots();
         } else if (upgradeButton.classList.contains('durability-upgrade')) {
           inventory.items[weapon].durability += upgradeItem.durability.amount;
           Audio.sfx('repair-weapon');
           if (!preserveResources) {
             Props.addItemToInventory(upgradeItem.durability.item, -1);
-            Items.inventoryChangeFeedback();
           }
-          Items.fillInventorySlots();
         }
       }
     } else if (cardSlot && rightMouseButton) {
@@ -302,7 +303,6 @@ export default {
             slot2.classList.remove('active');
           }
         } else {
-          // fill new free slot
           let freeSlot;
           if (!slot1.classList.contains('active')) {
             freeSlot = slot1;

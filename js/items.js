@@ -9,6 +9,7 @@ import Character from './character.js';
 import Almanac from './almanac.js';
 import Audio from './audio.js';
 import ItemUtils from '../data/utils/item-utils.js';
+import Events, { EVENTS } from './events.js';
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -19,6 +20,14 @@ export default {
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
     this.bind();
+
+    // EVENT: React to inventory changes
+    Events.on(EVENTS.INVENTORY_CHANGED, ({ oldTotal, newTotal }) => {
+      this.fillInventorySlots();
+      if (oldTotal !== newTotal) {
+        this.inventoryChangeFeedback();
+      }
+    });
   },
 
   bind: function () {
@@ -92,11 +101,6 @@ export default {
     window.setTimeout(function () {
       document.querySelector('#actions .inventory').classList.remove('transfer');
     }, 400);
-    Crafting.checkCraftingPrerequisits();
-  },
-
-  checkCraftingPrerequisits: function () {
-    Crafting.checkCraftingPrerequisits(); // delegate
   },
 
   checkForSlotClick: function (ev) {
@@ -135,7 +139,6 @@ export default {
         }
         if (itemProps.food || itemProps.drink || itemProps.energy) {
           Props.addItemToInventory(item, -1);
-          this.fillInventorySlots();
           if (!this.inventoryContains(item)) {
             this.resetInventorySlotHoverEffect();
           }
@@ -144,7 +147,6 @@ export default {
         Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
         Character.feedCompanion(item, itemProps.food);
         Props.addItemToInventory(item, -1);
-        this.fillInventorySlots();
         if (!this.inventoryContains(item)) {
           this.resetInventorySlotHoverEffect();
         }
@@ -350,7 +352,5 @@ export default {
         Props.calcItemProps(item)
       );
     }
-    Character.updateWeaponState();
-    Cooking.checkAllCookingModeCards();
   },
 };

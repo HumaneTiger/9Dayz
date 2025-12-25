@@ -25,6 +25,11 @@ var inventory = {
   rightHand: null,
 };
 
+var inventoryBatch = {
+  active: false,
+  oldTotal: 0,
+};
+
 var crafting = {
   total: 0,
 };
@@ -306,12 +311,37 @@ export default {
     };
   },
 
+  /**
+   * Begin batching inventory changes
+   * Captures current total, multiple adds will emit single event
+   */
+  beginInventoryBatch: function () {
+    inventoryBatch.active = true;
+    inventoryBatch.oldTotal = inventory.itemNumbers;
+  },
+
+  /**
+   * End batching and emit single INVENTORY_CHANGED event
+   */
+  endInventoryBatch: function () {
+    inventoryBatch.active = false;
+    const newTotal = inventory.itemNumbers;
+
+    // EVENT: Notify that inventory changed
+    Events.emit(EVENTS.INVENTORY_CHANGED, {
+      oldTotal: inventoryBatch.oldTotal,
+      newTotal: newTotal,
+    });
+  },
+
   addWeaponToInventory: function (item, addAmount, setWeaponProps) {
     const amount = parseInt(addAmount),
       setDamage = setWeaponProps.damage,
       setProtection = setWeaponProps.protection,
       setDurability = setWeaponProps.durability,
       itemProps = items[item];
+
+    const oldTotal = inventory.itemNumbers;
 
     if (inventory.items[item] !== undefined) {
       // weapon was added to inventory before
@@ -345,6 +375,14 @@ export default {
       console.log('adding weapon "' + item + '" to inventory failed');
     }
     this.calcTotalInventoryItems();
+
+    // EVENT: Emit if not batching
+    if (!inventoryBatch.active) {
+      Events.emit(EVENTS.WEAPON_CHANGED, {
+        oldTotal: oldTotal,
+        newTotal: inventory.itemNumbers,
+      });
+    }
   },
 
   addCompanion: function (objectId) {
@@ -361,6 +399,8 @@ export default {
   addItemToInventory: function (item, addAmount) {
     const amount = parseInt(addAmount),
       itemProps = items[item];
+
+    const oldTotal = inventory.itemNumbers;
 
     if (inventory.items[item] !== undefined) {
       // item was added to inventory before
@@ -379,6 +419,14 @@ export default {
       console.log('adding item "' + item + '" to inventory failed');
     }
     this.calcTotalInventoryItems();
+
+    // EVENT: Emit if not batching
+    if (!inventoryBatch.active) {
+      Events.emit(EVENTS.INVENTORY_CHANGED, {
+        oldTotal: oldTotal,
+        newTotal: inventory.itemNumbers,
+      });
+    }
   },
 
   calcTotalInventoryItems: function () {

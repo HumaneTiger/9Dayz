@@ -5,6 +5,13 @@
  * Use events for simple notifications only, not orchestration
  */
 
+// Central event registry - all events documented here
+export const EVENTS = {
+  PLAYER_PROP_CHANGED: 'player:propChanged',
+  INVENTORY_CHANGED: 'inventory:changed',
+  WEAPON_CHANGED: 'weapon:changed',
+};
+
 class EventBus {
   constructor() {
     this.listeners = {};
@@ -28,10 +35,5 @@ class EventBus {
     this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
   }
 }
-
-// Central event registry - all events documented here
-export const EVENTS = {
-  PLAYER_PROP_CHANGED: 'player:propChanged',
-};
 
 export default new EventBus();

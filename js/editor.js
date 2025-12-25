@@ -60,6 +60,7 @@ export default {
               ) {
                 Props.setupWeapon(squareX, squareY, selectedObject);
               } else if (selectedObject === 'care-package') {
+                Props.beginInventoryBatch();
                 Props.addItemToInventory('tomato', 1);
                 Props.addItemToInventory('carrot', 1);
                 Props.addItemToInventory('pepper', 1);
@@ -69,8 +70,7 @@ export default {
                 Props.addItemToInventory('snack-2', 2);
                 Props.addItemToInventory('knife', 1);
                 Props.addItemToInventory('energy-pills', 1);
-                Items.inventoryChangeFeedback();
-                Items.fillInventorySlots();
+                Props.endInventoryBatch();
               } else {
                 Props.setupBuilding(squareX, squareY, new Array(selectedObject));
               }

@@ -322,8 +322,6 @@ export default {
     }
     object.items.find(singleItem => singleItem.name === itemName).amount = 0;
     container.classList.add('transfer');
-    Items.inventoryChangeFeedback();
-    Items.fillInventorySlots();
     Audio.sfx('pick', 0, 0.1);
     window.setTimeout(
       container => {
@@ -566,35 +564,30 @@ export default {
 
   simulateCollecting: function (cardId, energy) {
     const object = Props.getObject(cardId);
-    Props.addItemToInventory(object.name, 1);
-    Items.inventoryChangeFeedback();
     object.removed = true;
     window.setTimeout(
       (cardId, energy) => {
-        Items.fillInventorySlots();
-        Items.checkCraftingPrerequisits();
+        Props.addItemToInventory(object.name, 1);
         Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
       },
-      800,
+      1200,
       cardId,
       energy
     );
   },
 
   simulateEquipping: function (cardId) {
-    const object = Props.getObject(cardId);
-    if (object.group === 'weapon' && object.name) {
-      Props.addWeaponToInventory(object.name, 1, {
-        durability: object.durability,
-        damage: object.attack,
-        protection: object.defense,
-      });
-    }
     window.setTimeout(
       cardId => {
-        Items.fillInventorySlots();
-        Items.checkCraftingPrerequisits();
+        const object = Props.getObject(cardId);
+        if (object.group === 'weapon' && object.name) {
+          Props.addWeaponToInventory(object.name, 1, {
+            durability: object.durability,
+            damage: object.attack,
+            protection: object.defense,
+          });
+        }
         this.goBackFromAction(cardId);
       },
       800,
@@ -618,12 +611,12 @@ export default {
         } else if (Items.inventoryContains('axe')) {
           Props.addWeaponToInventory('axe', 0, { durability: -1 });
         }
+        Props.beginInventoryBatch();
         Props.addItemToInventory('stump', 1);
         Props.addItemToInventory('branch', 2 + Math.round(Math.random() - 0.25));
         Props.addItemToInventory('straw-wheet', Math.round(Math.random() - 0.25));
-        Items.inventoryChangeFeedback();
-        Items.fillInventorySlots();
         Props.changePlayerProp('energy', energy);
+        Props.endInventoryBatch();
       },
       cardId,
       time,
@@ -715,8 +708,6 @@ export default {
         } else if (Items.inventoryContains('axe')) {
           Props.addWeaponToInventory('axe', 0, { durability: -1 });
         }
-        Items.fillInventorySlots();
-        Items.checkCraftingPrerequisits();
         Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
         this.checkForInfested(cardId);
@@ -738,8 +729,6 @@ export default {
         if (Items.inventoryContains('key')) {
           Props.addItemToInventory('key', -1);
         }
-        Items.fillInventorySlots();
-        Items.checkCraftingPrerequisits();
         Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
         this.checkForInfested(cardId);
@@ -815,8 +804,6 @@ export default {
           const object = Props.getObject(cardId);
           Props.spawnAnimalAt('fish', object.x, object.y);
           Props.addWeaponToInventory('fishing-rod', 0, { durability: -1 });
-          Items.fillInventorySlots();
-          Items.checkCraftingPrerequisits();
         }
         this.goBackFromAction(cardId);
       },

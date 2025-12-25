@@ -6,6 +6,8 @@ import { default as Crafting } from './crafting.js';
 import { default as Tutorial } from './tutorial.js';
 import { default as Ui } from './ui.js';
 import { default as Checkpoint } from './checkpoint.js';
+import { default as Character } from './character.js';
+import { default as Cooking } from './cooking.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -80,6 +82,7 @@ export default {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
 
     // TESTING
+    Props.beginInventoryBatch();
     if (Props.getGameProp('local')) {
       Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
@@ -101,10 +104,13 @@ export default {
     Props.addWeaponToInventory('improvised-axe', 0, { durability: 0 });
     Props.addWeaponToInventory('improvised-whip', 0, { durability: 0 });
     Props.addWeaponToInventory('fishing-rod', 0, { durability: 0 });
+    Props.endInventoryBatch();
 
     Props.modifyObjectProperties();
     Items.generateInventorySlots();
     Items.fillInventorySlots();
+    Character.updateWeaponState();
+    Cooking.checkAllCookingModeCards();
     Crafting.checkCraftingPrerequisits();
 
     Props.spawnDoggyAt(12, 44);

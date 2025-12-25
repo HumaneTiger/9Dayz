@@ -3,12 +3,18 @@ import Items from './items.js';
 import Almanac from './almanac.js';
 import Audio from './audio.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
+import Events, { EVENTS } from './events.js';
 
 const cookingRecipes = RecipeDefinitions.cookingRecipes;
 
 export default {
   init: function () {
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
+
+    // EVENT: React to inventory changes
+    Events.on(EVENTS.INVENTORY_CHANGED, () => {
+      this.checkAllCookingModeCards();
+    });
   },
 
   start: function (cardRef) {
@@ -104,8 +110,6 @@ export default {
             Props.addItemToInventory(cookingRecipes[recipe][0], -1);
           }
         }
-        Items.inventoryChangeFeedback();
-        Items.fillInventorySlots();
       } else if (slotActive && rightMouseButton) {
         const item = slotActive.dataset?.item;
         if (item !== undefined) {

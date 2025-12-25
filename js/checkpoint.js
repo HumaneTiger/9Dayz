@@ -97,6 +97,7 @@ export default {
     // ===== INVENTORY =====
     // Add zero items first to present crafting options in Almanac
     // TODO: This should be handled by the almanac restoration system
+    Props.beginInventoryBatch();
     Props.addItemToInventory('tape', 0);
     Props.addItemToInventory('sharp-stick', 0);
     Props.addItemToInventory('rope', 0);
@@ -119,6 +120,7 @@ export default {
         Props.addItemToInventory(inventoryItems[key].name, inventoryItems[key].amount);
       }
     }
+    Props.endInventoryBatch();
 
     // Process inventory for UI
     Props.modifyObjectProperties();
