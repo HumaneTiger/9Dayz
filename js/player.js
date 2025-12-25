@@ -364,14 +364,21 @@ export default {
     let target = ev.target;
     let synthKey = '';
 
-    if (target.classList.contains('up')) {
-      synthKey = 'w';
-    } else if (target.classList.contains('down')) {
-      synthKey = 's';
-    } else if (target.classList.contains('left')) {
-      synthKey = 'a';
-    } else if (target.classList.contains('right')) {
-      synthKey = 'd';
+    const direction = ['up', 'down', 'left', 'right'].find(dir => target.classList.contains(dir));
+
+    switch (direction) {
+      case 'up':
+        synthKey = 'w';
+        break;
+      case 'down':
+        synthKey = 's';
+        break;
+      case 'left':
+        synthKey = 'a';
+        break;
+      case 'right':
+        synthKey = 'd';
+        break;
     }
 
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: synthKey }));

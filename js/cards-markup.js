@@ -166,16 +166,22 @@ export default {
 
     let cardMarkup = cardMarkupPre;
 
-    if (object.group === 'building') {
-      cardMarkup += cardMarkupBuilding;
-    } else if (object.group === 'zombie') {
-      cardMarkup += cardMarkupZombie;
-    } else if (object.group === 'event') {
-      cardMarkup += cardMarkupEvent;
-    } else if (object.group === 'weapon') {
-      cardMarkup += cardMarkupWeapon;
-    } else if (object.group === 'animal') {
-      cardMarkup += cardMarkupAnimal;
+    switch (object.group) {
+      case 'building':
+        cardMarkup += cardMarkupBuilding;
+        break;
+      case 'zombie':
+        cardMarkup += cardMarkupZombie;
+        break;
+      case 'event':
+        cardMarkup += cardMarkupEvent;
+        break;
+      case 'weapon':
+        cardMarkup += cardMarkupWeapon;
+        break;
+      case 'animal':
+        cardMarkup += cardMarkupAnimal;
+        break;
     }
 
     if (object.actions.length) {

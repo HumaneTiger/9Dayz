@@ -15,77 +15,95 @@ export default {
     this.initDevConsole();
   },
 
+  getActionType: function (element) {
+    const actions = ['handle', 'select-square', 'place-object', 'beam-character', 'shift-time'];
+    return actions.find(action => element.classList.contains(action));
+  },
+
   handleClick: function (ev) {
     const target = ev.target;
     const leftMouseButton = ev.button === 0;
 
     if (leftMouseButton) {
       if (target.closest('#card-console')) {
-        if (target.classList.contains('handle')) {
-          document.getElementById('card-console').classList.toggle('out');
-        } else if (target.classList.contains('select-square')) {
-          squareFreeze = false;
-          squareX = 0;
-          squareY = 0;
-          document.querySelector('#card-console .selected-square').textContent = '';
-          document.getElementById('square-marker').classList.remove('freeze');
-          document.getElementById('square-marker').classList.remove('is--hidden');
-        } else if (target.classList.contains('place-object')) {
-          if (squareX || squareY) {
-            let selectedObject = document.querySelector('#card-console .select-object').value;
-            if (selectedObject === 'zombie') {
-              Props.setZedAt(squareX, squareY, 1);
-            } else if (selectedObject === 'rats') {
-              Props.spawnRatsAt(squareX, squareY);
-            } else if (
-              selectedObject === 'improvised-axe' ||
-              selectedObject === 'axe' ||
-              selectedObject === 'wooden-club' ||
-              selectedObject === 'baseball-bat' ||
-              selectedObject === 'wrench' ||
-              selectedObject === 'improvised-whip' ||
-              selectedObject === 'fishing-rod'
-            ) {
-              Props.setupWeapon(squareX, squareY, selectedObject);
-            } else if (selectedObject === 'care-package') {
-              Props.addItemToInventory('tomato', 1);
-              Props.addItemToInventory('carrot', 1);
-              Props.addItemToInventory('pepper', 1);
-              Props.addItemToInventory('tape', 1);
-              Props.addItemToInventory('drink-2', 2);
-              Props.addItemToInventory('snack-1', 2);
-              Props.addItemToInventory('snack-2', 2);
-              Props.addItemToInventory('knife', 1);
-              Props.addItemToInventory('energy-pills', 1);
-              Items.inventoryChangeFeedback();
-              Items.fillInventorySlots();
-            } else {
-              Props.setupBuilding(squareX, squareY, new Array(selectedObject));
+        const actionType = this.getActionType(target);
+
+        switch (actionType) {
+          case 'handle':
+            document.getElementById('card-console').classList.toggle('out');
+            break;
+
+          case 'select-square':
+            squareFreeze = false;
+            squareX = 0;
+            squareY = 0;
+            document.querySelector('#card-console .selected-square').textContent = '';
+            document.getElementById('square-marker').classList.remove('freeze');
+            document.getElementById('square-marker').classList.remove('is--hidden');
+            break;
+
+          case 'place-object':
+            if (squareX || squareY) {
+              let selectedObject = document.querySelector('#card-console .select-object').value;
+              if (selectedObject === 'zombie') {
+                Props.setZedAt(squareX, squareY, 1);
+              } else if (selectedObject === 'rats') {
+                Props.spawnRatsAt(squareX, squareY);
+              } else if (
+                selectedObject === 'improvised-axe' ||
+                selectedObject === 'axe' ||
+                selectedObject === 'wooden-club' ||
+                selectedObject === 'baseball-bat' ||
+                selectedObject === 'wrench' ||
+                selectedObject === 'improvised-whip' ||
+                selectedObject === 'fishing-rod'
+              ) {
+                Props.setupWeapon(squareX, squareY, selectedObject);
+              } else if (selectedObject === 'care-package') {
+                Props.addItemToInventory('tomato', 1);
+                Props.addItemToInventory('carrot', 1);
+                Props.addItemToInventory('pepper', 1);
+                Props.addItemToInventory('tape', 1);
+                Props.addItemToInventory('drink-2', 2);
+                Props.addItemToInventory('snack-1', 2);
+                Props.addItemToInventory('snack-2', 2);
+                Props.addItemToInventory('knife', 1);
+                Props.addItemToInventory('energy-pills', 1);
+                Items.inventoryChangeFeedback();
+                Items.fillInventorySlots();
+              } else {
+                Props.setupBuilding(squareX, squareY, new Array(selectedObject));
+              }
+              Player.updatePlayer();
+              squareFreeze = true;
+              document.getElementById('square-marker').classList.remove('freeze');
+              document.getElementById('square-marker').classList.add('is--hidden');
             }
-            Player.updatePlayer();
-            squareFreeze = true;
-            document.getElementById('square-marker').classList.remove('freeze');
-            document.getElementById('square-marker').classList.add('is--hidden');
+            break;
+
+          case 'beam-character':
+            if (squareX || squareY) {
+              Player.setPlayerPosition(squareX, squareY);
+              Player.updatePlayer(true);
+              squareFreeze = true;
+              document.getElementById('square-marker').classList.remove('freeze');
+              document.getElementById('square-marker').classList.add('is--hidden');
+            }
+            break;
+
+          case 'shift-time': {
+            const selectedDay = parseInt(document.querySelector('#card-console .select-day').value);
+            const todayHours = 7;
+            window.timeIsUnity.gameTick = 0;
+            window.timeIsUnity.gameHours = 24 * selectedDay + todayHours;
+            window.timeIsUnity.gameDays = selectedDay;
+            window.timeIsUnity.todayHours = todayHours;
+            window.timeIsUnity.todayTime = `0${todayHours}:00`;
+            Props.setGameProp('startDay', selectedDay);
+            Start.adjustDayTimeUI();
+            Ui.showNewDay(0, true);
+            break;
           }
-        } else if (target.classList.contains('beam-character')) {
-          if (squareX || squareY) {
-            Player.setPlayerPosition(squareX, squareY);
-            Player.updatePlayer(true);
-            squareFreeze = true;
-            document.getElementById('square-marker').classList.remove('freeze');
-            document.getElementById('square-marker').classList.add('is--hidden');
-          }
-        } else if (target.classList.contains('shift-time')) {
-          const selectedDay = parseInt(document.querySelector('#card-console .select-day').value);
-          const todayHours = 7;
-          window.timeIsUnity.gameTick = 0;
-          window.timeIsUnity.gameHours = 24 * selectedDay + todayHours;
-          window.timeIsUnity.gameDays = selectedDay;
-          window.timeIsUnity.todayHours = todayHours;
-          window.timeIsUnity.todayTime = `0${todayHours}:00`;
-          Props.setGameProp('startDay', selectedDay);
-          Start.adjustDayTimeUI();
-          Ui.showNewDay(0, true);
         }
       }
     }

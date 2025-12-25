@@ -135,28 +135,47 @@ export default {
     Items.init();
   },
 
+  // just finds a class among a predefined set
+  getActionType: function (element) {
+    const classes = [
+      'start-real',
+      'start-game',
+      'back-screen-2',
+      'continue-real',
+      'start-tutorial',
+      'restart',
+      'resume',
+      'card-tutorial-confirm',
+    ];
+    return classes.find(cls => element.classList.contains(cls));
+  },
+
   handleClick: function (ev) {
     const target = ev.target;
-    const startscreenAction = target.closest('#startscreen');
     const leftMouseButton = ev.button === 0;
 
     if (Props.getGameProp('startMode') === 1) {
       this.switchToScreen2();
-    } else if (leftMouseButton) {
-      if (startscreenAction) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        const action = target.closest('.button');
-        const slider = target.closest('.slider');
-        const href = target.getAttribute('data-href');
-        const character = target.closest('.button')?.getAttribute('data-character');
-        if (action) {
-          if (action.classList.contains('start-real')) {
+      return;
+    }
+
+    const startscreenAction = target.closest('#startscreen');
+    if (startscreenAction && leftMouseButton) {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      // Handle action buttons
+      const action = target.closest('.button');
+      if (action) {
+        const actionType = this.getActionType(action);
+        switch (actionType) {
+          case 'start-real':
             Audio.sfx('click');
             localStorage.removeItem('saveCheckpoint');
             this.prepareGameStart();
             this.chooseCharacter();
-          } else if (action.classList.contains('start-game')) {
+            break;
+          case 'start-game':
             if (!action.classList.contains('not--available')) {
               Audio.sfx('click');
               this.initProps();
@@ -164,60 +183,77 @@ export default {
             } else {
               Audio.sfx('nope');
             }
-          } else if (action.classList.contains('back-screen-2')) {
+            break;
+          case 'back-screen-2':
             Audio.sfx('click');
             this.switchToScreen2();
-          } else if (action.classList.contains('continue-real')) {
+            break;
+          case 'continue-real':
             Audio.sfx('click');
             this.restoreCheckpoint(saveCheckpoint);
             this.prepareGameStart();
             this.startReal();
-          } else if (action.classList.contains('start-tutorial')) {
+            break;
+          case 'start-tutorial':
             this.prepareGameStart();
             this.switchToScreen3();
-          } else if (action.classList.contains('restart')) {
+            break;
+          case 'restart':
             window.setTimeout(() => {
               document.location.reload();
             }, 300);
-          } else if (action.classList.contains('resume')) {
+            break;
+          case 'resume':
             startscreenContainer.querySelector('.screen__quit').classList.add('is--hidden');
             startscreenContainer.classList.add('is--hidden');
             startscreenContainer.style.opacity = 0;
             Ui.showUI();
-          } else if (action.classList.contains('card-tutorial-confirm')) {
+            break;
+          case 'card-tutorial-confirm':
             this.prepareGameStart();
             this.startTutorial();
-          } else if (character) {
-            Audio.sfx('click');
-            document
-              .querySelector('.screen__menu div[data-character].is--selected')
-              ?.classList.remove('is--selected');
-            document
-              .querySelector('.screen__menu div[data-character="' + character + '"]')
-              ?.classList.add('is--selected');
-            document
-              .querySelector('#startscreen .character__button.is--selected')
-              ?.classList.remove('is--selected');
-            target.closest('.character__button').classList.add('is--selected');
-            Props.setGameProp('character', character);
-            this.presetCharacterInventory();
-          }
-        }
-        if (slider) {
-          Audio.sfx('click');
-          if (slider.id && slider.id === 'fullscreen') {
-            if (slider.classList.contains('on')) {
-              slider.classList.remove('on');
-            } else {
-              slider.classList.add('on');
+            break;
+          default: {
+            const character = target.closest('.button')?.getAttribute('data-character');
+            if (character) {
+              Audio.sfx('click');
+              document
+                .querySelector('.screen__menu div[data-character].is--selected')
+                ?.classList.remove('is--selected');
+              document
+                .querySelector('.screen__menu div[data-character="' + character + '"]')
+                ?.classList.add('is--selected');
+              document
+                .querySelector('#startscreen .character__button.is--selected')
+                ?.classList.remove('is--selected');
+              target.closest('.character__button').classList.add('is--selected');
+              Props.setGameProp('character', character);
+              this.presetCharacterInventory();
             }
-          } else {
-            slider.classList.toggle('on');
+            break;
           }
         }
-        if (href && href !== '#') {
-          window.open(href, '_blank');
+      }
+
+      // Handle sliders
+      const slider = target.closest('.slider');
+      if (slider) {
+        Audio.sfx('click');
+        if (slider.id && slider.id === 'fullscreen') {
+          if (slider.classList.contains('on')) {
+            slider.classList.remove('on');
+          } else {
+            slider.classList.add('on');
+          }
+        } else {
+          slider.classList.toggle('on');
         }
+      }
+
+      // Handle external links
+      const href = target.getAttribute('data-href');
+      if (href && href !== '#') {
+        window.open(href, '_blank');
       }
     }
   },
