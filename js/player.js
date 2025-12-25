@@ -58,14 +58,6 @@ export default {
   },
 
   /**
-   * Proxy method for backward compatibility
-   * TODO: Replace all calls with Props.changePlayerProp()
-   */
-  changeProps: function (prop, change) {
-    return Props.changePlayerProp(prop, change);
-  },
-
-  /**
    * Update UI in response to player property changes (event handler)
    * All UI updates for property changes happen here
    */
@@ -138,10 +130,10 @@ export default {
     document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.health span.meter').style.paddingRight = '0'; // do not remove, or meter will stick out to the right
-    this.changeProps('food', 0);
-    this.changeProps('thirst', 0);
-    this.changeProps('energy', 0);
-    this.changeProps('health', 0);
+    Props.changePlayerProp('food', 0);
+    Props.changePlayerProp('thirst', 0);
+    Props.changePlayerProp('energy', 0);
+    Props.changePlayerProp('health', 0);
   },
 
   checkForDamage: function () {
@@ -189,10 +181,10 @@ export default {
 
   initPlayer: function () {
     Ui.showUI();
-    this.changeProps('health', 0); // triggers stats bar updates
-    this.changeProps('food', 0); // triggers stats bar updates
-    this.changeProps('thirst', 0); // triggers stats bar updates
-    this.changeProps('energy', 0); // triggers stats bar updates
+    Props.changePlayerProp('health', 0); // triggers stats bar updates
+    Props.changePlayerProp('food', 0); // triggers stats bar updates
+    Props.changePlayerProp('thirst', 0); // triggers stats bar updates
+    Props.changePlayerProp('energy', 0); // triggers stats bar updates
     this.movePlayerTo(playerPosition.x, playerPosition.y);
     if (playerPosition.y < 20) {
       Map.moveMapYTo(20);
@@ -220,20 +212,20 @@ export default {
     }, 0);
 
     if (!noPenalty) {
-      this.changeProps('energy', -1);
-      this.changeProps('thirst', -2);
-      this.changeProps('food', -1);
+      Props.changePlayerProp('energy', -1);
+      Props.changePlayerProp('thirst', -2);
+      Props.changePlayerProp('food', -1);
     }
 
     if (Props.getGameProp('character') === 'snackivore') {
-      this.changeProps('energy', -1);
-      this.changeProps('thirst', -1);
-      this.changeProps('food', -1);
+      Props.changePlayerProp('energy', -1);
+      Props.changePlayerProp('thirst', -1);
+      Props.changePlayerProp('food', -1);
     }
 
-    if (this.getProp('food') <= 0) this.changeProps('health', -5);
-    if (this.getProp('thirst') <= 0) this.changeProps('health', -5);
-    if (this.getProp('energy') <= 0) this.changeProps('energy', -5);
+    if (this.getProp('food') <= 0) Props.changePlayerProp('health', -5);
+    if (this.getProp('thirst') <= 0) Props.changePlayerProp('health', -5);
+    if (this.getProp('energy') <= 0) Props.changePlayerProp('energy', -5);
 
     this.checkForDeath(true);
   },

@@ -119,10 +119,10 @@ export default {
     );
     //Player.setPlayerPosition(18, 37);
 
-    Player.changeProps('health', 100);
-    Player.changeProps('food', 65);
-    Player.changeProps('thirst', 70);
-    Player.changeProps('energy', 75);
+    Props.changePlayerProp('health', 100);
+    Props.changePlayerProp('food', 65);
+    Props.changePlayerProp('thirst', 70);
+    Props.changePlayerProp('energy', 75);
 
     Player.init();
     Items.init();

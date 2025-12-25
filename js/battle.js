@@ -407,9 +407,9 @@ export default {
   },
 
   nextTurn: function () {
-    Player.changeProps('protection', -100);
-    Player.changeProps('actions', -100);
-    Player.changeProps('actions', 3);
+    Props.changePlayerProp('protection', -100);
+    Props.changePlayerProp('actions', -100);
+    Props.changePlayerProp('actions', 3);
 
     document.querySelector('#action-points-warning .very-low')?.classList.add('is--hidden');
     document.querySelector('#action-points-warning .low')?.classList.add('is--hidden');
@@ -417,11 +417,11 @@ export default {
 
     // AP buffs when energy is low
     if (Player.getProp('energy') < 10) {
-      Player.changeProps('actions', -2);
+      Props.changePlayerProp('actions', -2);
       document.querySelector('#action-points-warning .very-low')?.classList.remove('is--hidden');
       document.querySelector('#action-points')?.classList.add('low-energy');
     } else if (Player.getProp('energy') < 33) {
-      Player.changeProps('actions', -1);
+      Props.changePlayerProp('actions', -1);
       document.querySelector('#action-points-warning .low')?.classList.remove('is--hidden');
       document.querySelector('#action-points')?.classList.add('low-energy');
     }
@@ -515,8 +515,8 @@ export default {
       : false;
 
     /* do this only once upfront for all attacks */
-    Player.changeProps('protection', item.protection);
-    Player.changeProps('actions', -1);
+    Props.changePlayerProp('protection', item.protection);
+    Props.changePlayerProp('actions', -1);
     if (item.durability && item.durability > 0) {
       item.durability -= 1;
     }
@@ -538,8 +538,8 @@ export default {
     const item = Items.getItemByName(dragEl.dataset.item);
 
     if (!multiAttack) {
-      Player.changeProps('protection', item.protection);
-      Player.changeProps('actions', -1);
+      Props.changePlayerProp('protection', item.protection);
+      Props.changePlayerProp('actions', -1);
     }
     this.showBattleStats('+' + item.protection, 'blue');
     Audio.sfx('punch');
@@ -591,7 +591,7 @@ export default {
 
     if (this.zedIsDead()) {
       window.setTimeout(() => {
-        Player.changeProps('energy', -15);
+        Props.changePlayerProp('energy', -15);
         this.endBattle();
       }, 800);
     } else if (Player.getProp('actions') === 0) {
@@ -663,12 +663,12 @@ export default {
             const attack = zedObject.attack;
             const dmg = Player.getProp('protection') - attack;
             if (dmg < 0) {
-              Player.changeProps('health', dmg);
+              Props.changePlayerProp('health', dmg);
               this.showBattleStats(dmg, 'red');
             } else {
               this.showBattleStats(-1 * attack, 'blue');
             }
-            Player.changeProps('protection', -1 * attack);
+            Props.changePlayerProp('protection', -1 * attack);
             battleHealthMeter.classList.add('heavy-shake');
           }
         },

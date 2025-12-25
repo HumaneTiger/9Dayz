@@ -161,10 +161,10 @@ export default {
 
     // ===== PLAYER STATS =====
     // Restore health, food, thirst, energy
-    Player.changeProps('health', checkpoint.playerStats.health);
-    Player.changeProps('food', checkpoint.playerStats.food);
-    Player.changeProps('thirst', checkpoint.playerStats.thirst);
-    Player.changeProps('energy', checkpoint.playerStats.energy);
+    Props.changePlayerProp('health', checkpoint.playerStats.health);
+    Props.changePlayerProp('food', checkpoint.playerStats.food);
+    Props.changePlayerProp('thirst', checkpoint.playerStats.thirst);
+    Props.changePlayerProp('energy', checkpoint.playerStats.energy);
 
     // ===== TIME =====
     // Restore game time and day/night cycle

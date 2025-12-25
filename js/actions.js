@@ -427,7 +427,7 @@ export default {
             }
             if (index + 1 === allItems.length) {
               this.goBackFromAction(cardId);
-              Player.changeProps('energy', energy);
+              Props.changePlayerProp('energy', energy);
               if (
                 !allItems.some(function (item) {
                   return item.amount > 0;
@@ -459,7 +459,7 @@ export default {
         Props.addCompanion(cardId);
         Character.updateCompanionSlot();
         this.goBackFromAction(cardId);
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
       },
       cardId,
       time,
@@ -474,7 +474,7 @@ export default {
     this.fastForward(
       function (cardId, energy) {
         this.goBackFromAction(cardId);
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
       },
       cardId,
       time,
@@ -495,7 +495,7 @@ export default {
         const allFoundObjectIds = Player.findObjects(object.x, object.y);
         Player.handleFoundObjectIds(allFoundObjectIds);
         Map.hideScoutMarker();
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
         this.checkForInfested(cardId);
       },
       cardId,
@@ -521,10 +521,10 @@ export default {
     }
     this.fastForward(
       function (cardId, energy) {
-        Player.changeProps('energy', energy);
-        Player.changeProps('health', Math.floor(energy / 2));
-        Player.changeProps('food', -10);
-        Player.changeProps('thirst', -14);
+        Props.changePlayerProp('energy', energy);
+        Props.changePlayerProp('health', Math.floor(energy / 2));
+        Props.changePlayerProp('food', -10);
+        Props.changePlayerProp('thirst', -14);
         Map.hideScoutMarker();
         this.goBackFromAction(cardId);
       },
@@ -542,10 +542,10 @@ export default {
     }
     this.fastForward(
       function (cardId, energy) {
-        Player.changeProps('energy', energy);
-        Player.changeProps('health', Math.floor(energy / 2));
-        Player.changeProps('food', -18);
-        Player.changeProps('thirst', -24);
+        Props.changePlayerProp('energy', energy);
+        Props.changePlayerProp('health', Math.floor(energy / 2));
+        Props.changePlayerProp('food', -18);
+        Props.changePlayerProp('thirst', -24);
         Map.hideScoutMarker();
         this.goBackFromAction(cardId);
       },
@@ -573,7 +573,7 @@ export default {
       (cardId, energy) => {
         Items.fillInventorySlots();
         Items.checkCraftingPrerequisits();
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
       },
       800,
@@ -623,7 +623,7 @@ export default {
         Props.addItemToInventory('straw-wheet', Math.round(Math.random() - 0.25));
         Items.inventoryChangeFeedback();
         Items.fillInventorySlots();
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
       },
       cardId,
       time,
@@ -655,7 +655,7 @@ export default {
           const cardRef = Cards.getCardById(cardId);
           Cards.enableActions();
           Player.lockMovement(false);
-          Player.changeProps('energy', energy);
+          Props.changePlayerProp('energy', energy);
           Audio.sfx('nope');
           cardRef?.classList.add('card-heavy-shake');
           window.setTimeout(() => {
@@ -717,7 +717,7 @@ export default {
         }
         Items.fillInventorySlots();
         Items.checkCraftingPrerequisits();
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
         this.checkForInfested(cardId);
       },
@@ -740,7 +740,7 @@ export default {
         }
         Items.fillInventorySlots();
         Items.checkCraftingPrerequisits();
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
         this.checkForInfested(cardId);
       },
@@ -775,7 +775,7 @@ export default {
       function (cardId, energy) {
         const object = Props.getObject(cardId);
         object.locked = false;
-        Player.changeProps('energy', energy);
+        Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
       },
       cardId,
@@ -789,7 +789,7 @@ export default {
     Audio.sfx('water');
     this.fastForward(
       function (cardId) {
-        Player.changeProps('thirst', 50);
+        Props.changePlayerProp('thirst', 50);
         this.goBackFromAction(cardId);
       },
       cardId,
@@ -804,9 +804,9 @@ export default {
     this.fastForward(
       function (cardId) {
         Map.hideScoutMarker();
-        Player.changeProps('energy', energy);
-        Player.changeProps('food', -5);
-        Player.changeProps('thirst', -10);
+        Props.changePlayerProp('energy', energy);
+        Props.changePlayerProp('food', -5);
+        Props.changePlayerProp('thirst', -10);
         // always success for now, add minigame later
         // baits would be nice as well
 

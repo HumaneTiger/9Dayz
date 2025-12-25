@@ -111,13 +111,13 @@ export default {
 
       if (!Props.getGameProp('feedingCompanion')) {
         if (itemProps.food > 0) {
-          Player.changeProps('food', itemProps.food);
+          Props.changePlayerProp('food', itemProps.food);
         }
         if (itemProps.drink > 0) {
-          Player.changeProps('thirst', itemProps.drink);
+          Props.changePlayerProp('thirst', itemProps.drink);
         }
         if (itemProps.energy > 0) {
-          Player.changeProps('energy', itemProps.energy);
+          Props.changePlayerProp('energy', itemProps.energy);
           // with enough new energy, certain actions become unlocked
           Cards.calculateCardDeckProperties();
           Cards.updateCardDeck();
