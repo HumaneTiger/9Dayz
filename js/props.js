@@ -1,3 +1,4 @@
+import Events, { EVENTS } from './events.js';
 import buildingData from '../data/map/building-instances.js';
 import zombieData from '../data/map/zombie-instances.js';
 import pathData from '../data/map/path-instances.js';
@@ -163,6 +164,27 @@ export default {
 
   getPlayerProps: function () {
     return playerProps;
+  },
+
+  /**
+   * Change a player property (state only)
+   * Emits PLAYER_PROP_CHANGED event for UI updates
+   */
+  changePlayerProp: function (prop, change) {
+    const oldValue = playerProps[prop];
+    playerProps[prop] += parseInt(change);
+    if (playerProps[prop] < 0) playerProps[prop] = 0;
+    if (playerProps[prop] > 100) playerProps[prop] = 100;
+
+    // EVENT: Notify UI that player property changed
+    Events.emit(EVENTS.PLAYER_PROP_CHANGED, {
+      prop,
+      change,
+      oldValue,
+      newValue: playerProps[prop],
+    });
+
+    return playerProps[prop];
   },
 
   /* active crafting number */

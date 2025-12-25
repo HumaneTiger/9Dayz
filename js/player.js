@@ -1,3 +1,4 @@
+import Events, { EVENTS } from './events.js';
 import Binding from './binding.js';
 import Props from './props.js';
 import Cards from './cards.js';
@@ -15,6 +16,9 @@ let moving = false;
 
 export default {
   init: function () {
+    // Register event listeners
+    Events.on(EVENTS.PLAYER_PROP_CHANGED, this.updatePropUI.bind(this));
+
     this.initPlayer();
     this.initMovement();
     this.bind();
@@ -53,22 +57,32 @@ export default {
     });
   },
 
+  /**
+   * Proxy method for backward compatibility
+   * TODO: Replace all calls with Props.changePlayerProp()
+   */
   changeProps: function (prop, change) {
-    playerProps[prop] += parseInt(change);
-    if (playerProps[prop] < 0) playerProps[prop] = 0;
-    if (playerProps[prop] > 100) playerProps[prop] = 100;
-    const propMeter = document.querySelector(
-      '#properties li.' + prop + ' span.meter:not(.preview)'
-    );
+    return Props.changePlayerProp(prop, change);
+  },
+
+  /**
+   * Update UI in response to player property changes (event handler)
+   * All UI updates for property changes happen here
+   */
+  updatePropUI: function ({ prop, change, newValue }) {
+    const propMeter = document.querySelector(`#properties li.${prop} span.meter:not(.preview)`);
+
     if (propMeter) {
-      propMeter.style.width = playerProps[prop] > 9 ? playerProps[prop] + '%' : '9%';
+      propMeter.style.width = newValue > 9 ? newValue + '%' : '9%';
       propMeter.parentNode.classList.remove('low');
       propMeter.parentNode.classList.remove('very-low');
-      if (playerProps[prop] < 10) {
+
+      if (newValue < 10) {
         propMeter.parentNode.classList.add('very-low');
-      } else if (playerProps[prop] < 33) {
+      } else if (newValue < 33) {
         propMeter.parentNode.classList.add('low');
       }
+
       if (prop === 'health' && change < 0) {
         document.querySelector('#properties li.health').classList.add('heavy-shake');
         window.setTimeout(() => {
@@ -76,8 +90,19 @@ export default {
         }, 200);
       }
     }
-    this.checkForDamage();
-    return playerProps[prop];
+
+    // Update damage overlay for health changes
+    if (prop === 'health') {
+      this.updateDamageOverlay(newValue);
+    }
+  },
+
+  updateDamageOverlay: function (health) {
+    if (health < 33) {
+      document.getElementById('damage-cover').style.opacity = (100 - health * 3.3) / 100;
+    } else {
+      document.getElementById('damage-cover').style.opacity = 0;
+    }
   },
 
   previewProps: function (prop, change) {
@@ -120,12 +145,7 @@ export default {
   },
 
   checkForDamage: function () {
-    if (this.getProp('health') < 33) {
-      document.getElementById('damage-cover').style.opacity =
-        (100 - this.getProp('health') * 3.3) / 100;
-    } else {
-      document.getElementById('damage-cover').style.opacity = 0;
-    }
+    this.updateDamageOverlay(this.getProp('health'));
   },
 
   checkForDeath: function (secondWind) {
