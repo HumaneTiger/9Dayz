@@ -78,20 +78,15 @@ var game = {
   firstCompanion: false,
 };
 
-// all generated ids go in here
-var objectIdsAt = new Array(mapSize.width);
-for (let i = 0; i < objectIdsAt.length; i += 1) {
-  objectIdsAt[i] = new Array(mapSize.height);
-}
+// create 2D array with map size for object ids at positions
+var objectIdsAt = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
 
 var objects = [];
 var objectsIdCounter = 0;
 var zedCounter = 1;
 
-var paths = new Array(mapSize.width);
-for (let i = 0; i < paths.length; i += 1) {
-  paths[i] = new Array(mapSize.height);
-}
+// create 2D array with map size for paths
+var paths = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
 
 let targetLocations = {
   'Lakeside Camp Resort': [5, 37],
@@ -207,6 +202,38 @@ export default {
 
   setObject: function (id, data) {
     objects[id] = data;
+  },
+
+  getAllObjects: function () {
+    return objects;
+  },
+
+  setAllObjects: function (newObjects) {
+    objects = newObjects;
+  },
+
+  getAllObjectIdsAt: function () {
+    return objectIdsAt;
+  },
+
+  setAllObjectIdsAt: function (newObjectIdsAt) {
+    objectIdsAt = newObjectIdsAt;
+  },
+
+  getObjectsIdCounter: function () {
+    return objectsIdCounter;
+  },
+
+  setObjectsIdCounter: function (value) {
+    objectsIdCounter = value;
+  },
+
+  getZedCounter: function () {
+    return zedCounter;
+  },
+
+  setZedCounter: function (value) {
+    zedCounter = value;
   },
 
   getAllPaths: function () {

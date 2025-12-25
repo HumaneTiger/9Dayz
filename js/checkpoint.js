@@ -37,13 +37,13 @@ export default {
       // Companion state (doggy) - stored separately from inventory
       companion: Props.getCompanion(),
 
-      // ===== BUILDINGS =====
-      // TODO: Building states (looted status, destroyed state, container contents)
-      buildings: null,
-
-      // ===== ZOMBIES =====
-      // TODO: Zombie states (killed/alive, positions, health)
-      zombies: null,
+      // ===== OBJECTS SYSTEM =====
+      // All game entities: buildings, zombies, rats, bees, animals, weapons
+      // Includes their state: looted, dead, health, items, positions, discovered, etc.
+      objects: Props.getAllObjects(),
+      objectIdsAt: Props.getAllObjectIdsAt(),
+      objectsIdCounter: Props.getObjectsIdCounter(),
+      zedCounter: Props.getZedCounter(),
 
       // ===== TUTORIAL =====
       // TODO: Tutorial progress and completed events
@@ -126,15 +126,34 @@ export default {
     Items.fillInventorySlots();
     Crafting.checkCraftingPrerequisits();
 
-    // ===== BUILDINGS =====
-    // TODO: Restore building states (looted, destroyed, container contents)
-    // For now: regenerate all buildings fresh (loses state)
-    Props.setupAllBuildings();
+    // ===== OBJECTS SYSTEM =====
+    // Restore all game entities (buildings, zombies, rats, bees, animals, weapons)
+    // This preserves state: looted buildings, dead zombies, spawned creatures, etc.
+    if (checkpoint.objects && checkpoint.objectIdsAt) {
+      // Reset discovered property on all objects so they aren't automatically visible
+      const objects = checkpoint.objects.map(obj => {
+        if (obj && typeof obj === 'object') {
+          return { ...obj, discovered: false };
+        }
+        return obj;
+      });
 
-    // ===== ZOMBIES =====
-    // TODO: Restore zombie states (killed/alive, positions, health)
-    // For now: regenerate all zombies fresh (loses state)
-    Props.setupAllZeds();
+      if (Props.getGameProp('local') && Props.getGameProp('cheatMode')) {
+        // Regenerate buildings for infinite loot cheat
+        Props.setupAllBuildings();
+        Props.setupAllZeds();
+      } else {
+        // Normal behavior: restore saved state
+        Props.setAllObjects(objects);
+        Props.setAllObjectIdsAt(checkpoint.objectIdsAt);
+        Props.setObjectsIdCounter(checkpoint.objectsIdCounter);
+        Props.setZedCounter(checkpoint.zedCounter);
+      }
+    } else {
+      // Fallback for old save files: regenerate fresh (loses state)
+      Props.setupAllBuildings();
+      Props.setupAllZeds();
+    }
 
     // ===== PLAYER POSITION =====
     // Restore player position on map
