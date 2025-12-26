@@ -160,6 +160,9 @@ export default {
       Map.moveMapYTo(playerPosition.y);
     }
     Map.mapUncoverAt(playerPosition.x, playerPosition.y);
+    window.setTimeout(() => {
+      Cards.enableActions();
+    }, 0);
   },
 
   updatePlayer: function (noPenalty) {
@@ -168,8 +171,8 @@ export default {
 
     window.setTimeout(() => {
       const objectsHere = Props.getObjectsAt(playerPosition.x, playerPosition.y);
-      Cards.enableActions();
       this.findAndHandleObjects();
+      Cards.enableActions();
       if (objectsHere?.some(obj => obj.group === 'zombie' && !obj.dead)) {
         window.setTimeout(() => {
           Battle.startBattle(true);
