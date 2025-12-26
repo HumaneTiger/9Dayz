@@ -78,7 +78,7 @@ export default {
   },
 
   getFirstItemOfType: function (type) {
-    for (var item in inventory.items) {
+    for (const item in inventory.items) {
       if (inventory.items[item].type === type && inventory.items[item].amount) {
         return inventory.items[item];
       }
@@ -220,14 +220,13 @@ export default {
 
     if (!Props.getGameProp('feedingCompanion')) {
       if (itemMods !== undefined && itemMods[0] !== 0) {
-        itemFood += '<small>(' + (itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]) + ')</small>';
+        itemFood += `<small>(${itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]})</small>`;
       }
       if (itemMods !== undefined && itemMods[1] !== 0) {
-        itemDrink += '<small>(' + (itemMods[1] > 0 ? '+' + itemMods[1] : itemMods[1]) + ')</small>';
+        itemDrink += `<small>(${itemMods[1] > 0 ? '+' + itemMods[1] : itemMods[1]})</small>`;
       }
       if (itemMods !== undefined && itemMods[2] !== 0) {
-        itemEnergy +=
-          '<small>(' + (itemMods[2] > 0 ? '+' + itemMods[2] : itemMods[2]) + ')</small>';
+        itemEnergy += `<small>(${itemMods[2] > 0 ? '+' + itemMods[2] : itemMods[2]})</small>`;
       }
 
       if (action === 'craft' && itemActive) {
@@ -243,22 +242,13 @@ export default {
         }
       } else {
         if (itemProps.food > 0 && this.inventoryContains(item)) {
-          itemInfoMarkup +=
-            '<span class="food">' +
-            itemFood +
-            '<span class="material-symbols-outlined">lunch_dining</span></span>';
+          itemInfoMarkup += `<span class="food">${itemFood}<span class="material-symbols-outlined">lunch_dining</span></span>`;
         }
         if (itemProps.drink > 0 && this.inventoryContains(item)) {
-          itemInfoMarkup +=
-            '<span class="drink">' +
-            itemDrink +
-            '<span class="material-symbols-outlined">water_medium</span></span>';
+          itemInfoMarkup += `<span class="drink">${itemDrink}<span class="material-symbols-outlined">water_medium</span></span>`;
         }
         if (itemProps.energy > 0 && this.inventoryContains(item)) {
-          itemInfoMarkup +=
-            '<span class="energy">' +
-            itemEnergy +
-            '<span class="material-symbols-outlined">flash_on</span></span>';
+          itemInfoMarkup += `<span class="energy">${itemEnergy}<span class="material-symbols-outlined">flash_on</span></span>`;
         }
         if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
           itemInfoMarkup +=
@@ -287,20 +277,15 @@ export default {
   },
 
   generateInventorySlots: function () {
-    for (let item in items) {
+    for (const item in items) {
       if (items[item][0] !== 'extra') {
         inventoryContainer.querySelector('.inner').innerHTML +=
-          '<div class="slot unknown ' +
-          items[item][0] +
-          ' item-' +
-          item +
-          '" data-item="' +
-          item +
-          '"><img src="./img/items/' +
-          item +
-          '.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span><span class="action">' +
-          items[item][0] +
-          '</span></div>';
+          `<div class="slot unknown ${items[item][0]} item-${item}" data-item="${item}">
+            <img src="./img/items/${item}.PNG" class="bg">
+            <span class="unknown">?</span>
+            <span class="amount"></span>
+            <span class="action">${items[item][0]}</span>
+          </div>`;
       }
     }
   },
@@ -338,9 +323,9 @@ export default {
   },
 
   fillInventorySlots: function () {
-    for (let item in inventory.items) {
+    for (const item in inventory.items) {
       this.fillItemSlot(
-        inventoryContainer.querySelectorAll('.slot.item-' + inventory.items[item].name),
+        inventoryContainer.querySelectorAll(`.slot.item-${inventory.items[item].name}`),
         inventory.items[item].amount,
         Crafting.isItemPartOfCrafting(item),
         Props.calcItemProps(item)
