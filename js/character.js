@@ -18,17 +18,29 @@ export default {
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
     // EVENT: React to inventory changes
-    Events.on(EVENTS.INVENTORY_CHANGED, () => {
-      this.updateWeaponState();
-    });
-    Events.on(EVENTS.WEAPON_CHANGED, () => {
-      this.updateWeaponState();
-    });
-    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
-      if (prop === 'character') {
-        this.updateCharacterName(value);
-      }
-    });
+    Events.on(
+      EVENTS.INVENTORY_CHANGED,
+      () => {
+        this.updateWeaponState();
+      },
+      {}
+    );
+    Events.on(
+      EVENTS.WEAPON_CHANGED,
+      () => {
+        this.updateWeaponState();
+      },
+      {}
+    );
+    Events.on(
+      EVENTS.GAME_PROP_CHANGED,
+      ({ prop, value }) => {
+        if (prop === 'character') {
+          this.updateCharacterName(value);
+        }
+      },
+      { prop: 'character', value: Props.getGameProp('character') }
+    );
   },
 
   updateCharacterName: function (characterName) {

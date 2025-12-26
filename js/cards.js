@@ -18,12 +18,15 @@ export default {
   init: function () {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
-    // EVENT: React to time changes
-    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
-      if (prop === 'timeIsUnity') {
-        this.handleTimeChange(value);
-      }
-    });
+    Events.on(
+      EVENTS.GAME_PROP_CHANGED,
+      ({ prop, value }) => {
+        if (prop === 'timeIsUnity') {
+          this.handleTimeChange(value);
+        }
+      },
+      { prop: 'timeIsUnity', value: Props.getGameProp('timeIsUnity') }
+    );
   },
 
   handleTimeChange: function (time) {

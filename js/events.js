@@ -18,11 +18,23 @@ class EventBus {
     this.listeners = {};
   }
 
-  on(event, callback) {
+  /**
+   * Register an event listener
+   * @param {string} event - The event to listen to
+   * @param {function} callback - Function to call when event is emitted
+   * @param {*} immediateData - Optional: If provided, callback is called immediately with this data
+   *                            Useful for syncing initial state without duplicating handler logic
+   */
+  on(event, callback, immediateData) {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
     this.listeners[event].push(callback);
+
+    // If immediateData provided, call callback immediately
+    if (immediateData !== undefined) {
+      callback(immediateData);
+    }
   }
 
   emit(event, data) {

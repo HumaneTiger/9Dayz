@@ -19,12 +19,16 @@ export default {
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
     // EVENT: React to inventory changes
-    Events.on(EVENTS.INVENTORY_CHANGED, ({ oldTotal, newTotal }) => {
-      this.fillInventorySlots();
-      if (oldTotal !== newTotal) {
-        this.inventoryChangeFeedback();
-      }
-    });
+    Events.on(
+      EVENTS.INVENTORY_CHANGED,
+      ({ oldTotal, newTotal }) => {
+        this.fillInventorySlots();
+        if (oldTotal !== newTotal) {
+          this.inventoryChangeFeedback();
+        }
+      },
+      { oldTotal: 0, newTotal: inventory.itemNumbers }
+    );
   },
 
   capitalizeFirstLetter: function (string) {

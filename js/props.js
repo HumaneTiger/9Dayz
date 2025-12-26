@@ -121,12 +121,15 @@ let targetLocations = {
 export default {
   init: function () {
     this.setupAllPaths();
-    // EVENT: React to time changes
-    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
-      if (prop === 'timeIsUnity') {
-        this.handleTimeChange(value);
-      }
-    });
+    Events.on(
+      EVENTS.GAME_PROP_CHANGED,
+      ({ prop, value }) => {
+        if (prop === 'timeIsUnity') {
+          this.handleTimeChange(value);
+        }
+      },
+      { prop: 'timeIsUnity', value: this.getGameProp('timeIsUnity') }
+    );
   },
 
   handleTimeChange: function (time) {
