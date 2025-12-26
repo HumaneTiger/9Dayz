@@ -41,12 +41,8 @@ function triggerGameTick() {
   if (newGameTick % timeConfig.ticksPerHour === 0) {
     const newGameHours = time.gameHours + 1;
     updates.gameHours = newGameHours;
-
-    /* HOURLY TASKS - handled by event listeners in each module */
-
     if (newGameHours % 24 === 0) {
       updates.gameDays = time.gameDays + 1;
-      /* DAILY TASKS - handled by event listeners in each module */
     }
   }
 

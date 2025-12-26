@@ -18,7 +18,7 @@ export default {
   init: function () {
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
-    // EVENT: React to inventory changes
+    // EVENT: React to inventory changes and trigger callback imimediately
     Events.on(
       EVENTS.INVENTORY_CHANGED,
       ({ oldTotal, newTotal }) => {
