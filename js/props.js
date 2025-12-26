@@ -231,7 +231,7 @@ export default {
   },
 
   getObjectIdsAt: function (x, y) {
-    if (objectIdsAt[x] !== undefined) {
+    if (objectIdsAt[x]) {
       return objectIdsAt[x][y];
     }
   },
@@ -246,12 +246,13 @@ export default {
 
   addObjectIdAt: function (x, y) {
     const id = objectsIdCounter;
-    if (objectIdsAt[x][y] !== undefined) {
-      objectIdsAt[x][y].push(id);
-    } else {
-      objectIdsAt[x][y] = [];
-      objectIdsAt[x][y].push(id);
+    if (!objectIdsAt[x]) {
+      objectIdsAt[x] = [];
     }
+    if (!objectIdsAt[x][y]) {
+      objectIdsAt[x][y] = [];
+    }
+    objectIdsAt[x][y].push(id);
     objectsIdCounter += 1;
     return id;
   },
