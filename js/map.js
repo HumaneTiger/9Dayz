@@ -15,7 +15,7 @@ for (var i = 0; i < uncoverMatrix.length; i += 1) {
   uncoverMatrix[i] = new Array(30);
 }
 
-let mapPosition = {
+const mapPosition = {
   refX: 12,
   refY: 33,
   x: 0,
@@ -29,8 +29,8 @@ export default {
     const object = Props.getObject(cardId);
     const scoutMarker = document.getElementById('scoutmarker');
 
-    scoutMarker.style.left = Math.round(object.x * 44.4) + 'px';
-    scoutMarker.style.top = Math.round(object.y * 44.4) + 'px';
+    scoutMarker.style.left = `${Math.round(object.x * 44.4)}px`;
+    scoutMarker.style.top = `${Math.round(object.y * 44.4)}px`;
     scoutMarker.classList.remove('is--hidden');
   },
 
@@ -40,99 +40,45 @@ export default {
 
   showObjectIconsByIds: function (objectIds) {
     objectIds?.forEach(objectId => {
-      let object = Props.getObject(objectId);
+      const object = Props.getObject(objectId);
       const x = object.x,
         y = object.y,
         group = object.group;
 
+      const iconLeft = Math.round(x * 44.4 + 12);
+      const iconTop = Math.round(y * 44.4 + 3);
+      const areaTop = Math.round(y * 44.4 + 8);
+
       if (!object.discovered) {
         if (group === 'building') {
-          buidingsContainer.innerHTML +=
-            "<span class='icon icon-" +
-            objectId +
-            "' style='top: " +
-            Math.round(y * 44.4 + 3) +
-            'px; left: ' +
-            Math.round(x * 44.4 + 12) +
-            "px;'>" +
-            "<img src='./img/icons/buildings/" +
-            object.type +
-            ".png'></span>";
+          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${object.type}.png'></span>`;
         } else if (group === 'weapon') {
-          buidingsContainer.innerHTML +=
-            "<span class='icon icon-" +
-            objectId +
-            "' style='top: " +
-            Math.round(y * 44.4 + 3) +
-            'px; left: ' +
-            Math.round(x * 44.4 + 12) +
-            "px;'>" +
-            "<img src='./img/icons/weapons/" +
-            group +
-            ".png'></span>";
+          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/weapons/${group}.png'></span>`;
         } else if (group === 'animal') {
-          buidingsContainer.innerHTML +=
-            "<span class='icon icon-" +
-            objectId +
-            "' style='top: " +
-            Math.round(y * 44.4 + 3) +
-            'px; left: ' +
-            Math.round(x * 44.4 + 12) +
-            "px;'>" +
-            "<img src='./img/icons/animals/" +
-            group +
-            ".png'></span>";
+          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/animals/${group}.png'></span>`;
         } else if (group === 'zombie') {
           if (!object.dead) {
-            highlightsContainer.innerHTML +=
-              "<span class='danger-area area-" +
-              objectId +
-              "' style='top: " +
-              Math.round(y * 44.4 + 8) +
-              'px; left: ' +
-              Math.round(x * 44.4 + 12) +
-              "px;'>";
-            buidingsContainer.innerHTML +=
-              "<span class='icon icon-" +
-              objectId +
-              "' style='top: " +
-              Math.round(y * 44.4 + 3) +
-              'px; left: ' +
-              Math.round(x * 44.4 + 12) +
-              "px;'>" +
-              "<img src='./img/icons/buildings/" +
-              group +
-              ".png'></span>";
+            highlightsContainer.innerHTML += `<span class='danger-area area-${objectId}' style='top: ${areaTop}px; left: ${iconLeft}px;'></span>`;
+            buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}.png'></span>`;
           }
         }
       } else {
         if (group === 'zombie' && object.dead && !object.removed) {
           this.removeObjectIconById(objectId);
-          buidingsContainer.innerHTML +=
-            "<span class='icon icon-" +
-            objectId +
-            "' style='top: " +
-            Math.round(y * 44.4 + 3) +
-            'px; left: ' +
-            Math.round(x * 44.4 + 12) +
-            "px;'>" +
-            "<img src='./img/icons/buildings/" +
-            group +
-            '-dead' +
-            ".png'></span>";
+          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}-dead.png'></span>`;
         }
       }
     });
   },
 
   removeObjectIconById: function (objectId) {
-    buidingsContainer.querySelector('.icon.icon-' + objectId)?.remove();
-    highlightsContainer.querySelector('.danger-area.area-' + objectId)?.remove();
+    buidingsContainer.querySelector(`.icon.icon-${objectId}`)?.remove();
+    highlightsContainer.querySelector(`.danger-area.area-${objectId}`)?.remove();
   },
 
   highlightObject: function (objectId) {
     const object = Props.getObject(objectId);
-    const objectIcon = document.querySelector('#maximap .icon-' + objectId);
+    const objectIcon = document.querySelector(`#maximap .icon-${objectId}`);
     if (objectIcon) {
       objectIcon.classList.add('highlight');
     } else if (object.group === 'event') {
@@ -146,7 +92,7 @@ export default {
 
   noHighlightObject: function (objectId) {
     const object = Props.getObject(objectId);
-    const objectIcon = document.querySelector('#maximap .icon-' + objectId);
+    const objectIcon = document.querySelector(`#maximap .icon-${objectId}`);
     if (objectIcon) {
       objectIcon.classList.remove('highlight');
     } else if (object.group === 'event') {
@@ -169,22 +115,17 @@ export default {
   },
 
   updateMapPosition() {
-    map.style.transform = 'translate3d(' + mapPosition.x + 'px, ' + mapPosition.y + 'px, 0)';
+    map.style.transform = `translate3d(${mapPosition.x}px, ${mapPosition.y}px, 0)`;
   },
 
   showTargetLocation: function (target) {
-    let targetLocations = Props.getAllTargetLocations();
+    const targetLocations = Props.getAllTargetLocations();
     if (targetLocations[target]) {
-      let x = targetLocations[target][0];
-      let y = targetLocations[target][1];
-      mapCover.innerHTML +=
-        "<span class='location' style='top: " +
-        Math.round(y * 44.4 + 3) +
-        'px; left: ' +
-        Math.round(x * 44.4 + 12) +
-        "px;'>" +
-        target +
-        '</span>';
+      const x = targetLocations[target][0];
+      const y = targetLocations[target][1];
+      const locationLeft = Math.round(x * 44.4 + 12);
+      const locationTop = Math.round(y * 44.4 + 3);
+      mapCover.innerHTML += `<span class='location' style='top: ${locationTop}px; left: ${locationLeft}px;'>${target}</span>`;
     }
   },
 
@@ -218,7 +159,7 @@ export default {
   addNewMask: function (x, y) {
     const maskX = x * 44.4 * 4 + 40;
     const maskY = y * 44.4 * 4;
-    let fogGradient = mapFog2dCtx.createRadialGradient(maskX, maskY, 300, maskX, maskY, 100);
+    const fogGradient = mapFog2dCtx.createRadialGradient(maskX, maskY, 300, maskX, maskY, 100);
     fogGradient.addColorStop(0, 'rgba(0,0,0,0)');
     fogGradient.addColorStop(1, 'rgba(0,0,0,1)');
     mapFog2dCtx.fillStyle = fogGradient;
