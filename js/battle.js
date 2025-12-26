@@ -1,5 +1,4 @@
 import Audio from './audio.js';
-import Binding from './binding.js';
 import Props from './props.js';
 import Player from './player.js';
 import Cards from './cards.js';
@@ -27,18 +26,9 @@ let battleDeckProps = {
 
 export default {
   init: function () {
-    this.bind();
     document
       .querySelector('#battle-cards .end-turn')
       .addEventListener('click', this.endTurn.bind(this));
-  },
-
-  bind: function () {
-    new Binding({
-      object: battleDeckProps,
-      property: 'number',
-      element: document.getElementById('draw-amount'),
-    });
   },
 
   shuffle: function (array) {
@@ -262,6 +252,7 @@ export default {
   },
 
   renderDrawPile: function () {
+    document.getElementById('draw-amount').textContent = battleDeckProps.number;
     const pileSize = Math.min(battleDeck.length, 24);
     for (let card = 0; card < pileSize; card += 1) {
       if (card < battleDeckProps.number) {

@@ -1,5 +1,4 @@
 import Events, { EVENTS } from './events.js';
-import Binding from './binding.js';
 import Props from './props.js';
 import Cards from './cards.js';
 import Map from './map.js';
@@ -21,40 +20,6 @@ export default {
 
     this.initPlayer();
     this.initMovement();
-    this.bind();
-  },
-
-  bind: function () {
-    new Binding({
-      object: playerProps,
-      property: 'health',
-      element: document.getElementById('health-meter'),
-    });
-    new Binding({
-      object: playerProps,
-      property: 'food',
-      element: document.getElementById('food-meter'),
-    });
-    new Binding({
-      object: playerProps,
-      property: 'thirst',
-      element: document.getElementById('thirst-meter'),
-    });
-    new Binding({
-      object: playerProps,
-      property: 'energy',
-      element: document.getElementById('energy-meter'),
-    });
-    new Binding({
-      object: playerProps,
-      property: 'protection',
-      element: document.getElementById('protection'),
-    });
-    new Binding({
-      object: playerProps,
-      property: 'actions',
-      element: document.getElementById('ap'),
-    });
   },
 
   /**
@@ -62,8 +27,13 @@ export default {
    * All UI updates for property changes happen here
    */
   updatePropUI: function ({ prop, change, newValue }) {
+    // Update numeric value
+    const propMeterValue = document.getElementById(`${prop}-meter`);
+    if (propMeterValue) {
+      propMeterValue.textContent = newValue;
+    }
+    // Update property meter
     const propMeter = document.querySelector(`#properties li.${prop} span.meter:not(.preview)`);
-
     if (propMeter) {
       propMeter.style.width = newValue > 9 ? newValue + '%' : '9%';
       propMeter.parentNode.classList.remove('low');
@@ -181,10 +151,6 @@ export default {
 
   initPlayer: function () {
     Ui.showUI();
-    Props.changePlayerProp('health', 0); // triggers stats bar updates
-    Props.changePlayerProp('food', 0); // triggers stats bar updates
-    Props.changePlayerProp('thirst', 0); // triggers stats bar updates
-    Props.changePlayerProp('energy', 0); // triggers stats bar updates
     this.movePlayerTo(playerPosition.x, playerPosition.y);
     if (playerPosition.y < 20) {
       Map.moveMapYTo(20);

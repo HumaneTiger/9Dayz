@@ -85,8 +85,6 @@ var specialEvents = {
 export default {
   init: function () {},
 
-  bind: function () {},
-
   setupAllEvents: function () {
     for (var event in events) {
       if (Props.getGameProp('tutorial') || events[event].showAlways) {

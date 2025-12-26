@@ -1,4 +1,3 @@
-import Binding from './binding.js';
 import Props from './props.js';
 import Items from './items.js';
 import Player from './player.js';
@@ -14,7 +13,6 @@ export default {
   init: function () {
     craftContainer.addEventListener('mouseover', this.checkCraftActionHover.bind(this));
     craftContainer.addEventListener('mousedown', this.checkCraftActionClick.bind(this));
-    this.bind();
     this.checkCraftingPrerequisits();
 
     // EVENT: React to inventory changes
@@ -23,14 +21,6 @@ export default {
     });
     Events.on(EVENTS.WEAPON_CHANGED, () => {
       this.checkCraftingPrerequisits();
-    });
-  },
-
-  bind: function () {
-    new Binding({
-      object: Props.getCrafting(),
-      property: 'total',
-      element: document.getElementById('crafting-total'),
     });
   },
 
@@ -223,6 +213,7 @@ export default {
   },
 
   craftingChangeFeedback: function () {
+    document.getElementById('crafting-total').textContent = craftingOptions.total;
     document.querySelector('#actions .craft').classList.add('transfer');
     window.setTimeout(() => {
       document.querySelector('#actions .craft').classList.remove('transfer');

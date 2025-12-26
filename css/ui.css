@@ -100,7 +100,7 @@ ul#properties li.energy.very-low:after {
   content: 'Battle Penalty -2 AP';
   color: red;
 }
-#protection {
+#protection-meter {
   width: 120px;
   height: 130px;
   background-image: url('../img/icons/shield.png');
@@ -129,7 +129,7 @@ ul#properties li.health.in-battle {
   margin-left: -322px;
   top: 722px;
 }
-ul#properties li.health.in-battle #protection {
+ul#properties li.health.in-battle #protection-meter {
   display: block;
 }
 ul#properties li.food {

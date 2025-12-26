@@ -8,6 +8,7 @@
 // Central event registry - all events documented here
 export const EVENTS = {
   PLAYER_PROP_CHANGED: 'player:propChanged',
+  GAME_PROP_CHANGED: 'game:propChanged',
   INVENTORY_CHANGED: 'inventory:changed',
   WEAPON_CHANGED: 'weapon:changed',
 };

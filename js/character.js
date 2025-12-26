@@ -1,4 +1,3 @@
-import Binding from './binding.js';
 import Props from './props.js';
 import Player from './player.js';
 import Items from './items.js';
@@ -18,8 +17,6 @@ export default {
   init: function () {
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
-    this.bind();
-
     // EVENT: React to inventory changes
     Events.on(EVENTS.INVENTORY_CHANGED, () => {
       this.updateWeaponState();
@@ -27,14 +24,15 @@ export default {
     Events.on(EVENTS.WEAPON_CHANGED, () => {
       this.updateWeaponState();
     });
+    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
+      if (prop === 'character') {
+        this.updateCharacterName(value);
+      }
+    });
   },
 
-  bind: function () {
-    new Binding({
-      object: Props.getGameProps(),
-      property: 'character',
-      element: document.getElementById('character').querySelector('.slot-hero h2'),
-    });
+  updateCharacterName: function (characterName) {
+    document.getElementById('character').querySelector('.slot-hero h2').textContent = characterName;
   },
 
   checkForSlotHover: function () {

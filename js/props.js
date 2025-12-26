@@ -143,6 +143,7 @@ export default {
 
   setGameProp: function (prop, value) {
     game[prop] = value;
+    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop, value });
   },
 
   pauseGame: function (pause) {

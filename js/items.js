@@ -1,4 +1,3 @@
-import Binding from './binding.js';
 import Props from './props.js';
 import Player from './player.js';
 import Ui from './ui.js';
@@ -19,22 +18,12 @@ export default {
   init: function () {
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
-    this.bind();
-
     // EVENT: React to inventory changes
     Events.on(EVENTS.INVENTORY_CHANGED, ({ oldTotal, newTotal }) => {
       this.fillInventorySlots();
       if (oldTotal !== newTotal) {
         this.inventoryChangeFeedback();
       }
-    });
-  },
-
-  bind: function () {
-    new Binding({
-      object: inventory,
-      property: 'itemNumbers',
-      element: document.getElementById('inventory-numbers'),
     });
   },
 
@@ -98,6 +87,7 @@ export default {
 
   inventoryChangeFeedback: function () {
     document.querySelector('#actions .inventory').classList.add('transfer');
+    document.getElementById('inventory-numbers').textContent = inventory.itemNumbers;
     window.setTimeout(function () {
       document.querySelector('#actions .inventory').classList.remove('transfer');
     }, 400);

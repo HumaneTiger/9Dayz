@@ -45,7 +45,6 @@ window.timeIsUnity = {
   bind();
   Ui.resizeViewport();
   initiateMainGameLoop();
-  /* preloading goes here */
   Preloading.init();
 }
 
