@@ -1,4 +1,3 @@
-import Binding from './binding.js';
 import Start from './start.js';
 import Ui from './ui.js';
 import Editor from './editor.js';
@@ -12,21 +11,6 @@ import Crafting from './crafting.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
 import Preloading from './preloading.js';
-
-const timeConfig = {
-  startHour: 7,
-  ticksPerHour: 6,
-  tickInterval: 100,
-  tickCurrent: 0,
-};
-
-window.timeIsUnity = {
-  gameTick: 0,
-  gameHours: 24 + timeConfig.startHour,
-  gameDays: 1, // 1
-  todayHours: timeConfig.startHour,
-  todayTime: `0${timeConfig.startHour}:00`,
-};
 
 // initialize everything
 {
@@ -42,63 +26,55 @@ window.timeIsUnity = {
   Crafting.init();
   Character.init();
   Almanac.init();
-  bind();
   Ui.resizeViewport();
   initiateMainGameLoop();
   Preloading.init();
 }
 
-function bind() {
-  new Binding({
-    object: window.timeIsUnity,
-    property: 'gameDays',
-    element: document.getElementById('gametime-days'),
-  });
-  new Binding({
-    object: window.timeIsUnity,
-    property: 'todayTime',
-    element: document.getElementById('gametime-hours'),
-  });
-}
-
 function triggerGameTick() {
-  window.timeIsUnity.gameTick += 1;
+  const time = Props.getGameProp('timeIsUnity');
+  const timeConfig = Props.getGameProp('timeConfig');
+  const newGameTick = time.gameTick + 1;
+  let updates = { gameTick: newGameTick };
 
   /* TICKY TASKS */
-  if (window.timeIsUnity.gameTick % timeConfig.ticksPerHour === 0) {
-    window.timeIsUnity.gameHours += 1;
+  if (newGameTick % timeConfig.ticksPerHour === 0) {
+    const newGameHours = time.gameHours + 1;
+    updates.gameHours = newGameHours;
 
-    /* HOURLY TASKS */
-    /* order matters */
-    Props.hourlyTasks(window.timeIsUnity.todayHours);
-    Ui.hourlyTasks(window.timeIsUnity.todayHours);
-    Cards.hourlyTasks(window.timeIsUnity.todayHours);
+    /* HOURLY TASKS - handled by event listeners in each module */
 
-    //Day.updateBrightness(timeIsUnity.todayHours);
-
-    if (window.timeIsUnity.gameHours % 24 === 0) {
-      window.timeIsUnity.gameDays += 1;
-
-      /* DAILY TASKS */
-      Ui.dailyTasks(window.timeIsUnity.gameDays);
+    if (newGameHours % 24 === 0) {
+      updates.gameDays = time.gameDays + 1;
+      /* DAILY TASKS - handled by event listeners in each module */
     }
   }
 
-  window.timeIsUnity.todayHours = window.timeIsUnity.gameHours - window.timeIsUnity.gameDays * 24;
-  window.timeIsUnity.todayTime =
-    window.timeIsUnity.todayHours < 10
-      ? '0' + window.timeIsUnity.todayHours + ':'
-      : window.timeIsUnity.todayHours + ':';
-  window.timeIsUnity.todayTime += (window.timeIsUnity.gameTick % 6) + '0';
+  // Calculate derived time values
+  const gameDays = updates.gameDays !== undefined ? updates.gameDays : time.gameDays;
+  const gameHours = updates.gameHours !== undefined ? updates.gameHours : time.gameHours;
+  const gameTick = updates.gameTick;
+
+  updates.todayHours = gameHours - gameDays * 24;
+  const hourString = String(updates.todayHours).padStart(2, '0');
+  const minuteString = String(gameTick % timeConfig.ticksPerHour).padStart(1, '0') + '0';
+  updates.todayTime = hourString + ':' + minuteString;
+
+  Props.updateTimeIsUnity(updates);
 }
 
 function initiateMainGameLoop() {
   window.setTimeout(() => {
     /* go foreward in time */
+    // Two-layer timing: tickInterval (100ms heartbeat) runs constantly,
+    // tickCurrent accumulates until it reaches 'gameTickThreshold' (normally 4000ms).
+    // For fast-forward (sleep), gameTickThreshold drops to 100ms → game tick every heartbeat (40x faster)
+    const timeConfig = Props.getGameProp('timeConfig');
     timeConfig.tickCurrent += timeConfig.tickInterval;
 
-    if (timeConfig.tickCurrent >= Props.getGameProp('speed')) {
+    if (timeConfig.tickCurrent >= timeConfig.gameTickThreshold) {
       timeConfig.tickCurrent = 0;
+      Props.setGameProp('timeConfig', timeConfig);
       triggerGameTick();
     }
 
@@ -107,7 +83,7 @@ function initiateMainGameLoop() {
     } else {
       idleLoop();
     }
-  }, timeConfig.tickInterval);
+  }, Props.getGameProp('timeConfig').tickInterval);
 }
 
 function idleLoop() {

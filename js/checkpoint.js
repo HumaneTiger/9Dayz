@@ -13,14 +13,8 @@ export default {
     const checkpoint = {
       // ===== TIME =====
       // Game time tracking: ticks, hours, days, and time of day
-      // Exception: time is stored in window.timeIsUnity, not in Props
-      gameTime: {
-        gameTick: window.timeIsUnity.gameTick,
-        gameHours: window.timeIsUnity.gameHours,
-        gameDays: window.timeIsUnity.gameDays,
-        todayHours: window.timeIsUnity.todayHours,
-        todayTime: window.timeIsUnity.todayTime,
-      },
+      // Stored in game.timeIsUnity
+      gameTime: Props.getGameProp('timeIsUnity'),
 
       // ===== PLAYER =====
       // Player character selection, position, and stats
@@ -170,11 +164,7 @@ export default {
 
     // ===== TIME =====
     // Restore game time and day/night cycle
-    window.timeIsUnity.gameTick = checkpoint.gameTime.gameTick;
-    window.timeIsUnity.gameHours = checkpoint.gameTime.gameHours;
-    window.timeIsUnity.gameDays = checkpoint.gameTime.gameDays;
-    window.timeIsUnity.todayHours = checkpoint.gameTime.todayHours;
-    window.timeIsUnity.todayTime = checkpoint.gameTime.todayTime;
+    Props.updateTimeIsUnity(checkpoint.gameTime);
     Props.setGameProp('startDay', checkpoint.gameTime.gameDays);
 
     // Update UI for current time of day
@@ -196,13 +186,14 @@ export default {
    * Adjust UI elements based on the current time of day
    */
   adjustDayTimeUI: function () {
-    Ui.updateDayNightLayers(window.timeIsUnity.todayHours);
-    if (window.timeIsUnity.todayHours >= 21 || window.timeIsUnity.todayHours < 5) {
+    const time = Props.getGameProp('timeIsUnity');
+    Ui.updateDayNightLayers(time.todayHours);
+    if (time.todayHours >= 21 || time.todayHours < 5) {
       Ui.switchDayNight(21);
     } else {
       Ui.switchDayNight(5);
     }
-    if (window.timeIsUnity.todayHours >= 23 || window.timeIsUnity.todayHours < 5) {
+    if (time.todayHours >= 23 || time.todayHours < 5) {
       Ui.triggerNight();
     }
   },

@@ -290,18 +290,22 @@ export default {
   },
 
   fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
-    const defaultSpeed = Props.getGameProp('speed');
-    const newSpeed = newSpeedOpt || 400;
+    const timeConfig = Props.getGameProp('timeConfig');
+    const defaultThreshold = timeConfig.gameTickThreshold;
+    const newThreshold = newSpeedOpt || 400;
     if (time) {
       let ticks = parseInt(time) / 10;
-      Props.setGameProp('speed', newSpeed);
+      timeConfig.gameTickThreshold = newThreshold;
+      Props.setGameProp('timeConfig', timeConfig);
       window.setTimeout(
-        (defaultSpeed, cardId) => {
-          Props.setGameProp('speed', defaultSpeed);
+        (defaultThreshold, cardId) => {
+          const timeConfig = Props.getGameProp('timeConfig');
+          timeConfig.gameTickThreshold = defaultThreshold;
+          Props.setGameProp('timeConfig', timeConfig);
           callbackfunction.call(this, cardId, energy);
         },
-        ticks * newSpeed,
-        defaultSpeed,
+        ticks * newThreshold,
+        defaultThreshold,
         cardId
       );
     }

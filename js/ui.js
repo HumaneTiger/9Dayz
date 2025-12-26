@@ -5,6 +5,7 @@ import Player from './player.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
+import Events, { EVENTS } from './events.js';
 
 const viewport = document.getElementById('viewport');
 const mapBorder = document.getElementById('map-border');
@@ -46,6 +47,35 @@ export default {
         ev.preventDefault();
       }
     });
+
+    // EVENT: React to time changes
+    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
+      if (prop === 'timeIsUnity') {
+        this.handleTimeChange(value);
+      }
+    });
+  },
+
+  handleTimeChange: function (time) {
+    const hour = time.todayHours;
+    const days = time.gameDays;
+    const ticksPerHour = Props.getGameProp('timeConfig').ticksPerHour;
+
+    // Update game time UI elements
+    document.getElementById('gametime-days').textContent = days;
+    document.getElementById('gametime-hours').textContent = time.todayTime;
+
+    // Check if it's a new hour (when gameTick is divisible by ticksPerHour)
+    if (time.gameTick % ticksPerHour === 0) {
+      this.updateDayNightLayers(hour);
+      this.switchDayNight(hour);
+      this.showNewDay(hour);
+    }
+
+    // Check if it's a new day (when gameHours is divisible by 24)
+    if (time.gameHours % 24 === 0 && time.gameTick % ticksPerHour === 0) {
+      this.dailyTasks(days);
+    }
   },
 
   handleKeydown: function (ev) {
@@ -465,11 +495,11 @@ export default {
   },
 
   showNewDay: function (hour, force) {
-    if (force || (window.timeIsUnity.gameDays > Props.getGameProp('startDay') && hour === 7)) {
+    const time = Props.getGameProp('timeIsUnity');
+    if (force || (time.gameDays > Props.getGameProp('startDay') && hour === 7)) {
       const dayTeaser = document.getElementById('day-teaser');
       if (dayTeaser) {
-        dayTeaser.querySelector('.content').innerHTML =
-          'Day <span>' + window.timeIsUnity.gameDays + '</span>';
+        dayTeaser.querySelector('.content').innerHTML = 'Day <span>' + time.gameDays + '</span>';
         dayTeaser.classList.add('open');
         dayTeaser.style.zIndex = '60';
         window.setTimeout(() => {
@@ -488,10 +518,6 @@ export default {
     var shortShadowSize = 0;
     var longShadowPos = 0;
     var longShadowSize = 0;
-
-    var stunde = Math.floor(hour);
-
-    document.querySelector('.time').innerHTML = stunde + ':00';
 
     if (hour >= 5 && hour <= 19) {
       let timeTillNoon = (12 - hour) * -1;

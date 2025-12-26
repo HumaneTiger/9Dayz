@@ -1,5 +1,5 @@
 import Props from './props.js';
-import Start from './start.js';
+import Checkpoint from './checkpoint.js';
 import Ui from './ui.js';
 import Items from './items.js';
 import Map from './map.js';
@@ -94,13 +94,15 @@ export default {
           case 'shift-time': {
             const selectedDay = parseInt(document.querySelector('#card-console .select-day').value);
             const todayHours = 7;
-            window.timeIsUnity.gameTick = 0;
-            window.timeIsUnity.gameHours = 24 * selectedDay + todayHours;
-            window.timeIsUnity.gameDays = selectedDay;
-            window.timeIsUnity.todayHours = todayHours;
-            window.timeIsUnity.todayTime = `0${todayHours}:00`;
+            Props.updateTimeIsUnity({
+              gameTick: 0,
+              gameHours: 24 * selectedDay + todayHours,
+              gameDays: selectedDay,
+              todayHours: todayHours,
+              todayTime: `0${todayHours}:00`,
+            });
             Props.setGameProp('startDay', selectedDay);
-            Start.adjustDayTimeUI();
+            Checkpoint.adjustDayTimeUI();
             Ui.showNewDay(0, true);
             break;
           }

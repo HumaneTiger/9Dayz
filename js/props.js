@@ -66,7 +66,6 @@ var game = {
   battle: false,
   gamePaused: true,
   local: location.href.startsWith('http://127.0.0.1'),
-  speed: 4000, // 4000
   playerPosition: { x: 18, y: 44 },
   feedingCompanion: false,
   firstUserInteraction: false,
@@ -82,6 +81,20 @@ var game = {
   firstDeadAnimal: false,
   firstInventoryOpen: false,
   firstCompanion: false,
+  timeConfig: {
+    startHour: 7,
+    ticksPerHour: 6,
+    tickInterval: 100,
+    tickCurrent: 0,
+    gameTickThreshold: 4000, // ms before triggering a game tick (lower = faster)
+  },
+  timeIsUnity: {
+    gameTick: 0,
+    gameHours: 24 + 7, // 24 + startHour
+    gameDays: 1,
+    todayHours: 7, // startHour
+    todayTime: '07:00',
+  },
 };
 
 // create 2D array with map size for object ids at positions
@@ -108,14 +121,25 @@ let targetLocations = {
 export default {
   init: function () {
     this.setupAllPaths();
+    // EVENT: React to time changes
+    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
+      if (prop === 'timeIsUnity') {
+        this.handleTimeChange(value);
+      }
+    });
   },
 
-  hourlyTasks: function (hour) {
-    if (hour === 21) {
-      this.setGameProp('timeMode', 'night');
-    }
-    if (hour === 5) {
-      this.setGameProp('timeMode', 'day');
+  handleTimeChange: function (time) {
+    const hour = time.todayHours;
+    const ticksPerHour = this.getGameProp('timeConfig').ticksPerHour;
+    // Only execute on new hour (when gameTick is divisible by ticksPerHour)
+    if (time.gameTick % ticksPerHour === 0) {
+      if (hour === 21) {
+        this.setGameProp('timeMode', 'night');
+      }
+      if (hour === 5) {
+        this.setGameProp('timeMode', 'day');
+      }
     }
   },
 
@@ -144,6 +168,11 @@ export default {
   setGameProp: function (prop, value) {
     game[prop] = value;
     Events.emit(EVENTS.GAME_PROP_CHANGED, { prop, value });
+  },
+
+  updateTimeIsUnity: function (updates) {
+    game.timeIsUnity = { ...game.timeIsUnity, ...updates };
+    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop: 'timeIsUnity', value: game.timeIsUnity });
   },
 
   pauseGame: function (pause) {

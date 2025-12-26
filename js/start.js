@@ -125,19 +125,17 @@ export default {
     );
     //Player.setPlayerPosition(18, 37);
 
-    Player.init();
     Props.changePlayerProp('health', 100);
     Props.changePlayerProp('food', 65);
     Props.changePlayerProp('thirst', 70);
     Props.changePlayerProp('energy', 75);
 
+    Player.init();
     Items.init();
-    Items.inventoryChangeFeedback();
   },
 
   restoreCheckpoint: function (saveCheckpoint) {
     Checkpoint.restore(saveCheckpoint);
-    // Initialize player and items
     Player.init();
     Items.init();
   },

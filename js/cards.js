@@ -9,6 +9,7 @@ import Tutorial from './tutorial.js';
 import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
 import Almanac from './almanac.js';
+import Events, { EVENTS } from './events.js';
 
 var cardDeck = [];
 var lastHoverTarget;
@@ -17,10 +18,19 @@ export default {
   init: function () {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
+    // EVENT: React to time changes
+    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop, value }) => {
+      if (prop === 'timeIsUnity') {
+        this.handleTimeChange(value);
+      }
+    });
   },
 
-  hourlyTasks: function (hour) {
-    if (hour === 21 || hour === 5) {
+  handleTimeChange: function (time) {
+    const hour = time.todayHours;
+    const ticksPerHour = Props.getGameProp('timeConfig').ticksPerHour;
+    // Only execute on new hour (when gameTick is divisible by ticksPerHour)
+    if (time.gameTick % ticksPerHour === 0 && (hour === 21 || hour === 5)) {
       this.switchDayNight();
     }
   },
