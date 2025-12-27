@@ -18,8 +18,6 @@ let smallTreeCounter = 1,
 export default {
   init: function () {},
 
-  bind: function () {},
-
   createCardMarkup: function (id) {
     let object = Props.getObject(id);
     let cardMarkupExtension;

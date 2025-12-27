@@ -4,6 +4,7 @@ import Editor from './editor.js';
 import Props from './props.js';
 import Map from './map.js';
 import Cards from './cards.js';
+import Items from './items.js';
 import Actions from './actions.js';
 import Battle from './battle.js';
 import Cooking from './cooking.js';
@@ -25,10 +26,26 @@ import TestRecorder from './test-recorder.js';
       'handleClick',
       Start.handleClick.bind(Start)
     );
+    Ui.handleClick = TestRecorder.wrapEventHandler('Ui', 'handleClick', Ui.handleClick.bind(Ui));
     Cards.checkForCardClick = TestRecorder.wrapEventHandler(
       'Cards',
       'checkForCardClick',
       Cards.checkForCardClick.bind(Cards)
+    );
+    Items.checkForSlotClick = TestRecorder.wrapEventHandler(
+      'Items',
+      'checkForSlotClick',
+      Items.checkForSlotClick.bind(Items)
+    );
+    Crafting.checkCraftActionClick = TestRecorder.wrapEventHandler(
+      'Crafting',
+      'checkCraftActionClick',
+      Crafting.checkCraftActionClick.bind(Crafting)
+    );
+    Character.checkForSlotClick = TestRecorder.wrapEventHandler(
+      'Character',
+      'checkForSlotClick',
+      Character.checkForSlotClick.bind(Character)
     );
     Player.handleKeydown = TestRecorder.wrapEventHandler(
       'Player',

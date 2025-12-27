@@ -182,7 +182,31 @@ export default {
         }
         break;
 
+      case 'Ui':
+        if (command.selector) {
+          this.clickElement(command.selector);
+        }
+        break;
+
       case 'Cards':
+        if (command.selector) {
+          this.clickElement(command.selector);
+        }
+        break;
+
+      case 'Items':
+        if (command.selector) {
+          this.clickElement(command.selector);
+        }
+        break;
+
+      case 'Crafting':
+        if (command.selector) {
+          this.clickElement(command.selector);
+        }
+        break;
+
+      case 'Character':
         if (command.selector) {
           this.clickElement(command.selector);
         }

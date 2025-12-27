@@ -86,9 +86,10 @@ export default {
     Props.beginInventoryBatch();
     if (Props.getGameProp('local')) {
       Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
-      Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
+      //Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
       Props.addItemToInventory('bones', 2);
       Props.addItemToInventory('meat', 2);
+      Props.addItemToInventory('tape', 1);
     }
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {

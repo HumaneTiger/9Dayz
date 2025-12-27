@@ -36,7 +36,9 @@ export default {
       // Includes their state: looted, dead, health, items, positions, discovered, etc.
       objects: Props.getAllObjects(),
       objectIdsAt: Props.getAllObjectIdsAt(),
-      objectsIdCounter: Props.getObjectsIdCounter(),
+      objectsIdCounter:
+        /* TESTING NEEDED! when it is saved it seems to be too far ahead > causes different card ids when recording vs. running tests */
+        Props.getObjectsIdCounter() - 2,
       zedCounter: Props.getZedCounter(),
 
       // ===== TUTORIAL =====

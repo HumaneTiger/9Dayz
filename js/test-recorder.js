@@ -1,5 +1,8 @@
 import Props from './props.js';
 import Checkpoint from './checkpoint.js';
+import Start from './start.js';
+import Ui from './ui.js';
+import Character from './character.js';
 
 let isRecording = false;
 let recordedCommands = [];
@@ -96,8 +99,20 @@ export default {
     if (moduleName === 'Start' && handlerName === 'handleClick') {
       return this.translateStartClick(event);
     }
+    if (moduleName === 'Ui' && handlerName === 'handleClick') {
+      return this.translateUiClick(event);
+    }
     if (moduleName === 'Cards' && handlerName === 'checkForCardClick') {
       return this.translateCardsClick(event);
+    }
+    if (moduleName === 'Items' && handlerName === 'checkForSlotClick') {
+      return this.translateItemsClick(event);
+    }
+    if (moduleName === 'Crafting' && handlerName === 'checkCraftActionClick') {
+      return this.translateCraftActionClick(event);
+    }
+    if (moduleName === 'Character' && handlerName === 'checkForSlotClick') {
+      return this.translateCharacterSlotClick(event);
     }
     if (moduleName === 'Player' && handlerName === 'handleKeydown') {
       return this.translatePlayerKeydown(moduleName, handlerName, event);
@@ -125,27 +140,15 @@ export default {
         };
       }
 
-      // Named action buttons
-      const actionClasses = [
-        'start-real',
-        'start-game',
-        'back-screen-2',
-        'continue-real',
-        'start-tutorial',
-        'restart',
-        'resume',
-        'card-tutorial-confirm',
-      ];
-
-      for (const className of actionClasses) {
-        if (actionButton.classList.contains(className)) {
-          return {
-            module: 'Start',
-            type: 'start-button',
-            action: className,
-            selector: `.button.${className}`,
-          };
-        }
+      // action buttons (e.g., start game, settings)
+      const actionType = Start.getActionType(actionButton);
+      if (actionType) {
+        return {
+          module: 'Start',
+          type: 'start-button',
+          action: actionType,
+          selector: `.button.${actionType}`,
+        };
       }
     }
 
@@ -182,15 +185,52 @@ export default {
   },
 
   /**
+   * Translate Ui.handleClick events to commands
+   */
+  translateUiClick: function (event) {
+    const target = event.target;
+    const clickAction = target.closest('#actions');
+    const mapClick = target.closest('#maximap');
+    const leftMouseButton = event.button === 0;
+
+    // Handle action buttons
+    if (clickAction && leftMouseButton) {
+      const actionButton = target.closest('li');
+
+      const actionType = Ui.getActionType(actionButton);
+      if (actionType) {
+        return {
+          module: 'Ui',
+          type: 'ui-button',
+          action: actionType,
+          selector: `#actions li.${actionType}`,
+        };
+      }
+    }
+
+    // handle map
+    if (mapClick && leftMouseButton) {
+      return {
+        module: 'Ui',
+        type: 'ui-map-click',
+        selector: '#maximap',
+      };
+    }
+
+    return null;
+  },
+
+  /**
    * Translate Cards.checkForCardClick events to commands
    */
   translateCardsClick: function (event) {
     const target = event.target;
     const cardId = target.closest('div.card')?.id;
+    const leftMouseButton = event.button === 0;
 
     // Handle action buttons
     const actionButton = target.closest('div.action-button');
-    if (cardId && actionButton) {
+    if (cardId && actionButton && leftMouseButton) {
       const action = actionButton.dataset.action;
       return {
         module: 'Cards',
@@ -201,13 +241,108 @@ export default {
 
     // Handle item clicks
     const itemContainer = target.closest('li.item:not(.is--hidden)');
-    if (cardId && itemContainer) {
+    if (cardId && itemContainer && leftMouseButton) {
       const itemName = itemContainer?.dataset.item;
       return {
         module: 'Cards',
         type: 'cards-select-item',
         selector: `[id="${cardId}"] li.item:not(.is--hidden)[data-item="${itemName}"]`,
       };
+    }
+
+    return null;
+  },
+
+  /**
+   * Translate Items.checkForSlotClick to command
+   */
+
+  translateItemsClick: function (event) {
+    const target = event.target;
+    const inventorySlot = target.closest('#inventory');
+    const leftMouseButton = event.button === 0;
+
+    if (inventorySlot && leftMouseButton) {
+      const itemSlot = target.closest('div.slot.active');
+      if (itemSlot) {
+        const item = itemSlot.dataset.item;
+        return {
+          module: 'Items',
+          type: 'inventory-select-slot',
+          selector: `#inventory .slot[data-item="${item}"]`,
+        };
+      }
+    }
+
+    return null;
+  },
+
+  /**
+   * Translate Crafting.checkCraftActionClick to command
+   */
+  translateCraftActionClick: function (event) {
+    const target = event.target;
+    const craftAction = target.closest('#craft');
+    const clickButton = target.closest('.button-craft.active');
+    const navButton = target.closest('.button-next') || target.closest('.button-prev');
+    const leftMouseButton = event.button === 0;
+
+    if (craftAction) {
+      if (clickButton && leftMouseButton) {
+        const item = clickButton.dataset.item;
+        return {
+          module: 'Crafting',
+          type: 'crafting-craft-item',
+          selector: `#craft .button-craft[data-item="${item}"]`,
+        };
+      } else if (navButton && leftMouseButton) {
+        if (navButton.classList.contains('button-next')) {
+          return {
+            module: 'Crafting',
+            type: 'crafting-navigate-next',
+            selector: `#craft .button-next`,
+          };
+        } else if (navButton.classList.contains('button-prev')) {
+          return {
+            module: 'Crafting',
+            type: 'crafting-navigate-prev',
+            selector: `#craft .button-prev`,
+          };
+        }
+      }
+    }
+
+    return null;
+  },
+
+  translateCharacterSlotClick: function (event) {
+    const target = event.target;
+    const characterPanel = target.closest('#character');
+    const actionButton = target.closest('div.action-button');
+    const upgradeButton = target.closest('div.upgrade:not(.nope)');
+    const cardSlot = target.closest('.card');
+    const leftMouseButton = event.button === 0;
+
+    if (characterPanel && cardSlot) {
+      if (actionButton && leftMouseButton) {
+        const action = actionButton.dataset.action;
+        const weaponName = cardSlot.dataset.item;
+        return {
+          module: 'Character',
+          type: 'weapon-action-button',
+          selector: `#character .card[data-item="${weaponName}"] .action-button[data-action="${action}"]`,
+        };
+      } else if (upgradeButton && leftMouseButton) {
+        const weaponName = cardSlot.dataset.item;
+        const upgradeType = Character.getUpgradeType(upgradeButton);
+        if (upgradeType) {
+          return {
+            module: 'Character',
+            type: 'weapon-select-upgrade',
+            selector: `#character .card[data-item="${weaponName}"]  div.upgrade.${upgradeType}`,
+          };
+        }
+      }
     }
 
     return null;

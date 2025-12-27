@@ -13,6 +13,12 @@ const slot2 = characterContainer.querySelector('.slot-2');
 const slotCompanion = characterContainer.querySelector('.slot-companion');
 const companion = Props.getCompanion();
 
+/**
+ * Character module to handle character inventory and companion
+ */
+
+/* todo: split into character, companion and weapon modules */
+
 export default {
   init: function () {
     characterContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
@@ -62,6 +68,12 @@ export default {
     }
   },
 
+  // just finds a class among a predefined set
+  getUpgradeType: function (element) {
+    const classes = ['attack-upgrade', 'defense-upgrade', 'durability-upgrade'];
+    return classes.find(cls => element.classList.contains(cls));
+  },
+
   checkForSlotClick: function (ev) {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');
@@ -100,26 +112,33 @@ export default {
           ? true
           : false;
       if (upgradeItem) {
-        if (upgradeButton.classList.contains('attack-upgrade')) {
-          if (Items.inventoryContains(upgradeItem.attack.item)) {
-            inventory.items[weapon].damage += upgradeItem.attack.amount;
+        const upgradeType = this.getUpgradeType(upgradeButton);
+        switch (upgradeType) {
+          case 'attack-upgrade':
+            if (Items.inventoryContains(upgradeItem.attack.item)) {
+              inventory.items[weapon].damage += upgradeItem.attack.amount;
+              Audio.sfx('improve-weapon');
+              if (!preserveResources) {
+                Props.addItemToInventory(upgradeItem.attack.item, -1);
+              }
+            }
+            break;
+          case 'defense-upgrade':
+            inventory.items[weapon].protection += upgradeItem.defense.amount;
             Audio.sfx('improve-weapon');
             if (!preserveResources) {
-              Props.addItemToInventory(upgradeItem.attack.item, -1);
+              Props.addItemToInventory(upgradeItem.defense.item, -1);
             }
-          }
-        } else if (upgradeButton.classList.contains('defense-upgrade')) {
-          inventory.items[weapon].protection += upgradeItem.defense.amount;
-          Audio.sfx('improve-weapon');
-          if (!preserveResources) {
-            Props.addItemToInventory(upgradeItem.defense.item, -1);
-          }
-        } else if (upgradeButton.classList.contains('durability-upgrade')) {
-          inventory.items[weapon].durability += upgradeItem.durability.amount;
-          Audio.sfx('repair-weapon');
-          if (!preserveResources) {
-            Props.addItemToInventory(upgradeItem.durability.item, -1);
-          }
+            break;
+          case 'durability-upgrade':
+            inventory.items[weapon].durability += upgradeItem.durability.amount;
+            Audio.sfx('repair-weapon');
+            if (!preserveResources) {
+              Props.addItemToInventory(upgradeItem.durability.item, -1);
+            }
+            break;
+          default:
+            break;
         }
       }
     } else if (cardSlot && rightMouseButton) {

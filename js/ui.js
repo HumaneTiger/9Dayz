@@ -275,6 +275,12 @@ export default {
     return targetCandidateFound;
   },
 
+  // just finds a class among a predefined set
+  getActionType: function (element) {
+    const classes = ['inventory', 'craft', 'mixed', 'settings', 'map', 'quit', 'fullscreen'];
+    return classes.find(cls => element.classList.contains(cls));
+  },
+
   handleClick: function (ev) {
     const target = ev.target;
     const clickAction = target.closest('#actions');
@@ -288,35 +294,49 @@ export default {
       ev.preventDefault();
       ev.stopPropagation();
       const action = target.closest('li');
-      if (action?.classList.contains('inventory')) {
-        this.toggleInventory();
-      } else if (action?.classList.contains('craft')) {
-        this.toggleCrafting();
-      } else if (action?.classList.contains('mixed') && target.classList.contains('pause')) {
-        if (Props.getGameProp('gamePaused')) {
-          Props.pauseGame(false);
-          target.innerHTML = '<u>P</u>ause Game';
-          target.classList.remove('active');
-        } else {
-          Props.pauseGame(true);
-          target.innerHTML = 'Game <u>P</u>aused';
-          target.classList.add('active');
-        }
-      } else if (action?.classList.contains('settings')) {
-        document.getElementById('card-console').classList.toggle('out');
-      } else if (action?.classList.contains('map')) {
-        this.hideUI();
-      } else if (action?.classList.contains('quit')) {
-        this.hideUI();
-        this.quitConfirmation();
-      } else if (action?.classList.contains('fullscreen')) {
-        // enter/exit fullscreen mode
-        const fullscreenActive = document.fullscreenElement;
-        if (document.fullscreenEnabled) {
-          if (!fullscreenActive) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
+      if (action) {
+        const actionType = this.getActionType(action);
+        switch (actionType) {
+          case 'inventory':
+            this.toggleInventory();
+            break;
+          case 'craft':
+            this.toggleCrafting();
+            break;
+          case 'mixed':
+            if (target.classList.contains('pause')) {
+              if (Props.getGameProp('gamePaused')) {
+                Props.pauseGame(false);
+                target.innerHTML = '<u>P</u>ause Game';
+                target.classList.remove('active');
+              } else {
+                Props.pauseGame(true);
+                target.innerHTML = 'Game <u>P</u>aused';
+                target.classList.add('active');
+              }
+            }
+            break;
+          case 'settings':
+            document.getElementById('card-console').classList.toggle('out');
+            break;
+          case 'map':
+            this.hideUI();
+            break;
+          case 'quit':
+            this.hideUI();
+            this.quitConfirmation();
+            break;
+          case 'fullscreen': {
+            // enter/exit fullscreen mode
+            const fullscreenActive = document.fullscreenElement;
+            if (document.fullscreenEnabled) {
+              if (!fullscreenActive) {
+                document.documentElement.requestFullscreen();
+              } else {
+                document.exitFullscreen();
+              }
+            }
+            break;
           }
         }
       }

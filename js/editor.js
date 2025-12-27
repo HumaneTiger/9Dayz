@@ -226,6 +226,14 @@ export default {
       const icon =
         type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
       feedback.innerHTML += `<p>${icon} ${message}</p>`;
+      feedback.scrollTop = feedback.scrollHeight;
+      if (type === 'error') {
+        feedback.classList.remove('is--playing');
+        feedback.classList.add('has--errors');
+      } else if (type === 'success') {
+        feedback.classList.remove('is--playing');
+        feedback.classList.add('has--success');
+      }
     }
   },
 
@@ -260,6 +268,10 @@ export default {
       Start.startReal();
       // Pass logger to test player
       TestPlayer.startPlayback(0, this.logTest.bind(this));
+      const feedback = cardConsoleContainer.querySelector('.test-feedback');
+      feedback.classList.add('is--playing');
+      feedback.classList.remove('has--success');
+      feedback.classList.remove('has--errors');
     } catch (e) {
       this.logTest(`Failed to start playback: ${e.message}`, 'error');
     }
