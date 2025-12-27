@@ -182,6 +182,12 @@ export default {
         }
         break;
 
+      case 'Cards':
+        if (command.selector) {
+          this.clickElement(command.selector);
+        }
+        break;
+
       case 'Player':
         if (command.type === 'move-player' && command.key) {
           this.pressKey(command.key);

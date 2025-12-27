@@ -96,6 +96,9 @@ export default {
     if (moduleName === 'Start' && handlerName === 'handleClick') {
       return this.translateStartClick(event);
     }
+    if (moduleName === 'Cards' && handlerName === 'checkForCardClick') {
+      return this.translateCardsClick(event);
+    }
     if (moduleName === 'Player' && handlerName === 'handleKeydown') {
       return this.translatePlayerKeydown(moduleName, handlerName, event);
     }
@@ -172,6 +175,38 @@ export default {
         module: 'Start',
         type: 'start-screen-advance',
         selector: '#startscreen .screen__1',
+      };
+    }
+
+    return null;
+  },
+
+  /**
+   * Translate Cards.checkForCardClick events to commands
+   */
+  translateCardsClick: function (event) {
+    const target = event.target;
+    const cardId = target.closest('div.card')?.id;
+
+    // Handle action buttons
+    const actionButton = target.closest('div.action-button');
+    if (cardId && actionButton) {
+      const action = actionButton.dataset.action;
+      return {
+        module: 'Cards',
+        type: 'cards-select-action',
+        selector: `[id="${cardId}"] .action-button[data-action="${action}"]`,
+      };
+    }
+
+    // Handle item clicks
+    const itemContainer = target.closest('li.item:not(.is--hidden)');
+    if (cardId && itemContainer) {
+      const itemName = itemContainer?.dataset.item;
+      return {
+        module: 'Cards',
+        type: 'cards-select-item',
+        selector: `[id="${cardId}"] li.item:not(.is--hidden)[data-item="${itemName}"]`,
       };
     }
 

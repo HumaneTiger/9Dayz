@@ -25,6 +25,11 @@ import TestRecorder from './test-recorder.js';
       'handleClick',
       Start.handleClick.bind(Start)
     );
+    Cards.checkForCardClick = TestRecorder.wrapEventHandler(
+      'Cards',
+      'checkForCardClick',
+      Cards.checkForCardClick.bind(Cards)
+    );
     Player.handleKeydown = TestRecorder.wrapEventHandler(
       'Player',
       'handleKeydown',
