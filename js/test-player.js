@@ -1,18 +1,13 @@
 import Props from './props.js';
-import Checkpoint from './checkpoint.js';
-import Events, { EVENTS } from './events.js';
 
 let isPlaying = false;
 let commandQueue = [];
 let currentCommandIndex = 0;
-let playbackStartTick = 0;
-let playbackStartTime = 0; // Real-world time when playback started
-let accumulatedPausedTicks = 0; // Fake ticks accumulated during start sequence
-let gameUnpausedTick = null; // Game tick when game actually starts
+let testTick = 0; // Independent test tick counter
+let testTickInterval = null; // Interval for test ticks
 let playbackTickOffset = 0; // Additional delay for slower playback
 let jsErrors = [];
 let logger = null; // UI logger function
-let pollingInterval = null; // For checking commands during start sequence
 
 export default {
   /**
@@ -27,7 +22,7 @@ export default {
           message: e.message,
           stack: e.error?.stack,
           atCommand: currentCommandIndex,
-          atTick: Props.getGameProp('timeIsUnity')?.gameTick || 0,
+          atTick: testTick,
           command: failedCommand,
           selector: failedCommand?.selector,
         });
@@ -36,13 +31,6 @@ export default {
         this.log(`Selector: ${failedCommand?.selector}`, 'error');
         console.error('Full error:', e);
         this.stopPlayback();
-      }
-    });
-
-    // Listen to game tick changes to execute commands
-    Events.on(EVENTS.GAME_PROP_CHANGED, ({ prop }) => {
-      if (prop === 'timeIsUnity' && isPlaying) {
-        this.checkAndExecuteCommands();
       }
     });
   },
@@ -54,22 +42,15 @@ export default {
    */
   startPlayback: function (tickOffset = 0, logFunction = null) {
     logger = logFunction;
-    const savedCheckpoint = localStorage.getItem('saveCheckpoint');
-    const savedCommands = localStorage.getItem('recordedCommands');
+    const recordedCommands = localStorage.getItem('recordedCommands');
 
-    if (!savedCommands) {
+    if (!recordedCommands) {
       this.log('No recorded commands found in localStorage', 'error');
       return;
     }
 
-    if (!savedCheckpoint) {
-      this.log('No checkpoint found in localStorage', 'error');
-      return;
-    }
-
     try {
-      const checkpoint = JSON.parse(savedCheckpoint);
-      commandQueue = JSON.parse(savedCommands);
+      commandQueue = JSON.parse(recordedCommands);
       playbackTickOffset = tickOffset;
       currentCommandIndex = 0;
       jsErrors = [];
@@ -77,19 +58,14 @@ export default {
       this.log(`Starting playback with ${commandQueue.length} commands`);
       this.log(`Tick offset: ${tickOffset}`);
 
-      // Restore checkpoint
-      Checkpoint.restore(checkpoint);
-
       // Start playback
       isPlaying = true;
-      playbackStartTick = Props.getGameProp('timeIsUnity')?.gameTick || 0;
-      playbackStartTime = Date.now();
-      accumulatedPausedTicks = 0;
-      gameUnpausedTick = null;
+      testTick = 0;
 
-      // Start polling for commands (needed during start sequence when game ticks don't advance)
-      pollingInterval = setInterval(() => {
+      // Start test tick counter (100ms = 1 tick)
+      testTickInterval = setInterval(() => {
         if (isPlaying) {
+          testTick++;
           this.checkAndExecuteCommands();
         }
       }, 100);
@@ -108,15 +84,14 @@ export default {
     if (!isPlaying) return;
 
     isPlaying = false;
-    Props.pauseGame(true);
 
-    // Stop polling
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-      pollingInterval = null;
+    // Stop test tick counter
+    if (testTickInterval) {
+      clearInterval(testTickInterval);
+      testTickInterval = null;
     }
 
-    this.log('Playback stopped', 'warning');
+    this.log('Playback stopped', 'info');
 
     if (jsErrors.length > 0) {
       this.log(`Errors encountered: ${jsErrors.length}`, 'error');
@@ -128,6 +103,15 @@ export default {
     } else {
       this.log(`Stopped at command ${currentCommandIndex}/${commandQueue.length}`, 'warning');
     }
+
+    document
+      .getElementById('card-console')
+      .querySelector('.start-playback')
+      .classList.add('is--hidden');
+    document
+      .getElementById('card-console')
+      .querySelector('.stop-playback')
+      .classList.add('is--hidden');
   },
 
   /**
@@ -147,27 +131,10 @@ export default {
    * Check if any commands should execute at current tick
    */
   checkAndExecuteCommands: function () {
-    const currentTick = Props.getGameProp('timeIsUnity')?.gameTick || 0;
-    let relativeTick;
-
-    // During start sequence (ticks haven't advanced yet), use elapsed time
-    if (currentTick === playbackStartTick) {
-      const elapsedMs = Date.now() - playbackStartTime;
-      const fakeTicks = Math.floor(elapsedMs / 100);
-      relativeTick = fakeTicks;
-      accumulatedPausedTicks = fakeTicks;
-    } else {
-      // Game has started - switch to game ticks
-      if (gameUnpausedTick === null) {
-        gameUnpausedTick = currentTick;
-      }
-      relativeTick = accumulatedPausedTicks + (currentTick - gameUnpausedTick);
-    }
-
     // Execute all commands that should fire at this tick
     while (
       currentCommandIndex < commandQueue.length &&
-      commandQueue[currentCommandIndex].tick + playbackTickOffset <= relativeTick
+      commandQueue[currentCommandIndex].tick + playbackTickOffset <= testTick
     ) {
       const command = commandQueue[currentCommandIndex];
       this.log(
@@ -215,6 +182,12 @@ export default {
         }
         break;
 
+      case 'Player':
+        if (command.type === 'move-player' && command.key) {
+          this.pressKey(command.key);
+        }
+        break;
+
       default:
         this.log(`Unknown command module: ${command.module} ${command.type}`, 'warning');
     }
@@ -238,5 +211,21 @@ export default {
     });
 
     target.dispatchEvent(mouseEvent);
+  },
+
+  /**
+   * Simulate a keydown event
+   * @param {string} key - The key to press (e.g., 'w', 'ArrowUp')
+   */
+  pressKey: function (key) {
+    // Create and dispatch synthetic keydown event
+    console.log(`Simulating key press: ${key}`);
+    const keyEvent = new KeyboardEvent('keydown', {
+      key: key,
+      bubbles: true,
+      cancelable: true,
+    });
+
+    document.body.dispatchEvent(keyEvent);
   },
 };

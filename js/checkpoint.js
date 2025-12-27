@@ -9,7 +9,7 @@ export default {
    * Save the current game state to localStorage
    * @param {string} targetLocationName - Name of the current location
    */
-  save: function (targetLocationName) {
+  save: function (targetLocationName, localStorageKey = 'saveCheckpoint') {
     const checkpoint = {
       // ===== TIME =====
       // Game time tracking: ticks, hours, days, and time of day
@@ -57,7 +57,7 @@ export default {
     };
 
     // Save to localStorage
-    localStorage.setItem('saveCheckpoint', JSON.stringify(checkpoint));
+    localStorage.setItem(localStorageKey, JSON.stringify(checkpoint));
 
     // Show save confirmation UI
     document

@@ -11,6 +11,7 @@ import Crafting from './crafting.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
 import Preloading from './preloading.js';
+import Player from './player.js';
 import TestRecorder from './test-recorder.js';
 
 // initialize everything
@@ -23,6 +24,11 @@ import TestRecorder from './test-recorder.js';
       'Start',
       'handleClick',
       Start.handleClick.bind(Start)
+    );
+    Player.handleKeydown = TestRecorder.wrapEventHandler(
+      'Player',
+      'handleKeydown',
+      Player.handleKeydown.bind(Player)
     );
   }
 

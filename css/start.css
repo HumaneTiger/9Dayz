@@ -398,6 +398,10 @@
   bottom: 5px;
   font-size: 0.6em;
 }
+#startscreen .start-test-playback {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 @media screen and (max-height: 860px) {
   #startscreen .screen__2a .container {

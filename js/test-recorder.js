@@ -1,11 +1,10 @@
 import Props from './props.js';
+import Checkpoint from './checkpoint.js';
 
 let isRecording = false;
 let recordedCommands = [];
-let recordingStartTick = 0;
-let recordingStartTime = 0; // Fallback for when game is paused
-let accumulatedPausedTicks = 0; // Fake ticks accumulated while paused
-let gameUnpausedTick = null; // Game tick when game first unpauses
+let testTick = 0; // Independent test tick counter
+let testTickInterval = null; // Interval for test ticks
 let logger = null; // UI logger function
 
 export default {
@@ -16,12 +15,19 @@ export default {
     logger = logFunction;
     isRecording = true;
     recordedCommands = [];
-    recordingStartTick = Props.getGameProp('timeIsUnity')?.gameTick || 0;
-    recordingStartTime = Date.now();
-    accumulatedPausedTicks = 0;
-    gameUnpausedTick = null;
-    console.log('🔴 Recording started at tick', recordingStartTick);
-    console.log('🔴 Game paused:', Props.getGameProp('gamePaused'));
+    testTick = 0;
+
+    // Save checkpoint at start
+    Checkpoint.save('test', 'testCheckpoint');
+
+    // Start test tick counter (100ms = 1 tick)
+    testTickInterval = setInterval(() => {
+      if (isRecording) {
+        testTick++;
+      }
+    }, 100);
+
+    console.log('🔴 Recording started');
   },
 
   /**
@@ -29,6 +35,13 @@ export default {
    */
   stopRecording: function () {
     isRecording = false;
+
+    // Stop test tick counter
+    if (testTickInterval) {
+      clearInterval(testTickInterval);
+      testTickInterval = null;
+    }
+
     localStorage.setItem('recordedCommands', JSON.stringify(recordedCommands));
     console.log('⏹️ Recording stopped. Commands saved to localStorage:', recordedCommands.length);
     console.log('Commands:', recordedCommands);
@@ -54,44 +67,16 @@ export default {
       if (isRecording) {
         const command = this.translateToCommand(moduleName, handlerName, event);
         if (command) {
-          const currentTick = Props.getGameProp('timeIsUnity')?.gameTick || 0;
-          const isPaused = Props.getGameProp('gamePaused');
-
-          let relativeTick;
-          if (isPaused) {
-            // Game is paused, use elapsed milliseconds converted to "ticks"
-            const elapsedMs = Date.now() - recordingStartTime;
-            relativeTick = Math.floor(elapsedMs / 100);
-            accumulatedPausedTicks = relativeTick; // Remember for transition
-          } else {
-            // Game is running
-            if (gameUnpausedTick === null) {
-              // First time game is running - remember the tick when it unpaused
-              gameUnpausedTick = currentTick;
-            }
-            // Add accumulated paused ticks to game ticks
-            relativeTick = accumulatedPausedTicks + (currentTick - gameUnpausedTick);
-          }
-
           recordedCommands.push({
             ...command,
-            tick: relativeTick,
+            tick: testTick,
           });
 
           // Log to UI if logger provided
           if (logger) {
-            logger(`Recorded: ${command.type} at tick ${relativeTick}`);
+            logger(`Recorded: ${command.type} at tick ${testTick}`);
           }
-          console.log(
-            '📝 Recorded:',
-            command.type,
-            'at tick',
-            relativeTick,
-            'gameTick:',
-            currentTick,
-            'paused:',
-            isPaused
-          );
+          console.log('📝 Recorded:', command.type, 'at tick', testTick);
         }
       }
 
@@ -111,7 +96,9 @@ export default {
     if (moduleName === 'Start' && handlerName === 'handleClick') {
       return this.translateStartClick(event);
     }
-
+    if (moduleName === 'Player' && handlerName === 'handleKeydown') {
+      return this.translatePlayerKeydown(moduleName, handlerName, event);
+    }
     // Add more handlers here as we expand
     return null;
   },
@@ -188,6 +175,20 @@ export default {
       };
     }
 
+    return null;
+  },
+
+  /**
+   * Translate Player.handleKeydown to command
+   */
+  translatePlayerKeydown: function (moduleName, handlerName, event) {
+    if (event && event.key) {
+      return {
+        module: 'Player',
+        type: 'move-player',
+        key: event.key,
+      };
+    }
     return null;
   },
 

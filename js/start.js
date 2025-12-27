@@ -8,6 +8,7 @@ import { default as Ui } from './ui.js';
 import { default as Checkpoint } from './checkpoint.js';
 import { default as Character } from './character.js';
 import { default as Cooking } from './cooking.js';
+import { default as Editor } from './editor.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -260,6 +261,12 @@ export default {
       if (href && href !== '#') {
         window.open(href, '_blank');
       }
+
+      // handle test suite
+      const testPlayback = target.closest('.start-test-playback');
+      if (testPlayback) {
+        Editor.startPlayback();
+      }
     }
   },
 
@@ -293,6 +300,14 @@ export default {
   startReal: function () {
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
+    document
+      .getElementById('card-console')
+      .querySelector('.start-playback')
+      .classList.add('is--hidden');
+    document
+      .getElementById('card-console')
+      .querySelector('.start-recording')
+      .classList.remove('is--hidden');
     this.startGame();
   },
 
@@ -327,6 +342,8 @@ export default {
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
+    document.querySelector('#startscreen .development-build').innerHTML +=
+      ' - <span class="start-test-playback">Start Test Playback</span>';
   },
 
   switchToScreen3: function () {

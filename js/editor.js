@@ -1,5 +1,6 @@
 import Props from './props.js';
 import Checkpoint from './checkpoint.js';
+import Start from './start.js';
 import Ui from './ui.js';
 import Items from './items.js';
 import Map from './map.js';
@@ -26,7 +27,6 @@ export default {
       'place-object',
       'beam-character',
       'shift-time',
-      'start-playback',
       'stop-playback',
       'start-recording',
       'stop-recording',
@@ -121,15 +121,9 @@ export default {
             break;
           }
 
-          case 'start-playback':
-            cardConsoleContainer.querySelector('.start-playback').classList.add('is--hidden');
-            cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
-            this.startPlayback();
-            break;
-
           case 'stop-playback':
-            cardConsoleContainer.querySelector('.start-playback').classList.remove('is--hidden');
             cardConsoleContainer.querySelector('.stop-playback').classList.add('is--hidden');
+            cardConsoleContainer.querySelector('.start-recording').classList.remove('is--hidden');
             this.stopPlayback();
             break;
 
@@ -249,26 +243,21 @@ export default {
    * Run test playback
    */
   startPlayback: function () {
+    cardConsoleContainer.classList.remove('out');
+    cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
+    cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
     this.clearTestFeedback();
     this.logTest('Starting test playback...');
 
-    const savedCommands = localStorage.getItem('recordedCommands');
-    const savedCheckpoint = localStorage.getItem('saveCheckpoint');
-
-    if (!savedCommands) {
-      this.logTest('No recorded commands found. Record a test first.', 'error');
-      return;
-    }
-
-    if (!savedCheckpoint) {
-      this.logTest('No checkpoint found. Save a checkpoint first.', 'error');
-      return;
-    }
-
     try {
-      const commands = JSON.parse(savedCommands);
-      this.logTest(`Loaded ${commands.length} commands`);
-
+      const testCheckpointStorage = localStorage.getItem('testCheckpoint');
+      if (!testCheckpointStorage) {
+        this.log('No checkpoint found in localStorage', 'error');
+      }
+      const testCheckpoint = JSON.parse(testCheckpointStorage);
+      Start.restoreCheckpoint(testCheckpoint);
+      Start.prepareGameStart();
+      Start.startReal();
       // Pass logger to test player
       TestPlayer.startPlayback(0, this.logTest.bind(this));
     } catch (e) {

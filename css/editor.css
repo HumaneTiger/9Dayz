@@ -30,9 +30,6 @@
 #card-console select {
   width: 100%;
 }
-#card-console .testing {
-  width: 49%;
-}
 #card-console .test-feedback {
   width: 100%;
   height: 100px;
