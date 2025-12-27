@@ -63,17 +63,19 @@ export default {
     images[7] = new Image();
     images[7].src = './img/card/border-neutral.png';
     images[8] = new Image();
-    images[8].src = './img/card/card-tutorial.png';
+    images[8].src = './img/card/border-z.png';
     images[9] = new Image();
-    images[9].src = './img/card/chip.png';
+    images[9].src = './img/card/card-tutorial.png';
     images[10] = new Image();
-    images[10].src = './img/card/chip-border-neutral.png';
+    images[10].src = './img/card/chip.png';
     images[11] = new Image();
-    images[11].src = './img/characters/hero.png';
+    images[11].src = './img/card/chip-border-neutral.png';
     images[12] = new Image();
-    images[12].src = './img/ui/day-teaser-left.png';
+    images[12].src = './img/characters/hero.png';
     images[13] = new Image();
-    images[13].src = './img/ui/day-teaser-right.png';
+    images[13].src = './img/ui/day-teaser-left.png';
+    images[14] = new Image();
+    images[14].src = './img/ui/day-teaser-right.png';
   },
 
   preloadZombies: function () {
