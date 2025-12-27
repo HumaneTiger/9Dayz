@@ -11,10 +11,21 @@ import Crafting from './crafting.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
 import Preloading from './preloading.js';
+import TestRecorder from './test-recorder.js';
 
 // initialize everything
 {
   Props.init();
+
+  // Wrap event handlers for test recording
+  if (Props.getGameProp('local')) {
+    Start.handleClick = TestRecorder.wrapEventHandler(
+      'Start',
+      'handleClick',
+      Start.handleClick.bind(Start)
+    );
+  }
+
   Start.init();
   Ui.init();
   Editor.init();

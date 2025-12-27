@@ -101,10 +101,14 @@ export default {
         } else {
           this.handleMapClick();
         }
-      } else if (ev.key.toLowerCase() === 'e' && actionsPanelActive) {
-        actionsPanel
-          .querySelector('li.settings')
-          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+      } else if (ev.key.toLowerCase() === 'e') {
+        const settingsAction = actionsPanel.querySelector('li.settings');
+        // make sure editor can be opened even if actions panel is hidden
+        if (settingsAction) {
+          settingsAction.dispatchEvent(new Event('mousedown', { bubbles: true }));
+        } else {
+          document.getElementById('card-console').classList.toggle('out');
+        }
       } else if (ev.key.toLowerCase() === 'q' && actionsPanelActive) {
         actionsPanel
           .querySelector('li.quit')

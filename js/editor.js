@@ -4,19 +4,33 @@ import Ui from './ui.js';
 import Items from './items.js';
 import Map from './map.js';
 import Player from './player.js';
+import TestPlayer from './test-player.js';
+import TestRecorder from './test-recorder.js';
 
 let squareX = 0,
   squareY = 0;
 let squareFreeze = true;
+const cardConsoleContainer = document.getElementById('card-console');
 
 export default {
   init: function () {
     document.body.addEventListener('click', this.handleClick.bind(this));
     this.initDevConsole();
+    TestPlayer.init();
   },
 
   getActionType: function (element) {
-    const actions = ['handle', 'select-square', 'place-object', 'beam-character', 'shift-time'];
+    const actions = [
+      'handle',
+      'select-square',
+      'place-object',
+      'beam-character',
+      'shift-time',
+      'start-playback',
+      'stop-playback',
+      'start-recording',
+      'stop-recording',
+    ];
     return actions.find(action => element.classList.contains(action));
   },
 
@@ -30,21 +44,21 @@ export default {
 
         switch (actionType) {
           case 'handle':
-            document.getElementById('card-console').classList.toggle('out');
+            cardConsoleContainer.classList.toggle('out');
             break;
 
           case 'select-square':
             squareFreeze = false;
             squareX = 0;
             squareY = 0;
-            document.querySelector('#card-console .selected-square').textContent = '';
+            cardConsoleContainer.querySelector('.selected-square').textContent = '';
             document.getElementById('square-marker').classList.remove('freeze');
             document.getElementById('square-marker').classList.remove('is--hidden');
             break;
 
           case 'place-object':
             if (squareX || squareY) {
-              let selectedObject = document.querySelector('#card-console .select-object').value;
+              let selectedObject = cardConsoleContainer.querySelector('.select-object').value;
               if (selectedObject === 'zombie') {
                 Props.setZedAt(squareX, squareY, 1);
               } else if (selectedObject === 'rats') {
@@ -92,7 +106,7 @@ export default {
             break;
 
           case 'shift-time': {
-            const selectedDay = parseInt(document.querySelector('#card-console .select-day').value);
+            const selectedDay = parseInt(cardConsoleContainer.querySelector('.select-day').value);
             const todayHours = 7;
             Props.updateTimeIsUnity({
               gameTick: 0,
@@ -106,13 +120,37 @@ export default {
             Ui.showNewDay(0, true);
             break;
           }
+
+          case 'start-playback':
+            cardConsoleContainer.querySelector('.start-playback').classList.add('is--hidden');
+            cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
+            this.startPlayback();
+            break;
+
+          case 'stop-playback':
+            cardConsoleContainer.querySelector('.start-playback').classList.remove('is--hidden');
+            cardConsoleContainer.querySelector('.stop-playback').classList.add('is--hidden');
+            this.stopPlayback();
+            break;
+
+          case 'start-recording':
+            cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
+            cardConsoleContainer.querySelector('.stop-recording').classList.remove('is--hidden');
+            this.startRecording();
+            break;
+
+          case 'stop-recording':
+            cardConsoleContainer.querySelector('.start-recording').classList.remove('is--hidden');
+            cardConsoleContainer.querySelector('.stop-recording').classList.add('is--hidden');
+            this.stopRecording();
+            break;
         }
       }
     }
   },
 
   initDevConsole: function () {
-    const selectObject = document.querySelector('#card-console .select-object');
+    const selectObject = cardConsoleContainer.querySelector('.select-object');
     const allBuildings = Props.getBuildingProps();
     const allWeapons = Props.getWeaponProps();
 
@@ -170,7 +208,7 @@ export default {
       } else {
         squareY = mouseY + (21 - (40 - playerPosition.y));
       }
-      document.querySelector('#card-console .selected-square').textContent =
+      cardConsoleContainer.querySelector('.selected-square').textContent =
         '(' + squareX + ', ' + squareY + ')';
       document.getElementById('square-marker').style.left = mouseX * 44.4 + 'px';
       document.getElementById('square-marker').style.top = mouseY * 44.4 + 23 + 'px';
@@ -183,5 +221,84 @@ export default {
       squareFreeze = true;
       document.getElementById('square-marker').classList.add('freeze');
     }
+  },
+
+  /**
+   * Log message to test feedback UI
+   */
+  logTest: function (message, type = 'info') {
+    const feedback = cardConsoleContainer.querySelector('.test-feedback');
+    if (feedback) {
+      const icon =
+        type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+      feedback.innerHTML += `<p>${icon} ${message}</p>`;
+    }
+  },
+
+  /**
+   * Clear test feedback
+   */
+  clearTestFeedback: function () {
+    const feedback = document.querySelector('.test-feedback');
+    if (feedback) {
+      feedback.innerHTML = '';
+    }
+  },
+
+  /**
+   * Run test playback
+   */
+  startPlayback: function () {
+    this.clearTestFeedback();
+    this.logTest('Starting test playback...');
+
+    const savedCommands = localStorage.getItem('recordedCommands');
+    const savedCheckpoint = localStorage.getItem('saveCheckpoint');
+
+    if (!savedCommands) {
+      this.logTest('No recorded commands found. Record a test first.', 'error');
+      return;
+    }
+
+    if (!savedCheckpoint) {
+      this.logTest('No checkpoint found. Save a checkpoint first.', 'error');
+      return;
+    }
+
+    try {
+      const commands = JSON.parse(savedCommands);
+      this.logTest(`Loaded ${commands.length} commands`);
+
+      // Pass logger to test player
+      TestPlayer.startPlayback(0, this.logTest.bind(this));
+    } catch (e) {
+      this.logTest(`Failed to start playback: ${e.message}`, 'error');
+    }
+  },
+
+  /**
+   * Stop test playback
+   */
+  stopPlayback: function () {
+    TestPlayer.stopPlayback();
+    this.logTest('Test playback stopped', 'warning');
+  },
+
+  /**
+   * Start test recording
+   */
+  startRecording: function () {
+    this.clearTestFeedback();
+    TestRecorder.startRecording(this.logTest.bind(this));
+    this.logTest('Recording started', 'success');
+  },
+
+  /**
+   * Stop test recording
+   */
+  stopRecording: function () {
+    TestRecorder.stopRecording();
+    const commands = TestRecorder.getRecordedCommands();
+    this.logTest(`Recording stopped. Captured ${commands.length} commands`, 'success');
   },
 };
