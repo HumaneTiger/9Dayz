@@ -9,6 +9,7 @@ import BuildingUtils from '../data/utils/building-utils.js';
 import LootUtils from '../data/utils/loot-utils.js';
 import ItemUtils from '../data/utils/item-utils.js';
 import PathUtils from '../data/utils/path-utils.js';
+import RngUtils from './utils/rng-utils.js';
 
 const mapSize = { width: 49, height: 45 };
 
@@ -55,6 +56,7 @@ var playerProps = {
 };
 
 var game = {
+  gameSeed: RngUtils.generateGameSeed(),
   mode: 'real',
   character: 'everyman',
   startMode: 1,
@@ -548,23 +550,25 @@ export default {
     return creaturesList;
   },
 
-  createAdditionalBuildings: function (buildingType, buildingName, x, y) {
-    let additionalBuildings = [];
+  createAdditionalGameObjects: function (buildingType, buildingName, x, y) {
+    let additionalGameObjects = [];
     if (buildingType === 'house' && Math.random() < 0.25) {
-      additionalBuildings.push({
+      additionalGameObjects.push({
         x: x,
         y: y,
         name: 'human-corpse-1',
+        group: 'building',
         forceItems: false,
         forceInfested: false,
       });
     }
 
     if ((buildingName === 'house' || buildingName === 'farm-house') && Math.random() < 0.2) {
-      additionalBuildings.push({
+      additionalGameObjects.push({
         x: x,
         y: y,
         name: 'basement',
+        group: 'building',
         forceItems: false,
         forceInfested: true,
       });
@@ -572,15 +576,53 @@ export default {
 
     /* old villas have a guaranteed basement with crate */
     if (buildingName === 'old-villa') {
-      additionalBuildings.push({
+      additionalGameObjects.push({
         x: x,
         y: y,
         name: 'basement',
+        group: 'building',
         forceItems: ['crate'],
         forceInfested: true,
       });
     }
-    return additionalBuildings;
+
+    if (buildingName === 'well' || buildingName === 'jetty') {
+      if (Math.random() < 0.15) {
+        additionalGameObjects.push({
+          x: x,
+          y: y,
+          name: 'froggy',
+          group: 'animal',
+          items: LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3),
+          dead: true,
+        });
+      } else if (Math.random() < 0.2) {
+        // 0.15 probability for second branch
+        additionalGameObjects.push({
+          x: x,
+          y: y,
+          name: 'duck',
+          group: 'animal',
+          items: LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3),
+          dead: true,
+        });
+      }
+    }
+
+    if (buildingName === 'barn' || buildingName === 'field') {
+      if (Math.random() < 0.1) {
+        additionalGameObjects.push({
+          x: x,
+          y: y,
+          name: 'duck',
+          group: 'animal',
+          items: LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3),
+          dead: true,
+        });
+      }
+    }
+
+    return additionalGameObjects;
   },
 
   setupBuilding: function (x, y, buildingNamesArray, forceItems, forceInfested) {
@@ -621,8 +663,8 @@ export default {
       }
 
       // for certain buildings, add additional buildings which spawn when the building is searched
-      let additionalBuildings = [];
-      additionalBuildings = this.createAdditionalBuildings(type, buildingName, x, y);
+      let additionalGameObjects = [];
+      additionalGameObjects = this.createAdditionalGameObjects(type, buildingName, x, y);
 
       // Assign a stable object ID
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
@@ -653,7 +695,7 @@ export default {
           infested: forceInfested || infested,
           enemies: creaturesList,
           preview: props.preview,
-          additionalBuildings: additionalBuildings,
+          additionalGameObjects: additionalGameObjects,
         })
       );
     });
@@ -740,24 +782,46 @@ export default {
     return spawnedCreatureIds;
   },
 
-  spawnAnimalAt: function (name, x, y) {
-    const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3);
-    const currentObjectsIdCounter = this.addObjectIdAt(x, y);
+  rngFishSpawn: function (x, y) {
+    RngUtils.init(this.getGameProp('gameSeed'));
+    /**
+     * 3/4 chance to catch a fish
+     * Deterministic RNG based on game seed
+     * Allows for consistent fish spawns for test playbacks
+     */
+    if (RngUtils.fishingRNG.random() < 0.75) {
+      this.spawnAnimal({
+        x: x,
+        y: y,
+        name: 'fish',
+        group: 'animal',
+        items: LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 6], 3, () =>
+          RngUtils.fishingRNG.random()
+        ), // pass the same RNG for deterministic loot
+        dead: true,
+      });
+      return true;
+    }
+    return false;
+  },
+
+  spawnAnimal: function (object) {
+    const currentObjectsIdCounter = this.addObjectIdAt(object.x, object.y);
     this.setObject(
       currentObjectsIdCounter,
       this.createGameObject({
-        x: x,
-        y: y,
-        name: name,
-        group: 'animal',
+        x: object.x,
+        y: object.y,
+        name: object.name,
+        group: object.group,
         actions: [
           //{ id: 'catch', label: 'Catch', time: 20, energy: -20 },
           { id: 'cut', label: 'Cut', time: 20, energy: -15 },
         ],
-        items: lootItemList,
+        items: object.items,
         attack: false,
         defense: false,
-        dead: true,
+        dead: object.dead,
       })
     );
   },

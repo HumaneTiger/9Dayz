@@ -40,6 +40,8 @@ export default {
         /* TESTING NEEDED! when it is saved it seems to be too far ahead > causes different card ids when recording vs. running tests */
         Props.getObjectsIdCounter() - 2,
       zedCounter: Props.getZedCounter(),
+      // Game seed
+      gameSeed: Props.getGameProp('gameSeed'),
 
       // ===== TUTORIAL =====
       // TODO: Tutorial progress and completed events
@@ -151,6 +153,10 @@ export default {
       // Fallback for old save files: regenerate fresh (loses state)
       Props.setupAllBuildings();
       Props.setupAllZeds();
+    }
+    // Game seed
+    if (checkpoint.gameSeed) {
+      Props.setGameProp('gameSeed', checkpoint.gameSeed);
     }
 
     // ===== PLAYER POSITION =====

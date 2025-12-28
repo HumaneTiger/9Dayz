@@ -28,17 +28,20 @@ export default {
    * @param {number} amount - Maximum amount per item
    * @returns {Array<{name: string, amount: number}>} Loot item list
    */
-  createLootItemList: function (spawn, allItems, allProbabilities, amount) {
+  createLootItemList: function (spawn, allItems, allProbabilities, amount, rng) {
+    // fallback to Math.random() if no seeded PRNG is provided
+    const rand = rng || Math.random;
+
     const maxAmount = amount || 1;
     let lootItemList = [];
     let probability = allProbabilities[0];
 
     for (let i = 0; i < spawn; i += 1) {
-      let randomItem = Math.floor(Math.random() * allItems.length);
-      if (Math.random() * 10 < probability) {
+      let randomItem = Math.floor(rand() * allItems.length);
+      if (rand() * 10 < probability) {
         lootItemList.push({
           name: JSON.parse(JSON.stringify(allItems[randomItem])),
-          amount: Math.round(Math.random() * maxAmount) || 1,
+          amount: Math.round(rand() * maxAmount) || 1,
         });
         probability = allProbabilities[1];
       } else {

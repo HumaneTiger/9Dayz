@@ -400,9 +400,13 @@ export default {
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
       allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
       /* houses and villas will randomly spawn corpses or basements when searched */
-      if (object.additionalBuildings && object.additionalBuildings.length > 0) {
-        object.additionalBuildings.forEach(addBuilding => {
-          Props.setupBuilding(addBuilding.x, addBuilding.y, new Array(addBuilding.name));
+      if (object.additionalGameObjects && object.additionalGameObjects.length > 0) {
+        object.additionalGameObjects.forEach(addGameObject => {
+          if (addGameObject.group === 'building') {
+            Props.setupBuilding(addGameObject.x, addGameObject.y, new Array(addGameObject.name));
+          } else if (addGameObject.group === 'animal') {
+            Props.spawnAnimal(addGameObject);
+          }
         });
       }
       for (let i = 0; i < allItems.length; i += 1) {
@@ -410,17 +414,9 @@ export default {
           (index, item, cardId, energy) => {
             allPreviews[index].classList.add('is--hidden');
             if (item.amount > 0) {
-              if (item.name === 'duck' || item.name === 'froggy') {
-                Props.spawnAnimalAt(item.name, object.x, object.y);
-                cardRef.querySelector(
-                  'ul.items li[data-item="' + item.name + '"].is--hidden'
-                ).dataset.amount = 0;
-                item.amount = 0;
-              } else {
-                cardRef
-                  .querySelector('ul.items li[data-item="' + item.name + '"].is--hidden')
-                  .classList.remove('is--hidden');
-              }
+              cardRef
+                .querySelector('ul.items li[data-item="' + item.name + '"].is--hidden')
+                .classList.remove('is--hidden');
             }
             if (index + 1 < allItems.length) {
               allPreviews[index + 1].querySelector('.unknown').classList.add('is--hidden');
@@ -803,13 +799,11 @@ export default {
         Props.changePlayerProp('energy', energy);
         Props.changePlayerProp('food', -5);
         Props.changePlayerProp('thirst', -10);
-        // always success for now, add minigame later
         // baits would be nice as well
-
-        if (Math.random() < 0.75) {
-          // 3/4 chance to catch a fish
-          const object = Props.getObject(cardId);
-          Props.spawnAnimalAt('fish', object.x, object.y);
+        const object = Props.getObject(cardId);
+        const success = Props.rngFishSpawn(object.x, object.y);
+        if (success) {
+          Audio.sfx('fish-catch');
           Props.addWeaponToInventory('fishing-rod', 0, { durability: -1 });
         }
         this.goBackFromAction(cardId);

@@ -26,7 +26,7 @@ export default {
   },
 
   buildingProps: {
-    barn: { locked: 1.2, spawn: 2, items: ['claw', 'duck', 'straw-wheet', 'pumpkin', 'nails'] },
+    barn: { locked: 1.2, spawn: 2, items: ['claw', 'straw-wheet', 'pumpkin', 'nails'] },
     'big-tree': {
       locked: 0,
       spawn: 3,
@@ -127,7 +127,7 @@ export default {
     field: {
       locked: 0,
       spawn: 3,
-      items: ['carrot', 'pepper', 'duck', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'],
+      items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'],
       buidlings: ['scarecrow'],
       amount: 2,
     },
@@ -205,13 +205,13 @@ export default {
     well: {
       locked: 0,
       spawn: 1,
-      items: ['rosehip', 'bones', 'mushroom-1', 'stone', 'froggy'],
+      items: ['rosehip', 'bones', 'mushroom-1', 'stone'],
       amount: 2,
     },
     jetty: {
       locked: 0,
       spawn: 1,
-      items: ['reef', 'rosehip', 'stone', 'duck', 'froggy'],
+      items: ['reef', 'rosehip', 'stone', 'branch'],
       amount: 2,
     },
     seating: { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
