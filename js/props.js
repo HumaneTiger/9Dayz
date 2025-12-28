@@ -504,9 +504,90 @@ export default {
     });
   },
 
+  createCreaturesList: function (creatureType, x, y) {
+    let creaturesList = [];
+    switch (creatureType) {
+      case 'rat':
+        {
+          const amount = Math.round(Math.random() * 5) || 3;
+          for (let i = 0; i < amount; i++) {
+            const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
+            creaturesList.push({
+              x: x,
+              y: y,
+              name: 'rat',
+              type: 'rat',
+              items: lootItemList,
+              attack: Math.floor(Math.random() * 3 + 1),
+              defense: Math.floor(Math.random() * 4 + 2),
+              dead: false,
+            });
+          }
+        }
+        break;
+      case 'bee':
+        {
+          const amount = Math.round(Math.random() * 2) + 4;
+          for (let i = 0; i < amount; i++) {
+            const lootItemList = LootUtils.createLootItemList(1, ['meat'], [7, 5], 1);
+            creaturesList.push({
+              x: x,
+              y: y,
+              name: 'bee',
+              type: 'bee',
+              items: lootItemList,
+              attack: Math.floor(Math.random() * 3 + 1),
+              defense: Math.floor(Math.random() * 4 + 2),
+              dead: false,
+            });
+          }
+        }
+        break;
+    }
+    return creaturesList;
+  },
+
+  createAdditionalBuildings: function (buildingType, buildingName, x, y) {
+    let additionalBuildings = [];
+    if (buildingType === 'house' && Math.random() < 0.25) {
+      additionalBuildings.push({
+        x: x,
+        y: y,
+        buildingNamesArray: ['human-corpse-1'],
+        forceItems: false,
+        forceInfested: false,
+      });
+    }
+
+    if ((buildingName === 'house' || buildingName === 'farm-house') && Math.random() < 0.2) {
+      additionalBuildings.push({
+        x: x,
+        y: y,
+        buildingNamesArray: ['basement'],
+        forceItems: false,
+        forceInfested: true,
+      });
+    }
+
+    /* old villas have a guaranteed basement with crate */
+    if (buildingName === 'old-villa') {
+      additionalBuildings.push({
+        x: x,
+        y: y,
+        buildingNamesArray: ['basement'],
+        forceItems: ['crate'],
+        forceInfested: true,
+      });
+    }
+    return additionalBuildings;
+  },
+
   setupBuilding: function (x, y, buildingNamesArray, forceItems, forceInfested) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
+      const type = BuildingUtils.getBuildingTypeOf(buildingName);
+
+      // Generate loot upfront
       const lootItemList = forceItems
         ? LootUtils.forceLootItemList(forceItems, props.amount)
         : LootUtils.createLootItemList(
@@ -515,11 +596,29 @@ export default {
             BuildingUtils.getLootBuildingProbability(buildingName, this.getGameProp('character')),
             props.amount
           );
+
+      // Random locked / infested states
       const locked = Math.random() * props.locked > 1 ? true : false;
-      const type = BuildingUtils.getBuildingTypeOf(buildingName);
       const infested = type === 'house' && Math.random() < 0.5 ? true : false;
 
+      // Pre-generate creatures if the building is infested
+      let creaturesList = [];
+      if (forceInfested || infested) {
+        if (buildingName === 'beehive') {
+          creaturesList = this.createCreaturesList('bee', x, y);
+        } else {
+          creaturesList = this.createCreaturesList('rat', x, y);
+        }
+      }
+
+      // for certain buildings, add additional buildings which spawn when the building is searched
+      let additionalBuildings = [];
+      additionalBuildings = this.createAdditionalBuildings(type, buildingName, x, y);
+
+      // Assign a stable object ID
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
+
+      // Create building object with everything persisted
       this.setObject(
         currentObjectsIdCounter,
         this.createGameObject({
@@ -542,7 +641,9 @@ export default {
           items: lootItemList,
           locked: locked,
           infested: forceInfested || infested,
+          enemies: creaturesList,
           preview: props.preview,
+          additionalBuildings: additionalBuildings,
         })
       );
     });
@@ -600,76 +701,33 @@ export default {
     }
   },
 
-  setRatAt: function (x, y) {
-    const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [11, 6], 2);
-
-    const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    this.setObject(
-      currentObjectsIdCounter,
-      this.createGameObject({
-        x: x,
-        y: y,
-        name: 'rat',
-        type: 'rat',
-        group: 'zombie',
-        actions: [
-          { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-          { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-          { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-        ],
-        items: lootItemList,
-        attack: Math.floor(Math.random() * 3 + 1),
-        defense: Math.floor(Math.random() * 4 + 2),
-        dead: false,
-      })
-    );
-  },
-
-  setBeeAt: function (x, y) {
-    const lootItemList = LootUtils.createLootItemList(1, ['meat'], [7, 5], 1);
-
-    const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-    this.setObject(
-      currentObjectsIdCounter,
-      this.createGameObject({
-        x: x,
-        y: y,
-        name: 'bee',
-        type: 'bee',
-        group: 'zombie',
-        actions: [
-          { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-          { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-          { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-        ],
-        items: lootItemList,
-        attack: Math.floor(Math.random() * 3 + 1),
-        defense: Math.floor(Math.random() * 4 + 2),
-        dead: false,
-      })
-    );
-  },
-
-  spawnRatsAt: function (x, y) {
-    const amount = Math.round(Math.random() * 5) || 3;
-    let spawnedRatIds = [];
-    for (var i = 0; i < amount; i += 1) {
-      this.setRatAt(x, y);
-      spawnedRatIds.push(objectsIdCounter - 1); // at this place the countor is one ahead
-    }
-    return spawnedRatIds;
-  },
-
-  spawnBeesAt: function (x, y) {
-    const amount = Math.round(Math.random() * 2) + 4;
-    let spawnedBeesIds = [];
-    for (var i = 0; i < amount; i += 1) {
-      this.setBeeAt(x, y);
-      spawnedBeesIds.push(objectsIdCounter - 1); // at this place the countor is one ahead
-    }
-    return spawnedBeesIds;
+  spawnCreaturesAt: function (x, y, creaturesList) {
+    let spawnedCreatureIds = [];
+    creaturesList.forEach(creature => {
+      const currentObjectsIdCounter = this.addObjectIdAt(x, y);
+      this.setObject(
+        currentObjectsIdCounter,
+        this.createGameObject({
+          x: creature.x,
+          y: creature.y,
+          name: creature.name,
+          type: creature.type,
+          group: 'zombie',
+          actions: [
+            { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+            { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+            { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
+            { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+          ],
+          items: creature.items,
+          attack: creature.attack,
+          defense: creature.defense,
+          dead: creature.dead,
+        })
+      );
+      spawnedCreatureIds.push(currentObjectsIdCounter);
+    });
+    return spawnedCreatureIds;
   },
 
   spawnAnimalAt: function (name, x, y) {

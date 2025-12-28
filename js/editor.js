@@ -62,7 +62,11 @@ export default {
               if (selectedObject === 'zombie') {
                 Props.setZedAt(squareX, squareY, 1);
               } else if (selectedObject === 'rats') {
-                Props.spawnRatsAt(squareX, squareY);
+                const creaturesList = Props.createCreaturesList('rat');
+                Props.spawnCreaturesAt(squareX, squareY, creaturesList);
+              } else if (selectedObject === 'bees') {
+                const creaturesList = Props.createCreaturesList('bee');
+                Props.spawnCreaturesAt(squareX, squareY, creaturesList);
               } else if (
                 selectedObject === 'improvised-axe' ||
                 selectedObject === 'axe' ||
@@ -85,6 +89,8 @@ export default {
                 Props.addItemToInventory('knife', 1);
                 Props.addItemToInventory('energy-pills', 1);
                 Props.endInventoryBatch();
+              } else if (selectedObject === 'beehive') {
+                Props.setupBuilding(squareX, squareY, ['beehive'], false, true); // infested
               } else {
                 Props.setupBuilding(squareX, squareY, new Array(selectedObject));
               }
@@ -165,6 +171,11 @@ export default {
     optRats.value = 'rats';
     optRats.innerHTML = 'Rats';
     selectObject.appendChild(optRats);
+
+    let optBees = document.createElement('option');
+    optBees.value = 'bees';
+    optBees.innerHTML = 'Bees';
+    selectObject.appendChild(optBees);
 
     for (const weapon in allWeapons) {
       let opt = document.createElement('option');
