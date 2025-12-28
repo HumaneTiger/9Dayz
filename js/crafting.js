@@ -84,7 +84,7 @@ export default {
           if (itemRecipe.result === 'weapon') {
             Props.setupWeapon(here.x, here.y, item);
           } else if (itemRecipe.result === 'building') {
-            Props.setupBuilding(here.x, here.y, [item]);
+            Props.setupBuilding(here.x, here.y, new Array(item));
           }
           Player.findAndHandleObjects();
           craftContainer.classList.remove('active');

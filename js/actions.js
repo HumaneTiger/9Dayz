@@ -317,10 +317,15 @@ export default {
     const itemProps = Props.getItem(itemName);
     let cardRef = Cards.getCardById(cardId);
     if (itemProps && itemProps[0] === 'extra') {
-      // spawn weapon as card
+      // spawn card representing the grabbed weapon item
       Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
     } else if (itemName === 'crate') {
-      Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, [itemName]);
+      // spawn card representing the grabbed crate item
+      Props.setupBuilding(
+        Player.getPlayerPosition().x,
+        Player.getPlayerPosition().y,
+        new Array('crate')
+      );
     } else {
       Props.addItemToInventory(itemName, itemAmount);
     }
@@ -372,9 +377,9 @@ export default {
     const cardRef = Cards.getCardById(cardId);
     const allItems = object.items;
 
-    let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
-
     this.addGuarenteedTapeToFirstSearch(object, cardRef, allItems);
+
+    let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
 
     let timeout = 2000;
     let delay = 2000;
@@ -386,7 +391,7 @@ export default {
         Battle.startBattle(true); // instant attack when place is infested
       }, 1200);
     } else if (allPreviews) {
-      /** it's a strange condition, but it think this is what it does:
+      /** it's a strange condition, but I think this is what it does:
        * it wants to make sure that the gathering action was never used before
        * only in that case, there are more random other buildings spawning (like basements, corpses)
        * it prevents these buildings from spawning again when e.g. the card is revealed a second time
@@ -397,7 +402,7 @@ export default {
       /* houses and villas will randomly spawn corpses or basements when searched */
       if (object.additionalBuildings && object.additionalBuildings.length > 0) {
         object.additionalBuildings.forEach(addBuilding => {
-          Props.setupBuilding(addBuilding.x, addBuilding.y, [addBuilding.name]);
+          Props.setupBuilding(addBuilding.x, addBuilding.y, new Array(addBuilding.name));
         });
       }
       for (let i = 0; i < allItems.length; i += 1) {
@@ -502,11 +507,13 @@ export default {
   },
 
   searchForKey: function (object) {
-    if (object.locked) {
-      const randomFound = Math.random();
-      if (randomFound >= 0.5) {
-        Props.setupBuilding(Player.getPlayerPosition().x, Player.getPlayerPosition().y, ['key']);
-      }
+    if (object.locked && object.hasKey) {
+      object.hasKey = false;
+      Props.setupBuilding(
+        Player.getPlayerPosition().x,
+        Player.getPlayerPosition().y,
+        new Array('key')
+      );
     }
   },
 
