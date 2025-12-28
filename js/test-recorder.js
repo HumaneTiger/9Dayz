@@ -1,3 +1,4 @@
+import Events, { EVENTS } from './events.js';
 import Props from './props.js';
 import Checkpoint from './checkpoint.js';
 import Start from './start.js';
@@ -11,6 +12,20 @@ let testTickInterval = null; // Interval for test ticks
 let logger = null; // UI logger function
 
 export default {
+  init: function () {
+    // Incoming game events will be translated into assertion checks
+    Events.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, newValue }) => {
+      if (isRecording && change !== 0) {
+        this.translateToAssertion('player-prop', prop, newValue);
+      }
+    });
+    Events.on(EVENTS.INVENTORY_CHANGED, ({ oldTotal, newTotal }) => {
+      if (isRecording && oldTotal !== newTotal) {
+        this.translateToAssertion('inventory-prop', 'total', newTotal);
+      }
+    });
+  },
+
   /**
    * @param {Function} logFunction - Optional logging function for UI feedback
    */
@@ -86,6 +101,37 @@ export default {
       // Execute original handler
       return originalHandler.call(this, event);
     }.bind(this);
+  },
+
+  translateToAssertion: function (property, propName, newValue) {
+    switch (property) {
+      case 'player-prop':
+        recordedCommands.push({
+          module: 'Player',
+          type: 'assert-player-prop',
+          prop: propName,
+          expectedValue: newValue,
+          tick: testTick + 3, // Allow 3 ticks buffer for async updates
+        });
+        // Log to UI if logger provided
+        if (logger) {
+          logger(`Recorded assertion: ${property} at tick ${testTick}`);
+        }
+        break;
+      case 'inventory-prop':
+        recordedCommands.push({
+          module: 'Items',
+          type: 'assert-inventory-prop',
+          prop: propName,
+          expectedValue: newValue,
+          tick: testTick + 3, // Allow 3 ticks buffer for async updates
+        });
+        // Log to UI if logger provided
+        if (logger) {
+          logger(`Recorded assertion: ${property} at tick ${testTick}`);
+        }
+        break;
+    }
   },
 
   /**

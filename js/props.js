@@ -311,6 +311,10 @@ export default {
     return inventory;
   },
 
+  getInventoryItemNumbers: function () {
+    return inventory.itemNumbers;
+  },
+
   getInventoryPresets: function (character) {
     return characterDefinitions[character]?.inventoryPreset || {};
   },

@@ -137,9 +137,13 @@ export default {
       commandQueue[currentCommandIndex].tick + playbackTickOffset <= testTick
     ) {
       const command = commandQueue[currentCommandIndex];
-      this.log(
-        `Executing command ${currentCommandIndex + 1}/${commandQueue.length}: ${command.type}`
-      );
+      if (commandQueue[currentCommandIndex - 1]?.type !== command.type) {
+        let logExtension =
+          commandQueue[currentCommandIndex + 1]?.type === command.type ? ' (+)' : '';
+        this.log(
+          `Executing command ${currentCommandIndex + 1}/${commandQueue.length}: ${command.type}${logExtension}`
+        );
+      }
 
       try {
         this.executeCommand(command);
@@ -171,6 +175,9 @@ export default {
    * Execute a single command by simulating a click
    */
   executeCommand: function (command) {
+    if (command.type === 'assert-prop') {
+      console.log(command);
+    }
     // Handle commands by module
     switch (command.module) {
       case 'Start':
@@ -198,6 +205,14 @@ export default {
         if (command.selector) {
           this.clickElement(command.selector);
         }
+        if (command.type === 'assert-inventory-prop' && command.expectedValue) {
+          const actualValue = Props.getInventoryItemNumbers();
+          if (actualValue !== command.expectedValue) {
+            throw new Error(
+              `Assertion for '${command.prop}': expected ${command.expectedValue}, got ${actualValue}`
+            );
+          }
+        }
         break;
 
       case 'Crafting':
@@ -221,6 +236,14 @@ export default {
       case 'Player':
         if (command.type === 'move-player' && command.key) {
           this.pressKey(command.key);
+        }
+        if (command.type === 'assert-player-prop' && command.expectedValue) {
+          const actualValue = Props.getPlayerProps()[command.prop];
+          if (actualValue !== command.expectedValue) {
+            throw new Error(
+              `Assertion for '${command.prop}': expected ${command.expectedValue}, got ${actualValue}`
+            );
+          }
         }
         break;
 
