@@ -349,6 +349,7 @@ export default {
       if (!object.discovered) {
         object.discovered = true;
         CardsMarkup.createCardMarkup(card.id);
+        /* candidates for event bus */
         if (object.group === 'zombie') {
           if (object.name === 'rat') {
             Audio.sfx('rat-squeaks');
@@ -390,6 +391,7 @@ export default {
   },
 
   addSpecialEventCards: function () {
+    /* candidates for event bus */
     if (Props.getGameProp('tutorial')) {
       const specialEventObjectIds = Tutorial.checkForSpecialEvents(cardDeck);
 
