@@ -347,11 +347,8 @@ export default {
     );
   },
 
-  simulateGathering: function (cardId, time, energy) {
-    const object = Props.getObject(cardId);
-    const cardRef = Cards.getCardById(cardId);
-    const allItems = object.items;
-    // first car/house/train always has a tape
+  addGuarenteedTapeToFirstSearch: function (object, cardRef, allItems) {
+    // adding a guaranteed tape to first searched car/house/train
     if (
       !Props.getGameProp('firstSearch') &&
       (object.type === 'car' || object.type === 'house' || object.type === 'train') &&
@@ -368,43 +365,40 @@ export default {
           CardsMarkup.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;
       }
     }
+  },
+
+  simulateGathering: function (cardId, time, energy) {
+    const object = Props.getObject(cardId);
+    const cardRef = Cards.getCardById(cardId);
+    const allItems = object.items;
+
     let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
+
+    this.addGuarenteedTapeToFirstSearch(object, cardRef, allItems);
 
     let timeout = 2000;
     let delay = 2000;
 
     if (object.infested) {
-      let hostileObjectIds;
-      if (object.name === 'beehive') {
-        hostileObjectIds = Props.spawnBeesAt(object.x, object.y);
-      } else {
-        hostileObjectIds = Props.spawnRatsAt(object.x, object.y);
-      }
-      cardRef.classList.remove('infested');
-      object.actions?.forEach(action => {
-        // search/gather action not critical any more
-        if (action.name === 'search' || action.name === 'gather') {
-          action.critical = false;
-        }
-      });
-      Player.handleFoundObjectIds(hostileObjectIds);
+      this.spawnCreaturesIfInfested(cardId);
       window.setTimeout(() => {
-        object.infested = false;
         this.endAction(cardId);
         Battle.startBattle(true); // instant attack when place is infested
       }, 1200);
     } else if (allPreviews) {
+      /** it's a strange condition, but it think this is what it does:
+       * it wants to make sure that the gathering action was never used before
+       * only in that case, there are more random other buildings spawning (like basements, corpses)
+       * it prevents these buildings from spawning again when e.g. the card is revealed a second time
+       */
       cardRef.querySelector('ul.items')?.classList.remove('is--hidden');
       allPreviews[0].querySelector('.unknown').classList.add('is--hidden');
       allPreviews[0].querySelector('.searching').classList.remove('is--hidden');
-      if (object.type === 'house' && Math.random() < 0.25) {
-        Props.setupBuilding(object.x, object.y, ['human-corpse-1']);
-      }
-      if ((object.name === 'house' || object.name === 'farm-house') && Math.random() < 0.2) {
-        Props.setupBuilding(object.x, object.y, ['basement'], false, true);
-      }
-      if (object.name === 'old-villa') {
-        Props.setupBuilding(object.x, object.y, ['basement'], ['crate'], true);
+      /* houses and villas will randomly spawn corpses or basements when searched */
+      if (object.additionalBuildings && object.additionalBuildings.length > 0) {
+        object.additionalBuildings.forEach(addBuilding => {
+          Props.setupBuilding(addBuilding.x, addBuilding.y, [addBuilding.name]);
+        });
       }
       for (let i = 0; i < allItems.length; i += 1) {
         window.setTimeout(
@@ -498,7 +492,7 @@ export default {
         Player.handleFoundObjectIds(allFoundObjectIds);
         Map.hideScoutMarker();
         Props.changePlayerProp('energy', energy);
-        this.checkForInfested(cardId);
+        this.spawnCreaturesIfInfested(cardId, true);
       },
       cardId,
       time,
@@ -714,7 +708,7 @@ export default {
         }
         Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
-        this.checkForInfested(cardId);
+        this.spawnCreaturesIfInfested(cardId);
       },
       cardId,
       time,
@@ -735,7 +729,7 @@ export default {
         }
         Props.changePlayerProp('energy', energy);
         this.goBackFromAction(cardId);
-        this.checkForInfested(cardId);
+        this.spawnCreaturesIfInfested(cardId);
       },
       cardId,
       time,
@@ -744,20 +738,22 @@ export default {
     );
   },
 
-  checkForInfested: function (cardId) {
+  spawnCreaturesIfInfested: function (cardId, onlyRats = false) {
+    /* when scouting/breaking/opening an infested building, spawn creatures (they do not attack) */
     const cardRef = Cards.getCardById(cardId);
     const object = Props.getObject(cardId);
-    if (object.infested && object.name !== 'beehive' && !object.locked) {
-      const ratObjectIds = Props.spawnRatsAt(object.x, object.y);
-      cardRef.classList.remove('infested');
-      object.infested = false;
-      object.actions?.forEach(action => {
+    if (object.infested && !object.locked) {
+      if (!onlyRats || object.name !== 'beehive') {
+        let hostileObjectIds = Props.spawnCreaturesAt(object.x, object.y, object.enemies);
+        // building not infested anymore
+        cardRef.classList.remove('infested');
+        object.infested = false;
         // search action not critical any more
-        if (action.name === 'search') {
-          action.critical = false;
-        }
-      });
-      Player.handleFoundObjectIds(ratObjectIds);
+        const action = object.actions?.find(a => a.name === 'search' || a.name === 'gather');
+        if (action) action.critical = false;
+        // update card deck with new creature cards
+        Player.handleFoundObjectIds(hostileObjectIds);
+      }
     }
   },
 
