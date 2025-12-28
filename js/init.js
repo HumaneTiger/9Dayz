@@ -14,6 +14,7 @@ import Almanac from './almanac.js';
 import Preloading from './preloading.js';
 import Player from './player.js';
 import TestRecorder from './test-recorder.js';
+import TestPlayer from './test-player.js';
 
 // initialize everything
 {
@@ -21,6 +22,8 @@ import TestRecorder from './test-recorder.js';
 
   // Wrap event handlers for test recording
   if (Props.getGameProp('local')) {
+    TestRecorder.init();
+    TestPlayer.init();
     Start.handleClick = TestRecorder.wrapEventHandler(
       'Start',
       'handleClick',
