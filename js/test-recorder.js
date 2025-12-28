@@ -114,6 +114,9 @@ export default {
     if (moduleName === 'Character' && handlerName === 'checkForSlotClick') {
       return this.translateCharacterSlotClick(event);
     }
+    if (moduleName === 'Cooking' && handlerName === 'checkForCardClick') {
+      return this.translateCookingClick(event);
+    }
     if (moduleName === 'Player' && handlerName === 'handleKeydown') {
       return this.translatePlayerKeydown(moduleName, handlerName, event);
     }
@@ -270,6 +273,43 @@ export default {
           module: 'Items',
           type: 'inventory-select-slot',
           selector: `#inventory .slot[data-item="${item}"]`,
+        };
+      }
+    }
+
+    return null;
+  },
+
+  /**
+   * Translate Cooking.checkForCookingClick to command
+   */
+
+  translateCookingClick: function (event) {
+    const target = event.target;
+    const cookingContainer = target.closest('.card.cooking-mode');
+    const actionSlotActive = target.closest('div.slot.action.active');
+    const actionButton = target.closest('div.action-button');
+    const leftMouseButton = event.button === 0;
+
+    if (cookingContainer) {
+      if (actionSlotActive && leftMouseButton) {
+        const recipe = actionSlotActive.dataset.item;
+        if (recipe) {
+          return {
+            module: 'Cooking',
+            type: 'cooking-select-slot',
+            selector: `#cards .card.cooking-mode ul.cooking .slot[data-item="${recipe}"]`,
+          };
+        }
+      } else if (
+        actionButton &&
+        leftMouseButton &&
+        actionButton.dataset.action === 'close-cooking'
+      ) {
+        return {
+          module: 'Cooking',
+          type: 'cooking-close-card',
+          selector: `#cards .card.cooking-mode .action-button[data-action="close-cooking"]`,
         };
       }
     }

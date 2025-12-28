@@ -212,6 +212,12 @@ export default {
         }
         break;
 
+      case 'Cooking':
+        if (command.selector) {
+          this.clickElement(command.selector);
+        }
+        break;
+
       case 'Player':
         if (command.type === 'move-player' && command.key) {
           this.pressKey(command.key);
@@ -249,7 +255,6 @@ export default {
    */
   pressKey: function (key) {
     // Create and dispatch synthetic keydown event
-    console.log(`Simulating key press: ${key}`);
     const keyEvent = new KeyboardEvent('keydown', {
       key: key,
       bubbles: true,

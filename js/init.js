@@ -47,6 +47,11 @@ import TestRecorder from './test-recorder.js';
       'checkForSlotClick',
       Character.checkForSlotClick.bind(Character)
     );
+    Cooking.checkForCardClick = TestRecorder.wrapEventHandler(
+      'Cooking',
+      'checkForCardClick',
+      Cooking.checkForCardClick.bind(Cooking)
+    );
     Player.handleKeydown = TestRecorder.wrapEventHandler(
       'Player',
       'handleKeydown',
