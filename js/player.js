@@ -16,7 +16,9 @@ let moving = false;
 export default {
   init: function () {
     // Register event listeners
-    Events.on(EVENTS.PLAYER_PROP_CHANGED, this.updatePropUI.bind(this));
+    Events.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, oldValue, newValue }) => {
+      this.updatePropUI({ prop, change, oldValue, newValue });
+    });
     Props.changePlayerProp('health', 0); // trigger initial UI update
     Props.changePlayerProp('food', 0);
     Props.changePlayerProp('thirst', 0);
