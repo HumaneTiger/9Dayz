@@ -325,6 +325,7 @@ export default {
       actions: [],
       items: [],
       locked: undefined,
+      hasKey: false,
       looted: false,
       infested: false,
       zednearby: null,
@@ -553,7 +554,7 @@ export default {
       additionalBuildings.push({
         x: x,
         y: y,
-        buildingNamesArray: ['human-corpse-1'],
+        name: 'human-corpse-1',
         forceItems: false,
         forceInfested: false,
       });
@@ -563,7 +564,7 @@ export default {
       additionalBuildings.push({
         x: x,
         y: y,
-        buildingNamesArray: ['basement'],
+        name: 'basement',
         forceItems: false,
         forceInfested: true,
       });
@@ -574,7 +575,7 @@ export default {
       additionalBuildings.push({
         x: x,
         y: y,
-        buildingNamesArray: ['basement'],
+        name: 'basement',
         forceItems: ['crate'],
         forceInfested: true,
       });
@@ -597,8 +598,16 @@ export default {
             props.amount
           );
 
-      // Random locked / infested states
+      // Random locked state
       const locked = Math.random() * props.locked > 1 ? true : false;
+
+      // Pre-generate random key if the building is locked
+      let hasKey = false;
+      if (locked) {
+        if (Math.random() >= 0.5) hasKey = true; // 50% chance to have key
+      }
+
+      // Random infested state
       const infested = type === 'house' && Math.random() < 0.5 ? true : false;
 
       // Pre-generate creatures if the building is infested
@@ -640,6 +649,7 @@ export default {
               ),
           items: lootItemList,
           locked: locked,
+          hasKey: hasKey,
           infested: forceInfested || infested,
           enemies: creaturesList,
           preview: props.preview,
