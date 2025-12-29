@@ -343,6 +343,7 @@ export default {
       attack: undefined,
       defense: undefined,
       dead: undefined,
+      luringSuccessful: undefined,
       fighting: false,
       health: undefined,
       maxHealth: undefined,
@@ -751,6 +752,7 @@ export default {
           items: lootItemList,
           attack: attack,
           defense: defense,
+          luringSuccessful: Math.random() >= 0.4, // 60:40 chance it works
           dead: false,
         })
       );
@@ -778,6 +780,7 @@ export default {
           items: creature.items,
           attack: creature.attack,
           defense: creature.defense,
+          luringSuccessful: Math.random() >= 0.4, // 60:40 chance it works
           dead: creature.dead,
         })
       );

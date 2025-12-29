@@ -638,12 +638,12 @@ export default {
 
     this.fastForward(
       function (cardId, energy) {
+        const object = Props.getObject(cardId);
         this.endAction(cardId);
 
         Map.hideScoutMarker();
 
-        // 60:40 chance it works
-        if (Math.random() >= 0.4) {
+        if (object.luringSuccessful) {
           Battle.startBattle(false, cardId);
         } else {
           const cardRef = Cards.getCardById(cardId);
