@@ -194,6 +194,9 @@ export default {
     if (moduleName === 'Ui' && handlerName === 'handleClick') {
       return this.translateUiClick(event);
     }
+    if (moduleName === 'Ui' && handlerName === 'mouseUp') {
+      return this.translateUiMouseUp(event);
+    }
     if (moduleName === 'Cards' && handlerName === 'checkForCardClick') {
       return this.translateCardsClick(event);
     }
@@ -328,6 +331,46 @@ export default {
     }
 
     return null;
+  },
+
+  /**
+   * Translate Ui.mouseUp events to commands
+   */
+  translateUiMouseUp: function (event) {
+    let dragTarget = Ui.getDragTarget(event);
+
+    // Handle mouse release after dragging a card onto a zombie
+    if (dragTarget) {
+      if (dragTarget.classList.contains('zombie')) {
+        const dragElement = Ui.getDragElement();
+        if (dragElement && dragElement.dataset.item) {
+          return {
+            module: 'Ui',
+            type: 'ui-drag',
+            action: 'zombie-attack',
+            dragTarget: dragTarget.id,
+            dragItem: dragElement.dataset.item,
+          };
+        }
+      }
+    }
+
+    return null;
+  },
+
+  /**
+   * Serialize a mouse event to a plain object for localStorage
+   * @param {MouseEvent} event - The mouse event to serialize
+   * @returns {Object} Serializable event data
+   */
+  serializeMouseEvent: function (event) {
+    return {
+      button: event.button,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      pageX: event.pageX,
+      pageY: event.pageY,
+    };
   },
 
   /**

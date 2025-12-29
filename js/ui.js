@@ -42,6 +42,8 @@ export default {
     document.body.addEventListener('keydown', this.handleKeydown.bind(this));
     document.body.addEventListener('wheel', this.handleMouseWheel.bind(this));
 
+    document.addEventListener('uiDragTestEvent', this.handleUiTestDragEvent.bind(this));
+
     document.body.addEventListener('contextmenu', ev => {
       if (Props.getGameProp('local') === false) {
         ev.preventDefault();
@@ -225,23 +227,38 @@ export default {
   mouseUp: function (e) {
     if (dragMode) {
       let dragTarget = this.getDragTarget(e);
-      if (dragTarget) {
-        if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
-          const item = Items.getItemByName(dragEl.dataset.item);
-          if (item.name === 'improvised-whip') {
-            Battle.resolveMultiAttack(dragEl, dragTarget);
-          } else {
-            Battle.resolveAttack(dragEl, dragTarget, false);
-          }
-        }
-      } else if (dragEl.id && dragEl.id === 'almanac') {
-        dragEl.classList.remove('grabbed');
-        dragEl.classList.add('repos');
-      } else {
-        this.resetDraggedElement(dragEl);
-      }
+      this.resolveMouseUp(dragTarget, dragEl);
       dragMode = false;
       dragEl = null;
+    }
+  },
+
+  handleUiTestDragEvent: function (e) {
+    const { dragTarget, dragItem } = e.detail;
+    // Handle the test drag event directly
+    const dragTargetEl = document.querySelector(`[id="${dragTarget}"]`);
+    const dragEl = document.querySelector(`#battle-cards [data-item="${dragItem}"]`);
+    if (dragTargetEl && dragEl) {
+      this.resolveMouseUp(dragTargetEl, dragEl);
+    }
+  },
+
+  resolveMouseUp: function (dragTarget, dragEl) {
+    if (dragTarget && dragEl) {
+      if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
+        const itemName = dragEl.dataset.item;
+        const item = Items.getItemByName(itemName);
+        if (item.name === 'improvised-whip') {
+          Battle.resolveMultiAttack(dragEl, dragTarget);
+        } else {
+          Battle.resolveAttack(dragEl, dragTarget, false);
+        }
+      }
+    } else if (dragEl?.id === 'almanac') {
+      dragEl.classList.remove('grabbed');
+      dragEl.classList.add('repos');
+    } else if (dragEl) {
+      this.resetDraggedElement(dragEl);
     }
   },
 
@@ -249,6 +266,10 @@ export default {
     el.style.left = initialStyleLeft;
     el.style.top = initialStyleTop;
     el.classList.remove('grabbed');
+  },
+
+  getDragElement: function () {
+    return dragEl;
   },
 
   getDragTarget: function (e) {

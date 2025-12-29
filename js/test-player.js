@@ -190,7 +190,9 @@ export default {
         break;
 
       case 'Ui':
-        if (command.selector) {
+        if (command.action === 'zombie-attack') {
+          this.zombieAttackDragRelease(command.dragTarget, command.dragItem);
+        } else if (command.selector) {
           this.clickElement(command.selector);
         }
         break;
@@ -285,5 +287,20 @@ export default {
     });
 
     document.body.dispatchEvent(keyEvent);
+  },
+
+  /**
+   * Simulate the complicated zombie attack drag release
+   * @param {string} dragTarget - The target element ID for the drag
+   * @param {string} dragItem - The item being dragged
+   */
+  zombieAttackDragRelease: function (dragTarget, dragItem) {
+    const event = new CustomEvent('uiDragTestEvent', {
+      detail: {
+        dragTarget: dragTarget,
+        dragItem: dragItem,
+      },
+    });
+    document.dispatchEvent(event);
   },
 };

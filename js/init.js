@@ -6,7 +6,6 @@ import Map from './map.js';
 import Cards from './cards.js';
 import Items from './items.js';
 import Actions from './actions.js';
-import Battle from './battle.js';
 import Cooking from './cooking.js';
 import Crafting from './crafting.js';
 import Character from './character.js';
@@ -30,6 +29,7 @@ import TestPlayer from './test-player.js';
       Start.handleClick.bind(Start)
     );
     Ui.handleClick = TestRecorder.wrapEventHandler('Ui', 'handleClick', Ui.handleClick.bind(Ui));
+    Ui.mouseUp = TestRecorder.wrapEventHandler('Ui', 'mouseUp', Ui.mouseUp.bind(Ui));
     Cards.checkForCardClick = TestRecorder.wrapEventHandler(
       'Cards',
       'checkForCardClick',
@@ -68,7 +68,6 @@ import TestPlayer from './test-player.js';
   Map.init();
   Cards.init();
   Actions.init();
-  Battle.init();
   Cooking.init();
   Crafting.init();
   Character.init();
