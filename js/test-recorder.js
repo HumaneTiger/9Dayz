@@ -10,18 +10,25 @@ let recordedCommands = [];
 let testTick = 0; // Independent test tick counter
 let testTickInterval = null; // Interval for test ticks
 let logger = null; // UI logger function
+let assertionTimeouts = {}; // Debounce pending assertions
 
 export default {
   init: function () {
     // Incoming game events will be translated into assertion checks
     Events.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, newValue }) => {
       if (isRecording && change !== 0) {
-        this.translateToAssertion('player-prop', prop, newValue);
+        const assertion = this.translateToAssertion('player-prop', prop, newValue);
+        if (assertion) {
+          this.recordAssertion(assertion);
+        }
       }
     });
     Events.on(EVENTS.INVENTORY_CHANGED, ({ oldTotal, newTotal }) => {
       if (isRecording && oldTotal !== newTotal) {
-        this.translateToAssertion('inventory-prop', 'total', newTotal);
+        const assertion = this.translateToAssertion('inventory-prop', 'total', newTotal);
+        if (assertion) {
+          this.recordAssertion(assertion);
+        }
       }
     });
   },
@@ -103,35 +110,74 @@ export default {
     }.bind(this);
   },
 
+  /**
+   * Dispatcher for translating events to semantic assertions
+   * @param {string} property - Type of property ('player-prop' or 'inventory-prop')
+   * @param {string} propName - Name of the property
+   * @param {*} newValue - New value of the property
+   * @returns {Object|null} Assertion object or null if not translatable
+   */
   translateToAssertion: function (property, propName, newValue) {
-    switch (property) {
-      case 'player-prop':
-        recordedCommands.push({
-          module: 'Player',
-          type: 'assert-player-prop',
-          prop: propName,
-          expectedValue: newValue,
-          tick: testTick + 3, // Allow 3 ticks buffer for async updates
-        });
-        // Log to UI if logger provided
-        if (logger) {
-          logger(`Recorded assertion: ${property} at tick ${testTick}`);
-        }
-        break;
-      case 'inventory-prop':
-        recordedCommands.push({
-          module: 'Items',
-          type: 'assert-inventory-prop',
-          prop: propName,
-          expectedValue: newValue,
-          tick: testTick + 3, // Allow 3 ticks buffer for async updates
-        });
-        // Log to UI if logger provided
-        if (logger) {
-          logger(`Recorded assertion: ${property} at tick ${testTick}`);
-        }
-        break;
+    if (property === 'player-prop') {
+      return this.translatePlayerPropAssertion(propName, newValue);
     }
+    if (property === 'inventory-prop') {
+      return this.translateInventoryPropAssertion(propName, newValue);
+    }
+    return null;
+  },
+
+  /**
+   * Translate player property changes to assertions
+   */
+  translatePlayerPropAssertion: function (propName, newValue) {
+    return {
+      module: 'Player',
+      type: 'assert-player-prop',
+      prop: propName,
+      expectedValue: newValue,
+    };
+  },
+
+  /**
+   * Translate inventory property changes to assertions
+   */
+  translateInventoryPropAssertion: function (propName, newValue) {
+    return {
+      module: 'Items',
+      type: 'assert-inventory-prop',
+      prop: propName,
+      expectedValue: newValue,
+    };
+  },
+
+  /**
+   * Record assertion with debouncing and logging
+   * Debounces rapid changes to capture only the final stable state
+   * @param {Object} assertion - Assertion object to record
+   * @param {number} debounceMs - Debounce delay in milliseconds
+   * @param {number} recordTickDelay - Delay in ticks before recording the assertion
+   */
+  recordAssertion: function (assertion, debounceMs = 50, recordTickDelay = 1) {
+    const key = `${assertion.module}:${assertion.prop || assertion.type}`;
+
+    // Clear pending timeout for this assertion
+    if (assertionTimeouts[key]) {
+      clearTimeout(assertionTimeouts[key]);
+    }
+
+    // Debounce: record only after debounceMs of no changes
+    assertionTimeouts[key] = setTimeout(() => {
+      recordedCommands.push({
+        ...assertion,
+        tick: testTick + recordTickDelay, // Record assertion at next tick
+      });
+
+      // Log to UI if logger provided
+      if (logger) {
+        logger(`Recorded assertion: ${assertion.type} at tick ${testTick + recordTickDelay}`);
+      }
+    }, debounceMs);
   },
 
   /**
@@ -239,6 +285,7 @@ export default {
   translateUiClick: function (event) {
     const target = event.target;
     const clickAction = target.closest('#actions');
+    const clickBattleCards = target.closest('#battle-cards');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = event.button === 0;
 
@@ -253,6 +300,20 @@ export default {
           type: 'ui-button',
           action: actionType,
           selector: `#actions li.${actionType}`,
+        };
+      }
+    }
+
+    // Handle battle buttons
+    if (clickBattleCards && leftMouseButton) {
+      const endTurnButton = target.closest('.end-turn');
+
+      if (endTurnButton) {
+        return {
+          module: 'Ui',
+          type: 'ui-button',
+          action: 'end-turn',
+          selector: `#battle-cards .end-turn`,
         };
       }
     }
