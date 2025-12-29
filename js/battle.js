@@ -25,12 +25,6 @@ let battleDeckProps = {
 };
 
 export default {
-  init: function () {
-    document
-      .querySelector('#battle-cards .end-turn')
-      .addEventListener('click', this.endTurn.bind(this));
-  },
-
   shuffle: function (array) {
     let currentIndex = array.length,
       randomIndex;

@@ -285,6 +285,7 @@ export default {
     const target = ev.target;
     const clickAction = target.closest('#actions');
     const clickProperty = target.closest('#properties');
+    const clickBattleCards = target.closest('#battle-cards');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = ev.button === 0 || !ev.button; // 2nd part also takes keyboard shortcuts into account
     const rightMouseButton = ev.button === 2;
@@ -339,6 +340,13 @@ export default {
             break;
           }
         }
+      }
+    } else if (clickBattleCards && leftMouseButton && Props.getGameProp('battle')) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const endTurn = target.closest('.end-turn');
+      if (endTurn) {
+        Battle.endTurn();
       }
     } else if (clickProperty && rightMouseButton) {
       const property = target.closest('li');
