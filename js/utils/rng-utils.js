@@ -26,6 +26,18 @@ export default {
       const fishingSeed = gameSeed + subSeeds.fishing;
       this._fishingRNG = new SeededRandom(fishingSeed);
     }
+    if (!this._lootRNG) {
+      const lootSeed = gameSeed + subSeeds.loot;
+      this._lootRNG = new SeededRandom(lootSeed);
+    }
+    if (!this._craftingRNG) {
+      const craftingSeed = gameSeed + subSeeds.crafting;
+      this._craftingRNG = new SeededRandom(craftingSeed);
+    }
+    if (!this._battleRNG) {
+      const battleSeed = gameSeed + subSeeds.battle;
+      this._battleRNG = new SeededRandom(battleSeed);
+    }
   },
 
   generateGameSeed() {

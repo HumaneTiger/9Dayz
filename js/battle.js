@@ -8,6 +8,7 @@ import Items from './items.js';
 import Crafting from './crafting.js';
 import Character from './character.js';
 import ItemUtils from '../data/utils/item-utils.js';
+import RngUtils from './utils/rng-utils.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -32,7 +33,7 @@ export default {
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
       // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
+      randomIndex = Math.floor(RngUtils.battleRNG.random() * currentIndex);
       currentIndex--;
 
       // And swap it with the current element.

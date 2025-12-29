@@ -9,6 +9,7 @@ import { default as Checkpoint } from './checkpoint.js';
 import { default as Character } from './character.js';
 import { default as Cooking } from './cooking.js';
 import { default as Editor } from './editor.js';
+import RngUtils from './utils/rng-utils.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -81,6 +82,7 @@ export default {
 
   initProps: function () {
     const inventoryPresets = Props.getInventoryPresets(Props.getGameProp('character'));
+    RngUtils.init(Props.getGameProp('gameSeed'));
 
     // TESTING
     Props.beginInventoryBatch();
@@ -138,6 +140,7 @@ export default {
 
   restoreCheckpoint: function (saveCheckpoint) {
     Checkpoint.restore(saveCheckpoint);
+    RngUtils.init(Props.getGameProp('gameSeed'));
     Player.init();
     Items.init();
   },

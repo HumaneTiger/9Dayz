@@ -790,7 +790,6 @@ export default {
   },
 
   rngFishSpawn: function (x, y) {
-    RngUtils.init(this.getGameProp('gameSeed'));
     /**
      * 3/4 chance to catch a fish
      * Deterministic RNG based on game seed
