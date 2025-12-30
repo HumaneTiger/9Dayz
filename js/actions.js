@@ -409,7 +409,9 @@ export default {
               addGameObject.y,
               new Array(addGameObject.name),
               addGameObject.forceInfested,
-              addGameObject.forceLootItemList
+              addGameObject.forceLootItemList,
+              addGameObject.forceCreaturesList,
+              addGameObject.forceAdditionalGameObjects
             );
           } else if (addGameObject.group === 'animal') {
             Props.spawnAnimal(addGameObject);

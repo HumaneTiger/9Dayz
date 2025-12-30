@@ -592,6 +592,7 @@ export default {
         group: 'building',
         forceInfested: true,
         forceLootItemList: this.createBuildingLootItemList('basement'),
+        forceCreaturesList: this.createCreaturesList('rat', x, y),
       });
     }
 
@@ -603,7 +604,17 @@ export default {
         name: 'basement',
         group: 'building',
         forceInfested: true,
-        forceLootItemList: this.createBuildingLootItemList('basement', ['crate']),
+        forceCreaturesList: this.createCreaturesList('rat', x, y),
+        forceAdditionalGameObjects: [
+          {
+            x: x,
+            y: y,
+            name: 'crate',
+            group: 'building',
+            forceInfested: false,
+            forceLootItemList: this.createBuildingLootItemList('crate'),
+          },
+        ],
       });
     }
 
@@ -646,14 +657,17 @@ export default {
     return additionalGameObjects;
   },
 
-  createBuildingLootItemList: function (buildingName) {
+  createBuildingLootItemList: function (buildingName, forceLootItemList = false) {
     const props = buildingProps[buildingName];
-    return LootUtils.createLootItemList(
-      props.spawn,
-      JSON.parse(JSON.stringify(props.items)),
-      BuildingUtils.getLootBuildingProbability(buildingName, this.getGameProp('character')),
-      props.amount,
-      () => RngUtils.lootRNG.random()
+    return (
+      forceLootItemList ||
+      LootUtils.createLootItemList(
+        props.spawn,
+        JSON.parse(JSON.stringify(props.items)),
+        BuildingUtils.getLootBuildingProbability(buildingName, this.getGameProp('character')),
+        props.amount,
+        () => RngUtils.lootRNG.random()
+      )
     );
   },
 
@@ -662,13 +676,15 @@ export default {
     y,
     buildingNamesArray,
     forceInfested = false,
-    forceLootItemList = false
+    forceLootItemList = false,
+    forceCreaturesList = false,
+    forceAdditionalGameObjects = false
   ) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
       const type = BuildingUtils.getBuildingTypeOf(buildingName);
       // Generate loot upfront
-      const lootItemList = forceLootItemList || this.createBuildingLootItemList(buildingName);
+      const lootItemList = this.createBuildingLootItemList(buildingName, forceLootItemList);
 
       // Random locked state
       const locked = Math.random() * props.locked > 1 ? true : false;
@@ -686,15 +702,16 @@ export default {
       let creaturesList = [];
       if (forceInfested || infested) {
         if (buildingName === 'beehive') {
-          creaturesList = this.createCreaturesList('bee', x, y);
+          creaturesList = forceCreaturesList || this.createCreaturesList('bee', x, y);
         } else {
-          creaturesList = this.createCreaturesList('rat', x, y);
+          creaturesList = forceCreaturesList || this.createCreaturesList('rat', x, y);
         }
       }
 
       // for certain buildings, add additional buildings which spawn when the building is searched
       let additionalGameObjects = [];
-      additionalGameObjects = this.createAdditionalGameObjects(type, buildingName, x, y);
+      additionalGameObjects =
+        forceAdditionalGameObjects || this.createAdditionalGameObjects(type, buildingName, x, y);
 
       // Assign a stable object ID
       const currentObjectsIdCounter = this.addObjectIdAt(x, y);
