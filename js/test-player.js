@@ -227,6 +227,14 @@ export default {
         if (command.selector) {
           this.clickElement(command.selector);
         }
+        if (command.type === 'assert-weapon-prop' && command.expectedValue) {
+          const actualValue = Props.getWeaponTotal();
+          if (actualValue !== command.expectedValue) {
+            throw new Error(
+              `Assertion for '${command.prop}': expected ${command.expectedValue}, got ${actualValue}`
+            );
+          }
+        }
         break;
 
       case 'Cooking':
@@ -238,14 +246,6 @@ export default {
       case 'Player':
         if (command.type === 'move-player' && command.key) {
           this.pressKey(command.key);
-        }
-        if (command.type === 'assert-player-prop' && command.expectedValue) {
-          const actualValue = Props.getPlayerProps()[command.prop];
-          if (actualValue !== command.expectedValue) {
-            throw new Error(
-              `Assertion for '${command.prop}': expected ${command.expectedValue}, got ${actualValue}`
-            );
-          }
         }
         break;
 

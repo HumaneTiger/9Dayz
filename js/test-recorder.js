@@ -15,9 +15,9 @@ let assertionTimeouts = {}; // Debounce pending assertions
 export default {
   init: function () {
     // Incoming game events will be translated into assertion checks
-    Events.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, newValue }) => {
-      if (isRecording && change !== 0) {
-        const assertion = this.translateToAssertion('player-prop', prop, newValue);
+    Events.on(EVENTS.WEAPON_CHANGED, ({ oldTotal, newTotal }) => {
+      if (isRecording && oldTotal !== newTotal) {
+        const assertion = this.translateToAssertion('weapon-prop', 'total', newTotal);
         if (assertion) {
           this.recordAssertion(assertion);
         }
@@ -112,14 +112,14 @@ export default {
 
   /**
    * Dispatcher for translating events to semantic assertions
-   * @param {string} property - Type of property ('player-prop' or 'inventory-prop')
+   * @param {string} property - Type of property
    * @param {string} propName - Name of the property
    * @param {*} newValue - New value of the property
    * @returns {Object|null} Assertion object or null if not translatable
    */
   translateToAssertion: function (property, propName, newValue) {
-    if (property === 'player-prop') {
-      return this.translatePlayerPropAssertion(propName, newValue);
+    if (property === 'weapon-prop') {
+      return this.translateWeaponPropAssertion(propName, newValue);
     }
     if (property === 'inventory-prop') {
       return this.translateInventoryPropAssertion(propName, newValue);
@@ -128,12 +128,12 @@ export default {
   },
 
   /**
-   * Translate player property changes to assertions
+   * Translate weapon property changes to assertions
    */
-  translatePlayerPropAssertion: function (propName, newValue) {
+  translateWeaponPropAssertion: function (propName, newValue) {
     return {
-      module: 'Player',
-      type: 'assert-player-prop',
+      module: 'Character',
+      type: 'assert-weapon-prop',
       prop: propName,
       expectedValue: newValue,
     };
@@ -158,7 +158,7 @@ export default {
    * @param {number} debounceMs - Debounce delay in milliseconds
    * @param {number} recordTickDelay - Delay in ticks before recording the assertion
    */
-  recordAssertion: function (assertion, debounceMs = 50, recordTickDelay = 1) {
+  recordAssertion: function (assertion, debounceMs = 50, recordTickDelay = 2) {
     const key = `${assertion.module}:${assertion.prop || assertion.type}`;
 
     // Clear pending timeout for this assertion
@@ -170,7 +170,7 @@ export default {
     assertionTimeouts[key] = setTimeout(() => {
       recordedCommands.push({
         ...assertion,
-        tick: testTick + recordTickDelay, // Record assertion at next tick
+        tick: testTick + recordTickDelay, // Record assertion with short delay
       });
 
       // Log to UI if logger provided
