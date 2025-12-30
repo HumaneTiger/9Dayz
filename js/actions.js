@@ -9,6 +9,7 @@ import Battle from './battle.js';
 import Cooking from './cooking.js';
 import Character from './character.js';
 import Checkpoint from './checkpoint.js';
+import RngUtils from './utils/rng-utils.js';
 
 export default {
   init: function () {},
@@ -403,7 +404,13 @@ export default {
       if (object.additionalGameObjects && object.additionalGameObjects.length > 0) {
         object.additionalGameObjects.forEach(addGameObject => {
           if (addGameObject.group === 'building') {
-            Props.setupBuilding(addGameObject.x, addGameObject.y, new Array(addGameObject.name));
+            Props.setupBuilding(
+              addGameObject.x,
+              addGameObject.y,
+              new Array(addGameObject.name),
+              addGameObject.forceInfested,
+              addGameObject.forceLootItemList
+            );
           } else if (addGameObject.group === 'animal') {
             Props.spawnAnimal(addGameObject);
           }
@@ -614,8 +621,11 @@ export default {
         }
         Props.beginInventoryBatch();
         Props.addItemToInventory('stump', 1);
-        Props.addItemToInventory('branch', 2 + Math.round(Math.random() - 0.25));
-        Props.addItemToInventory('straw-wheet', Math.round(Math.random() - 0.25));
+        Props.addItemToInventory('branch', 2 + Math.round(RngUtils.cuttingTreeRNG.random() - 0.25));
+        Props.addItemToInventory(
+          'straw-wheet',
+          Math.round(RngUtils.cuttingTreeRNG.random() - 0.25)
+        );
         Props.changePlayerProp('energy', energy);
         Props.endInventoryBatch();
       },

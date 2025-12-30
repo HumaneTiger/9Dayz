@@ -3,6 +3,7 @@ const subSeeds = Object.freeze({
   loot: 222,
   crafting: 333,
   battle: 444,
+  cuttingTree: 555,
 });
 
 class SeededRandom {
@@ -20,6 +21,7 @@ export default {
   _lootRNG: null,
   _craftingRNG: null,
   _battleRNG: null,
+  _cuttingTreeRNG: null,
 
   init(gameSeed) {
     if (!this._fishingRNG) {
@@ -37,6 +39,10 @@ export default {
     if (!this._battleRNG) {
       const battleSeed = gameSeed + subSeeds.battle;
       this._battleRNG = new SeededRandom(battleSeed);
+    }
+    if (!this._cuttingTreeRNG) {
+      const cuttingTreeSeed = gameSeed + subSeeds.cuttingTree;
+      this._cuttingTreeRNG = new SeededRandom(cuttingTreeSeed);
     }
   },
 
@@ -71,11 +77,17 @@ export default {
     return this._battleRNG;
   },
 
+  get cuttingTreeRNG() {
+    if (!this._cuttingTreeRNG) throw new Error('RngUtil not initialized with gameSeed');
+    return this._cuttingTreeRNG;
+  },
+
   reset(gameSeed) {
     this._fishingRNG = null;
     this._lootRNG = null;
     this._craftingRNG = null;
     this._battleRNG = null;
+    this._cuttingTreeRNG = null;
     this.init(gameSeed);
   },
 };
