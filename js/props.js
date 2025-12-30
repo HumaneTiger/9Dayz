@@ -383,7 +383,7 @@ export default {
       setDurability = setWeaponProps.durability,
       itemProps = items[item];
 
-    const oldTotal = inventory.itemNumbers;
+    const oldTotal = this.getWeaponTotal();
 
     if (inventory.items[item] !== undefined) {
       // weapon was added to inventory before
@@ -416,15 +416,26 @@ export default {
     } else {
       console.log('adding weapon "' + item + '" to inventory failed');
     }
-    this.calcTotalInventoryItems();
+
+    const newTotal = this.getWeaponTotal();
 
     // EVENT: Emit if not batching
     if (!inventoryBatch.active) {
       Events.emit(EVENTS.WEAPON_CHANGED, {
         oldTotal: oldTotal,
-        newTotal: inventory.itemNumbers,
+        newTotal: newTotal,
       });
     }
+  },
+
+  getWeaponTotal: function () {
+    let total = 0;
+    for (let item in inventory.items) {
+      if (inventory.items[item].type === 'extra' && inventory.items[item].amount > 0) {
+        total += 1;
+      }
+    }
+    return total;
   },
 
   addCompanion: function (objectId) {
@@ -491,7 +502,12 @@ export default {
   setupAllBuildings: function () {
     // ONLY FOR TUTORIAL (hardcoded - special case)
     if (this.getGameProp('tutorial')) {
-      this.setupBuilding(18, 44, ['crate'], ['drink-5', 'bread-1', 'wooden-club']);
+      this.setupBuilding(
+        18,
+        44,
+        ['crate'],
+        LootUtils.forceLootItemList(['drink-5', 'bread-1', 'wooden-club'])
+      );
       this.setupWeapon(18, 44, 'axe', {
         attack: this.getWeaponProps('axe').attack / 2,
         defense: this.getWeaponProps('axe').defense / 2,
@@ -501,7 +517,7 @@ export default {
 
     // Setup all regular buildings from imported JSON
     buildingData.buildings.forEach(entry => {
-      this.setupBuilding(entry.x, entry.y, entry.buildings, entry.items, entry.infested);
+      this.setupBuilding(entry.x, entry.y, entry.buildings, entry.infested);
     });
   },
 
@@ -563,8 +579,8 @@ export default {
         y: y,
         name: 'human-corpse-1',
         group: 'building',
-        forceItems: false,
         forceInfested: false,
+        forceLootItemList: this.createBuildingLootItemList('human-corpse-1'),
       });
     }
 
@@ -574,8 +590,8 @@ export default {
         y: y,
         name: 'basement',
         group: 'building',
-        forceItems: false,
         forceInfested: true,
+        forceLootItemList: this.createBuildingLootItemList('basement'),
       });
     }
 
@@ -586,8 +602,8 @@ export default {
         y: y,
         name: 'basement',
         group: 'building',
-        forceItems: ['crate'],
         forceInfested: true,
+        forceLootItemList: this.createBuildingLootItemList('basement', ['crate']),
       });
     }
 
@@ -630,20 +646,29 @@ export default {
     return additionalGameObjects;
   },
 
-  setupBuilding: function (x, y, buildingNamesArray, forceItems, forceInfested) {
+  createBuildingLootItemList: function (buildingName) {
+    const props = buildingProps[buildingName];
+    return LootUtils.createLootItemList(
+      props.spawn,
+      JSON.parse(JSON.stringify(props.items)),
+      BuildingUtils.getLootBuildingProbability(buildingName, this.getGameProp('character')),
+      props.amount,
+      () => RngUtils.lootRNG.random()
+    );
+  },
+
+  setupBuilding: function (
+    x,
+    y,
+    buildingNamesArray,
+    forceInfested = false,
+    forceLootItemList = false
+  ) {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
       const type = BuildingUtils.getBuildingTypeOf(buildingName);
-
       // Generate loot upfront
-      const lootItemList = forceItems
-        ? LootUtils.forceLootItemList(forceItems, props.amount)
-        : LootUtils.createLootItemList(
-            props.spawn,
-            JSON.parse(JSON.stringify(props.items)),
-            BuildingUtils.getLootBuildingProbability(buildingName, this.getGameProp('character')),
-            props.amount
-          );
+      const lootItemList = forceLootItemList || this.createBuildingLootItemList(buildingName);
 
       // Random locked state
       const locked = Math.random() * props.locked > 1 ? true : false;
