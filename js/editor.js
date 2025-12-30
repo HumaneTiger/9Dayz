@@ -90,7 +90,7 @@ export default {
                 Props.addItemToInventory('energy-pills', 1);
                 Props.endInventoryBatch();
               } else if (selectedObject === 'beehive') {
-                Props.setupBuilding(squareX, squareY, ['beehive'], false, true); // infested
+                Props.setupBuilding(squareX, squareY, ['beehive'], true); // infested
               } else {
                 Props.setupBuilding(squareX, squareY, new Array(selectedObject));
               }
