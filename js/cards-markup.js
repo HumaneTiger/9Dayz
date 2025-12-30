@@ -202,6 +202,8 @@ export default {
 
   generateItemMarkup: function (name, amount) {
     const props = Props.calcItemProps(name);
+    /* a new building state "itemsReveald" is missing */
+    /* after gathering + save + reload, items are hidden again */
     return (
       '<li class="preview"><span class="unknown">?</span><div class="searching is--hidden"><div></div><div></div></div></li>' +
       '<li class="item is--hidden" data-item="' +
