@@ -9,7 +9,7 @@ export default {
    * @param {number} maxAmount - Maximum amount per item
    * @returns {Array<{name: string, amount: number}>} Loot item list
    */
-  forceLootItemList: function (forceItems, maxAmount) {
+  forceLootItemList: function (forceItems, maxAmount = 1) {
     let lootItemList = [];
     for (let i = 0; i < forceItems.length; i += 1) {
       lootItemList.push({
