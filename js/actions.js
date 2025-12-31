@@ -10,6 +10,7 @@ import Cooking from './cooking.js';
 import Character from './character.js';
 import Checkpoint from './checkpoint.js';
 import RngUtils from './utils/rng-utils.js';
+import TimingUtils from './utils/timing-utils.js';
 
 export default {
   init: function () {},
@@ -201,7 +202,7 @@ export default {
     },
   },
 
-  goToAndAction: function (cardId, action) {
+  goToAndAction: async function (cardId, action) {
     const object = Props.getObject(cardId);
     const actionObject = object.actions.find(singleAction => singleAction.id === action);
     const actionProps = this.actionProps[action];
@@ -214,9 +215,6 @@ export default {
         this.actionLockedFeedback(cardRef);
       } else {
         this.prepareAction(cardId, action);
-        window.setTimeout(() => {
-          actionProps.callback(this, cardId, actionObject.time, actionObject.energy);
-        }, actionProps.delay || 0);
         if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
           // they all have the same effect
           // if one is done and removed, all others have to be removed as well
@@ -226,6 +224,8 @@ export default {
         } else {
           this.removeOneTimeActions(cardId, action);
         }
+        await TimingUtils.wait(actionProps.delay);
+        actionProps.callback(this, cardId, actionObject.time, actionObject.energy);
       }
     } else {
       console.log('Invalid action or card reference!', action, cardId);
@@ -244,20 +244,18 @@ export default {
     }
   },
 
-  notEnoughEnergyFeedback: function () {
+  notEnoughEnergyFeedback: async function () {
     const energyMeter = document.querySelector('#properties li.energy');
     energyMeter?.classList.add('heavy-shake');
-    window.setTimeout(() => {
-      energyMeter?.classList.remove('heavy-shake');
-    }, 200);
+    await TimingUtils.wait(200);
+    energyMeter?.classList.remove('heavy-shake');
     Audio.sfx('nope');
   },
 
-  actionLockedFeedback: function (cardRef) {
+  actionLockedFeedback: async function (cardRef) {
     cardRef?.classList.add('card-shake');
-    window.setTimeout(() => {
-      cardRef?.classList.remove('card-shake');
-    }, 200);
+    await TimingUtils.wait(200);
+    cardRef?.classList.remove('card-shake');
     Audio.sfx('nope');
   },
 
@@ -277,12 +275,11 @@ export default {
     }
   },
 
-  goBackFromAction: function (cardId) {
+  goBackFromAction: async function (cardId) {
     this.endAction(cardId);
     Player.updatePlayer(true);
-    window.setTimeout(() => {
-      Player.lockMovement(false);
-    }, 1000);
+    await TimingUtils.wait(1000);
+    Player.lockMovement(false);
   },
 
   endAction: function (cardId) {
@@ -312,7 +309,7 @@ export default {
     }
   },
 
-  grabItem: function (cardId, container, itemName) {
+  grabItem: async function (cardId, container, itemName) {
     const object = Props.getObject(cardId);
     const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
     const itemProps = Props.getItem(itemName);
@@ -331,26 +328,21 @@ export default {
       Props.addItemToInventory(itemName, itemAmount);
     }
     object.items.find(singleItem => singleItem.name === itemName).amount = 0;
-    container.classList.add('transfer');
     Audio.sfx('pick', 0, 0.1);
-    window.setTimeout(
-      container => {
-        if (cardRef) {
-          container.classList.add('is--hidden');
-          if (itemName === 'crate' || itemProps[0] === 'extra') {
-            Player.findAndHandleObjects();
-          } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
-          if (
-            object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
-            !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length
-          ) {
-            Cards.renderCardDeck();
-          }
-        }
-      },
-      400,
-      container
-    );
+    container.classList.add('transfer');
+    await TimingUtils.waitForTransition(container);
+    if (cardRef) {
+      container.classList.add('is--hidden');
+      if (itemName === 'crate' || itemProps[0] === 'extra') {
+        Player.findAndHandleObjects();
+      } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
+      if (
+        object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
+        !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length
+      ) {
+        Cards.renderCardDeck();
+      }
+    }
   },
 
   addGuarenteedTapeToFirstSearch: function (object, cardRef, allItems) {
@@ -373,7 +365,7 @@ export default {
     }
   },
 
-  simulateGathering: function (cardId, time, energy) {
+  simulateGathering: async function (cardId, time, energy) {
     const object = Props.getObject(cardId);
     const cardRef = Cards.getCardById(cardId);
     const allItems = object.items;
@@ -387,10 +379,9 @@ export default {
 
     if (object.infested) {
       this.spawnCreaturesIfInfested(cardId);
-      window.setTimeout(() => {
-        this.endAction(cardId);
-        Battle.startBattle(true); // instant attack when place is infested
-      }, 1200);
+      await TimingUtils.wait(1200);
+      this.endAction(cardId);
+      Battle.startBattle(true); // instant attack when place is infested
     } else if (allPreviews) {
       /** it's a strange condition, but I think this is what it does:
        * it wants to make sure that the gathering action was never used before
@@ -418,41 +409,35 @@ export default {
           }
         });
       }
+      await TimingUtils.wait(delay);
       for (let i = 0; i < allItems.length; i += 1) {
-        window.setTimeout(
-          (index, item, cardId, energy) => {
-            allPreviews[index].classList.add('is--hidden');
-            if (item.amount > 0) {
-              cardRef
-                .querySelector('ul.items li[data-item="' + item.name + '"].is--hidden')
-                .classList.remove('is--hidden');
-            }
-            if (index + 1 < allItems.length) {
-              allPreviews[index + 1].querySelector('.unknown').classList.add('is--hidden');
-              allPreviews[index + 1].querySelector('.searching').classList.remove('is--hidden');
-            }
-            if (index + 1 === allItems.length) {
-              this.goBackFromAction(cardId);
-              Props.changePlayerProp('energy', energy);
-              if (
-                !allItems.some(function (item) {
-                  return item.amount > 0;
-                })
-              ) {
-                cardRef.querySelector('ul.items').remove();
-                cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
-                cardRef.classList.add('looted');
-                // check if card can be removed (no actions left)
-                Cards.renderCardDeck();
-              }
-            }
-          },
-          i * timeout + delay,
-          i,
-          allItems[i],
-          cardId,
-          energy
-        );
+        const item = allItems[i];
+        allPreviews[i].classList.add('is--hidden');
+        if (item.amount > 0) {
+          cardRef
+            .querySelector('ul.items li[data-item="' + item.name + '"].is--hidden')
+            .classList.remove('is--hidden');
+        }
+        if (i + 1 < allItems.length) {
+          allPreviews[i + 1].querySelector('.unknown').classList.add('is--hidden');
+          allPreviews[i + 1].querySelector('.searching').classList.remove('is--hidden');
+        }
+        if (i + 1 === allItems.length) {
+          this.goBackFromAction(cardId);
+          Props.changePlayerProp('energy', energy);
+          if (
+            !allItems.some(function (item) {
+              return item.amount > 0;
+            })
+          ) {
+            cardRef.querySelector('ul.items').remove();
+            cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
+            cardRef.classList.add('looted');
+            // check if card can be removed (no actions left)
+            Cards.renderCardDeck();
+          }
+        }
+        await TimingUtils.wait(timeout);
       }
     }
   },
@@ -564,45 +549,33 @@ export default {
     );
   },
 
-  simulateCooking: function (cardId) {
+  simulateCooking: async function (cardId) {
     const cardRef = Cards.getCardById(cardId);
-    window.setTimeout(() => {
-      Cooking.start(cardRef);
-      this.goBackFromAction(cardId);
-    }, 800);
+    await TimingUtils.wait(800);
+    Cooking.start(cardRef);
+    this.goBackFromAction(cardId);
   },
 
-  simulateCollecting: function (cardId, energy) {
+  simulateCollecting: async function (cardId, energy) {
     const object = Props.getObject(cardId);
     object.removed = true;
-    window.setTimeout(
-      (cardId, energy) => {
-        Props.addItemToInventory(object.name, 1);
-        Props.changePlayerProp('energy', energy);
-        this.goBackFromAction(cardId);
-      },
-      1200,
-      cardId,
-      energy
-    );
+    await TimingUtils.wait(1200);
+    Props.addItemToInventory(object.name, 1);
+    Props.changePlayerProp('energy', energy);
+    this.goBackFromAction(cardId);
   },
 
-  simulateEquipping: function (cardId) {
-    window.setTimeout(
-      cardId => {
-        const object = Props.getObject(cardId);
-        if (object.group === 'weapon' && object.name) {
-          Props.addWeaponToInventory(object.name, 1, {
-            durability: object.durability,
-            damage: object.attack,
-            protection: object.defense,
-          });
-        }
-        this.goBackFromAction(cardId);
-      },
-      800,
-      cardId
-    );
+  simulateEquipping: async function (cardId) {
+    await TimingUtils.wait(800);
+    const object = Props.getObject(cardId);
+    if (object.group === 'weapon' && object.name) {
+      Props.addWeaponToInventory(object.name, 1, {
+        durability: object.durability,
+        damage: object.attack,
+        protection: object.defense,
+      });
+    }
+    this.goBackFromAction(cardId);
   },
 
   simulateCuttingDown: function (cardId, time, energy) {
@@ -638,7 +611,7 @@ export default {
     );
   },
 
-  simulateLuring: function (cardId, time, energy) {
+  simulateLuring: async function (cardId, time, energy) {
     Player.lockMovement(true);
     Cards.disableActions();
 
@@ -649,7 +622,7 @@ export default {
     scoutMarker.classList.remove('is--hidden');
 
     this.fastForward(
-      function (cardId, energy) {
+      async function (cardId, energy) {
         const object = Props.getObject(cardId);
         this.endAction(cardId);
 
@@ -664,9 +637,8 @@ export default {
           Props.changePlayerProp('energy', energy);
           Audio.sfx('nope');
           cardRef?.classList.add('card-heavy-shake');
-          window.setTimeout(() => {
-            cardRef?.classList.remove('card-heavy-shake');
-          }, 200);
+          await TimingUtils.wait(200);
+          cardRef?.classList.remove('card-heavy-shake');
           Cards.renderCardDeck();
         }
       },
@@ -677,7 +649,7 @@ export default {
     );
   },
 
-  simulateAttacking: function (cardId) {
+  simulateAttacking: async function (cardId) {
     const object = Props.getObject(cardId);
     const allFoundObjectIds = Player.findObjects(object.x, object.y);
 
@@ -688,10 +660,9 @@ export default {
     Player.handleFoundObjectIds(zedsOnly);
     Cards.disableActions();
 
-    window.setTimeout(() => {
-      this.endAction(cardId);
-      Battle.startBattle();
-    }, 800);
+    await TimingUtils.wait(800);
+    this.endAction(cardId);
+    Battle.startBattle();
   },
 
   gotIt: function (cardId) {
@@ -850,34 +821,29 @@ export default {
     );
   },
 
-  reading: function (cardId) {
-    window.setTimeout(
-      cardId => {
-        const targetLocationName = Props.getObject(cardId).name;
-        Audio.sfx('note');
-        if (targetLocationName === 'signpost-1') {
-          Map.showTargetLocation('Lakeside Camp Resort');
-          Map.showTargetLocation('Rocksprings');
-        } else if (targetLocationName === 'signpost-2') {
-          Map.showTargetLocation('Litchfield');
-        } else if (targetLocationName === 'signpost-3') {
-          Map.showTargetLocation('Greenleafton');
-        } else if (targetLocationName === 'signpost-4') {
-          Map.showTargetLocation('Haling Cove');
-        } else if (targetLocationName === 'signpost-5') {
-          Map.showTargetLocation('Billibalds Farm');
-        } else if (targetLocationName === 'signpost-6') {
-          Map.showTargetLocation('Camp Silverlake');
-        } else if (targetLocationName === 'signpost-7') {
-          Map.showTargetLocation('Harbor Gas Station');
-        }
-        if (Props.getGameProp('tutorial') === false) {
-          Checkpoint.save(targetLocationName);
-        }
-        this.goBackFromAction(cardId);
-      },
-      1800,
-      cardId
-    );
+  reading: async function (cardId) {
+    await TimingUtils.wait(1800);
+    const targetLocationName = Props.getObject(cardId).name;
+    Audio.sfx('note');
+    if (targetLocationName === 'signpost-1') {
+      Map.showTargetLocation('Lakeside Camp Resort');
+      Map.showTargetLocation('Rocksprings');
+    } else if (targetLocationName === 'signpost-2') {
+      Map.showTargetLocation('Litchfield');
+    } else if (targetLocationName === 'signpost-3') {
+      Map.showTargetLocation('Greenleafton');
+    } else if (targetLocationName === 'signpost-4') {
+      Map.showTargetLocation('Haling Cove');
+    } else if (targetLocationName === 'signpost-5') {
+      Map.showTargetLocation('Billibalds Farm');
+    } else if (targetLocationName === 'signpost-6') {
+      Map.showTargetLocation('Camp Silverlake');
+    } else if (targetLocationName === 'signpost-7') {
+      Map.showTargetLocation('Harbor Gas Station');
+    }
+    if (Props.getGameProp('tutorial') === false) {
+      Checkpoint.save(targetLocationName);
+    }
+    this.goBackFromAction(cardId);
   },
 };

@@ -10,6 +10,7 @@ import { default as Character } from './character.js';
 import { default as Cooking } from './cooking.js';
 import { default as Editor } from './editor.js';
 import RngUtils from './utils/rng-utils.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -160,7 +161,7 @@ export default {
     return classes.find(cls => element.classList.contains(cls));
   },
 
-  handleClick: function (ev) {
+  handleClick: async function (ev) {
     const target = ev.target;
     const leftMouseButton = ev.button === 0;
 
@@ -209,9 +210,8 @@ export default {
             this.switchToScreen3();
             break;
           case 'restart':
-            window.setTimeout(() => {
-              document.location.reload();
-            }, 300);
+            await TimingUtils.wait(300);
+            document.location.reload();
             break;
           case 'resume':
             startscreenContainer.querySelector('.screen__quit').classList.add('is--hidden');
@@ -321,17 +321,20 @@ export default {
     this.startGame();
   },
 
-  startGame: function () {
-    startscreenContainer.style.opacity = 0;
+  startGame: async function () {
     Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.pauseGame(false);
     Audio.playAmbientLoop();
     Ui.showMapBorder();
-    window.setTimeout(() => {
-      startscreenContainer.classList.add('is--hidden');
-      Ui.showNewDay(0, true);
-    }, 1500);
+    await this.fadeIntoGame();
+    Ui.showNewDay(0, true);
+  },
+
+  fadeIntoGame: async function () {
+    startscreenContainer.style.opacity = 0;
+    await TimingUtils.waitForTransition(startscreenContainer);
+    startscreenContainer.classList.add('is--hidden');
   },
 
   handleKeypress: function () {

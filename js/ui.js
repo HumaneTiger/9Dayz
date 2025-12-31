@@ -6,6 +6,7 @@ import Character from './character.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
 import Events, { EVENTS } from './events.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const viewport = document.getElementById('viewport');
 const mapBorder = document.getElementById('map-border');
@@ -441,19 +442,18 @@ export default {
     }
   },
 
-  quitConfirmation: function () {
+  quitConfirmation: async function () {
     let startScreen = document.getElementById('startscreen');
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
-    window.setTimeout(() => {
-      startScreen.querySelector('.screen__1').classList.add('is--hidden');
-      startScreen.querySelector('.screen__2').classList.add('is--hidden');
-      startScreen.querySelector('.screen__3').classList.add('is--hidden');
-      startScreen.querySelector('.screen__dead').classList.add('is--hidden');
-      startScreen.querySelector('.screen__win').classList.add('is--hidden');
-      startScreen.querySelector('.screen__quit').classList.remove('is--hidden');
-      startScreen.style.opacity = 1;
-    }, 300);
+    await TimingUtils.wait(300);
+    startScreen.querySelector('.screen__1').classList.add('is--hidden');
+    startScreen.querySelector('.screen__2').classList.add('is--hidden');
+    startScreen.querySelector('.screen__3').classList.add('is--hidden');
+    startScreen.querySelector('.screen__dead').classList.add('is--hidden');
+    startScreen.querySelector('.screen__win').classList.add('is--hidden');
+    startScreen.querySelector('.screen__quit').classList.remove('is--hidden');
+    startScreen.style.opacity = 1;
   },
 
   handleMapClick: function () {
@@ -553,7 +553,7 @@ export default {
     }
   },
 
-  showNewDay: function (hour, force) {
+  showNewDay: async function (hour, force) {
     const time = Props.getGameProp('timeIsUnity');
     if (force || (time.gameDays > Props.getGameProp('startDay') && hour === 7)) {
       const dayTeaser = document.getElementById('day-teaser');
@@ -561,13 +561,11 @@ export default {
         dayTeaser.querySelector('.content').innerHTML = 'Day <span>' + time.gameDays + '</span>';
         dayTeaser.classList.add('open');
         dayTeaser.style.zIndex = '60';
-        window.setTimeout(() => {
-          dayTeaser.querySelector('.content').style.transitionDelay = '0';
-          dayTeaser.classList.remove('open');
-          window.setTimeout(() => {
-            dayTeaser.removeAttribute('style');
-          }, 1000);
-        }, 2500);
+        await TimingUtils.wait(2500);
+        dayTeaser.querySelector('.content').style.transitionDelay = '0';
+        dayTeaser.classList.remove('open');
+        await TimingUtils.wait(1000);
+        dayTeaser.removeAttribute('style');
       }
     }
   },

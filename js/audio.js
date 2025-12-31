@@ -1,3 +1,5 @@
+import TimingUtils from './utils/timing-utils.js';
+
 let allAudio = document.getElementById('all-audio');
 let ambientIndex = 1;
 let ambientTimes = [60, 110, 145, 145];
@@ -8,50 +10,40 @@ export default {
     //this.playAmbientLoop();
   },
 
-  playAmbientLoop: function () {
+  playAmbientLoop: async function () {
     this.music('ambient-' + ambientIndex);
-    window.setTimeout(
-      () => {
-        ambientIndex += 1;
-        if (ambientIndex > 4) ambientIndex = 1;
-        this.playAmbientLoop();
-      },
-      (ambientTimes[ambientIndex - 1] + ambientDelay) * 1000
-    );
+    await TimingUtils.wait((ambientTimes[ambientIndex - 1] + ambientDelay) * 1000);
+    ambientIndex += 1;
+    if (ambientIndex > 4) ambientIndex = 1;
+    this.playAmbientLoop();
   },
 
-  music: function (name, delay, vol) {
-    window.setTimeout(() => {
-      let audio = allAudio.querySelector('.music-' + name);
-      let volume = vol || 0.2;
+  music: async function (name, delay, vol) {
+    await TimingUtils.wait(delay || 0);
+    let audio = allAudio.querySelector('.music-' + name);
+    let volume = vol || 0.2;
+    audio.volume = volume;
 
-      audio.volume = volume;
-
-      audio.play().catch(() => {});
-    }, delay || 0);
+    audio.play().catch(() => {});
   },
 
-  voice: function (name, delay, vol) {
-    window.setTimeout(() => {
-      let audio = allAudio.querySelector('.voice-' + name);
-      let volume = vol || 0.2;
+  voice: async function (name, delay, vol) {
+    await TimingUtils.wait(delay || 0);
+    let audio = allAudio.querySelector('.voice-' + name);
+    let volume = vol || 0.2;
+    audio.volume = volume;
 
-      audio.volume = volume;
-
-      audio.play().catch(() => {});
-    }, delay || 0);
+    audio.play().catch(() => {});
   },
 
-  sfx: function (name, delay, vol) {
-    window.setTimeout(() => {
-      this.sfxStop(name);
-      let audio = allAudio.querySelector('.sfx-' + name);
-      let volume = vol || 0.3;
+  sfx: async function (name, delay, vol) {
+    await TimingUtils.wait(delay || 0);
+    this.sfxStop(name);
+    let audio = allAudio.querySelector('.sfx-' + name);
+    let volume = vol || 0.3;
+    audio.volume = name === 'click' ? 0.15 : volume;
 
-      audio.volume = name === 'click' ? 0.15 : volume;
-
-      audio.play().catch(() => {});
-    }, delay || 0);
+    audio.play().catch(() => {});
   },
 
   sfxStop: function (name) {
@@ -61,13 +53,11 @@ export default {
     audio.currentTime = 0;
   },
 
-  stop: function (name, delay) {
-    window.setTimeout(() => {
-      let audio = allAudio.querySelector('.music-' + name);
-
-      audio.volume = 0;
-      audio.pause();
-      audio.currentTime = 0;
-    }, delay || 0);
+  stop: async function (name, delay) {
+    await TimingUtils.wait(delay || 0);
+    let audio = allAudio.querySelector('.music-' + name);
+    audio.volume = 0;
+    audio.pause();
+    audio.currentTime = 0;
   },
 };

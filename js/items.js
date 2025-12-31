@@ -9,6 +9,7 @@ import Almanac from './almanac.js';
 import Audio from './audio.js';
 import ItemUtils from '../data/utils/item-utils.js';
 import Events, { EVENTS } from './events.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -89,12 +90,12 @@ export default {
     return inventory.items[name];
   },
 
-  inventoryChangeFeedback: function () {
-    document.querySelector('#actions .inventory').classList.add('transfer');
+  inventoryChangeFeedback: async function () {
     document.getElementById('inventory-numbers').textContent = inventory.itemNumbers;
-    window.setTimeout(function () {
-      document.querySelector('#actions .inventory').classList.remove('transfer');
-    }, 400);
+    document.querySelector('#actions .inventory').classList.add('transfer');
+    await TimingUtils.waitForTransition(document.querySelector('#actions .inventory'));
+    await TimingUtils.wait(100);
+    document.querySelector('#actions .inventory').classList.remove('transfer');
   },
 
   checkForSlotClick: function (ev) {

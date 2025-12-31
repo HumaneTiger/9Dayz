@@ -4,6 +4,7 @@ import Player from './player.js';
 import Almanac from './almanac.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 import Events, { EVENTS } from './events.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
@@ -212,11 +213,11 @@ export default {
     return false;
   },
 
-  craftingChangeFeedback: function () {
+  craftingChangeFeedback: async function () {
     document.getElementById('crafting-total').textContent = craftingOptions.total;
     document.querySelector('#actions .craft').classList.add('transfer');
-    window.setTimeout(() => {
-      document.querySelector('#actions .craft').classList.remove('transfer');
-    }, 400);
+    await TimingUtils.waitForTransition(document.querySelector('#actions .craft'));
+    await TimingUtils.wait(100);
+    document.querySelector('#actions .craft').classList.remove('transfer');
   },
 };
