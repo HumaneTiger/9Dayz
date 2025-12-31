@@ -26,21 +26,24 @@ let battleDeckProps = {
 };
 
 export default {
+  prepareBattle: function () {
+    Props.setGameProp('battle', true);
+    Props.pauseGame(true);
+  },
+
   shuffle: function (array) {
     let currentIndex = array.length,
       randomIndex;
-
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
       // Pick a remaining element.
-      randomIndex = Math.floor(RngUtils.battleRNG.random() * currentIndex);
+      const battleRNG = RngUtils.battleRNG.random();
+      randomIndex = Math.floor(battleRNG * currentIndex);
       currentIndex--;
 
       // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
-
-    return array;
   },
 
   /* todo: use this one for normal battles as well */
@@ -79,8 +82,7 @@ export default {
     if (!singleZedId) {
       return;
     }
-    Props.setGameProp('battle', true);
-    Props.pauseGame(true);
+    this.prepareBattle();
     cardZedDeck.push(singleZedId);
     this.spawnZedDeck(cardZedDeck);
     this.enterUIBattleMode();
@@ -218,8 +220,7 @@ export default {
   },
 
   startBattle(surprised, singleZedId) {
-    Props.setGameProp('battle', true);
-    Props.pauseGame(true);
+    this.prepareBattle();
 
     if (singleZedId) {
       // result of successful luring
@@ -288,19 +289,13 @@ export default {
 
   spawnBattleDeck: function (surprised) {
     let sparedTools = 0;
-    for (const item in inventory.items) {
-      for (var i = 0; i < inventory.items[item].amount; i += 1) {
+    const sortedKeys = Object.keys(inventory.items).sort((a, b) => a.localeCompare(b));
+    for (const item of sortedKeys) {
+      for (let i = 0; i < inventory.items[item].amount; i++) {
         if (
           Props.getGameProp('character') === 'craftsmaniac' &&
-          (item === 'fail' ||
-            item === 'hacksaw' ||
-            item === 'knife' ||
-            item === 'mallet' ||
-            item === 'pincers' ||
-            item === 'spanner' ||
-            item === 'nails')
+          ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'nails'].includes(item)
         ) {
-          // craftsmaniac won't use their tools in battles
           sparedTools += 1;
         } else {
           battleDeck.push(inventory.items[item]);
@@ -308,7 +303,7 @@ export default {
       }
     }
     if (sparedTools > 0) {
-      this.showBattleMessage('Craftsmaniac spares their ' + sparedTools + ' tools', 2000);
+      this.showBattleMessage('Craftsmaniac spares ' + sparedTools + ' tools', 2000);
     }
     for (let card = 0; card < battleDeck.length; card += 1) {
       battleDeck[card].modifyDamage = 0;
@@ -326,7 +321,6 @@ export default {
     allDrawPileCards = battleDrawContainer.querySelectorAll('.battle-card-back');
     this.renderDrawPile();
     battleHealthMeter.classList.add('in-battle');
-
     if (surprised) {
       document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
       document.getElementById('battle-cards').classList.remove('is--hidden');
@@ -412,11 +406,14 @@ export default {
       document.querySelector('#action-points')?.classList.add('low-energy');
     }
 
+    // shuffle deck here, this is super important, do not do it later
+    // otherwise the drawn cards are not deterministic
+    this.shuffle(battleDeck);
+
     // draw up to 5 cards
     // split deck into 2 parts, weapons and others
     let weaponsDeck = battleDeck.filter(item => Props.getWeaponProps(item.name));
     let itemsDeck = battleDeck.filter(item => !Props.getWeaponProps(item.name));
-    this.shuffle(battleDeck);
     battlePlayContainer.innerHTML = '';
     let maxItems = 5 - weaponsDeck.length;
     if (itemsDeck.length < maxItems) maxItems = itemsDeck.length;
@@ -434,6 +431,7 @@ export default {
           (index, child, totalCards) => {
             child.style.left = index * 170 + 'px';
             child.classList.remove('inactive');
+            child.dataset.index = index;
             battleDeckProps.number = totalCards + index;
             this.renderDrawPile();
           },

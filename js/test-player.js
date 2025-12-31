@@ -191,7 +191,7 @@ export default {
 
       case 'Ui':
         if (command.action === 'zombie-attack') {
-          this.zombieAttackDragRelease(command.dragTarget, command.dragItem);
+          this.zombieAttackDragRelease(command.dragTarget, command.dragItem, command.dragIndex);
         } else if (command.selector) {
           this.clickElement(command.selector);
         }
@@ -293,12 +293,24 @@ export default {
    * Simulate the complicated zombie attack drag release
    * @param {string} dragTarget - The target element ID for the drag
    * @param {string} dragItem - The item being dragged
+   * @param {number} dragIndex - The index of the dragged item
    */
-  zombieAttackDragRelease: function (dragTarget, dragItem) {
+  zombieAttackDragRelease: function (dragTarget, dragItem, dragIndex) {
+    const dragTargetEl = document.querySelector(`[id="${dragTarget}"]`);
+    const dragEl = document.querySelector(
+      `#battle-cards [data-item="${dragItem}"][data-index="${dragIndex}"]`
+    );
+    if (!dragTargetEl) {
+      throw new Error(`Drag target ID not found: ${dragTarget}`);
+    }
+    if (!dragEl) {
+      throw new Error(`Drag element not found: ${dragItem} at index ${dragIndex}`);
+    }
     const event = new CustomEvent('uiDragTestEvent', {
       detail: {
         dragTarget: dragTarget,
         dragItem: dragItem,
+        dragIndex: dragIndex,
       },
     });
     document.dispatchEvent(event);

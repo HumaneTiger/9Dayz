@@ -68,8 +68,6 @@ export default {
     }
 
     localStorage.setItem('recordedCommands', JSON.stringify(recordedCommands));
-    console.log('⏹️ Recording stopped. Commands saved to localStorage:', recordedCommands.length);
-    console.log('Commands:', recordedCommands);
   },
 
   /**
@@ -101,7 +99,6 @@ export default {
           if (logger) {
             logger(`Recorded: ${command.type} at tick ${testTick}`);
           }
-          console.log('📝 Recorded:', command.type, 'at tick', testTick);
         }
       }
 
@@ -350,6 +347,7 @@ export default {
             action: 'zombie-attack',
             dragTarget: dragTarget.id,
             dragItem: dragElement.dataset.item,
+            dragIndex: dragElement.dataset.index,
           };
         }
       }

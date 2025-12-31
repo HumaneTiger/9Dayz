@@ -234,10 +234,12 @@ export default {
   },
 
   handleUiTestDragEvent: function (e) {
-    const { dragTarget, dragItem } = e.detail;
+    const { dragTarget, dragItem, dragIndex } = e.detail;
     // Handle the test drag event directly
     const dragTargetEl = document.querySelector(`[id="${dragTarget}"]`);
-    const dragEl = document.querySelector(`#battle-cards [data-item="${dragItem}"]`);
+    const dragEl = document.querySelector(
+      `#battle-cards [data-item="${dragItem}"][data-index="${dragIndex}"]`
+    );
     if (dragTargetEl && dragEl) {
       this.resolveMouseUp(dragTargetEl, dragEl);
     }
@@ -269,6 +271,7 @@ export default {
   },
 
   getDragElement: function () {
+    console.log(dragEl.dataset.item, dragEl.dataset.index);
     return dragEl;
   },
 
