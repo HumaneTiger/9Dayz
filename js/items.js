@@ -280,13 +280,15 @@ export default {
   generateInventorySlots: function () {
     for (const item in items) {
       if (items[item][0] !== 'extra') {
-        inventoryContainer.querySelector('.inner').innerHTML +=
+        inventoryContainer.querySelector('.inner').insertAdjacentHTML(
+          'beforeend',
           `<div class="slot unknown ${items[item][0]} item-${item}" data-item="${item}">
             <img src="./img/items/${item}.PNG" class="bg">
             <span class="unknown">?</span>
             <span class="amount"></span>
             <span class="action">${items[item][0]}</span>
-          </div>`;
+          </div>`
+        );
       }
     }
   },

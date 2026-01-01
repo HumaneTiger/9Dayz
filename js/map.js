@@ -51,21 +51,39 @@ export default {
 
       if (!object.discovered) {
         if (group === 'building') {
-          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${object.type}.png'></span>`;
+          buidingsContainer.insertAdjacentHTML(
+            'beforeend',
+            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${object.type}.png'></span>`
+          );
         } else if (group === 'weapon') {
-          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/weapons/${group}.png'></span>`;
+          buidingsContainer.insertAdjacentHTML(
+            'beforeend',
+            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/weapons/${group}.png'></span>`
+          );
         } else if (group === 'animal') {
-          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/animals/${group}.png'></span>`;
+          buidingsContainer.insertAdjacentHTML(
+            'beforeend',
+            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/animals/${group}.png'></span>`
+          );
         } else if (group === 'zombie') {
           if (!object.dead) {
-            highlightsContainer.innerHTML += `<span class='danger-area area-${objectId}' style='top: ${areaTop}px; left: ${iconLeft}px;'></span>`;
-            buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}.png'></span>`;
+            highlightsContainer.insertAdjacentHTML(
+              'beforeend',
+              `<span class='danger-area area-${objectId}' style='top: ${areaTop}px; left: ${iconLeft}px;'></span>`
+            );
+            buidingsContainer.insertAdjacentHTML(
+              'beforeend',
+              `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}.png'></span>`
+            );
           }
         }
       } else {
         if (group === 'zombie' && object.dead && !object.removed) {
           this.removeObjectIconById(objectId);
-          buidingsContainer.innerHTML += `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}-dead.png'></span>`;
+          buidingsContainer.insertAdjacentHTML(
+            'beforeend',
+            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}-dead.png'></span>`
+          );
         }
       }
     });
@@ -125,7 +143,10 @@ export default {
       const y = targetLocations[target][1];
       const locationLeft = Math.round(x * 44.4 + 12);
       const locationTop = Math.round(y * 44.4 + 3);
-      mapCover.innerHTML += `<span class='location' style='top: ${locationTop}px; left: ${locationLeft}px;'>${target}</span>`;
+      mapCover.insertAdjacentHTML(
+        'beforeend',
+        `<span class='location' style='top: ${locationTop}px; left: ${locationLeft}px;'>${target}</span>`
+      );
     }
   },
 

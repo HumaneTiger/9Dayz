@@ -236,7 +236,7 @@ export default {
     if (feedback) {
       const icon =
         type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
-      feedback.innerHTML += `<p>${icon} ${message}</p>`;
+      feedback.innerHTML.insertAdjacentHTML('beforeend', `<p>${icon} ${message}</p>`);
       feedback.scrollTop = feedback.scrollHeight;
       if (type === 'error') {
         feedback.classList.remove('is--playing');

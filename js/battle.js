@@ -270,19 +270,21 @@ export default {
   spawnCompanionDeck: function (companion) {
     battlePlayContainer.innerHTML = '';
 
-    battleCompanionContainer.innerHTML +=
+    battleCompanionContainer.insertAdjacentHTML(
+      'beforeend',
       '<div class="battle-card" data-item="' +
-      companion.name +
-      '"><div class="inner">' +
-      '<img class="item-pic" src="./img/animals/' +
-      companion.name.toLowerCase() +
-      '.png">' +
-      '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
-      '<div class="attack">' +
-      companion.damage +
-      '</div><div class="health">' +
-      companion.health +
-      '</div></div></div>';
+        companion.name +
+        '"><div class="inner">' +
+        '<img class="item-pic" src="./img/animals/' +
+        companion.name.toLowerCase() +
+        '.png">' +
+        '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
+        '<div class="attack">' +
+        companion.damage +
+        '</div><div class="health">' +
+        companion.health +
+        '</div></div></div>'
+    );
 
     battleCompanionContainer.classList.remove('is--hidden');
   },
@@ -315,8 +317,10 @@ export default {
       }
     }
     for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
-      battleDrawContainer.innerHTML +=
-        '<div class="battle-card-back is--hidden" style="left: ' + card * 4 + 'px"></div>';
+      battleDrawContainer.insertAdjacentHTML(
+        'beforeend',
+        '<div class="battle-card-back is--hidden" style="left: ' + card * 4 + 'px"></div>'
+      );
     }
     allDrawPileCards = battleDrawContainer.querySelectorAll('.battle-card-back');
     this.renderDrawPile();
@@ -461,24 +465,26 @@ export default {
         '</span>'
       : '';
 
-    battlePlayContainer.innerHTML +=
+    battlePlayContainer.insertAdjacentHTML(
+      'beforeend',
       '<div class="battle-card inactive" data-item="' +
-      item.name +
-      '"><div class="inner">' +
-      (item.type !== 'extra'
-        ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
-        : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
-      (item.type === 'extra' && item.durability === 1
-        ? '<img class="last-use" src="./img/weapons/last-use.png">'
-        : '') +
-      '<div class="attack">' +
-      (item.damage + item.modifyDamage) +
-      modifyDamageMarkup +
-      '</div><div class="shield">' +
-      item.protection +
-      '</div>' +
-      durabilityMarkup +
-      '</div></div>';
+        item.name +
+        '"><div class="inner">' +
+        (item.type !== 'extra'
+          ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
+          : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
+        (item.type === 'extra' && item.durability === 1
+          ? '<img class="last-use" src="./img/weapons/last-use.png">'
+          : '') +
+        '<div class="attack">' +
+        (item.damage + item.modifyDamage) +
+        modifyDamageMarkup +
+        '</div><div class="shield">' +
+        item.protection +
+        '</div>' +
+        durabilityMarkup +
+        '</div></div>'
+    );
   },
 
   resolveMultiAttack: function (dragEl, dragTarget) {
