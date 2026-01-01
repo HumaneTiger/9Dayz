@@ -91,6 +91,8 @@ export default {
                 Props.endInventoryBatch();
               } else if (selectedObject === 'beehive') {
                 Props.setupBuilding(squareX, squareY, ['beehive'], true); // infested
+              } else if (selectedObject === 'doggy') {
+                Props.spawnDoggyAt(squareX, squareY);
               } else {
                 Props.setupBuilding(squareX, squareY, new Array(selectedObject));
               }
@@ -177,6 +179,11 @@ export default {
     optBees.innerHTML = 'Bees';
     selectObject.appendChild(optBees);
 
+    let optDoggy = document.createElement('option');
+    optDoggy.value = 'doggy';
+    optDoggy.innerHTML = 'Doggy';
+    selectObject.appendChild(optDoggy);
+
     for (const weapon in allWeapons) {
       let opt = document.createElement('option');
       opt.value = weapon;
@@ -236,7 +243,7 @@ export default {
     if (feedback) {
       const icon =
         type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
-      feedback.innerHTML.insertAdjacentHTML('beforeend', `<p>${icon} ${message}</p>`);
+      feedback.insertAdjacentHTML('beforeend', `<p>${icon} ${message}</p>`);
       feedback.scrollTop = feedback.scrollHeight;
       if (type === 'error') {
         feedback.classList.remove('is--playing');
