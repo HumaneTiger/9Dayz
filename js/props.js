@@ -755,8 +755,8 @@ export default {
           Math.pow(this.getGameProp('playerPosition').y - y, 2)
       );
 
-      const attack = Math.floor(Math.random() * 6 + Math.min(distance / 3, 10) + 1); // increase attack with distance
-      const defense = Math.floor(Math.random() * 9 + Math.min(distance / 2.5, 10)); // increase defense with distance
+      const attack = Math.floor(Math.random() * 6 + Math.min(distance / 5, 9) + 1); // increase attack with distance
+      const defense = Math.floor(Math.random() * 9 + Math.min(distance / 4, 9)); // increase defense with distance
       const lootItemList = LootUtils.createLootItemList(
         3,
         [
