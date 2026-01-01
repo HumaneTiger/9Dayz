@@ -273,23 +273,25 @@ export default {
     cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
     cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
     this.clearTestFeedback();
-    this.logTest('Starting test playback...');
 
     try {
-      const testCheckpointStorage = localStorage.getItem('testCheckpoint');
-      if (!testCheckpointStorage) {
-        this.log('No checkpoint found in localStorage', 'error');
-      }
-      const testCheckpoint = JSON.parse(testCheckpointStorage);
-      Start.restoreCheckpoint(testCheckpoint);
-      Start.prepareGameStart();
-      Start.startReal();
-      // Pass logger to test player
-      TestPlayer.startPlayback(0, this.logTest.bind(this));
-      const feedback = cardConsoleContainer.querySelector('.test-feedback');
-      feedback.classList.add('is--playing');
-      feedback.classList.remove('has--success');
-      feedback.classList.remove('has--errors');
+      const testName = Props.getGameProp('local') ? 'test-local' : 'test-run-1';
+      TestPlayer.loadTestData(testName, (testName, testCheckpoint) => {
+        this.logTest(`Starting test playback for <strong>${testName}</strong>...`);
+        Start.restoreCheckpoint(testCheckpoint);
+        Start.prepareGameStart();
+        Start.startReal();
+      })
+        .then(() => {
+          TestPlayer.startPlayback(0, this.logTest.bind(this));
+          const feedback = cardConsoleContainer.querySelector('.test-feedback');
+          feedback.classList.add('is--playing');
+          feedback.classList.remove('has--success');
+          feedback.classList.remove('has--errors');
+        })
+        .catch(e => {
+          this.logTest(`Failed to load test data: ${e.message}`, 'error');
+        });
     } catch (e) {
       this.logTest(`Failed to start playback: ${e.message}`, 'error');
     }

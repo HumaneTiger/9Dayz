@@ -8,6 +8,7 @@ let testTickInterval = null; // Interval for test ticks
 let playbackTickOffset = 0; // Additional delay for slower playback
 let jsErrors = [];
 let logger = null; // UI logger function
+let loadedTestData = null; // Currently loaded test data
 
 export default {
   /**
@@ -35,22 +36,103 @@ export default {
     });
   },
 
+  getTestData: function (testName) {
+    const testData = {
+      'test-local': {
+        description: 'Latest recorded test from local storage',
+        source: 'localStorage',
+        commands: localStorage.getItem('recordedCommands') || '[]',
+        checkpoint: localStorage.getItem('testCheckpoint') || null,
+      },
+      'test-run-1': {
+        description: 'Recorded test run 1',
+        source: 'file',
+      },
+    };
+
+    return testData[testName] || null;
+  },
+
   /**
-   * Load and start playback from localStorage
+   * Load test data from file
+   * @param {string} testName - Name of the test file (without .json extension)
+   * @returns {Promise} Resolves with test data object containing recordedCommands and checkpoint
+   */
+  async loadTestDataFromFile(testName) {
+    try {
+      const response = await fetch(`./tests/${testName}.json`);
+      if (!response.ok) {
+        throw new Error(`Failed to load test file: ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      if (!data.recordedCommands || !data.checkpoint) {
+        throw new Error('Test file missing recordedCommands or checkpoint property');
+      }
+
+      return {
+        description: data.description || `Test: ${testName}`,
+        commands: JSON.stringify(data.recordedCommands),
+        checkpoint: JSON.stringify(data.checkpoint),
+      };
+    } catch (e) {
+      this.log(`Failed to load test file: ${e.message}`, 'error');
+      throw e;
+    }
+  },
+
+  /**
+   * Load test data and execute a callback with the checkpoint
+   * Supports both localStorage tests and file-based tests
+   * @param {string} testName - Name of the test to load
+   * @param {Function} onLoadCallback - Callback function to execute with the checkpoint
+   */
+  async loadTestData(testName, onLoadCallback) {
+    try {
+      let testData = this.getTestData(testName);
+
+      if (!testData) {
+        this.log(`Test data not found: ${testName}`, 'error');
+        return;
+      }
+
+      // Load from file if source is 'file'
+      if (testData.source === 'file') {
+        testData = await this.loadTestDataFromFile(testName);
+      }
+
+      if (!testData.checkpoint) {
+        this.log('No checkpoint data available for test', 'error');
+        return;
+      }
+
+      loadedTestData = testData;
+      const testCheckpoint = JSON.parse(testData.checkpoint);
+
+      // Execute callback with checkpoint
+      if (onLoadCallback && typeof onLoadCallback === 'function') {
+        onLoadCallback(testName, testCheckpoint);
+      }
+    } catch (e) {
+      this.log(`Failed to load test data: ${e.message}`, 'error');
+    }
+  },
+
+  /**
+   * Start playback from previously loaded test data
    * @param {number} tickOffset - Optional delay to add to each command tick (for slower playback)
    * @param {Function} logFunction - Optional logging function for UI feedback
    */
   startPlayback: function (tickOffset = 0, logFunction = null) {
-    logger = logFunction;
-    const recordedCommands = localStorage.getItem('recordedCommands');
-
-    if (!recordedCommands) {
-      this.log('No recorded commands found in localStorage', 'error');
+    if (!loadedTestData) {
+      this.log('No test data loaded. Use loadTestData() first', 'error');
       return;
     }
 
+    logger = logFunction;
+
     try {
-      commandQueue = JSON.parse(recordedCommands);
+      commandQueue = JSON.parse(loadedTestData.commands);
       playbackTickOffset = tickOffset;
       currentCommandIndex = 0;
       jsErrors = [];
