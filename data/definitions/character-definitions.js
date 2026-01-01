@@ -103,7 +103,14 @@ export default {
   },
 
   furbuddy: {
-    inventoryPreset: {},
+    inventoryPreset: {
+      'drink-2': 1,
+      'snack-1': 1,
+      knife: 1,
+      'energy-pills': 1,
+      meat: 2,
+      bones: 2,
+    },
   },
 
   hardcharger: {

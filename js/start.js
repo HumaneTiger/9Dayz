@@ -120,8 +120,6 @@ export default {
     Cooking.checkAllCookingModeCards();
     Crafting.checkCraftingPrerequisits();
 
-    Props.spawnDoggyAt(12, 44);
-
     // generate all buildings and zeds
     Props.setupAllBuildings();
     Props.setupAllZeds();
@@ -130,7 +128,14 @@ export default {
       Props.getGameProp('playerPosition').x,
       Props.getGameProp('playerPosition').y
     );
+
     //Player.setPlayerPosition(18, 37);
+    if (Props.getGameProp('character') === 'furbuddy') {
+      const playerPosition = Props.getGameProp('playerPosition');
+      Props.spawnDoggyAt(playerPosition.x, playerPosition.y);
+    } else {
+      Props.spawnDoggyAt(12, 44);
+    }
 
     Props.changePlayerProp('health', 100);
     Props.changePlayerProp('food', 65);

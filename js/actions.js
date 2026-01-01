@@ -425,6 +425,10 @@ export default {
         if (i + 1 === allItems.length) {
           this.goBackFromAction(cardId);
           Props.changePlayerProp('energy', energy);
+          // furbuddy takes damage when cutting animals
+          if (Props.getGameProp('character') === 'furbuddy' && object.group === 'animal') {
+            Props.changePlayerProp('health', -10);
+          }
           if (
             !allItems.some(function (item) {
               return item.amount > 0;
