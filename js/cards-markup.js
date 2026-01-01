@@ -6,10 +6,9 @@ import { default as Map } from './map.js';
 import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const cardsContainer = document.getElementById('cards');
-const cardWidth = 380 * 0.7;
-const zIndexBase = 200;
 
 let smallTreeCounter = 1,
   bigTreeCounter = 1,
@@ -197,7 +196,7 @@ export default {
 
     cardMarkup += cardMarkupPost;
 
-    cardsContainer.innerHTML += cardMarkup;
+    cardsContainer.insertAdjacentHTML('beforeend', cardMarkup);
   },
 
   generateItemMarkup: function (name, amount) {
@@ -221,13 +220,222 @@ export default {
     );
   },
 
-  updateCardDeckMarkup: function (cardDeck) {
-    const playerPosition = Player.getPlayerPosition();
-    let cardLeftPosition = 0;
-    let activeCardDeckSize = 0;
-    let activeCardIndex = 0;
+  moveNewCardIntoPlace: async function (cardId, index, sharedDeckState) {
+    const Z_INDEX_BASE = 200;
+    const CARD_WIDTH = 380 * 0.7;
+    const cardRef = document.getElementById(cardId);
+    const object = Props.getObject(cardId);
 
-    // Position (top / bottom)
+    if (!cardRef) return;
+
+    // card is already visible at it's source position
+    // it just waits a little until it shifts into the deck
+    await TimingUtils.wait(300 + 100 * index);
+
+    if (object.active === false) {
+      // if for some rare reason the object became inactive again, don't move it
+      console.log('card became inactive again, not moving', object);
+      return;
+    }
+    sharedDeckState.activeCardIndex += 1;
+
+    if (cardRef.style.top === '600px') {
+      cardRef.style.top = '';
+      Audio.sfx('deal-card');
+    }
+
+    if (!cardRef.classList.contains('fight')) {
+      if (cardRef.style.left !== sharedDeckState.cardLeftPosition + 'px') {
+        cardRef.style.transform = '';
+        cardRef.style.opacity = 1;
+        cardRef.style.left = sharedDeckState.cardLeftPosition + 'px';
+        cardRef.style.zIndex = Z_INDEX_BASE - sharedDeckState.activeCardIndex;
+        delete cardRef.dataset.oldZindex;
+      }
+    }
+
+    if (sharedDeckState.activeCardIndex < 14) {
+      cardRef.classList.remove('out-of-queue');
+      if (sharedDeckState.activeCardDeckSize < 7) {
+        sharedDeckState.cardLeftPosition += Math.floor(CARD_WIDTH);
+      } else if (sharedDeckState.activeCardDeckSize < 10) {
+        if (sharedDeckState.activeCardIndex < 3) {
+          sharedDeckState.cardLeftPosition += Math.floor(CARD_WIDTH);
+        } else {
+          sharedDeckState.cardLeftPosition += Math.floor(
+            CARD_WIDTH - sharedDeckState.activeCardIndex * 10
+          );
+        }
+      } else {
+        let additionalLeft = Math.floor(CARD_WIDTH - (sharedDeckState.activeCardIndex + 1.5) * 15);
+        if (additionalLeft < 100) {
+          additionalLeft = 100;
+        }
+        sharedDeckState.cardLeftPosition += additionalLeft;
+      }
+    } else if (!cardRef.classList.contains('fight')) {
+      cardRef.classList.add('out-of-queue');
+    }
+  },
+
+  handleCardStates: function (cardId) {
+    const object = Props.getObject(cardId);
+    const cardRef = document.getElementById(cardId);
+
+    if (object.locked) {
+      cardRef.classList.add('locked');
+    } else {
+      cardRef.classList.remove('locked');
+    }
+    // need object prop for 'lootable', can also be used in props.js for action combos that make no sense
+    if (
+      object.looted &&
+      !(
+        object.name.startsWith('signpost') ||
+        object.name === 'fireplace' ||
+        object.name === 'bee' ||
+        object.name === 'key'
+      )
+    ) {
+      // mega bug: when bees contains no item from the beginning (amount=0), ul.item will be removed and cut/gather/search won't work
+      // maybe next line can be removed? or is--hidden can be added?
+      cardRef.querySelector('ul.items')?.remove();
+      cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
+      cardRef.classList.add('looted');
+    } else {
+      cardRef.classList.remove('looted');
+    }
+    if (object.infested) {
+      cardRef.classList.add('infested');
+    } else {
+      cardRef.classList.remove('infested');
+    }
+    if (object.zednearby) {
+      cardRef.classList.add('zombieshere');
+    } else {
+      cardRef.classList.remove('zombieshere');
+    }
+    if (object.distance > 1) {
+      cardRef.querySelector('.distance').textContent = Math.round(object.distance * 4.4) + ' min';
+      if (!object.inreach) Cooking.end(cardRef);
+    } else {
+      cardRef.querySelector('.distance').textContent = 'Here';
+    }
+  },
+
+  deactivateCard: async function (cardId) {
+    await TimingUtils.wait(300);
+
+    const object = Props.getObject(cardId);
+    const cardRef = document.getElementById(cardId);
+    if (!cardRef) return;
+
+    if (object.active) {
+      // if for some rare reason the object became active again, return
+      return;
+    }
+
+    cardRef.style.left = Math.round(parseInt(object.x) * 44.4 - 120) + 'px';
+    cardRef.style.top = '600px';
+    cardRef.style.transform = 'scale(0.4)';
+    cardRef.style.opacity = 0;
+
+    await TimingUtils.wait(300);
+
+    if (object.active) {
+      // if for some rare reason the object became active again, return
+      return;
+    }
+
+    if (object.group === 'event') {
+      object.removed = true;
+    } else {
+      cardRef.classList.add('is--hidden');
+      cardRef.style.opacity = 1;
+    }
+  },
+
+  updateCardActions: function (cardId) {
+    const object = Props.getObject(cardId);
+    const cardRef = document.getElementById(cardId);
+
+    object.actions?.forEach(action => {
+      let actionRef = cardRef.querySelector('ul.actions li.' + action.id);
+      if (action.locked) {
+        if (!object.inreach) {
+          actionRef.querySelector('.additional-locked').textContent = 'Too far away';
+        } else if (action.energy && Player.getProp('energy') + action.energy < 0) {
+          actionRef.querySelector('.additional-locked').textContent =
+            Math.abs(action.energy) + ' energy needed';
+        } else if (object.zednearby) {
+          actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
+        } else if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
+          actionRef.querySelector('.additional-locked').textContent = 'Infested';
+        } else if (action.id === 'cut-down' || action.id === 'break-door') {
+          actionRef.querySelector('.additional-locked').textContent = 'Axe needed';
+        } else if (action.id === 'unlock-door') {
+          actionRef.querySelector('.additional-locked').textContent = 'Key needed';
+        } else if (action.id === 'cut') {
+          actionRef.querySelector('.additional-locked').textContent = 'Knife needed';
+        } else if (action.id === 'smash-window') {
+          actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
+        } else if (action.id === 'fish') {
+          actionRef.querySelector('.additional-locked').textContent = 'Fishing rod needed';
+        } else if (action.id === 'equip') {
+          if (Character.numberFilledSlots() >= 2) {
+            actionRef.querySelector('.additional-locked').textContent = 'No free space';
+          } else {
+            actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
+          }
+        } else {
+          actionRef.querySelector('.additional-locked').textContent = 'Locked';
+        }
+        actionRef.classList.add('locked');
+      } else {
+        actionRef.classList.remove('locked');
+      }
+      if (
+        (action.id === 'search' || action.id === 'cut') &&
+        (object.dead === false || object.locked === true)
+      ) {
+        actionRef.classList.add('is--hidden');
+      } else {
+        actionRef.classList.remove('is--hidden');
+      }
+      // doggy card spawns new when dead, so here is the safest place to remove the actions
+      if (object.dead && object.name === 'doggy') {
+        Cards.removeAction('pet', cardRef, object);
+        Cards.removeAction('scare', cardRef, object);
+      }
+      if (action.critical) {
+        actionRef.classList.add('critical');
+        actionRef.querySelector('span.text').innerHTML =
+          '<span class="material-symbols-outlined alert">release_alert</span> ' + action.label;
+      } else {
+        actionRef.classList.remove('critical');
+        actionRef.querySelector('span.text').innerHTML = action.label;
+      }
+      if (action.id === 'chomp' && !Props.getCompanion().active) {
+        actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
+      }
+    });
+  },
+
+  removeCard: async function (cardId) {
+    const cardRef = document.getElementById(cardId);
+    if (!cardRef) return;
+
+    Map.removeObjectIconById(cardId);
+
+    cardRef.classList.add('remove');
+    await TimingUtils.wait(300);
+    cardRef.remove();
+  },
+
+  setCardDeckVerticalPosition: function () {
+    const playerPosition = Player.getPlayerPosition();
+
+    // decide position top or bottom
     if (playerPosition.y < 15) {
       cardsContainer.classList.add('cards-at-bottom');
       document.getElementById('character')?.classList.add('character-at-top');
@@ -235,210 +443,60 @@ export default {
       cardsContainer.classList.remove('cards-at-bottom');
       document.getElementById('character')?.classList.remove('character-at-top');
     }
+  },
 
-    cardDeck?.forEach(card => {
+  getActiveCardDeckSize: function (cardDeck) {
+    let activeCardDeckSize = 0;
+
+    for (const card of cardDeck || []) {
       const object = Props.getObject(card.id);
       if (!object.removed && object.active) {
         activeCardDeckSize += 1;
       }
-    });
+    }
 
-    cardDeck?.forEach((card, index) => {
-      const object = Props.getObject(card.id);
-      const cardRef = document.getElementById(card.id);
+    return activeCardDeckSize;
+  },
+
+  updateCardDeckMarkup: function (cardDeck) {
+    if (!cardDeck || cardDeck.length === 0) return;
+
+    const sharedDeckState = {
+      activeCardDeckSize: this.getActiveCardDeckSize(cardDeck),
+      activeCardIndex: 0,
+      cardLeftPosition: 0,
+    };
+
+    this.setCardDeckVerticalPosition();
+
+    for (let i = 0; i < cardDeck.length; i++) {
+      const card = cardDeck[i];
+      const cardId = card.id;
+      const object = Props.getObject(cardId);
+
       if (!object.removed) {
         if (object.active) {
-          // move new cards into place
-          window.setTimeout(
-            cardRef => {
-              activeCardIndex += 1;
-              if (cardRef.style.top === '600px') {
-                cardRef.style.top = '';
-                Audio.sfx('deal-card');
-              }
-              if (!cardRef.classList.contains('fight')) {
-                if (cardRef.style.left !== cardLeftPosition + 'px') {
-                  cardRef.style.transform = '';
-                  cardRef.style.left = cardLeftPosition + 'px';
-                  cardRef.style.zIndex = zIndexBase - activeCardIndex;
-                  delete cardRef.dataset.oldZindex;
-                }
-              }
-              if (activeCardIndex < 14) {
-                cardRef.classList.remove('out-of-queue');
-                if (activeCardDeckSize < 7) {
-                  cardLeftPosition += Math.floor(cardWidth);
-                } else if (activeCardDeckSize < 10) {
-                  if (activeCardIndex < 3) {
-                    cardLeftPosition += Math.floor(cardWidth);
-                  } else {
-                    cardLeftPosition += Math.floor(cardWidth - activeCardIndex * 10);
-                  }
-                } else {
-                  let additionalLeft = Math.floor(cardWidth - (activeCardIndex + 1.5) * 15);
-                  if (additionalLeft < 100) {
-                    additionalLeft = 100;
-                  }
-                  cardLeftPosition += additionalLeft;
-                }
-              } else if (!cardRef.classList.contains('fight')) {
-                cardRef.classList.add('out-of-queue');
-              }
-            },
-            300 + 100 * index,
-            cardRef
-          );
-
-          if (object.locked) {
-            cardRef.classList.add('locked');
-          } else {
-            cardRef.classList.remove('locked');
-          }
-          // need object prop for 'lootable', can also be used in props.js for action combos that make no sense
-          if (
-            object.looted &&
-            !(
-              object.name.startsWith('signpost') ||
-              object.name === 'fireplace' ||
-              object.name === 'bee' ||
-              object.name === 'key'
-            )
-          ) {
-            // mega bug: when bees contains no item from the beginning (amount=0), ul.item will be removed and cut/gather/search won't work
-            // maybe next line can be removed? or is--hidden can be added?
-            cardRef.querySelector('ul.items')?.remove();
-            cardRef.querySelector('div.banner')?.classList.remove('is--hidden');
-            cardRef.classList.add('looted');
-          } else {
-            cardRef.classList.remove('looted');
-          }
-          if (object.infested) {
-            cardRef.classList.add('infested');
-          } else {
-            cardRef.classList.remove('infested');
-          }
-          if (object.zednearby) {
-            cardRef.classList.add('zombieshere');
-          } else {
-            cardRef.classList.remove('zombieshere');
-          }
-          if (object.distance > 1) {
-            cardRef.querySelector('.distance').textContent =
-              Math.round(object.distance * 4.4) + ' min';
-            if (!object.inreach) Cooking.end(cardRef);
-          } else {
-            cardRef.querySelector('.distance').textContent = 'Here';
-          }
+          const cardRef = document.getElementById(cardId);
           cardRef.classList.remove('is--hidden');
+          // move new cards into place
+          this.moveNewCardIntoPlace(cardId, i, sharedDeckState);
+          // handle several card states like locked, looted, infested, distance
+          this.handleCardStates(cardId);
         }
 
         // deactivate cards
         if (!object.active) {
-          window.setTimeout(
-            cardId => {
-              const object = Props.getObject(cardId);
-              const cardRef = document.getElementById(cardId);
-
-              cardRef.style.left = Math.round(parseInt(object.x) * 44.4 - 120) + 'px';
-              cardRef.style.top = '600px';
-              cardRef.style.transform = 'scale(0.4)';
-              cardRef.style.opacity = 0;
-
-              window.setTimeout(
-                (cardRef, object) => {
-                  if (object.group === 'event') {
-                    object.removed = true;
-                  } else {
-                    cardRef.classList.add('is--hidden');
-                    cardRef.style.opacity = 1;
-                  }
-                },
-                300,
-                cardRef,
-                object
-              );
-            },
-            300,
-            card.id
-          );
+          this.deactivateCard(cardId, i, sharedDeckState);
         }
       }
 
-      object.actions?.forEach(action => {
-        let actionRef = cardRef.querySelector('ul.actions li.' + action.id);
-        if (action.locked) {
-          if (!object.inreach) {
-            actionRef.querySelector('.additional-locked').textContent = 'Too far away';
-          } else if (action.energy && Player.getProp('energy') + action.energy < 0) {
-            actionRef.querySelector('.additional-locked').textContent =
-              Math.abs(action.energy) + ' energy needed';
-          } else if (object.zednearby) {
-            actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
-          } else if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
-            actionRef.querySelector('.additional-locked').textContent = 'Infested';
-          } else if (action.id === 'cut-down' || action.id === 'break-door') {
-            actionRef.querySelector('.additional-locked').textContent = 'Axe needed';
-          } else if (action.id === 'unlock-door') {
-            actionRef.querySelector('.additional-locked').textContent = 'Key needed';
-          } else if (action.id === 'cut') {
-            actionRef.querySelector('.additional-locked').textContent = 'Knife needed';
-          } else if (action.id === 'smash-window') {
-            actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
-          } else if (action.id === 'fish') {
-            actionRef.querySelector('.additional-locked').textContent = 'Fishing rod needed';
-          } else if (action.id === 'equip') {
-            if (Character.numberFilledSlots() >= 2) {
-              actionRef.querySelector('.additional-locked').textContent = 'No free space';
-            } else {
-              actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
-            }
-          } else {
-            actionRef.querySelector('.additional-locked').textContent = 'Locked';
-          }
-          actionRef.classList.add('locked');
-        } else {
-          actionRef.classList.remove('locked');
-        }
-        if (
-          (action.id === 'search' || action.id === 'cut') &&
-          (object.dead === false || object.locked === true)
-        ) {
-          actionRef.classList.add('is--hidden');
-        } else {
-          actionRef.classList.remove('is--hidden');
-        }
-        // doggy card spawns new when dead, so here is the safest place to remove the actions
-        if (object.dead && object.name === 'doggy') {
-          Cards.removeAction('pet', cardRef, object);
-          Cards.removeAction('scare', cardRef, object);
-        }
-        if (action.critical) {
-          actionRef.classList.add('critical');
-          actionRef.querySelector('span.text').innerHTML =
-            '<span class="material-symbols-outlined alert">release_alert</span> ' + action.label;
-        } else {
-          actionRef.classList.remove('critical');
-          actionRef.querySelector('span.text').innerHTML = action.label;
-        }
-        if (action.id === 'chomp' && !Props.getCompanion().active) {
-          actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
-        }
-      });
+      // update actions
+      this.updateCardActions(cardId);
 
       if (object.removed) {
-        if (cardRef) {
-          cardRef.classList.add('remove');
-          Map.removeObjectIconById(card.id);
-          window.setTimeout(
-            removeCard => {
-              removeCard.remove();
-            },
-            300,
-            cardRef
-          );
-        }
+        this.removeCard(cardId);
       }
-    });
+    }
   },
 
   showActionFeedback: function (cardId, actionLabel) {
