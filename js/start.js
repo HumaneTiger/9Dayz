@@ -62,21 +62,23 @@ export default {
       document.querySelector('.screen__menu .button.start-game').classList.remove('not--available');
       inventoryPresetsContainer.innerHTML = '';
       for (let item in inventoryPresets) {
-        inventoryPresetsContainer.innerHTML +=
+        inventoryPresetsContainer.insertAdjacentHTML(
+          'beforeend',
           '<li class="filled"><span class="amount">' +
-          inventoryPresets[item] +
-          '</span><img class="item" src="img/items/' +
-          item +
-          '.PNG"></li>';
+            inventoryPresets[item] +
+            '</span><img class="item" src="img/items/' +
+            item +
+            '.PNG"></li>'
+        );
       }
       for (let i = 0; i < 6 - Object.keys(inventoryPresets).length; i += 1) {
-        inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
+        inventoryPresetsContainer.insertAdjacentHTML('beforeend', '<li class="empty"></li>');
       }
     } else {
       document.querySelector('.screen__menu .button.start-game').classList.add('not--available');
       inventoryPresetsContainer.innerHTML = '';
       for (let i = 0; i < 6; i += 1) {
-        inventoryPresetsContainer.innerHTML += '<li class="empty"></li>';
+        inventoryPresetsContainer.insertAdjacentHTML('beforeend', '<li class="empty"></li>');
       }
     }
   },
@@ -349,8 +351,12 @@ export default {
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
-    document.querySelector('#startscreen .development-build').innerHTML +=
-      ' - <span class="start-test-playback">Start Test Playback</span>';
+    document
+      .querySelector('#startscreen .development-build')
+      .insertAdjacentHTML(
+        'beforeend',
+        ' - <span class="start-test-playback">Start Test Playback</span>'
+      );
   },
 
   switchToScreen3: function () {
