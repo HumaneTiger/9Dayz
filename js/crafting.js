@@ -170,6 +170,9 @@ export default {
               craftContainer
                 .querySelector('.nope.straw-wheet.additional')
                 ?.classList.remove('is--hidden');
+              craftContainer
+                .querySelector('.button-craft[data-item="' + recipe + '"]')
+                ?.classList.remove('active');
             } else {
               craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
               craftContainer
