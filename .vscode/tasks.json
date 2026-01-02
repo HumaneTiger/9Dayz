@@ -4,13 +4,11 @@
     {
       "label": "Run tests",
       "type": "shell",
-      "command": "powershell",
+      "command": "node",
       "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "./run-tests.ps1"
+        "../../../puppeteer-runner/9dayz-runner.js"
       ],
+      "group": "test",
       "problemMatcher": []
     }
   ]
