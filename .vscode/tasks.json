@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run headless tests",
+      "type": "shell",
+      "command": "./run-tests.bat",
+      "problemMatcher": []
+    }
+  ]
+}
