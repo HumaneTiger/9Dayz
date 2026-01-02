@@ -53,6 +53,10 @@ export default {
         description: 'Recorded test run 2',
         source: 'file',
       },
+      'test-run-3': {
+        description: 'Recorded test run 2', // recyle for a test
+        source: 'file',
+      },
     };
 
     return testData[testName] || null;
@@ -203,12 +207,10 @@ export default {
   },
 
   triggerServerLog: function (message, type = 'info') {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('startPlayback')) {
+    if (Props.getGameProp('testPlayback')) {
+      const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : '';
       if (!loadedTestName || !message) return;
-      fetch(
-        `/__result__?test=${loadedTestName}&message=${encodeURIComponent(message)}&status=${type}`
-      );
+      console.log(`${icon} [${loadedTestName}] ${message}`);
     }
   },
 

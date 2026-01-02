@@ -83,6 +83,7 @@ var game = {
   firstDeadAnimal: false,
   firstInventoryOpen: false,
   firstCompanion: false,
+  testPlayback: false,
   timeConfig: {
     startHour: 7,
     ticksPerHour: 6,

@@ -355,7 +355,7 @@ export default {
           case 'fullscreen': {
             // enter/exit fullscreen mode
             const fullscreenActive = document.fullscreenElement;
-            if (document.fullscreenEnabled) {
+            if (document.fullscreenEnabled && !Props.getGameProp('testPlayback')) {
               if (!fullscreenActive) {
                 document.documentElement.requestFullscreen();
               } else {

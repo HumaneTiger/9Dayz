@@ -297,7 +297,7 @@ export default {
       document.getElementById('character')?.classList.add('touchcontrols');
     }
     if (document.getElementById('fullscreen')?.classList.contains('on')) {
-      if (document.fullscreenEnabled) {
+      if (document.fullscreenEnabled && !Props.getGameProp('testPlayback')) {
         document.documentElement.requestFullscreen();
       }
     }
