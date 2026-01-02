@@ -2,9 +2,15 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run headless tests",
+      "label": "Run tests",
       "type": "shell",
-      "command": "./run-tests.bat",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "./run-tests.ps1"
+      ],
       "problemMatcher": []
     }
   ]
