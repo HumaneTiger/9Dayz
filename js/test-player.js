@@ -8,6 +8,7 @@ let testTickInterval = null; // Interval for test ticks
 let playbackTickOffset = 0; // Additional delay for slower playback
 let jsErrors = [];
 let logger = null; // UI logger function
+let loadedTestName = null; // Name of the currently loaded test
 let loadedTestData = null; // Currently loaded test data
 
 export default {
@@ -46,6 +47,10 @@ export default {
       },
       'test-run-1': {
         description: 'Recorded test run 1',
+        source: 'file',
+      },
+      'test-run-2': {
+        description: 'Recorded test run 2',
         source: 'file',
       },
     };
@@ -106,6 +111,7 @@ export default {
         return;
       }
 
+      loadedTestName = testName;
       loadedTestData = testData;
       const testCheckpoint = JSON.parse(testData.checkpoint);
 
@@ -136,8 +142,8 @@ export default {
       playbackTickOffset = tickOffset;
       currentCommandIndex = 0;
       jsErrors = [];
-
-      this.log(`Starting playback with ${commandQueue.length} commands`);
+      this.log(`Starting playback ... `, 'info', true);
+      this.log(`Running ${commandQueue.length} commands`);
       this.log(`Tick offset: ${tickOffset}`);
 
       // Start playback
@@ -176,12 +182,12 @@ export default {
     this.log('Playback stopped', 'info');
 
     if (jsErrors.length > 0) {
-      this.log(`Errors encountered: ${jsErrors.length}`, 'error');
+      this.log(`Errors encountered: ${jsErrors.length}`, 'error', true);
       console.error('Errors:', jsErrors);
     }
 
     if (currentCommandIndex >= commandQueue.length) {
-      this.log('All commands executed successfully!', 'success');
+      this.log(`Playback completed.`, 'success', true);
     } else {
       this.log(`Stopped at command ${currentCommandIndex}/${commandQueue.length}`, 'warning');
     }
@@ -196,16 +202,29 @@ export default {
       .classList.add('is--hidden');
   },
 
+  triggerServerLog: function (message, type = 'info') {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('startPlayback')) {
+      if (!loadedTestName || !message) return;
+      fetch(
+        `/__result__?test=${loadedTestName}&message=${encodeURIComponent(message)}&status=${type}`
+      );
+    }
+  },
+
   /**
    * Log message (to UI if logger provided, otherwise console)
    */
-  log: function (message, type = 'info') {
+  log: function (message, type = 'info', triggerServerLog = false) {
     if (logger) {
       logger(message, type);
     } else {
       const icon =
         type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '▶️';
       console.log(`${icon} ${message}`);
+    }
+    if (triggerServerLog) {
+      this.triggerServerLog(message, type);
     }
   },
 

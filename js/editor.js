@@ -268,21 +268,22 @@ export default {
   /**
    * Run test playback
    */
-  startPlayback: function () {
+  startPlayback: function (testName) {
     cardConsoleContainer.classList.remove('out');
     cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
     cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
     this.clearTestFeedback();
 
     try {
-      const testName = Props.getGameProp('local') ? 'test-local' : 'test-run-1';
-      TestPlayer.loadTestData(testName, (testName, testCheckpoint) => {
+      const testNameToUse = testName || (Props.getGameProp('local') ? 'test-local' : 'test-run-1');
+      TestPlayer.loadTestData(testNameToUse, (testName, testCheckpoint) => {
         this.logTest(`Starting test playback for <strong>${testName}</strong>...`);
         Start.restoreCheckpoint(testCheckpoint);
         Start.prepareGameStart();
         Start.startReal();
       })
         .then(() => {
+          TestPlayer.triggerServerLog(`Test playback started`, 'info');
           TestPlayer.startPlayback(0, this.logTest.bind(this));
           const feedback = cardConsoleContainer.querySelector('.test-feedback');
           feedback.classList.add('is--playing');

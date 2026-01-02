@@ -60,6 +60,13 @@ import TestPlayer from './test-player.js';
       'handleKeydown',
       Player.handleKeydown.bind(Player)
     );
+
+    // parse URL query to decide whether to start test playback
+    const urlParams = new URLSearchParams(window.location.search);
+    const testName = urlParams.get('startPlayback');
+    if (testName) {
+      Editor.startPlayback(testName);
+    }
   }
 
   Start.init();
