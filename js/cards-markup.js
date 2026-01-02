@@ -234,7 +234,6 @@ export default {
 
     if (object.active === false) {
       // if for some rare reason the object became inactive again, don't move it
-      console.log('card became inactive again, not moving', object);
       return;
     }
     sharedDeckState.activeCardIndex += 1;
@@ -282,11 +281,8 @@ export default {
     const object = Props.getObject(cardId);
     const cardRef = document.getElementById(cardId);
 
-    if (object.locked) {
-      cardRef.classList.add('locked');
-    } else {
-      cardRef.classList.remove('locked');
-    }
+    cardRef.classList.toggle('locked', object.locked);
+
     // need object prop for 'lootable', can also be used in props.js for action combos that make no sense
     if (
       object.looted &&
@@ -305,16 +301,10 @@ export default {
     } else {
       cardRef.classList.remove('looted');
     }
-    if (object.infested) {
-      cardRef.classList.add('infested');
-    } else {
-      cardRef.classList.remove('infested');
-    }
-    if (object.zednearby) {
-      cardRef.classList.add('zombieshere');
-    } else {
-      cardRef.classList.remove('zombieshere');
-    }
+
+    cardRef.classList.toggle('infested', object.infested);
+    cardRef.classList.toggle('zombieshere', object.zednearby);
+
     if (object.distance > 1) {
       cardRef.querySelector('.distance').textContent = Math.round(object.distance * 4.4) + ' min';
       if (!object.inreach) Cooking.end(cardRef);
