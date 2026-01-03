@@ -311,14 +311,6 @@ export default {
   startReal: function () {
     document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
-    document
-      .getElementById('card-console')
-      .querySelector('.start-playback')
-      .classList.add('is--hidden');
-    document
-      .getElementById('card-console')
-      .querySelector('.start-recording')
-      .classList.remove('is--hidden');
     this.startGame();
   },
 

@@ -41,26 +41,26 @@ export default {
   getTestData: function (testName) {
     const testData = {
       'test-local': {
-        description: 'Latest recorded test from local storage',
+        description: 'Latest recorded test',
         source: 'localStorage',
         commands: localStorage.getItem('recordedCommands') || '[]',
         checkpoint: localStorage.getItem('testCheckpoint') || null,
       },
       'test-run-1': {
-        description: 'Recorded test run 1',
+        description: 'broken',
         source: 'file',
       },
       'test-run-2': {
-        description: 'Recorded test run 2',
+        description: 'Very short one',
         source: 'file',
       },
       'test-run-3': {
-        description: 'Recorded test run 2', // recyle for a test
+        description: 'First 3 days', // recyle for a test
         source: 'file',
       },
     };
 
-    return testData[testName] || null;
+    return testName ? testData[testName] || null : testData;
   },
 
   /**
@@ -147,7 +147,7 @@ export default {
       playbackTickOffset = tickOffset;
       currentCommandIndex = 0;
       jsErrors = [];
-      this.log(`Starting playback ... `, 'info', true);
+      this.log(`Starting playback with ${commandQueue.length} commands ... `, 'info', true);
       this.log(`Running ${commandQueue.length} commands`);
       this.log(`Tick offset: ${tickOffset}`);
 
@@ -197,15 +197,6 @@ export default {
     } else {
       this.log(`Stopped at command ${currentCommandIndex}/${commandQueue.length}`, 'warning');
     }
-
-    document
-      .getElementById('card-console')
-      .querySelector('.start-playback')
-      .classList.add('is--hidden');
-    document
-      .getElementById('card-console')
-      .querySelector('.stop-playback')
-      .classList.add('is--hidden');
   },
 
   triggerServerLog: function (message, type = 'info') {

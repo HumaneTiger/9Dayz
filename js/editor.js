@@ -27,6 +27,7 @@ export default {
       'place-object',
       'beam-character',
       'shift-time',
+      'start-playback',
       'stop-playback',
       'start-recording',
       'stop-recording',
@@ -129,21 +130,19 @@ export default {
             break;
           }
 
+          case 'start-playback':
+            this.handleStartPlaybackButton();
+            break;
+
           case 'stop-playback':
-            cardConsoleContainer.querySelector('.stop-playback').classList.add('is--hidden');
-            cardConsoleContainer.querySelector('.start-recording').classList.remove('is--hidden');
             this.stopPlayback();
             break;
 
           case 'start-recording':
-            cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
-            cardConsoleContainer.querySelector('.stop-recording').classList.remove('is--hidden');
             this.startRecording();
             break;
 
           case 'stop-recording':
-            cardConsoleContainer.querySelector('.start-recording').classList.remove('is--hidden');
-            cardConsoleContainer.querySelector('.stop-recording').classList.add('is--hidden');
             this.stopRecording();
             break;
         }
@@ -196,6 +195,23 @@ export default {
       opt.value = building;
       opt.innerHTML = Items.capitalizeFirstLetter(building.replaceAll('-', ' '));
       selectObject.appendChild(opt);
+    }
+
+    // Populate test select dropdown
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const runningTestName = urlParams.get('startPlayback');
+
+    const selectTest = cardConsoleContainer.querySelector('.select-test');
+    const testData = TestPlayer.getTestData();
+    console.log(selectTest, testData);
+    for (const testName in testData) {
+      const test = testData[testName];
+      let opt = document.createElement('option');
+      opt.value = testName;
+      opt.selected = testName === runningTestName;
+      opt.innerHTML = `${testName} - ${test.description}`;
+      selectTest.appendChild(opt);
     }
   },
 
@@ -265,13 +281,19 @@ export default {
     }
   },
 
+  handleStartPlaybackButton: function () {
+    const selectedTest = cardConsoleContainer.querySelector('.select-test').value;
+    document.location.href = `?startPlayback=${selectedTest}`;
+  },
+
   /**
    * Run test playback
    */
   startPlayback: function (testName) {
-    cardConsoleContainer.classList.remove('out');
     cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
     cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
+    console.log('Starting test playback...');
+    cardConsoleContainer.classList.remove('out');
     this.clearTestFeedback();
 
     try {
@@ -302,6 +324,8 @@ export default {
    * Stop test playback
    */
   stopPlayback: function () {
+    cardConsoleContainer.querySelector('.stop-playback').classList.add('is--hidden');
+    cardConsoleContainer.querySelector('.start-recording').classList.remove('is--hidden');
     TestPlayer.stopPlayback();
     this.logTest('Test playback stopped', 'warning');
   },
@@ -310,6 +334,8 @@ export default {
    * Start test recording
    */
   startRecording: function () {
+    cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
+    cardConsoleContainer.querySelector('.stop-recording').classList.remove('is--hidden');
     this.clearTestFeedback();
     TestRecorder.startRecording(this.logTest.bind(this));
     this.logTest('Recording started', 'success');
@@ -319,6 +345,8 @@ export default {
    * Stop test recording
    */
   stopRecording: function () {
+    cardConsoleContainer.querySelector('.stop-recording').classList.add('is--hidden');
+    cardConsoleContainer.querySelector('.start-recording').classList.remove('is--hidden');
     TestRecorder.stopRecording();
     const commands = TestRecorder.getRecordedCommands();
     this.logTest(`Recording stopped. Captured ${commands.length} commands`, 'success');
