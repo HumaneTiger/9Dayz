@@ -59,6 +59,8 @@ var game = {
   gameSeed: RngUtils.generateGameSeed(),
   mode: 'real',
   character: 'everyman',
+  isWalking: false,
+  isMoveLocked: false,
   startMode: 1,
   startDay: 1,
   timeMode: 'day',

@@ -10,6 +10,7 @@ let jsErrors = [];
 let logger = null; // UI logger function
 let loadedTestName = null; // Name of the currently loaded test
 let loadedTestData = null; // Currently loaded test data
+let deferredMovement = null; // Deferred movement input (retry on next tick when isWalking = false)
 
 export default {
   /**
@@ -176,6 +177,7 @@ export default {
     if (!isPlaying) return;
 
     isPlaying = false;
+    deferredMovement = null; // Clear any deferred movement
 
     // Stop test tick counter
     if (testTickInterval) {
@@ -234,6 +236,18 @@ export default {
    * Check if any commands should execute at current tick
    */
   checkAndExecuteCommands: function () {
+    // First, try to execute any deferred movement (when player is no longer walking)
+    if (deferredMovement && !Props.getGameProp('isWalking')) {
+      try {
+        this.pressKey(deferredMovement.key);
+        deferredMovement = null;
+      } catch (e) {
+        this.log(`Failed to execute deferred movement: ${e.message}`, 'error');
+        this.stopPlayback();
+        return;
+      }
+    }
+
     // Execute all commands that should fire at this tick
     while (
       currentCommandIndex < commandQueue.length &&
@@ -379,9 +393,32 @@ export default {
 
   /**
    * Simulate a keydown event
+   * For movement inputs: if player is currently walking, defer the input to next tick
    * @param {string} key - The key to press (e.g., 'w', 'ArrowUp')
    */
   pressKey: function (key) {
+    // Check if this is a movement key and player is currently walking
+    const movementKeys = [
+      'w',
+      'W',
+      'a',
+      'A',
+      's',
+      'S',
+      'd',
+      'D',
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+    ];
+
+    if (movementKeys.includes(key) && Props.getGameProp('isWalking')) {
+      // Defer this movement input to retry on next tick when player is no longer walking
+      deferredMovement = { key: key };
+      return;
+    }
+
     // Create and dispatch synthetic keydown event
     const keyEvent = new KeyboardEvent('keydown', {
       key: key,

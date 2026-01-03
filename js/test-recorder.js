@@ -541,11 +541,15 @@ export default {
    */
   translatePlayerKeydown: function (moduleName, handlerName, event) {
     if (event && event.key) {
-      return {
-        module: 'Player',
-        type: 'move-player',
-        key: event.key,
-      };
+      // Only record movement inputs when player is not already walking
+      // and movement is not locked by the game
+      if (!Props.getGameProp('isWalking') && !Props.getGameProp('isMoveLocked')) {
+        return {
+          module: 'Player',
+          type: 'move-player',
+          key: event.key,
+        };
+      }
     }
     return null;
   },

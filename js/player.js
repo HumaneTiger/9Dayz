@@ -10,8 +10,6 @@ const playerProps = Props.getPlayerProps();
 const playerPosition = Props.getGameProp('playerPosition');
 
 let player = document.getElementById('player');
-let moveLocked = false;
-let moving = false;
 
 export default {
   init: function () {
@@ -244,7 +242,7 @@ export default {
   },
 
   lockMovement: function (moveable) {
-    moveLocked = moveable;
+    Props.setGameProp('isMoveLocked', moveable);
   },
 
   initMovement: function () {
@@ -258,7 +256,11 @@ export default {
     const posXBefore = playerPosition.x,
       posYBefore = playerPosition.y;
 
-    if (!moving && !moveLocked && !Props.getGameProp('gamePaused')) {
+    if (
+      !Props.getGameProp('isWalking') &&
+      !Props.getGameProp('isMoveLocked') &&
+      !Props.getGameProp('gamePaused')
+    ) {
       if (ev.key && (ev.key.toLowerCase() === 'w' || ev.key === 'ArrowUp')) {
         ev.preventDefault();
         if (allPaths[playerPosition.x][playerPosition.y - 1]) {
@@ -338,9 +340,9 @@ export default {
       }
       if (posXBefore !== playerPosition.x || posYBefore !== playerPosition.y) {
         this.updatePlayer();
-        moving = true;
+        Props.setGameProp('isWalking', true);
         window.setTimeout(function () {
-          moving = false;
+          Props.setGameProp('isWalking', false);
         }, 1000);
       }
     }
