@@ -47,7 +47,7 @@ export default {
         checkpoint: localStorage.getItem('testCheckpoint') || null,
       },
       'test-run-1': {
-        description: 'broken',
+        description: 'Old Villa raid',
         source: 'file',
       },
       'test-run-2': {
@@ -195,7 +195,7 @@ export default {
     if (currentCommandIndex >= commandQueue.length) {
       this.log(`Playback completed.`, 'success', true);
     } else {
-      this.log(`Stopped at command ${currentCommandIndex}/${commandQueue.length}`, 'warning');
+      this.log(`Stopped at command ${currentCommandIndex}/${commandQueue.length}`, 'warning', true);
     }
   },
 
@@ -257,9 +257,9 @@ export default {
         this.executeCommand(command);
         currentCommandIndex++;
       } catch (e) {
-        this.log(`Command execution failed: ${e.message}`, 'error');
-        this.log(`Command: ${command.type}`, 'error');
-        this.log(`Selector: ${command.selector}`, 'error');
+        this.log(`Command execution failed: ${e.message}`, 'error', true);
+        this.log(`Command: ${command.type}`, 'error', true);
+        this.log(`Selector: ${command.selector}`, 'error', true);
         console.error('Full error:', e);
         jsErrors.push({
           message: e.message,
