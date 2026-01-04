@@ -272,7 +272,6 @@ export default {
   },
 
   getDragElement: function () {
-    console.log(dragEl.dataset.item, dragEl.dataset.index);
     return dragEl;
   },
 

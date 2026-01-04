@@ -204,7 +204,7 @@ export default {
 
     const selectTest = cardConsoleContainer.querySelector('.select-test');
     const testData = TestPlayer.getTestData();
-    console.log(selectTest, testData);
+
     for (const testName in testData) {
       const test = testData[testName];
       let opt = document.createElement('option');
@@ -292,7 +292,7 @@ export default {
   startPlayback: function (testName) {
     cardConsoleContainer.querySelector('.stop-playback').classList.remove('is--hidden');
     cardConsoleContainer.querySelector('.start-recording').classList.add('is--hidden');
-    console.log('Starting test playback...');
+
     cardConsoleContainer.classList.remove('out');
     this.clearTestFeedback();
 
