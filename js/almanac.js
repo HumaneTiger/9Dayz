@@ -98,6 +98,10 @@ const almanacContent = {
     motive: './img/characters/hero.png',
     markup: document.querySelector('div[data-character="craftsmaniac"]').innerHTML,
   },
+  furbuddy: {
+    motive: './img/characters/hero.png',
+    markup: document.querySelector('div[data-character="furbuddy"]').innerHTML,
+  },
 };
 
 export default {
