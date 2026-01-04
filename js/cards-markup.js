@@ -281,7 +281,11 @@ export default {
     const object = Props.getObject(cardId);
     const cardRef = document.getElementById(cardId);
 
-    cardRef.classList.toggle('locked', object.locked);
+    if (object.locked) {
+      cardRef.classList.add('locked');
+    } else {
+      cardRef.classList.remove('locked');
+    }
 
     // need object prop for 'lootable', can also be used in props.js for action combos that make no sense
     if (
