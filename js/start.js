@@ -8,7 +8,6 @@ import { default as Ui } from './ui.js';
 import { default as Checkpoint } from './checkpoint.js';
 import { default as Character } from './character.js';
 import { default as Cooking } from './cooking.js';
-import { default as Editor } from './editor.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -272,12 +271,6 @@ export default {
       if (href && href !== '#') {
         window.open(href, '_blank');
       }
-
-      // handle test suite
-      const testPlayback = target.closest('.start-test-playback');
-      if (testPlayback) {
-        Editor.startPlayback();
-      }
     }
   },
 
@@ -348,12 +341,6 @@ export default {
     document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
     document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
-    document
-      .querySelector('#startscreen .development-build')
-      .insertAdjacentHTML(
-        'beforeend',
-        ' - <span class="start-test-playback">Start Test Playback</span>'
-      );
   },
 
   switchToScreen3: function () {
