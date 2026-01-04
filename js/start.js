@@ -122,6 +122,7 @@ export default {
     // generate all buildings and zeds
     Props.setupAllBuildings();
     Props.setupAllZeds();
+    Tutorial.setupAllEvents();
 
     Player.setPlayerPosition(
       Props.getGameProp('playerPosition').x,
@@ -314,11 +315,11 @@ export default {
   },
 
   startGame: async function () {
-    Tutorial.setupAllEvents();
     Player.findAndHandleObjects();
     Props.pauseGame(false);
     Audio.playAmbientLoop();
     Ui.showMapBorder();
+    Ui.showUI();
     await this.fadeIntoGame();
     Ui.showNewDay(0, true);
   },

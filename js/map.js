@@ -49,7 +49,7 @@ export default {
       const iconTop = Math.round(y * 44.4 + 3);
       const areaTop = Math.round(y * 44.4 + 8);
 
-      if (!object.discovered) {
+      if (!object.discovered && !object.removed) {
         if (group === 'building') {
           buidingsContainer.insertAdjacentHTML(
             'beforeend',

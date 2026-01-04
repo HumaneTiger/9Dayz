@@ -38,7 +38,7 @@ export default {
       objectIdsAt: Props.getAllObjectIdsAt(),
       objectsIdCounter:
         /* TESTING NEEDED! when it is saved it seems to be too far ahead > causes different card ids when recording vs. running tests */
-        Props.getObjectsIdCounter() - 2,
+        Props.getObjectsIdCounter(),
       zedCounter: Props.getZedCounter(),
       // Game seed
       gameSeed: Props.getGameProp('gameSeed'),

@@ -804,6 +804,30 @@ export default {
     }
   },
 
+  setEventAt: function (x, y, title, text) {
+    const currentObjectsIdCounter = this.addObjectIdAt(x, y);
+    this.setObject(currentObjectsIdCounter, {
+      x: x,
+      y: y,
+      name: 'event',
+      title: title,
+      type: undefined,
+      group: 'event',
+      text: text,
+      actions: [
+        {
+          id: 'got-it',
+          label: 'Got it!',
+        },
+      ],
+      items: [],
+      discovered: false,
+      removed: false,
+    });
+
+    return currentObjectsIdCounter;
+  },
+
   spawnCreaturesAt: function (x, y, creaturesList) {
     let spawnedCreatureIds = [];
     creaturesList.forEach(creature => {

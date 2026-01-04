@@ -88,53 +88,20 @@ export default {
   setupAllEvents: function () {
     for (var event in events) {
       if (Props.getGameProp('tutorial') || events[event].showAlways) {
-        const x = event.split('-')[0];
-        const y = event.split('-')[1];
-        const currentObjectsIdCounter = Props.addObjectIdAt(x, y);
-        Props.setObject(currentObjectsIdCounter, {
-          x: x,
-          y: y,
-          name: 'event',
-          title: events[event].title,
-          type: undefined,
-          group: 'event',
-          text: events[event].text,
-          actions: [
-            {
-              id: 'got-it',
-              label: 'Got it!',
-            },
-          ],
-          items: [],
-          active: true,
-          discovered: false,
-          removed: false,
-        });
+        const x = parseInt(event.split('-')[0]);
+        const y = parseInt(event.split('-')[1]);
+        Props.setEventAt(x, y, events[event].title, events[event].text);
       }
     }
   },
 
   setupSpecialEvent: function (event, x, y) {
-    const currentObjectsIdCounter = Props.addObjectIdAt(x, y);
-    Props.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: 'event',
-      title: specialEvents[event].title,
-      type: undefined,
-      group: 'event',
-      text: specialEvents[event].text,
-      actions: [
-        {
-          id: 'got-it',
-          label: 'Got it!',
-        },
-      ],
-      items: [],
-      active: true,
-      discovered: false,
-      removed: false,
-    });
+    const currentObjectsIdCounter = Props.setEventAt(
+      x,
+      y,
+      specialEvents[event].title,
+      specialEvents[event].text
+    );
     return currentObjectsIdCounter;
   },
 
