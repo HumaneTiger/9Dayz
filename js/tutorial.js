@@ -215,7 +215,7 @@ export default {
             specialEventObjectIds.push(objectId);
           }
         }
-        if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
+        /*if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
           Props.setGameProp('firstZedNearby', true);
           let objectId = this.setupSpecialEvent(
             'hostiles-nearby',
@@ -223,7 +223,7 @@ export default {
             playerPosition.y
           );
           specialEventObjectIds.push(objectId);
-        }
+        }*/
         if (
           object.dead &&
           (object.group === 'animal' || object.type === 'rat') &&

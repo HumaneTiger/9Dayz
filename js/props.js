@@ -693,7 +693,7 @@ export default {
       const lootItemList = this.createBuildingLootItemList(buildingName, forceLootItemList);
 
       // Random locked state
-      const locked = Math.random() * props.locked > 1 ? true : false;
+      const locked = props.locked === 11 ? true : Math.random() * props.locked > 1 ? true : false;
 
       // Pre-generate random key if the building is locked
       let hasKey = false;

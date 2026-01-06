@@ -340,8 +340,8 @@ export default {
   },
 
   renderCardDeck: function () {
-    this.calculateCardDeckProperties();
     this.addSpecialEventCards();
+    this.calculateCardDeckProperties();
     cardDeck.sort(this.compare);
 
     cardDeck?.forEach(card => {
@@ -394,7 +394,6 @@ export default {
     /* candidates for event bus */
     if (Props.getGameProp('tutorial')) {
       const specialEventObjectIds = Tutorial.checkForSpecialEvents(cardDeck);
-
       specialEventObjectIds?.forEach(objectId => {
         let object = Props.getObject(objectId);
         if (!object.discovered && !object.removed) {
