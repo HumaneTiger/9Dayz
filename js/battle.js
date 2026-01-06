@@ -9,6 +9,7 @@ import Crafting from './crafting.js';
 import Character from './character.js';
 import ItemUtils from '../data/utils/item-utils.js';
 import RngUtils from './utils/rng-utils.js';
+import Tutorial from './tutorial.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -239,11 +240,9 @@ export default {
       this.endBattle();
     }
 
-    // temp solution
     if (!Props.getGameProp('firstFight') && Props.getGameProp('tutorial')) {
       Props.setGameProp('firstFight', true);
-      Audio.sfx('shuffle-paper');
-      document.getElementById('tutorial-fights').classList.remove('is--hidden');
+      Tutorial.triggerBattleTutorial();
     }
   },
 

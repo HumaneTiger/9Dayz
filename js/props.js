@@ -68,6 +68,7 @@ var game = {
   scaleFactor: 0,
   tutorial: false,
   battle: false,
+  tutorialBattle: false,
   gamePaused: true,
   local: location.href.startsWith('http://127.0.0.1'),
   playerPosition: { x: 18, y: 44 },
@@ -509,6 +510,7 @@ export default {
         18,
         44,
         ['crate'],
+        false,
         LootUtils.forceLootItemList(['drink-5', 'bread-1', 'wooden-club'])
       );
       this.setupWeapon(18, 44, 'axe', {
@@ -516,6 +518,7 @@ export default {
         defense: this.getWeaponProps('axe').defense / 2,
         durability: this.getWeaponProps('axe').durability / 2,
       });
+      this.setZedAt(18, 42, 1, 3, 2); // weak zed for tutorial
     }
 
     // Setup all regular buildings from imported JSON
@@ -751,15 +754,15 @@ export default {
     });
   },
 
-  setZedAt: function (x, y, amount) {
+  setZedAt: function (x, y, amount, forceAttack = false, forceDefense = false) {
     for (let i = 0; i < amount; i += 1) {
       const distance = Math.sqrt(
         Math.pow(this.getGameProp('playerPosition').x - x, 2) +
           Math.pow(this.getGameProp('playerPosition').y - y, 2)
       );
 
-      const attack = Math.floor(Math.random() * 6 + Math.min(distance / 5, 9) + 1); // increase attack with distance
-      const defense = Math.floor(Math.random() * 9 + Math.min(distance / 4, 9)); // increase defense with distance
+      const attack = forceAttack || Math.floor(Math.random() * 6 + Math.min(distance / 5, 9) + 1); // increase attack with distance
+      const defense = forceDefense || Math.floor(Math.random() * 9 + Math.min(distance / 4, 9)); // increase defense with distance
       const lootItemList = LootUtils.createLootItemList(
         3,
         [

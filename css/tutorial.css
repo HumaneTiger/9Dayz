@@ -1,0 +1,67 @@
+#tutorial-battle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+
+  img.tutorial-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  p.hint-continue {
+    position: absolute;
+    bottom: 80px;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: Averia Serif;
+    font-weight: 400;
+    color: #ffffff;
+    text-shadow: 0 0 10px #000000;
+    z-index: 2;
+
+    &.to--left {
+      left: 25%;
+    }
+  }
+
+  img.tutorial-step.is--active {
+    opacity: 1;
+  }
+
+  img.tutorial-notes-headline {
+    position: absolute;
+    top: 40px;
+    right: 0;
+  }
+
+  img.tutorial-notes {
+    position: absolute;
+    right: 40px;
+    transition: right 0.5s ease-out;
+  }
+
+  img.tutorial-notes.is--out {
+    right: -300px !important;
+  }
+
+  img.tutorial-note-1 {
+    top: 120px;
+  }
+  img.tutorial-note-2 {
+    top: 370px;
+  }
+  img.tutorial-note-3 {
+    top: 650px;
+  }
+  img.tutorial-note-4 {
+    top: 920px;
+  }
+}

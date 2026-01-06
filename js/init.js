@@ -12,6 +12,7 @@ import Character from './character.js';
 import Almanac from './almanac.js';
 import Preloading from './preloading.js';
 import Player from './player.js';
+import Tutorial from './tutorial.js';
 import TestRecorder from './test-recorder.js';
 import TestPlayer from './test-player.js';
 
@@ -72,6 +73,7 @@ import TestPlayer from './test-player.js';
   Crafting.init();
   Character.init();
   Almanac.init();
+  Tutorial.init();
   Ui.resizeViewport();
   initiateMainGameLoop();
   Preloading.init();

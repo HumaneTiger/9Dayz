@@ -391,7 +391,6 @@ export default {
 
     if (target && target.classList.contains('card-tutorial-confirm')) {
       Audio.sfx('shuffle-paper');
-      document.getElementById('tutorial-fights').classList.add('is--hidden');
       document.getElementById('tutorial-beginning').classList.add('is--hidden');
     }
   },

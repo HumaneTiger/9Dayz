@@ -1,6 +1,8 @@
-import { default as Props } from './props.js';
-import { default as Player } from './player.js';
-import { default as Items } from './items.js';
+import Props from './props.js';
+import Player from './player.js';
+import Items from './items.js';
+import Audio from './audio.js';
+import TimingUtils from './utils/timing-utils.js';
 
 var events = {
   '18-44': {
@@ -15,17 +17,17 @@ var events = {
     title: 'Almanac',
     text: 'The Almanac provides details about all items.<br><img src="./img/almanac/almanac.png"><br>Just right-click item slots and crafting buttons.',
   },
-  '18-40-a': {
+  '18-40': {
     title: 'Zombies!',
-    text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – maybe deal with them later.',
+    text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – better head on and deal with them later.',
   },
-  '18-40-b': {
+  '18-42-a': {
     title: 'Zombie 101',
     text: 'Try to lure Zeds towards you. Attacking them will cause others in the area join the fight. When you walk right into them, they  will attack you first.',
   },
-  '18-41': {
+  '18-42-b': {
     title: 'Be prepared',
-    text: 'Any weapon is better than no weapon. Check your inventory. Sharp sticks, tools or stones are good – improvised weapons are better. Check item properties in the Almanac.',
+    text: 'Any weapon is better than no weapon. Check your inventory. Sharp sticks, tools or stones are good – true weapons are better. Check item properties in the Almanac.',
   },
   '10-44': {
     title: 'A companion!',
@@ -82,8 +84,13 @@ var specialEvents = {
   },
 };
 
+let battleTutorialStep = 0;
+
 export default {
-  init: function () {},
+  init: function () {
+    document.body.addEventListener('keypress', this.handleUserInput.bind(this));
+    document.body.addEventListener('click', this.handleUserInput.bind(this));
+  },
 
   setupAllEvents: function () {
     for (var event in events) {
@@ -103,6 +110,75 @@ export default {
       specialEvents[event].text
     );
     return currentObjectsIdCounter;
+  },
+
+  handleUserInput: function () {
+    if (Props.getGameProp('tutorial') && Props.getGameProp('tutorialBattle')) {
+      this.continueBattleTutorial();
+    }
+  },
+
+  triggerBattleTutorial: function () {
+    Props.setGameProp('tutorialBattle', true);
+    const mainContainer = document.querySelector('#viewport main');
+    mainContainer.insertAdjacentHTML(
+      'afterend',
+      `
+      <div id="tutorial-battle">
+        <img src="./img/tutorial/step-1.png" class="tutorial-step tutorial-step-1 is--active">
+        <img src="./img/tutorial/step-2.png" class="tutorial-step tutorial-step-2">
+        <img src="./img/tutorial/step-3.png" class="tutorial-step tutorial-step-3">
+        <img src="./img/tutorial/step-4.png" class="tutorial-step tutorial-step-4">
+        <img src="./img/tutorial/step-5.png" class="tutorial-step tutorial-step-5">
+        <img src="./img/tutorial/general-notes.png" class="tutorial-notes-headline">
+        <img src="./img/tutorial/note-1.png" class="tutorial-notes tutorial-note-1">
+        <img src="./img/tutorial/note-2.png" class="tutorial-notes tutorial-note-2 is--out">
+        <img src="./img/tutorial/note-3.png" class="tutorial-notes tutorial-note-3 is--out">
+        <img src="./img/tutorial/note-4.png" class="tutorial-notes tutorial-note-4 is--out">
+
+        <p class="screen__paragraph align--center text--smedium hint-continue pulsate">
+          Press any key to continue...
+        </p>
+      </div>
+    `
+    );
+  },
+
+  continueBattleTutorial: function () {
+    battleTutorialStep++;
+    switch (battleTutorialStep) {
+      case 1:
+        document.querySelector('.tutorial-step-1').classList.remove('is--active');
+        document.querySelector('.tutorial-step-2').classList.add('is--active');
+        break;
+      case 2:
+        document.querySelector('.tutorial-step-2').classList.remove('is--active');
+        document.querySelector('.tutorial-step-3').classList.add('is--active');
+        document.querySelector('.hint-continue').classList.add('to--left');
+        Audio.sfx('shuffle-paper');
+        document.querySelector('.tutorial-note-2').classList.remove('is--out');
+        break;
+      case 3:
+        document.querySelector('.tutorial-step-3').classList.remove('is--active');
+        document.querySelector('.tutorial-step-4').classList.add('is--active');
+        document.querySelector('.hint-continue').classList.remove('to--left');
+        Audio.sfx('shuffle-paper');
+        document.querySelector('.tutorial-note-3').classList.remove('is--out');
+        break;
+      case 4:
+        document.querySelector('.tutorial-step-4').classList.remove('is--active');
+        document.querySelector('.tutorial-step-5').classList.add('is--active');
+        Audio.sfx('shuffle-paper');
+        document.querySelector('.tutorial-note-4').classList.remove('is--out');
+        break;
+      default:
+        Props.setGameProp('tutorialBattle', false);
+        battleTutorialStep = 0;
+        document.querySelector('.tutorial-step-5').classList.remove('is--active');
+        TimingUtils.wait(500);
+        document.getElementById('tutorial-battle').remove();
+        break;
+    }
   },
 
   checkForSpecialEvents: function (cardDeck) {
