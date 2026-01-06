@@ -318,7 +318,7 @@
 }
 .card-tutorial {
   z-index: 101;
-  background-image: url(../img/card/card-tutorial.png);
+  background-image: url(../img/tutorial/letter-blank.png);
   background-repeat: no-repeat;
   background-size: contain;
   box-shadow: 0 4px 14px rgba(53, 35, 26, 0.5);
@@ -330,8 +330,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
-  height: 814px;
+  width: 498px;
+  height: 680px;
   padding: 30px 50px;
 }
 
