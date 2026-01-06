@@ -65,7 +65,7 @@ export default {
     images[8] = new Image();
     images[8].src = './img/card/border-z.png';
     images[9] = new Image();
-    images[9].src = './img/card/card-tutorial.png';
+    images[9].src = './img/tutorial/letter-blank.png';
     images[10] = new Image();
     images[10].src = './img/card/chip.png';
     images[11] = new Image();
