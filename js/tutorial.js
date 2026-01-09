@@ -89,7 +89,7 @@ let battleTutorialStep = 0;
 export default {
   init: function () {
     document.body.addEventListener('keypress', this.handleUserInput.bind(this));
-    document.body.addEventListener('click', this.handleUserInput.bind(this));
+    document.body.addEventListener('mousedown', this.handleUserInput.bind(this));
   },
 
   setupAllEvents: function () {

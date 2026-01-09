@@ -61,6 +61,11 @@ import TestPlayer from './test-player.js';
       'handleKeydown',
       Player.handleKeydown.bind(Player)
     );
+    Tutorial.handleUserInput = TestRecorder.wrapEventHandler(
+      'Tutorial',
+      'handleUserInput',
+      Tutorial.handleUserInput.bind(Tutorial)
+    );
   }
 
   Start.init();

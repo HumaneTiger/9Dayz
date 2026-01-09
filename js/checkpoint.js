@@ -44,8 +44,21 @@ export default {
       gameSeed: Props.getGameProp('gameSeed'),
 
       // ===== TUTORIAL =====
-      // TODO: Tutorial progress and completed events
-      tutorial: null,
+      tutorial: Props.getGameProp('tutorial'),
+      // Tutorial progression flags - track first occurrence of events
+      firstUserInteraction: Props.getGameProp('firstUserInteraction'),
+      firstFight: Props.getGameProp('firstFight'),
+      firstInfestation: Props.getGameProp('firstInfestation'),
+      firstLocked: Props.getGameProp('firstLocked'),
+      firstSearch: Props.getGameProp('firstSearch'),
+      firstZedNearby: Props.getGameProp('firstZedNearby'),
+      firstRatFight: Props.getGameProp('firstRatFight'),
+      firstAxeCraft: Props.getGameProp('firstAxeCraft'),
+      firstCorpse: Props.getGameProp('firstCorpse'),
+      firstLowEnergy: Props.getGameProp('firstLowEnergy'),
+      firstDeadAnimal: Props.getGameProp('firstDeadAnimal'),
+      firstInventoryOpen: Props.getGameProp('firstInventoryOpen'),
+      firstCompanion: Props.getGameProp('firstCompanion'),
 
       // ===== ALMANAC =====
       // TODO: Discovered recipes and crafting options
@@ -179,7 +192,33 @@ export default {
     this.adjustDayTimeUI();
 
     // ===== TUTORIAL =====
-    // TODO: Restore tutorial progress
+    if (checkpoint.tutorial !== undefined) Props.setGameProp('tutorial', checkpoint.tutorial);
+    // Restore tutorial progression flags
+    if (checkpoint.firstUserInteraction !== undefined)
+      Props.setGameProp('firstUserInteraction', checkpoint.firstUserInteraction);
+    if (checkpoint.firstFight !== undefined) Props.setGameProp('firstFight', checkpoint.firstFight);
+    if (checkpoint.firstInfestation !== undefined)
+      Props.setGameProp('firstInfestation', checkpoint.firstInfestation);
+    if (checkpoint.firstLocked !== undefined)
+      Props.setGameProp('firstLocked', checkpoint.firstLocked);
+    if (checkpoint.firstSearch !== undefined)
+      Props.setGameProp('firstSearch', checkpoint.firstSearch);
+    if (checkpoint.firstZedNearby !== undefined)
+      Props.setGameProp('firstZedNearby', checkpoint.firstZedNearby);
+    if (checkpoint.firstRatFight !== undefined)
+      Props.setGameProp('firstRatFight', checkpoint.firstRatFight);
+    if (checkpoint.firstAxeCraft !== undefined)
+      Props.setGameProp('firstAxeCraft', checkpoint.firstAxeCraft);
+    if (checkpoint.firstCorpse !== undefined)
+      Props.setGameProp('firstCorpse', checkpoint.firstCorpse);
+    if (checkpoint.firstLowEnergy !== undefined)
+      Props.setGameProp('firstLowEnergy', checkpoint.firstLowEnergy);
+    if (checkpoint.firstDeadAnimal !== undefined)
+      Props.setGameProp('firstDeadAnimal', checkpoint.firstDeadAnimal);
+    if (checkpoint.firstInventoryOpen !== undefined)
+      Props.setGameProp('firstInventoryOpen', checkpoint.firstInventoryOpen);
+    if (checkpoint.firstCompanion !== undefined)
+      Props.setGameProp('firstCompanion', checkpoint.firstCompanion);
 
     // ===== ALMANAC =====
     // TODO: Restore discovered recipes/crafting options

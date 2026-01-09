@@ -212,6 +212,9 @@ export default {
     if (moduleName === 'Player' && handlerName === 'handleKeydown') {
       return this.translatePlayerKeydown(moduleName, handlerName, event);
     }
+    if (moduleName === 'Tutorial' && handlerName === 'handleUserInput') {
+      return this.translateTutorialUserInput(moduleName, handlerName, event);
+    }
     // Add more handlers here as we expand
     return null;
   },
@@ -549,6 +552,24 @@ export default {
           type: 'move-player',
           key: event.key,
         };
+      }
+    }
+    return null;
+  },
+
+  /**
+   * Translate Tutorial.handleUserInput to command
+   */
+
+  translateTutorialUserInput: function (moduleName, handlerName, event) {
+    if (Props.getGameProp('tutorial') && Props.getGameProp('tutorialBattle')) {
+      if (event && event.type) {
+        if (event.type === 'click' || event.type === 'keypress') {
+          return {
+            module: 'Tutorial',
+            type: 'battle-tutorial-input',
+          };
+        }
       }
     }
     return null;

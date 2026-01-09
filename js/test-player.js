@@ -40,12 +40,6 @@ export default {
 
   getTestData: function (testName) {
     const testData = {
-      'test-local': {
-        description: 'Latest recorded test',
-        source: 'localStorage',
-        commands: localStorage.getItem('recordedCommands') || '[]',
-        checkpoint: localStorage.getItem('testCheckpoint') || null,
-      },
       'test-run-1': {
         description: 'Old Villa raid',
         source: 'file',
@@ -57,6 +51,12 @@ export default {
       'test-run-3': {
         description: 'First 3 days', // recyle for a test
         source: 'file',
+      },
+      'test-local': {
+        description: 'Latest recorded test',
+        source: 'localStorage',
+        commands: localStorage.getItem('recordedCommands') || '[]',
+        checkpoint: localStorage.getItem('testCheckpoint') || null,
       },
     };
 
@@ -354,6 +354,16 @@ export default {
       case 'Player':
         if (command.type === 'move-player' && command.key) {
           this.pressKey(command.key);
+        }
+        break;
+
+      case 'Tutorial':
+        if (command.type === 'battle-tutorial-input') {
+          if (Props.getGameProp('tutorial') && Props.getGameProp('tutorialBattle')) {
+            this.clickElement('#tutorial-battle'); // doesn't matter where we click, just needs to be a click
+          } else {
+            throw new Error(`Tutorial: is not in battle tutorial state`);
+          }
         }
         break;
 
