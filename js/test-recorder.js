@@ -564,7 +564,7 @@ export default {
   translateTutorialUserInput: function (moduleName, handlerName, event) {
     if (Props.getGameProp('tutorial') && Props.getGameProp('tutorialBattle')) {
       if (event && event.type) {
-        if (event.type === 'click' || event.type === 'keypress') {
+        if (event.type === 'mousedown' || event.type === 'keypress') {
           return {
             module: 'Tutorial',
             type: 'battle-tutorial-input',

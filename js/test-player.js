@@ -52,6 +52,10 @@ export default {
         description: 'First 3 days', // recyle for a test
         source: 'file',
       },
+      'test-run-tutorial-1': {
+        description: 'Spawn and Battle', // recyle for a test
+        source: 'file',
+      },
       'test-local': {
         description: 'Latest recorded test',
         source: 'localStorage',
