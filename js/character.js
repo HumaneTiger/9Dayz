@@ -1,7 +1,6 @@
 import Props from './props.js';
 import Player from './player.js';
 import Items from './items.js';
-import Almanac from './almanac.js';
 import Ui from './ui.js';
 import Audio from './audio.js';
 import Events, { EVENTS } from './events.js';
@@ -79,7 +78,6 @@ export default {
     const actionButton = target.closest('div.action-button');
     const upgradeButton = target.closest('div.upgrade:not(.nope)');
     const leftMouseButton = ev.button === 0;
-    const rightMouseButton = ev.button === 2;
     const cardSlot = target.closest('.card');
 
     if (actionButton && leftMouseButton) {
@@ -140,21 +138,6 @@ export default {
           default:
             break;
         }
-      }
-    } else if (cardSlot && rightMouseButton) {
-      if (cardSlot.dataset.item === 'improvised-axe' || cardSlot.dataset.item === 'wooden-club') {
-        Almanac.showPage(cardSlot.dataset.item, 'item', cardSlot, characterContainer);
-      } else if (
-        cardSlot.dataset.item === 'axe' ||
-        cardSlot.dataset.item === 'baseball-bat' ||
-        cardSlot.dataset.item === 'wrench' ||
-        cardSlot.dataset.item === 'improvised-whip' ||
-        cardSlot.dataset.item === 'fishing-rod' ||
-        cardSlot.dataset.item === 'doggy'
-      ) {
-        Almanac.showPage(cardSlot.dataset.item, 'content', cardSlot, characterContainer);
-      } else if (cardSlot.classList.contains('slot-hero')) {
-        Almanac.showPage(Props.getGameProp('character'), 'content', cardSlot, characterContainer);
       }
     }
   },
@@ -293,10 +276,6 @@ export default {
         maxHealthChars.substring(0, maxHealthChars.length - companion.health) +
         '</u>';
       slotCompanion.querySelector('.distance').innerHTML = health;
-      /*if (!Props.getGameProp('firstCompanion')) {
-        Props.setGameProp('firstCompanion', true);
-        Almanac.showPage('doggy', 'content', slotCompanion, characterContainer);
-      }*/
     } else if (companion.health <= 0) {
       this.removeCompanion();
       characterContainer.classList.remove('companion-active');

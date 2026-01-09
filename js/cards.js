@@ -8,7 +8,6 @@ import Actions from './actions.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
-import Almanac from './almanac.js';
 import Events, { EVENTS } from './events.js';
 
 var cardDeck = [];
@@ -44,11 +43,9 @@ export default {
     const actionButton = target.closest('div.action-button');
     const itemContainer = target.closest('li.item:not(.is--hidden)');
     const leftMouseButton = ev.button === 0;
-    const rightMouseButton = ev.button === 2;
 
     if (cardId && !Props.getGameProp('gamePaused')) {
       const object = Props.getObject(cardId);
-      const cardRef = this.getCardById(cardId);
 
       ev.preventDefault();
       ev.stopPropagation();
@@ -59,17 +56,8 @@ export default {
       } else if (itemContainer) {
         const itemName = itemContainer?.dataset.item;
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
-        const itemProps = Props.getItem(itemName);
         if (itemAmount && leftMouseButton) {
           Actions.grabItem(cardId, itemContainer, itemName);
-        } else if (itemAmount && rightMouseButton) {
-          // make item known to inventory
-          if (itemProps && itemProps[0] === 'extra') {
-            Props.addWeaponToInventory(itemName, 0, { durability: 0 });
-          } else {
-            Props.addItemToInventory(itemName, 0);
-          }
-          Almanac.showPage(itemName, 'item', itemContainer.closest('ul.items'), cardRef);
         }
       }
     }

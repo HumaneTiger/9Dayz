@@ -1,7 +1,6 @@
 import Props from './props.js';
 import Items from './items.js';
 import Player from './player.js';
-import Almanac from './almanac.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 import Events, { EVENTS } from './events.js';
 import TimingUtils from './utils/timing-utils.js';
@@ -38,8 +37,7 @@ export default {
       } else if (hoverButton.classList.contains('only1')) {
         craftContainer.querySelector('p.info').textContent = "Can't do - can carry only one";
       } else {
-        craftContainer.querySelector('p.info').textContent =
-          "Can't do - items missing (right-click for info)";
+        craftContainer.querySelector('p.info').textContent = "Can't do - items missing";
       }
     } else {
       craftContainer.querySelector('p.info').textContent = '';
@@ -51,7 +49,6 @@ export default {
     const clickButton = target.closest('.button-craft');
     const navButton = target.closest('.button-next') || target.closest('.button-prev');
     const leftMouseButton = ev.button === 0;
-    const rightMouseButton = ev.button === 2;
 
     if (clickButton && clickButton.classList.contains('active') && leftMouseButton) {
       // relying heavily on active class for verification
@@ -89,11 +86,12 @@ export default {
           }
           Player.findAndHandleObjects();
           craftContainer.classList.remove('active');
+          // make crafted item known in almanac
+          Events.emit(EVENTS.FIRST_ITEM_ADDED, {
+            item: item,
+          });
         }
       }
-    } else if (clickButton && rightMouseButton) {
-      const item = clickButton.dataset.item;
-      Almanac.showPage(item, 'item', clickButton, craftContainer);
     } else if (navButton && leftMouseButton) {
       if (navButton.classList.contains('button-next')) {
         craftContainer.querySelector('.inner.craft-1').classList.add('is--hidden');

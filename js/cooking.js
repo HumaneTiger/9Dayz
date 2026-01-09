@@ -1,6 +1,5 @@
 import Props from './props.js';
 import Items from './items.js';
-import Almanac from './almanac.js';
 import Audio from './audio.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 import Events, { EVENTS } from './events.js';
@@ -87,10 +86,8 @@ export default {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');
     const actionSlotActive = target.closest('div.slot.action.active');
-    const slotActive = target.closest('div.slot.active');
     const cookingContainer = target.closest('.card.cooking-mode');
     const leftMouseButton = ev.button === 0;
-    const rightMouseButton = ev.button === 2;
     if (cookingContainer) {
       if (actionSlotActive && leftMouseButton) {
         const recipe = actionSlotActive.dataset?.item;
@@ -109,12 +106,6 @@ export default {
           } else {
             Props.addItemToInventory(cookingRecipes[recipe][0], -1);
           }
-        }
-      } else if (slotActive && rightMouseButton) {
-        const item = slotActive.dataset?.item;
-        if (item !== undefined) {
-          Props.addItemToInventory(item.replace('-2', ''), 0); // makes item known to inventory
-          Almanac.showPage(item.replace('-2', ''), 'item', slotActive, cookingContainer);
         }
       } else if (
         actionButton &&

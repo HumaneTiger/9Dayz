@@ -5,7 +5,6 @@ import Cards from './cards.js';
 import Crafting from './crafting.js';
 import Cooking from './cooking.js';
 import Character from './character.js';
-import Almanac from './almanac.js';
 import Audio from './audio.js';
 import ItemUtils from '../data/utils/item-utils.js';
 import Events, { EVENTS } from './events.js';
@@ -102,7 +101,6 @@ export default {
     const target = ev.target;
     const hoverSlot = target.closest('.slot');
     const leftMouseButton = ev.button === 0;
-    const rightMouseButton = ev.button === 2;
 
     if (hoverSlot && hoverSlot.classList.contains('active') && leftMouseButton) {
       const item = hoverSlot.dataset.item;
@@ -158,10 +156,6 @@ export default {
       Audio.sfx('click');
       Ui.toggleCrafting();
       document.querySelector('#actions li.craft').classList.remove('transfer');
-    }
-    if (hoverSlot && hoverSlot.classList.contains('active') && rightMouseButton) {
-      const item = hoverSlot.dataset.item;
-      Almanac.showPage(item, 'item', hoverSlot, inventoryContainer);
     }
   },
 

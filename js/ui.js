@@ -308,11 +308,9 @@ export default {
   handleClick: function (ev) {
     const target = ev.target;
     const clickAction = target.closest('#actions');
-    const clickProperty = target.closest('#properties');
     const clickBattleCards = target.closest('#battle-cards');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = ev.button === 0 || !ev.button; // 2nd part also takes keyboard shortcuts into account
-    const rightMouseButton = ev.button === 2;
 
     if (clickAction && leftMouseButton && !Props.getGameProp('battle')) {
       Audio.sfx('click');
@@ -371,17 +369,6 @@ export default {
       const endTurn = target.closest('.end-turn');
       if (endTurn) {
         Battle.endTurn();
-      }
-    } else if (clickProperty && rightMouseButton) {
-      const property = target.closest('li');
-      if (property?.classList.contains('health')) {
-        Almanac.showPage('health', 'content', property, document.getElementById('properties'));
-      } else if (property?.classList.contains('food')) {
-        Almanac.showPage('food', 'content', property, document.getElementById('properties'));
-      } else if (property?.classList.contains('thirst')) {
-        Almanac.showPage('thirst', 'content', property, document.getElementById('properties'));
-      } else if (property?.classList.contains('energy')) {
-        Almanac.showPage('energy', 'content', property, document.getElementById('properties'));
       }
     }
 
