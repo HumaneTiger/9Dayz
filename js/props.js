@@ -70,7 +70,8 @@ var game = {
   battle: false,
   tutorialBattle: false,
   gamePaused: true,
-  local: location.href.startsWith('http://127.0.0.1'),
+  local:
+    location.href.startsWith('http://127.0.0.1') || location.href.startsWith('http://localhost'),
   playerPosition: { x: 18, y: 44 },
   feedingCompanion: false,
   firstUserInteraction: false,
@@ -472,6 +473,10 @@ export default {
         damage: ItemUtils.calcItemDamage(item), // props for battle mode
         protection: ItemUtils.calcItemProtection(item), // props for battle mode
       };
+      // emit FIRST_ITEM_ADDED event for almanac tracking
+      Events.emit(EVENTS.FIRST_ITEM_ADDED, {
+        item: item,
+      });
     } else {
       console.log('adding item "' + item + '" to inventory failed');
     }
