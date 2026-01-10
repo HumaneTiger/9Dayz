@@ -81,7 +81,7 @@ ul.actions .action-button span.additional-locked {
 #battle-cards .end-turn,
 #craft .button-craft,
 #almanac .button,
-#cards .cooking .action-button,
+#cards .cooking-mode .action-button,
 ul.actions .action-button {
   cursor: pointer;
   display: inline-block;
@@ -113,7 +113,7 @@ ul.actions .action-button {
 #battle-cards .end-turn:hover,
 #craft .button-craft:hover,
 #almanac .button:hover,
-#cards .cooking .action-button:hover,
+#cards .cooking-mode:hover,
 ul.actions .action-button:hover {
   transform: scale(1);
   box-shadow: 0 3px 5px rgba(53, 35, 26, 0.5);

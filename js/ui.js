@@ -129,6 +129,11 @@ export default {
   },
 
   handleMouseWheel: function (ev) {
+    const target = ev.target;
+    const cardsContainer = target.closest('#cards');
+    if (cardsContainer) return; // do not zoom when mouse is over cards container
+    ev.preventDefault();
+    ev.stopPropagation();
     this.zoomMap(ev.deltaY);
   },
 

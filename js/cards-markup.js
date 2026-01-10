@@ -107,9 +107,9 @@ export default {
           '</span></div>';
         cardMarkupExtension += '</li>';
       }
-      cardMarkupExtension +=
-        '<li class="action"><div class="action-button" data-action="close-cooking"><span class="text">Back</span></div></li>';
       cardMarkupExtension += '</ul>';
+      cardMarkupExtension +=
+        '<div class="cooking-action"><div class="action-button" data-action="close-cooking"><span class="text">Back</span></div></div>';
     }
 
     // generate action markup

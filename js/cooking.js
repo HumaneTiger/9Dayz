@@ -90,25 +90,7 @@ export default {
     if (cookingContainer) {
       if (actionSlotActive && leftMouseButton) {
         const recipe = actionSlotActive.dataset?.item;
-        // having something like resolveRecipeIngredients would be helpful here
-        if (recipe) {
-          Props.addItemToInventory(recipe, cookingRecipes[recipe][2]);
-          Audio.sfx('roast');
-          if (recipe === 'glue') {
-            // remove bone
-            Props.addItemToInventory(cookingRecipes[recipe][0], -1);
-            // remove one water
-            Items.inventoryContains('drink-1')
-              ? Props.addItemToInventory('drink-1', -1)
-              : Props.addItemToInventory('drink-2', -1);
-          } else if (recipe === 'roasted-mushroom') {
-            Items.inventoryContains('mushroom-1')
-              ? Props.addItemToInventory('mushroom-1', -1)
-              : Props.addItemToInventory('mushroom-2', -1);
-          } else {
-            Props.addItemToInventory(cookingRecipes[recipe][0], -1);
-          }
-        }
+        this.resolveRecipeIngredients(recipe);
       } else if (
         actionButton &&
         leftMouseButton &&
@@ -120,5 +102,41 @@ export default {
         }, 100);
       }
     }
+  },
+
+  resolveRecipeIngredients: function (recipe) {
+    if (!recipe) {
+      return;
+    }
+
+    // Add result to inventory
+    Props.addItemToInventory(recipe, cookingRecipes[recipe][2]);
+    Audio.sfx('roast');
+
+    // Get ingredients for this recipe
+    const ingredients = [cookingRecipes[recipe][0], cookingRecipes[recipe][1]];
+
+    // Remove each ingredient based on definitions
+    ingredients.forEach(ingredient => {
+      // Skip persistent ingredients
+      if (RecipeDefinitions.persistentIngredients.includes(ingredient)) {
+        return;
+      }
+
+      let itemToRemove = ingredient;
+
+      // Check if ingredient is a variant key (generic name)
+      if (RecipeDefinitions.ingredientVariants[ingredient]) {
+        // Find which variant is in inventory
+        itemToRemove = RecipeDefinitions.ingredientVariants[ingredient].find(variant =>
+          Items.inventoryContains(variant)
+        );
+      }
+
+      // Remove the ingredient
+      if (itemToRemove) {
+        Props.addItemToInventory(itemToRemove, -1);
+      }
+    });
   },
 };
