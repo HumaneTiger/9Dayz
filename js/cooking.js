@@ -91,11 +91,14 @@ export default {
     if (cookingContainer) {
       if (actionSlotActive && leftMouseButton) {
         const recipe = actionSlotActive.dataset?.item;
+        // having something like resolveRecipeIngredients would be helpful here
         if (recipe) {
           Props.addItemToInventory(recipe, cookingRecipes[recipe][2]);
           Audio.sfx('roast');
           if (recipe === 'glue') {
+            // remove bone
             Props.addItemToInventory(cookingRecipes[recipe][0], -1);
+            // remove one water
             Items.inventoryContains('drink-1')
               ? Props.addItemToInventory('drink-1', -1)
               : Props.addItemToInventory('drink-2', -1);

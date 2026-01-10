@@ -38,11 +38,11 @@ export default {
   inventoryContains: function (item) {
     if (inventory.items[item]?.amount > 0) {
       return true;
-    } else if (item === 'drink-1-2') {
+    } else if (item === 'water') {
       if (inventory.items['drink-1']?.amount > 0 || inventory.items['drink-2']?.amount > 0) {
         return true;
       }
-    } else if (item === 'mushroom-1-2') {
+    } else if (item === 'mushrooms') {
       if (inventory.items['mushroom-1']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0) {
         return true;
       }
@@ -53,11 +53,11 @@ export default {
   inventoryKnows: function (item) {
     if (inventory.items[item]) {
       return true;
-    } else if (item === 'drink-1-2') {
+    } else if (item === 'water') {
       if (inventory.items['drink-1'] || inventory.items['drink-2']) {
         return true;
       }
-    } else if (item === 'mushroom-1-2') {
+    } else if (item === 'mushrooms') {
       if (inventory.items['mushroom-1'] || inventory.items['mushroom-2']) {
         return true;
       }
@@ -68,9 +68,9 @@ export default {
   inventoryItemAmount: function (item) {
     if (inventory.items[item]) {
       return inventory.items[item].amount;
-    } else if (item === 'drink-1-2') {
+    } else if (item === 'water') {
       return (inventory.items['drink-1']?.amount || 0) + (inventory.items['drink-2']?.amount || 0);
-    } else if (item === 'mushroom-1-2') {
+    } else if (item === 'mushrooms') {
       return (
         (inventory.items['mushroom-1']?.amount || 0) + (inventory.items['mushroom-2']?.amount || 0)
       );

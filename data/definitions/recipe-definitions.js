@@ -2,9 +2,9 @@ export default {
   cookingRecipes: {
     'roasted-meat': ['meat', 'sharp-stick', 1, 'roast'],
     'roasted-pepper': ['pepper', 'sharp-stick', 1, 'roast'],
-    'roasted-mushroom': ['mushroom-1-2', 'sharp-stick', 1, 'roast'],
+    'roasted-mushroom': ['mushrooms', 'sharp-stick', 1, 'roast'],
     'roasted-pumpkin': ['pumpkin', 'knife', 4, 'roast'],
-    glue: ['bones', 'drink-1-2', 1, 'cook'],
+    glue: ['bones', 'water', 1, 'cook'],
   },
 
   craftingRecipes: {

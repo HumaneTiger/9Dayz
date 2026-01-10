@@ -111,12 +111,9 @@ export default {
         cookingItemSlot.classList.contains('active') ||
         cookingItemSlot.classList.contains('inactive')
       ) {
-        const itemName = cookingItemSlot.dataset?.item;
-        if (itemName !== undefined) {
-          const item = itemName.replace('-2', '');
+        const item = cookingItemSlot.dataset?.item;
+        if (item !== undefined) {
           this.makeContentKnown(item);
-          console.log(item, this.isContentKnown(item));
-
           this.showPage(item, cookingItemSlot, cookingContainer);
         }
       }
@@ -342,9 +339,6 @@ export default {
   },
 
   showPage: function (item, refElem, parentElem) {
-    if (item.endsWith('-1-2')) {
-      item = item.replace('-2', '');
-    }
     if (almanacContainer.dataset?.item !== item) {
       almanacContainer.dataset.item = item;
 

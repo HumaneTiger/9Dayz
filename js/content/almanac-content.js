@@ -12,6 +12,16 @@ export default {
     'furbuddy',
   ],
   contentPages: {
+    water: {
+      motive: './img/items/water.PNG',
+      markup:
+        '<p>Bottled water is needed in some cooking and crafting recipes as well as to quench your <span class="keyword" data-content="thirst">thirst</span>.</p>',
+    },
+    mushrooms: {
+      motive: './img/items/mushrooms.png',
+      markup:
+        '<p>Mushrooms can be found under trees and in open fields. They can be <span class="keyword" data-item="roasted-mushroom">roasted</span> over a <span class="keyword" data-content="fireplace">fireplace</span> or can be eaten raw.</p>',
+    },
     battle: {
       motive: './img/almanac/battle.png',
       markup:
@@ -60,7 +70,7 @@ export default {
     'improvised-whip': {
       motive: './img/weapons/improvised-whip.png',
       markup:
-        '<p>A weapon with rather little damage. However, when targeting a certain enemy, it will also hit all adjacent enemies.</p>',
+        '<p>A weapon with rather little damage. However, when targeting a certain enemy, it will also hit all adjacent enemies.</p><p>Ideal when facing multiple weaker enemies.</p>',
     },
     'fishing-rod': {
       motive: './img/weapons/fishing-rod.png',
