@@ -1,14 +1,14 @@
 .card.cooking-mode {
   transform: rotateY(180deg) scale(0.7);
 }
-.card.cooking-mode:hover {
+#cards .card.cooking-mode:hover {
   transform: rotateY(180deg) scale(0.9);
 }
-.card.cooking-mode.full {
+#cards .card.cooking-mode.full {
   transform: rotateY(360deg) scale(0.7);
 }
-.card.cooking-mode.full:hover {
-  transform: rotateY(360deg) scale(0.9);
+#cards .card.cooking-mode.full:hover {
+  transform: rotateY(360deg) scale(0.8);
 }
 .card.cooking-mode ul.cooking {
   display: block;

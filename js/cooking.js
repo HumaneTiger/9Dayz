@@ -3,6 +3,7 @@ import Items from './items.js';
 import Audio from './audio.js';
 import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
 import Events, { EVENTS } from './events.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const cookingRecipes = RecipeDefinitions.cookingRecipes;
 
@@ -16,20 +17,18 @@ export default {
     });
   },
 
-  start: function (cardRef) {
+  start: async function (cardRef) {
     this.checkCookingRecipePrerequisits(cardRef);
     cardRef.classList.add('cooking-mode');
-    window.setTimeout(() => {
-      cardRef.classList.add('full');
-    }, 100);
+    await TimingUtils.wait(100);
+    cardRef.classList.add('full');
   },
 
-  end: function (cardRef) {
+  end: async function (cardRef) {
     if (cardRef.classList.contains('cooking-mode')) {
       cardRef.classList.remove('full');
-      window.setTimeout(() => {
-        cardRef.classList.remove('cooking-mode');
-      }, 100);
+      TimingUtils.wait(100);
+      cardRef.classList.remove('cooking-mode');
     }
   },
 
