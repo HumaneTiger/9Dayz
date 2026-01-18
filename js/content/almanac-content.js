@@ -90,7 +90,8 @@ export default {
     doggy: {
       motive: './img/animals/doggy.png',
       markup:
-        '<p>Unlocks the "Chomp!" command which lets your furry friend rush into <span class="keyword" data-content="battle">battles</span> against enemies.</p><p>Your companions will take damage in battles, which can be healed by feeding them <span class="keyword" data-content="food">food</span>.</p>',
+        '<p>Unlocks the "Chomp!" command which lets your furry friend rush into <span class="keyword" data-content="battle">battles</span> against enemies.</p><p>Your companions will take damage in battles, which can be healed by feeding them <span class="keyword" data-content="food">food</span>.</p>' +
+        '<p>Doggy attacks first when fighting zombies, but is attacked first by smaller creatures.</p>',
     },
     everyman: {
       motive: './img/characters/hero.png',
