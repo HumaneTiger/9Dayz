@@ -41,15 +41,19 @@ export default {
 
   checkCookingRecipePrerequisits: function (cardRef) {
     for (const recipe in cookingRecipes) {
+      const recipeRow = cardRef.querySelector(`ul.cooking li[data-recipe="${recipe}"]`);
+      if (!recipeRow) {
+        continue;
+      }
       if (Items.inventoryKnows(cookingRecipes[recipe][0])) {
         Items.fillItemSlot(
-          cardRef.querySelectorAll('.slot.item-' + cookingRecipes[recipe][0]),
+          recipeRow.querySelectorAll('.slot.item-' + cookingRecipes[recipe][0]),
           Items.inventoryItemAmount(cookingRecipes[recipe][0]) || 0
         );
       }
       if (Items.inventoryKnows(cookingRecipes[recipe][1])) {
         Items.fillItemSlot(
-          cardRef.querySelectorAll('.slot.item-' + cookingRecipes[recipe][1]),
+          recipeRow.querySelectorAll('.slot.item-' + cookingRecipes[recipe][1]),
           Items.inventoryItemAmount(cookingRecipes[recipe][1]) || 0
         );
       }
@@ -57,16 +61,20 @@ export default {
         Items.inventoryKnows(cookingRecipes[recipe][0]) &&
         Items.inventoryKnows(cookingRecipes[recipe][1])
       ) {
-        cardRef.querySelector('.slot.action.item-' + recipe)?.classList.remove('unknown');
+        const actionSlot = recipeRow.querySelector('.slot.action.item-' + recipe);
+        if (!actionSlot) {
+          continue;
+        }
+        actionSlot.classList.remove('unknown');
         if (
           !Items.inventoryContains(cookingRecipes[recipe][0]) ||
           !Items.inventoryContains(cookingRecipes[recipe][1])
         ) {
-          cardRef.querySelector('.slot.action.item-' + recipe)?.classList.remove('active');
-          cardRef.querySelector('.slot.action.item-' + recipe)?.classList.add('inactive');
+          actionSlot.classList.remove('active');
+          actionSlot.classList.add('inactive');
         } else {
-          cardRef.querySelector('.slot.action.item-' + recipe)?.classList.remove('inactive');
-          cardRef.querySelector('.slot.action.item-' + recipe)?.classList.add('active');
+          actionSlot.classList.remove('inactive');
+          actionSlot.classList.add('active');
         }
       }
     }

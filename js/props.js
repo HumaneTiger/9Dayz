@@ -516,7 +516,7 @@ export default {
         44,
         ['crate'],
         false,
-        LootUtils.forceLootItemList(['drink-5', 'bread-1', 'wooden-club'])
+        LootUtils.forceLootItemList(['drink-5', 'fruit-bread', 'wooden-club'])
       );
       this.setupWeapon(18, 44, 'axe', {
         attack: this.getWeaponProps('axe').attack / 2,

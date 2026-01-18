@@ -284,14 +284,15 @@ ul#properties li.time {
 }
 
 #inventory .inner {
-  padding: 45px 40px;
+  padding: 40px 40px;
 }
 #inventory .slot {
   border: 1px rgba(53, 35, 26, 0.5) dashed;
   border-radius: 8px;
   background-color: rgba(53, 35, 26, 0.01);
   display: inline-block;
-  margin: 0 4px;
+  vertical-align: top;
+  margin: 4px 4px;
   position: relative;
   width: 64px;
   height: 64px;

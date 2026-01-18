@@ -80,9 +80,9 @@ div.cooking-action::before {
   }
   ul.cooking .slot.operator {
     display: inline-block;
-    padding: 0 14px;
+    padding: 0;
     position: relative;
-    width: 16px;
+    width: 14px;
     height: 70px;
   }
   ul.cooking .slot.operator .sign,
@@ -95,6 +95,9 @@ div.cooking-action::before {
     left: 0;
     width: 100%;
     font-weight: 300;
+  }
+  ul.cooking .slot.operator .sign {
+    left: -4px;
   }
   ul.cooking .slot img.bg {
     position: absolute;

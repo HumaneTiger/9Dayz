@@ -22,6 +22,11 @@ export default {
       markup:
         '<p>Mushrooms can be found under trees and in open fields. They can be <span class="keyword" data-item="roasted-mushroom">roasted</span> over a <span class="keyword" data-content="fireplace">fireplace</span> or can be eaten raw.</p>',
     },
+    fruits: {
+      motive: './img/items/fruits.png',
+      markup:
+        '<p>Fruits can be found under trees. They can be used at the <span class="keyword" data-content="fireplace">fireplace</span> for certain recipes or can be eaten raw.</p>',
+    },
     battle: {
       motive: './img/almanac/battle.png',
       markup:

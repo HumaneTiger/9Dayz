@@ -2496,7 +2496,7 @@
           "amount": 1
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         },
         {
@@ -2602,7 +2602,7 @@
       ],
       "items": [
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         },
         {
@@ -2665,7 +2665,7 @@
           "amount": 0
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         }
       ],
@@ -4690,7 +4690,7 @@
       ],
       "items": [
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         },
         {

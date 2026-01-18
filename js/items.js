@@ -46,6 +46,14 @@ export default {
       if (inventory.items['mushroom-1']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0) {
         return true;
       }
+    } else if (item === 'fruits') {
+      if (
+        inventory.items['fruit-1']?.amount > 0 ||
+        inventory.items['fruit-2']?.amount > 0 ||
+        inventory.items['fruit-3']?.amount > 0
+      ) {
+        return true;
+      }
     }
     return false;
   },
@@ -61,6 +69,10 @@ export default {
       if (inventory.items['mushroom-1'] || inventory.items['mushroom-2']) {
         return true;
       }
+    } else if (item === 'fruits') {
+      if (inventory.items['fruit-1'] || inventory.items['fruit-2'] || inventory.items['fruit-3']) {
+        return true;
+      }
     }
     return false;
   },
@@ -74,6 +86,18 @@ export default {
       return (
         (inventory.items['mushroom-1']?.amount || 0) + (inventory.items['mushroom-2']?.amount || 0)
       );
+    } else if (item === 'fruits') {
+      if (
+        inventory.items['fruit-1']?.amount > 0 ||
+        inventory.items['fruit-2']?.amount > 0 ||
+        inventory.items['fruit-3']?.amount > 0
+      ) {
+        return (
+          (inventory.items['fruit-1']?.amount || 0) +
+          (inventory.items['fruit-2']?.amount || 0) +
+          (inventory.items['fruit-3']?.amount || 0)
+        );
+      }
     }
   },
 

@@ -19,7 +19,7 @@ export default {
     dough: ['flour', 'water', 1, 'mix'],
     porridge: ['hawthorn', 'dough', 1, 'cook'],
     'fruit-bread': ['fruits', 'dough', 1, 'bake'],
-    //'meat-pie': ['meat', 'dough', 1, 'bake'],
+    cookie: ['honey', 'dough', 3, 'bake'],
   },
 
   craftingRecipes: {

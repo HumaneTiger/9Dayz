@@ -74,42 +74,35 @@ export default {
       cardMarkupExtension = '<ul class="cooking">';
       const cookingRecipes = RecipeDefinitions.cookingRecipes;
       for (const recipe in cookingRecipes) {
-        cardMarkupExtension += '<li>';
-        cardMarkupExtension +=
-          '<div class="slot unknown item-' +
-          cookingRecipes[recipe][0] +
-          '" data-item="' +
-          cookingRecipes[recipe][0] +
-          '"><img src="./img/items/' +
-          cookingRecipes[recipe][0] +
-          '.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span></div>';
-        cardMarkupExtension += '<div class="slot operator"><span class="sign">+</span></div>';
-        cardMarkupExtension +=
-          '<div class="slot unknown item-' +
-          cookingRecipes[recipe][1] +
-          '" data-item="' +
-          cookingRecipes[recipe][1] +
-          '"><img src="./img/items/' +
-          cookingRecipes[recipe][1] +
-          '.PNG" class="bg"><span class="unknown">?</span><span class="amount"></span></div>';
-        cardMarkupExtension += '<div class="slot operator"><span class="sign">=</span></div>';
-        cardMarkupExtension +=
-          '<div class="slot action unknown item-' +
-          recipe +
-          '" data-item="' +
-          recipe +
-          '"><img src="./img/items/' +
-          recipe +
-          '.PNG" class="bg"><span class="unknown">?</span><span class="amount">' +
-          cookingRecipes[recipe][2] +
-          '</span><span class="action">' +
-          cookingRecipes[recipe][3] +
-          '</span></div>';
-        cardMarkupExtension += '</li>';
+        const firstIngredient = cookingRecipes[recipe][0];
+        const secondIngredient = cookingRecipes[recipe][1];
+        cardMarkupExtension += `<li data-recipe="${recipe}">
+          <div class="slot unknown item-${firstIngredient}" data-item="${firstIngredient}">
+            <img src="./img/items/${firstIngredient}.PNG" class="bg">
+            <span class="unknown">?</span>
+            <span class="amount"></span>
+          </div>
+          <div class="slot operator"><span class="sign">+</span></div>
+          <div class="slot unknown item-${secondIngredient}" data-item="${secondIngredient}">
+            <img src="./img/items/${secondIngredient}.PNG" class="bg">
+            <span class="unknown">?</span>
+            <span class="amount"></span>
+          </div>
+          <div class="slot operator"><span class="sign">=</span></div>
+          <div class="slot action unknown item-${recipe}" data-item="${recipe}">
+            <img src="./img/items/${recipe}.PNG" class="bg">
+            <span class="unknown">?</span>
+            <span class="amount">${cookingRecipes[recipe][2]}</span>
+            <span class="action">${cookingRecipes[recipe][3]}</span>
+          </div>
+        </li>`;
       }
-      cardMarkupExtension += '</ul>';
-      cardMarkupExtension +=
-        '<div class="cooking-action"><div class="action-button" data-action="close-cooking"><span class="text">Back</span></div></div>';
+      cardMarkupExtension += `</ul>`;
+      cardMarkupExtension += `<div class="cooking-action">
+        <div class="action-button" data-action="close-cooking">
+          <span class="text">Back</span>
+        </div>
+      </div>`;
     }
 
     // generate action markup

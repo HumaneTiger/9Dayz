@@ -43,7 +43,7 @@ export default {
       locked: 2,
       spawn: 3,
       items: [
-        'bread-1',
+        'fruit-bread',
         'wine',
         'snack-1',
         'snack-2',
@@ -59,7 +59,7 @@ export default {
     basement: {
       locked: 0,
       spawn: 3,
-      items: ['wine', 'tape', 'cloth', 'hacksaw', 'bones', 'spanner', 'books', 'nails'],
+      items: ['wine', 'tape', 'cloth', 'hacksaw', 'bones', 'spanner', 'books', 'nails', 'flour'],
     },
     'farm-house': {
       locked: 2,
@@ -74,6 +74,7 @@ export default {
         'tomato',
         'exodus',
         'nails',
+        'flour',
       ],
     },
     'town-house': {
@@ -162,7 +163,7 @@ export default {
       locked: 2,
       spawn: 3,
       items: [
-        'bread-1',
+        'fruit-bread',
         'bread-2',
         'wine',
         'snack-1',
@@ -179,7 +180,7 @@ export default {
       locked: 2,
       spawn: 3,
       items: [
-        'bread-1',
+        'fruit-bread',
         'bread-2',
         'wine',
         'snack-1',

@@ -59,7 +59,7 @@
   {
     "module": "Cards",
     "type": "cards-select-item",
-    "selector": "[id=\"0\"] li.item:not(.is--hidden)[data-item=\"bread-1\"]",
+    "selector": "[id=\"0\"] li.item:not(.is--hidden)[data-item=\"fruit-bread\"]",
     "tick": 224
   },
   {
@@ -149,7 +149,7 @@
   {
     "module": "Items",
     "type": "inventory-select-slot",
-    "selector": "#inventory .slot[data-item=\"bread-1\"]",
+    "selector": "#inventory .slot[data-item=\"fruit-bread\"]",
     "tick": 443
   },
   {
@@ -521,7 +521,7 @@
           "amount": 1
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         },
         {
@@ -816,7 +816,7 @@
           "amount": 0
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 0
         }
       ],
@@ -1322,7 +1322,7 @@
           "amount": 1
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         }
       ],
@@ -3625,7 +3625,7 @@
       ],
       "items": [
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         },
         {
@@ -3743,7 +3743,7 @@
           "amount": 1
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         }
       ],
@@ -3807,7 +3807,7 @@
       ],
       "items": [
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 1
         },
         {
@@ -4574,7 +4574,7 @@
           "amount": 1
         },
         {
-          "name": "bread-1",
+          "name": "fruit-bread",
           "amount": 0
         }
       ],

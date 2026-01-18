@@ -25,7 +25,7 @@ export default {
     },
     itemModifiers: {
       acorn: [2, 0, 0],
-      'bread-1': [-15, 0, -10],
+      'fruit-bread': [-15, 0, -10],
       'bread-2': [-20, 0, -10],
       carrot: [4, 2, 0],
       'drink-1': [0, 0, 0],
@@ -63,7 +63,7 @@ export default {
     },
     itemModifiers: {
       acorn: [-1, 0, 0],
-      'bread-1': [5, 0, 10],
+      'fruit-bread': [5, 0, 10],
       'bread-2': [5, 0, 10],
       carrot: [-4, -2, 0],
       'drink-3': [10, 20, 10],
