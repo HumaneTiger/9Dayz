@@ -1,8 +1,10 @@
 import Props from './props.js';
 import Player from './player.js';
+import Character from './character.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
+import Almanac from './almanac.js';
 
 export default {
   /**
@@ -106,17 +108,7 @@ export default {
     }
 
     // ===== INVENTORY =====
-    // Add zero items first to present crafting options in Almanac
-    // TODO: This should be handled by the almanac restoration system
     Props.beginInventoryBatch();
-    Props.addItemToInventory('tape', 0);
-    Props.addItemToInventory('sharp-stick', 0);
-    Props.addItemToInventory('rope', 0);
-    Props.addItemToInventory('bone-hook', 0);
-    Props.addWeaponToInventory('wooden-club', 0, { durability: 0 });
-    Props.addWeaponToInventory('improvised-axe', 0, { durability: 0 });
-    Props.addWeaponToInventory('improvised-whip', 0, { durability: 0 });
-    Props.addWeaponToInventory('fishing-rod', 0, { durability: 0 });
 
     // Restore all inventory items and weapons (includes doggy)
     const inventoryItems = checkpoint.inventoryItems;
@@ -138,6 +130,14 @@ export default {
     Items.generateInventorySlots();
     Items.fillInventorySlots();
     Crafting.checkCraftingPrerequisits();
+
+    // ===== COMPANION =====
+    // Restore companion (doggy) state
+    if (checkpoint.companion) {
+      Props.setCompanion(checkpoint.companion);
+      Character.updateCompanionSlot();
+      Almanac.makeContentKnown(checkpoint.companion.name);
+    }
 
     // ===== OBJECTS SYSTEM =====
     // Restore all game entities (buildings, zombies, rats, bees, animals, weapons)

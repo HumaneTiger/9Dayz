@@ -207,6 +207,10 @@ export default {
     return companion;
   },
 
+  setCompanion: function (newCompanion) {
+    Object.assign(companion, newCompanion); // Updates properties, keeps same reference
+  },
+
   getPlayerProps: function () {
     return playerProps;
   },

@@ -9,6 +9,7 @@ import Battle from './battle.js';
 import Cooking from './cooking.js';
 import Character from './character.js';
 import Checkpoint from './checkpoint.js';
+import Almanac from './almanac.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -453,6 +454,7 @@ export default {
         object.removed = true;
         Props.addCompanion(cardId);
         Character.updateCompanionSlot();
+        Almanac.makeContentKnown(object.name);
         this.goBackFromAction(cardId);
         Props.changePlayerProp('energy', energy);
       },
