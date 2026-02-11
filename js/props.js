@@ -10,6 +10,7 @@ import LootUtils from '../data/utils/loot-utils.js';
 import ItemUtils from '../data/utils/item-utils.js';
 import PathUtils from '../data/utils/path-utils.js';
 import RngUtils from './utils/rng-utils.js';
+import GameState from './game-state.js';
 
 const mapSize = { width: 49, height: 45 };
 
@@ -29,79 +30,6 @@ var inventory = {
 var inventoryBatch = {
   active: false,
   oldTotal: 0,
-};
-
-var crafting = {
-  total: 0,
-};
-
-var companion = {
-  active: false,
-  sort: undefined,
-  name: 'doggy',
-  damage: undefined,
-  health: undefined,
-  maxHealth: undefined,
-  protection: undefined,
-  dead: false,
-};
-
-var playerProps = {
-  health: 0,
-  food: 0,
-  thirst: 0,
-  energy: 0,
-  protection: 0,
-  actions: 0,
-};
-
-var game = {
-  gameSeed: RngUtils.generateGameSeed(),
-  mode: 'real',
-  character: 'everyman',
-  isWalking: false,
-  isMoveLocked: false,
-  startMode: 1,
-  startDay: 1,
-  timeMode: 'day',
-  viewMode: '',
-  scaleFactor: 0,
-  tutorial: false,
-  battle: false,
-  tutorialBattle: false,
-  gamePaused: true,
-  local:
-    location.href.startsWith('http://127.0.0.1') || location.href.startsWith('http://localhost'),
-  playerPosition: { x: 18, y: 44 },
-  feedingCompanion: false,
-  firstUserInteraction: false,
-  firstFight: false,
-  firstInfestation: false,
-  firstLocked: false,
-  firstSearch: false,
-  firstZedNearby: false,
-  firstRatFight: false,
-  firstAxeCraft: false,
-  firstCorpse: false,
-  firstLowEnergy: false,
-  firstDeadAnimal: false,
-  firstInventoryOpen: false,
-  firstCompanion: false,
-  testPlayback: false,
-  timeConfig: {
-    startHour: 7,
-    ticksPerHour: 6,
-    tickInterval: 100,
-    tickCurrent: 0,
-    gameTickThreshold: 4000, // ms before triggering a game tick (lower = faster)
-  },
-  timeIsUnity: {
-    gameTick: 0,
-    gameHours: 24 + 7, // 24 + startHour
-    gameDays: 1,
-    todayHours: 7, // startHour
-    todayTime: '07:00',
-  },
 };
 
 // create 2D array with map size for object ids at positions
@@ -127,34 +55,34 @@ let targetLocations = {
 
 export default {
   init: function () {
+    GameState.init();
     this.setupAllPaths();
-    Events.on(
-      EVENTS.GAME_PROP_CHANGED,
-      ({ prop, value }) => {
-        if (prop === 'timeIsUnity') {
-          this.handleTimeChange(value);
-        }
-      },
-      { prop: 'timeIsUnity', value: this.getGameProp('timeIsUnity') }
-    );
   },
 
-  handleTimeChange: function (time) {
-    const hour = time.todayHours;
-    const ticksPerHour = this.getGameProp('timeConfig').ticksPerHour;
-    // Only execute on new hour (when gameTick is divisible by ticksPerHour)
-    if (time.gameTick % ticksPerHour === 0) {
-      if (hour === 21) {
-        this.setGameProp('timeMode', 'night');
-      }
-      if (hour === 5) {
-        this.setGameProp('timeMode', 'day');
-      }
-    }
+  /* === GameState delegations === */
+
+  getGameProps: function () {
+    return GameState.getGameProps();
+  },
+
+  getGameProp: function (prop) {
+    return GameState.getGameProp(prop);
+  },
+
+  setGameProp: function (prop, value) {
+    GameState.setGameProp(prop, value);
+  },
+
+  updateTimeIsUnity: function (updates) {
+    GameState.updateTimeIsUnity(updates);
+  },
+
+  pauseGame: function (pause) {
+    GameState.pauseGame(pause);
   },
 
   modifyObjectProperties: function () {
-    const character = this.getGameProp('character');
+    const character = GameState.getGameProp('character');
     const charDef = characterDefinitions[character];
 
     if (charDef?.buildingActionModifiers) {
@@ -167,78 +95,33 @@ export default {
     }
   },
 
-  getGameProps: function () {
-    return game;
+  getPlayerProps: function () {
+    return GameState.getPlayerProps();
   },
 
-  getGameProp: function (prop) {
-    return game[prop];
+  changePlayerProp: function (prop, change) {
+    return GameState.changePlayerProp(prop, change);
   },
 
-  setGameProp: function (prop, value) {
-    game[prop] = value;
-    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop, value });
+  getCompanion: function () {
+    return GameState.getCompanion();
   },
 
-  updateTimeIsUnity: function (updates) {
-    game.timeIsUnity = { ...game.timeIsUnity, ...updates };
-    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop: 'timeIsUnity', value: game.timeIsUnity });
+  setCompanion: function (newCompanion) {
+    GameState.setCompanion(newCompanion);
   },
 
-  pauseGame: function (pause) {
-    this.setGameProp('gamePaused', pause);
-    if (pause) {
-      document.body.classList.add('is--paused');
-    } else {
-      document.body.classList.remove('is--paused');
-    }
+  getCrafting: function () {
+    return GameState.getCrafting();
   },
 
-  /* inventory */
+  /* === inventory === */
   getAllItems: function () {
     return items;
   },
 
   getItem: function (item) {
     return items[item];
-  },
-
-  getCompanion: function () {
-    return companion;
-  },
-
-  setCompanion: function (newCompanion) {
-    Object.assign(companion, newCompanion); // Updates properties, keeps same reference
-  },
-
-  getPlayerProps: function () {
-    return playerProps;
-  },
-
-  /**
-   * Change a player property (state only)
-   * Emits PLAYER_PROP_CHANGED event for UI updates
-   */
-  changePlayerProp: function (prop, change) {
-    const oldValue = playerProps[prop];
-    playerProps[prop] += parseInt(change);
-    if (playerProps[prop] < 0) playerProps[prop] = 0;
-    if (playerProps[prop] > 100) playerProps[prop] = 100;
-
-    // EVENT: Notify UI that player property changed
-    Events.emit(EVENTS.PLAYER_PROP_CHANGED, {
-      prop,
-      change,
-      oldValue,
-      newValue: playerProps[prop],
-    });
-
-    return playerProps[prop];
-  },
-
-  /* active crafting number */
-  getCrafting: function () {
-    return crafting;
   },
 
   getObjectIdsAt: function (x, y) {
@@ -449,13 +332,7 @@ export default {
 
   addCompanion: function (objectId) {
     const object = this.getObject(objectId);
-    companion.active = true;
-    companion.sort = object.sort;
-    companion.name = object.name;
-    companion.damage = object.attack;
-    companion.health = object.health;
-    companion.maxHealth = object.maxHealth;
-    companion.protection = object.defense;
+    GameState.addCompanion(object);
   },
 
   addItemToInventory: function (item, addAmount) {
