@@ -1,4 +1,3 @@
-import Events, { EVENTS } from './events.js';
 import buildingData from '../data/map/building-instances.js';
 import zombieData from '../data/map/zombie-instances.js';
 import pathData from '../data/map/path-instances.js';
@@ -7,10 +6,11 @@ import characterDefinitions from '../data/definitions/character-definitions.js';
 import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
 import BuildingUtils from '../data/utils/building-utils.js';
 import LootUtils from '../data/utils/loot-utils.js';
-import ItemUtils from '../data/utils/item-utils.js';
 import PathUtils from '../data/utils/path-utils.js';
 import RngUtils from './utils/rng-utils.js';
 import GameState from './game-state.js';
+import ObjectState from './object-state.js';
+import InventoryManager from './inventory-manager.js';
 
 const mapSize = { width: 49, height: 45 };
 
@@ -19,25 +19,6 @@ const { buildingProps, buildingActions } = buildingDefinitions;
 
 // Destructure items/weapons definitions
 const { items, weaponProps, weaponPropsUpgrades } = itemsWeaponsDefinitions;
-
-var inventory = {
-  items: new Array(),
-  itemNumbers: 0,
-  leftHand: null,
-  rightHand: null,
-};
-
-var inventoryBatch = {
-  active: false,
-  oldTotal: 0,
-};
-
-// create 2D array with map size for object ids at positions
-var objectIdsAt = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
-
-var objects = [];
-var objectsIdCounter = 0;
-var zedCounter = 1;
 
 // create 2D array with map size for paths
 var paths = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
@@ -124,71 +105,109 @@ export default {
     return items[item];
   },
 
+  /* === InventoryManager delegations === */
+
+  getInventory: function () {
+    return InventoryManager.getInventory();
+  },
+
+  getInventoryItemNumbers: function () {
+    return InventoryManager.getInventoryItemNumbers();
+  },
+
+  getInventoryPresets: function (character) {
+    return InventoryManager.getInventoryPresets(character);
+  },
+
+  beginInventoryBatch: function () {
+    InventoryManager.beginInventoryBatch();
+  },
+
+  endInventoryBatch: function () {
+    InventoryManager.endInventoryBatch();
+  },
+
+  addWeaponToInventory: function (item, addAmount, setWeaponProps) {
+    InventoryManager.addWeaponToInventory(item, addAmount, setWeaponProps);
+  },
+
+  getWeaponTotal: function () {
+    return InventoryManager.getWeaponTotal();
+  },
+
+  addItemToInventory: function (item, addAmount) {
+    InventoryManager.addItemToInventory(item, addAmount);
+  },
+
+  calcTotalInventoryItems: function () {
+    InventoryManager.calcTotalInventoryItems();
+  },
+
+  calcItemProps: function (item) {
+    return InventoryManager.calcItemProps(item, this.getGameProp('character'));
+  },
+
+  addCompanion: function (objectId) {
+    const object = ObjectState.getObject(objectId);
+    GameState.addCompanion(object);
+  },
+
+  /* === ObjectState delegations === */
+
+  createGameObject: function (overrides = {}) {
+    return ObjectState.createGameObject(overrides);
+  },
+
   getObjectIdsAt: function (x, y) {
-    if (objectIdsAt[x]) {
-      return objectIdsAt[x][y];
-    }
+    return ObjectState.getObjectIdsAt(x, y);
   },
 
   getObjectsAt: function (x, y) {
-    let allObjectsAt = [];
-    this.getObjectIdsAt(x, y)?.forEach(id => {
-      allObjectsAt.push(this.getObject(id));
-    });
-    return allObjectsAt;
+    return ObjectState.getObjectsAt(x, y);
   },
 
   addObjectIdAt: function (x, y) {
-    const id = objectsIdCounter;
-    if (!objectIdsAt[x]) {
-      objectIdsAt[x] = [];
-    }
-    if (!objectIdsAt[x][y]) {
-      objectIdsAt[x][y] = [];
-    }
-    objectIdsAt[x][y].push(id);
-    objectsIdCounter += 1;
-    return id;
+    return ObjectState.addObjectIdAt(x, y);
   },
 
   getObject: function (id) {
-    return objects[id];
+    return ObjectState.getObject(id);
   },
 
   setObject: function (id, data) {
-    objects[id] = data;
+    ObjectState.setObject(id, data);
   },
 
   getAllObjects: function () {
-    return objects;
+    return ObjectState.getAllObjects();
   },
 
   setAllObjects: function (newObjects) {
-    objects = newObjects;
+    ObjectState.setAllObjects(newObjects);
   },
 
   getAllObjectIdsAt: function () {
-    return objectIdsAt;
+    return ObjectState.getAllObjectIdsAt();
   },
 
   setAllObjectIdsAt: function (newObjectIdsAt) {
-    objectIdsAt = newObjectIdsAt;
+    ObjectState.setAllObjectIdsAt(newObjectIdsAt);
   },
 
   getObjectsIdCounter: function () {
-    return objectsIdCounter;
+    return ObjectState.getObjectsIdCounter();
   },
 
   setObjectsIdCounter: function (value) {
-    objectsIdCounter = value;
+    ObjectState.setObjectsIdCounter(value);
   },
 
   getZedCounter: function () {
-    return zedCounter;
+    return ObjectState.getZedCounter();
   },
 
   setZedCounter: function (value) {
-    zedCounter = value;
+    ObjectState.setZedCounter(value);
   },
 
   getAllPaths: function () {
@@ -197,196 +216,6 @@ export default {
 
   getAllTargetLocations: function () {
     return targetLocations;
-  },
-
-  getInventory: function () {
-    return inventory;
-  },
-
-  getInventoryItemNumbers: function () {
-    return inventory.itemNumbers;
-  },
-
-  getInventoryPresets: function (character) {
-    return characterDefinitions[character]?.inventoryPreset || {};
-  },
-
-  createGameObject: function (overrides = {}) {
-    return {
-      x: undefined,
-      y: undefined,
-      name: undefined,
-      title: '',
-      type: undefined,
-      group: undefined,
-      text: false,
-      actions: [],
-      items: [],
-      locked: undefined,
-      hasKey: false,
-      looted: false,
-      infested: false,
-      zednearby: null,
-      active: true,
-      inreach: false,
-      discovered: false,
-      distance: null,
-      preview: undefined,
-      attack: undefined,
-      defense: undefined,
-      dead: undefined,
-      luringSuccessful: undefined,
-      fighting: false,
-      health: undefined,
-      maxHealth: undefined,
-      disabled: false,
-      removed: false,
-      ...overrides,
-    };
-  },
-
-  /**
-   * Begin batching inventory changes
-   * Captures current total, multiple adds will emit single event
-   */
-  beginInventoryBatch: function () {
-    inventoryBatch.active = true;
-    inventoryBatch.oldTotal = inventory.itemNumbers;
-  },
-
-  /**
-   * End batching and emit single INVENTORY_CHANGED event
-   */
-  endInventoryBatch: function () {
-    inventoryBatch.active = false;
-    const newTotal = inventory.itemNumbers;
-
-    // EVENT: Notify that inventory changed
-    Events.emit(EVENTS.INVENTORY_CHANGED, {
-      oldTotal: inventoryBatch.oldTotal,
-      newTotal: newTotal,
-    });
-  },
-
-  addWeaponToInventory: function (item, addAmount, setWeaponProps) {
-    const amount = parseInt(addAmount),
-      setDamage = setWeaponProps.damage,
-      setProtection = setWeaponProps.protection,
-      setDurability = setWeaponProps.durability,
-      itemProps = items[item];
-
-    const oldTotal = this.getWeaponTotal();
-
-    if (inventory.items[item] !== undefined) {
-      // weapon was added to inventory before
-      inventory.items[item].amount += amount;
-      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
-
-      setDamage ? (inventory.items[item].damage = setDamage) : false;
-      setProtection ? (inventory.items[item].protection = setProtection) : false;
-
-      if (setDurability !== undefined) {
-        inventory.items[item].durability += setDurability;
-        if (inventory.items[item].durability <= 0) {
-          // remove and reset inventory weapon props
-          inventory.items[item].amount = 0;
-          inventory.items[item].damage = ItemUtils.calcItemDamage(item);
-          inventory.items[item].protection = ItemUtils.calcItemProtection(item);
-          inventory.items[item].durability = 0;
-        }
-      }
-    } else if (itemProps !== undefined) {
-      // weapon is added first time to inventory
-      inventory.items[item] = {
-        type: itemProps[0],
-        name: item,
-        amount: amount,
-        damage: setDamage || ItemUtils.calcItemDamage(item),
-        protection: setProtection || ItemUtils.calcItemProtection(item),
-        durability: setDurability,
-      };
-    } else {
-      console.log('adding weapon "' + item + '" to inventory failed');
-    }
-
-    const newTotal = this.getWeaponTotal();
-
-    // EVENT: Emit if not batching
-    if (!inventoryBatch.active) {
-      Events.emit(EVENTS.WEAPON_CHANGED, {
-        oldTotal: oldTotal,
-        newTotal: newTotal,
-      });
-    }
-  },
-
-  getWeaponTotal: function () {
-    let total = 0;
-    for (let item in inventory.items) {
-      if (inventory.items[item].type === 'extra' && inventory.items[item].amount > 0) {
-        total += 1;
-      }
-    }
-    return total;
-  },
-
-  addCompanion: function (objectId) {
-    const object = this.getObject(objectId);
-    GameState.addCompanion(object);
-  },
-
-  addItemToInventory: function (item, addAmount) {
-    const amount = parseInt(addAmount),
-      itemProps = items[item];
-
-    const oldTotal = inventory.itemNumbers;
-
-    if (inventory.items[item] !== undefined) {
-      // item was added to inventory before
-      inventory.items[item].amount += amount;
-      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
-    } else if (itemProps !== undefined) {
-      // item is added first time to inventory
-      inventory.items[item] = {
-        type: itemProps[0],
-        name: item,
-        amount: amount,
-        damage: ItemUtils.calcItemDamage(item), // props for battle mode
-        protection: ItemUtils.calcItemProtection(item), // props for battle mode
-      };
-      // emit FIRST_ITEM_ADDED event for almanac tracking
-      Events.emit(EVENTS.FIRST_ITEM_ADDED, {
-        item: item,
-      });
-    } else {
-      console.log('adding item "' + item + '" to inventory failed');
-    }
-    this.calcTotalInventoryItems();
-
-    // EVENT: Emit if not batching
-    if (!inventoryBatch.active) {
-      Events.emit(EVENTS.INVENTORY_CHANGED, {
-        oldTotal: oldTotal,
-        newTotal: inventory.itemNumbers,
-      });
-    }
-  },
-
-  calcTotalInventoryItems: function () {
-    inventory.itemNumbers = 0;
-    for (let item in inventory.items) {
-      if (
-        inventory.items[item].type !== 'extra' &&
-        inventory.items[item].amount &&
-        inventory.items[item].amount > 0
-      ) {
-        inventory.itemNumbers += inventory.items[item].amount;
-      }
-    }
-  },
-
-  calcItemProps: function (item) {
-    return ItemUtils.calcItemProps(item, this.getGameProp('character'));
   },
 
   setupAllBuildings: function () {
@@ -665,14 +494,15 @@ export default {
         ],
         [10, attack >= 10 ? 9 : 5]
       );
-      const name = 'zombie-' + zedCounter;
+      const currentZedCounter = ObjectState.getZedCounter();
+      const name = 'zombie-' + currentZedCounter;
 
-      zedCounter = (zedCounter % 3) + 1; // Cycle through 1, 2, 3
+      ObjectState.setZedCounter((currentZedCounter % 3) + 1); // Cycle through 1, 2, 3
 
-      const currentObjectsIdCounter = this.addObjectIdAt(x, y);
-      this.setObject(
+      const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
+      ObjectState.setObject(
         currentObjectsIdCounter,
-        this.createGameObject({
+        ObjectState.createGameObject({
           x: x,
           y: y,
           name: name,
