@@ -169,4 +169,32 @@ export default {
   calcItemProps: function (item, character) {
     return ItemUtils.calcItemProps(item, character);
   },
+
+  /* === Item/Weapon Data Accessors === */
+
+  getAllItems: function () {
+    return items;
+  },
+
+  getItem: function (item) {
+    return items[item];
+  },
+
+  getWeaponProps: function (itemName) {
+    const { weaponProps } = itemsWeaponsDefinitions;
+    if (itemName) {
+      return weaponProps[itemName];
+    } else {
+      return weaponProps;
+    }
+  },
+
+  getWeaponPropsUpgrades: function (itemName) {
+    const { weaponPropsUpgrades } = itemsWeaponsDefinitions;
+    if (itemName) {
+      return weaponPropsUpgrades[itemName];
+    } else {
+      return weaponPropsUpgrades;
+    }
+  },
 };
