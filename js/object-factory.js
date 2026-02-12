@@ -1,16 +1,15 @@
 import LootUtils from '../data/utils/loot-utils.js';
 import BuildingUtils from '../data/utils/building-utils.js';
 import RngUtils from './utils/rng-utils.js';
-import buildingDefinitions from '../data/definitions/building-definitions.js';
-import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
+import { BuildingDefinitions, ItemsWeaponsDefinitions } from '../data/index.js';
 import GameState from './game-state.js';
 import ObjectState from './object-state.js';
 
 // Destructure building definitions for use throughout the file
-const { buildingProps } = buildingDefinitions;
+const { buildingProps } = BuildingDefinitions;
 
 // Destructure items/weapons definitions
-const { weaponProps } = itemsWeaponsDefinitions;
+const { weaponProps } = ItemsWeaponsDefinitions;
 
 export default {
   createCreaturesList: function (creatureType, x, y) {

@@ -3,15 +3,17 @@ import zombieData from '../data/map/zombie-instances.js';
 import pathData from '../data/map/path-instances.js';
 import LootUtils from '../data/utils/loot-utils.js';
 import PathUtils from '../data/utils/path-utils.js';
-import buildingDefinitions from '../data/definitions/building-definitions.js';
-import characterDefinitions from '../data/definitions/character-definitions.js';
-import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
+import {
+  BuildingDefinitions,
+  CharacterDefinitions,
+  ItemsWeaponsDefinitions,
+} from '../data/index.js';
 import GameState from './game-state.js';
 import ObjectFactory from './object-factory.js';
 
 const mapSize = { width: 49, height: 45 };
-const { buildingActions } = buildingDefinitions;
-const { weaponProps } = itemsWeaponsDefinitions;
+const { buildingActions } = BuildingDefinitions;
+const { weaponProps } = ItemsWeaponsDefinitions;
 
 // create 2D array with map size for paths
 var paths = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
@@ -97,7 +99,7 @@ export default {
 
   modifyObjectProperties: function () {
     const character = GameState.getGameProp('character');
-    const charDef = characterDefinitions[character];
+    const charDef = CharacterDefinitions[character];
 
     if (charDef?.buildingActionModifiers) {
       for (const buildingType in charDef.buildingActionModifiers) {

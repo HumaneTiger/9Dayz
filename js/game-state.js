@@ -1,5 +1,5 @@
 import Events, { EVENTS } from './events.js';
-import characterDefinitions from '../data/definitions/character-definitions.js';
+import { CharacterDefinitions } from '../data/index.js';
 import RngUtils from './utils/rng-utils.js';
 
 var playerProps = {
@@ -104,7 +104,7 @@ export default {
 
   modifyObjectProperties: function () {
     const character = this.getGameProp('character');
-    const charDef = characterDefinitions[character];
+    const charDef = CharacterDefinitions[character];
     // Note: buildingActions modifications require buildingDefinitions destructuring
     // This is handled in Props facade due to shared definition scope
     return charDef;

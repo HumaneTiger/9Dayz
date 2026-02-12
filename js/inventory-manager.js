@@ -1,10 +1,9 @@
 import Events, { EVENTS } from './events.js';
-import itemsWeaponsDefinitions from '../data/definitions/items-weapons-definitions.js';
-import characterDefinitions from '../data/definitions/character-definitions.js';
+import { ItemsWeaponsDefinitions, CharacterDefinitions } from '../data/index.js';
 import ItemUtils from '../data/utils/item-utils.js';
 
 // Destructure items/weapons definitions
-const { items } = itemsWeaponsDefinitions;
+const { items } = ItemsWeaponsDefinitions;
 
 var inventory = {
   items: new Array(),
@@ -28,7 +27,7 @@ export default {
   },
 
   getInventoryPresets: function (character) {
-    return characterDefinitions[character]?.inventoryPreset || {};
+    return CharacterDefinitions[character]?.inventoryPreset || {};
   },
 
   /**
@@ -181,7 +180,7 @@ export default {
   },
 
   getWeaponProps: function (itemName) {
-    const { weaponProps } = itemsWeaponsDefinitions;
+    const { weaponProps } = ItemsWeaponsDefinitions;
     if (itemName) {
       return weaponProps[itemName];
     } else {
@@ -190,7 +189,7 @@ export default {
   },
 
   getWeaponPropsUpgrades: function (itemName) {
-    const { weaponPropsUpgrades } = itemsWeaponsDefinitions;
+    const { weaponPropsUpgrades } = ItemsWeaponsDefinitions;
     if (itemName) {
       return weaponPropsUpgrades[itemName];
     } else {

@@ -1,6 +1,6 @@
-import buildingDefinitions from '../definitions/building-definitions.js';
+import { BuildingDefinitions } from '../index.js';
 
-const { buildingTypes, buildingActions } = buildingDefinitions;
+const { buildingTypes, buildingActions } = BuildingDefinitions;
 
 export default {
   /**

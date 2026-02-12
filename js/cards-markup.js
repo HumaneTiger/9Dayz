@@ -5,7 +5,7 @@ import { default as Cards } from './cards.js';
 import { default as Map } from './map.js';
 import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
-import RecipeDefinitions from '../data/definitions/recipe-definitions.js';
+import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const cardsContainer = document.getElementById('cards');
