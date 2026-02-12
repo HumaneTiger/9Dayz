@@ -1,6 +1,5 @@
-import Events, { EVENTS } from './events.js';
-import { ItemsWeaponsDefinitions, CharacterDefinitions } from '../data/index.js';
-import ItemUtils from '../data/utils/item-utils.js';
+import Events, { EVENTS } from '../events.js';
+import { ItemsWeaponsDefinitions, CharacterDefinitions, ItemUtils } from '../../data/index.js';
 
 // Destructure items/weapons definitions
 const { items } = ItemsWeaponsDefinitions;

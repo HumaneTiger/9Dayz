@@ -1,6 +1,6 @@
-import Events, { EVENTS } from './events.js';
-import { CharacterDefinitions } from '../data/index.js';
-import RngUtils from './utils/rng-utils.js';
+import Events, { EVENTS } from '../events.js';
+import { CharacterDefinitions } from '../../data/index.js';
+import RngUtils from '../utils/rng-utils.js';
 
 var playerProps = {
   health: 0,

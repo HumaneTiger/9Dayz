@@ -6,7 +6,7 @@ import Crafting from './crafting.js';
 import Cooking from './cooking.js';
 import Character from './character.js';
 import Audio from './audio.js';
-import ItemUtils from '../data/utils/item-utils.js';
+import { ItemUtils } from '../data/index.js';
 import Events, { EVENTS } from './events.js';
 import TimingUtils from './utils/timing-utils.js';
 

@@ -7,7 +7,7 @@ import Actions from './actions.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Character from './character.js';
-import ItemUtils from '../data/utils/item-utils.js';
+import { ItemUtils } from '../data/index.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
 

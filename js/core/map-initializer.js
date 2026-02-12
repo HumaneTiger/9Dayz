@@ -1,13 +1,13 @@
-import buildingData from '../data/map/building-instances.js';
-import zombieData from '../data/map/zombie-instances.js';
-import pathData from '../data/map/path-instances.js';
-import LootUtils from '../data/utils/loot-utils.js';
-import PathUtils from '../data/utils/path-utils.js';
 import {
+  BuildingInstances,
+  ZombieInstances,
+  PathInstances,
+  LootUtils,
+  PathUtils,
   BuildingDefinitions,
   CharacterDefinitions,
   ItemsWeaponsDefinitions,
-} from '../data/index.js';
+} from '../../data/index.js';
 import GameState from './game-state.js';
 import ObjectFactory from './object-factory.js';
 
@@ -49,21 +49,21 @@ export default {
     }
 
     // Setup all regular buildings from imported JSON
-    buildingData.buildings.forEach(entry => {
+    BuildingInstances.buildings.forEach(entry => {
       ObjectFactory.setupBuilding(entry.x, entry.y, entry.buildings, entry.infested);
     });
   },
 
   setupAllZeds: function () {
     // Setup all zombies from imported JSON
-    zombieData.zombies.forEach(entry => {
+    ZombieInstances.zombies.forEach(entry => {
       ObjectFactory.setZedAt(entry.x, entry.y, entry.amount);
     });
   },
 
   setupAllPaths: function () {
     // Setup all paths from imported JSON
-    pathData.paths.forEach(path => {
+    PathInstances.paths.forEach(path => {
       switch (path.type) {
         case 'vertical':
           PathUtils.setupPathVer(paths, path.x, path.y1, path.y2);

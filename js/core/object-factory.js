@@ -1,7 +1,10 @@
-import LootUtils from '../data/utils/loot-utils.js';
-import BuildingUtils from '../data/utils/building-utils.js';
-import RngUtils from './utils/rng-utils.js';
-import { BuildingDefinitions, ItemsWeaponsDefinitions } from '../data/index.js';
+import {
+  LootUtils,
+  BuildingUtils,
+  BuildingDefinitions,
+  ItemsWeaponsDefinitions,
+} from '../../data/index.js';
+import RngUtils from '../utils/rng-utils.js';
 import GameState from './game-state.js';
 import ObjectState from './object-state.js';
 

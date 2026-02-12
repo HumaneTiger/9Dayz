@@ -1,8 +1,10 @@
-import GameState from './game-state.js';
-import ObjectState from './object-state.js';
-import InventoryManager from './inventory-manager.js';
-import ObjectFactory from './object-factory.js';
-import MapInitializer from './map-initializer.js';
+import {
+  GameState,
+  ObjectState,
+  InventoryManager,
+  ObjectFactory,
+  MapInitializer,
+} from './core/index.js';
 
 export default {
   init: function () {
