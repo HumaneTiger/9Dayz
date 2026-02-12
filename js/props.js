@@ -4,7 +4,10 @@ import {
   InventoryManager,
   ObjectFactory,
   MapInitializer,
+  TutorialInitializer,
 } from './core/index.js';
+
+import { LocationInstances } from '../../data/index.js';
 
 export default {
   init: function () {
@@ -168,7 +171,7 @@ export default {
   },
 
   getAllTargetLocations: function () {
-    return MapInitializer.getAllTargetLocations();
+    return LocationInstances.targetLocations;
   },
 
   setupAllBuildings: function () {
@@ -241,6 +244,10 @@ export default {
 
   setupAllPaths: function () {
     MapInitializer.setupAllPaths();
+  },
+
+  setupTutorialMap: function () {
+    TutorialInitializer.setupTutorialMap();
   },
 
   getAllItems: function () {
