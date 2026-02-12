@@ -1,4 +1,6 @@
-const mapSize = { width: 49, height: 45 };
+import GameState from './game-state.js';
+
+const mapSize = GameState.getGameProp('mapSize');
 
 // create 2D array with map size for object ids at positions
 var objectIdsAt = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));

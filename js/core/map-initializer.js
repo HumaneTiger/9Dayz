@@ -2,52 +2,21 @@ import {
   BuildingInstances,
   ZombieInstances,
   PathInstances,
-  LootUtils,
   PathUtils,
   BuildingDefinitions,
   CharacterDefinitions,
-  ItemsWeaponsDefinitions,
 } from '../../data/index.js';
 import GameState from './game-state.js';
 import ObjectFactory from './object-factory.js';
 
-const mapSize = { width: 49, height: 45 };
 const { buildingActions } = BuildingDefinitions;
-const { weaponProps } = ItemsWeaponsDefinitions;
+const mapSize = GameState.getGameProp('mapSize');
 
 // create 2D array with map size for paths
 var paths = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
 
-let targetLocations = {
-  'Lakeside Camp Resort': [5, 37],
-  Rocksprings: [22, 34],
-  'Haling Cove': [16, 8],
-  Litchfield: [15, 23],
-  Greenleafton: [33, 35],
-  'Billibalds Farm': [40, 30],
-  'Camp Silverlake': [28, 22],
-  'Harbor Gas Station': [34, 16],
-};
-
 export default {
   setupAllBuildings: function () {
-    // ONLY FOR TUTORIAL (hardcoded - special case)
-    if (GameState.getGameProp('tutorial')) {
-      ObjectFactory.setupBuilding(
-        18,
-        44,
-        ['crate'],
-        false,
-        LootUtils.forceLootItemList(['drink-5', 'fruit-bread', 'wooden-club'])
-      );
-      ObjectFactory.setupWeapon(18, 44, 'axe', {
-        attack: weaponProps['axe'].attack / 2,
-        defense: weaponProps['axe'].defense / 2,
-        durability: weaponProps['axe'].durability / 2,
-      });
-      ObjectFactory.setZedAt(18, 42, 1, 3, 2); // weak zed for tutorial
-    }
-
     // Setup all regular buildings from imported JSON
     BuildingInstances.buildings.forEach(entry => {
       ObjectFactory.setupBuilding(entry.x, entry.y, entry.buildings, entry.infested);
@@ -90,12 +59,6 @@ export default {
   getAllPaths: function () {
     return paths;
   },
-
-  getAllTargetLocations: function () {
-    return targetLocations;
-  },
-
-  /* === Initialization === */
 
   modifyObjectProperties: function () {
     const character = GameState.getGameProp('character');

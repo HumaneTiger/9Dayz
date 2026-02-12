@@ -44,6 +44,7 @@ var game = {
   local:
     location.href.startsWith('http://127.0.0.1') || location.href.startsWith('http://localhost'),
   playerPosition: { x: 18, y: 44 },
+  mapSize: { width: 49, height: 45 },
   feedingCompanion: false,
   firstUserInteraction: false,
   firstFight: false,

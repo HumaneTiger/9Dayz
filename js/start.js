@@ -124,6 +124,9 @@ export default {
     // generate all buildings and zeds
     Props.setupAllBuildings();
     Props.setupAllZeds();
+    if (Props.getGameProp('tutorial')) {
+      Props.setupTutorialMap();
+    }
     Tutorial.setupAllEvents();
 
     Player.setPlayerPosition(
