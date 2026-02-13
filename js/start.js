@@ -6,7 +6,7 @@ import { default as Crafting } from './crafting.js';
 import { default as Tutorial } from './tutorial.js';
 import { default as Ui } from './ui.js';
 import { default as Checkpoint } from './checkpoint.js';
-import { default as Character } from './character.js';
+import { default as Weapons } from './weapons.js';
 import { default as Cooking } from './cooking.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
@@ -117,7 +117,7 @@ export default {
     Props.modifyObjectProperties();
     Items.generateInventorySlots();
     Items.fillInventorySlots();
-    Character.updateWeaponState();
+    Weapons.updateWeaponState();
     Cooking.checkAllCookingModeCards();
     Crafting.checkCraftingPrerequisits();
 

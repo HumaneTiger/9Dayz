@@ -3,7 +3,7 @@ import Props from './props.js';
 import Checkpoint from './checkpoint.js';
 import Start from './start.js';
 import Ui from './ui.js';
-import Character from './character.js';
+import Weapons from './weapons.js';
 
 let isRecording = false;
 let recordedCommands = [];
@@ -525,7 +525,7 @@ export default {
         };
       } else if (upgradeButton && leftMouseButton) {
         const weaponName = cardSlot.dataset.item;
-        const upgradeType = Character.getUpgradeType(upgradeButton);
+        const upgradeType = Weapons.getUpgradeType(upgradeButton);
         if (upgradeType) {
           return {
             module: 'Character',

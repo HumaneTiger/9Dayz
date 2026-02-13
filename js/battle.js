@@ -7,6 +7,7 @@ import Actions from './actions.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Character from './character.js';
+import Weapons from './weapons.js';
 import { ItemUtils } from '../data/index.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
@@ -202,7 +203,7 @@ export default {
     document.getElementById('inventory').classList.remove('active');
     document.getElementById('craft').classList.remove('active');
     document.getElementById('character').classList.remove('active');
-    Character.updateWeaponState();
+    Weapons.updateWeaponState();
     document.getElementById('cards').classList.add('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
 
@@ -469,10 +470,10 @@ export default {
       '<div class="battle-card inactive" data-item="' +
         item.name +
         '"><div class="inner">' +
-        (item.type !== 'extra'
+        (!Props.isWeapon(item.name)
           ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
           : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
-        (item.type === 'extra' && item.durability === 1
+        (Props.isWeapon(item.name) && item.durability === 1
           ? '<img class="last-use" src="./img/weapons/last-use.png">'
           : '') +
         '<div class="attack">' +
