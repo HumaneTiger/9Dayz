@@ -313,9 +313,8 @@ export default {
   grabItem: async function (cardId, container, itemName) {
     const object = Props.getObject(cardId);
     const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
-    const itemProps = Props.getItem(itemName);
     let cardRef = Cards.getCardById(cardId);
-    if (itemProps && itemProps[0] === 'extra') {
+    if (Props.isWeapon(itemName)) {
       // spawn card representing the grabbed weapon item
       Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
     } else if (itemName === 'crate') {
@@ -334,7 +333,7 @@ export default {
     await TimingUtils.waitForTransition(container);
     if (cardRef) {
       container.classList.add('is--hidden');
-      if (itemName === 'crate' || itemProps[0] === 'extra') {
+      if (itemName === 'crate' || Props.isWeapon(itemName)) {
         Player.findAndHandleObjects();
       } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
       if (

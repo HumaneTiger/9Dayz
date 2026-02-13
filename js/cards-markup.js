@@ -193,7 +193,6 @@ export default {
   },
 
   generateItemMarkup: function (name, amount) {
-    const props = Props.calcItemProps(name);
     /* a new building state "itemsReveald" is missing */
     /* after gathering + save + reload, items are hidden again */
     return (
@@ -204,7 +203,7 @@ export default {
       amount +
       '">' +
       '<span class="img">' +
-      (props?.type !== 'extra'
+      (!Props.isWeapon(name)
         ? '<img src="./img/items/' + name + '.PNG">'
         : '<img class="weapon" src="./img/weapons/' + name + '.png">') +
       '</span><span class="amount">' +

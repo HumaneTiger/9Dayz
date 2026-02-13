@@ -175,10 +175,9 @@ export default {
 
   renderItemPageContent: function (item) {
     const itemProps = Props.calcItemProps(item);
-    console.log(item, this.isContentKnown(item));
     // update motive image for both types
-    const imgSubPath = itemProps.type !== 'extra' ? 'items' : 'weapons';
-    const imgExtension = itemProps.type !== 'extra' ? 'PNG' : 'png';
+    const imgSubPath = !Props.isWeapon(item) ? 'items' : 'weapons';
+    const imgExtension = !Props.isWeapon(item) ? 'PNG' : 'png';
     almanacContainer
       .querySelector('img.motive')
       .setAttribute('src', `./img/${imgSubPath}/${item}.${imgExtension}`);

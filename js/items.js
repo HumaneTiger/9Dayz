@@ -38,6 +38,8 @@ export default {
   inventoryContains: function (item) {
     if (inventory.items[item]?.amount > 0) {
       return true;
+    } else if (inventory.weapons[item]?.amount > 0) {
+      return true;
     } else if (item === 'water') {
       if (inventory.items['drink-1']?.amount > 0 || inventory.items['drink-2']?.amount > 0) {
         return true;
@@ -60,6 +62,8 @@ export default {
 
   inventoryKnows: function (item) {
     if (inventory.items[item]) {
+      return true;
+    } else if (inventory.weapons[item]) {
       return true;
     } else if (item === 'water') {
       if (inventory.items['drink-1'] || inventory.items['drink-2']) {
@@ -297,17 +301,15 @@ export default {
 
   generateInventorySlots: function () {
     for (const item in items) {
-      if (items[item][0] !== 'extra') {
-        inventoryContainer.querySelector('.inner').insertAdjacentHTML(
-          'beforeend',
-          `<div class="slot unknown ${items[item][0]} item-${item}" data-item="${item}">
+      inventoryContainer.querySelector('.inner').insertAdjacentHTML(
+        'beforeend',
+        `<div class="slot unknown ${items[item][0]} item-${item}" data-item="${item}">
             <img src="./img/items/${item}.PNG" class="bg">
             <span class="unknown">?</span>
             <span class="amount"></span>
             <span class="action">${items[item][0]}</span>
           </div>`
-        );
-      }
+      );
     }
   },
 

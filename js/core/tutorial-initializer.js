@@ -1,7 +1,7 @@
-import { LootUtils, ItemsWeaponsDefinitions } from '../../data/index.js';
+import { LootUtils, WeaponsDefinitions } from '../../data/index.js';
 import ObjectFactory from './object-factory.js';
 
-const { weaponProps } = ItemsWeaponsDefinitions;
+const { weaponProps } = WeaponsDefinitions;
 
 export default {
   // Tutorial-specific map setup

@@ -1,4 +1,4 @@
-import itemsWeaponsDefinitions from '../definitions/items-weapons-definitions.js';
+import itemsWeaponsDefinitions from '../definitions/items-definitions.js';
 import characterDefinitions from '../definitions/character-definitions.js';
 
 const { items } = itemsWeaponsDefinitions;

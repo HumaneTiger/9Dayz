@@ -1,11 +1,8 @@
 // @ts-check
 
 /**
- * @import { ItemDefinition } from '../../data/definitions/items-weapons-definitions.js'
- * @import { ItemProps } from '../../data/definitions/items-weapons-definitions.js'
- * @import { WeaponProps } from '../../data/definitions/items-weapons-definitions.js'
- * @import { WeaponUpgrade } from '../../data/definitions/items-weapons-definitions.js'
- * @import { WeaponUpgrades } from '../../data/definitions/items-weapons-definitions.js'
+ * @import { ItemDefinition, ItemProps } from '../../data/definitions/items-definitions.js'
+ * @import { WeaponDefinition, WeaponProps, WeaponUpgrade, WeaponUpgrades } from '../../data/definitions/weapons-definitions.js'
  */
 
 /**
@@ -18,11 +15,19 @@
 
 import Events, { EVENTS } from '../events.js';
 import { GameState } from './index.js';
-import { ItemsWeaponsDefinitions, CharacterDefinitions, ItemUtils } from '../../data/index.js';
+import {
+  ItemsDefinitions,
+  WeaponsDefinitions,
+  CharacterDefinitions,
+  ItemUtils,
+} from '../../data/index.js';
 
 // Destructure items/weapons definitions
 /** @type {Record<string, ItemDefinition>} */
-const items = ItemsWeaponsDefinitions.items;
+const items = ItemsDefinitions.items;
+
+/** @type {Record<string, WeaponDefinition>} */
+const weapons = WeaponsDefinitions.weapons;
 
 /** @type {Inventory} */
 var inventory = {
@@ -89,12 +94,12 @@ export default {
   },
 
   /**
-   * @param {string} item
+   * @param {string} weaponName
    * @param {number} addAmount
    * @param {WeaponProps} setWeaponProps
    * @returns {void}
    */
-  addWeaponToInventory: function (item, addAmount, setWeaponProps) {
+  addWeaponToInventory: function (weaponName, addAmount, setWeaponProps) {
     if (typeof addAmount === 'string') {
       console.error('addAmount must be a number, got string:', addAmount);
       return;
@@ -103,40 +108,39 @@ export default {
     const setDamage = setWeaponProps.damage,
       setProtection = setWeaponProps.protection,
       setDurability = setWeaponProps.durability,
-      itemProps = items[item];
+      weaponProps = weapons[weaponName];
 
     const oldTotal = this.getWeaponTotal();
 
-    if (inventory.items[item] !== undefined) {
+    if (inventory.weapons[weaponName] !== undefined) {
       // weapon was added to inventory before
-      inventory.items[item].amount += addAmount;
-      inventory.items[item].amount < 0 ? (inventory.items[item].amount = 0) : false;
+      inventory.weapons[weaponName].amount += addAmount;
+      inventory.weapons[weaponName].amount < 0 ? (inventory.weapons[weaponName].amount = 0) : false;
 
-      setDamage ? (inventory.items[item].damage = setDamage) : false;
-      setProtection ? (inventory.items[item].protection = setProtection) : false;
+      setDamage ? (inventory.weapons[weaponName].damage = setDamage) : false;
+      setProtection ? (inventory.weapons[weaponName].protection = setProtection) : false;
 
       if (setDurability !== undefined) {
-        inventory.items[item].durability += setDurability;
-        if (inventory.items[item].durability <= 0) {
+        inventory.weapons[weaponName].durability += setDurability;
+        if (inventory.weapons[weaponName].durability <= 0) {
           // remove and reset inventory weapon props
-          inventory.items[item].amount = 0;
-          inventory.items[item].damage = ItemUtils.calcItemDamage(item);
-          inventory.items[item].protection = ItemUtils.calcItemProtection(item);
-          inventory.items[item].durability = 0;
+          inventory.weapons[weaponName].amount = 0;
+          inventory.weapons[weaponName].damage = weapons[weaponName].attack;
+          inventory.weapons[weaponName].protection = weapons[weaponName].defense;
+          inventory.weapons[weaponName].durability = 0;
         }
       }
-    } else if (itemProps !== undefined) {
+    } else if (weaponProps !== undefined) {
       // weapon is added first time to inventory
-      inventory.items[item] = {
-        type: itemProps[0],
-        name: item,
+      inventory.weapons[weaponName] = {
+        name: weaponName,
         amount: addAmount,
-        damage: setDamage || ItemUtils.calcItemDamage(item),
-        protection: setProtection || ItemUtils.calcItemProtection(item),
+        damage: setDamage || weapons[weaponName].attack,
+        protection: setProtection || weapons[weaponName].defense,
         durability: setDurability,
       };
     } else {
-      console.log('adding weapon "' + item + '" to inventory failed');
+      console.log('adding weapon "' + weaponName + '" to inventory failed');
     }
 
     const newTotal = this.getWeaponTotal();
@@ -155,8 +159,8 @@ export default {
    */
   getWeaponTotal: function () {
     let total = 0;
-    for (let item in inventory.items) {
-      if (inventory.items[item].type === 'extra' && inventory.items[item].amount > 0) {
+    for (let weaponName in inventory.weapons) {
+      if (inventory.weapons[weaponName].amount > 0) {
         total += 1;
       }
     }
@@ -184,7 +188,6 @@ export default {
     } else if (itemProps !== undefined) {
       // item is added first time to inventory
       const character = GameState.getGameProp('character');
-      console.log(ItemUtils.calcItemProps(item, character));
       inventory.items[item] = ItemUtils.calcItemProps(item, character);
       inventory.items[item].amount = addAmount;
       // emit FIRST_ITEM_ADDED event for almanac tracking
@@ -207,18 +210,14 @@ export default {
 
   /**
    * Recalculate the total count of items in inventory
-   * Only counts non-weapon items (type !== 'extra') with amount > 0
+   * Only counts non-weapon items with amount > 0
    * Updates inventory.itemNumbers
    * @returns {void}
    */
   calcTotalInventoryItems: function () {
     inventory.itemNumbers = 0;
     for (let item in inventory.items) {
-      if (
-        inventory.items[item].type !== 'extra' &&
-        inventory.items[item].amount &&
-        inventory.items[item].amount > 0
-      ) {
+      if (inventory.items[item].amount && inventory.items[item].amount > 0) {
         inventory.itemNumbers += inventory.items[item].amount;
       }
     }
@@ -244,34 +243,72 @@ export default {
 
   /**
    * Get item definition by name
-   * @param {string} item - Item name
+   * @param {string} itemName - Item name
    * @returns {ItemDefinition}
    */
-  getItem: function (item) {
-    return items[item];
+  getItem: function (itemName) {
+    return items[itemName] || weapons[itemName];
   },
 
   /**
-   * @param {string} itemName
-   * @returns {WeaponProps | Record<string, WeaponProps>}
+   * @returns {Record<string, WeaponProps>}
    */
-  getWeaponProps: function (itemName) {
-    const { weaponProps } = ItemsWeaponsDefinitions;
-    if (itemName) {
-      return weaponProps[itemName];
+  getAllInventoryWeapons: function () {
+    return inventory.weapons;
+  },
+
+  /**
+   * @param {string} weaponName - Weapon name
+   * @returns {WeaponProps}
+   */
+  getWeaponFromInventory: function (weaponName) {
+    return inventory.weapons[weaponName];
+  },
+
+  /**
+   * @returns {Record<string, WeaponDefinition>}
+   */
+  getAllWeapons: function () {
+    return weapons;
+  },
+
+  /**
+   * Get weapon definition by name
+   * @param {string} weaponName - Weapon name
+   * @returns {WeaponDefinition}
+   */
+  getWeapon: function (weaponName) {
+    return weapons[weaponName];
+  },
+
+  /**
+   * @param {string} name - Possible weapon name
+   * @returns {boolean} True if name is a valid weapon, false otherwise
+   */
+  isWeapon: function (name) {
+    return !!weapons[name];
+  },
+
+  /**
+   * @param {string} weaponName
+   * @returns {WeaponDefinition | Record<string, WeaponDefinition>}
+   */
+  getWeaponProps: function (weaponName) {
+    if (weaponName) {
+      return weapons[weaponName];
     } else {
-      return weaponProps;
+      return weapons;
     }
   },
 
   /**
-   * @param {string} itemName
+   * @param {string} weaponName
    * @returns {WeaponUpgrade | WeaponUpgrades}
    */
-  getWeaponPropsUpgrades: function (itemName) {
-    const { weaponPropsUpgrades } = ItemsWeaponsDefinitions;
-    if (itemName) {
-      return weaponPropsUpgrades[itemName];
+  getWeaponPropsUpgrades: function (weaponName) {
+    const { weaponPropsUpgrades } = WeaponsDefinitions;
+    if (weaponName) {
+      return weaponPropsUpgrades[weaponName];
     } else {
       return weaponPropsUpgrades;
     }

@@ -24,6 +24,7 @@ export default {
   init: function () {
     this.preloadBuildings();
     this.preloadItems();
+    this.preloadWeapons();
     this.preloadUI();
     this.preloadZombies();
   },
@@ -54,11 +55,15 @@ export default {
     const items = Props.getAllItems();
     const loader = new ImagePreloader('./img/');
     for (const prop in items) {
-      if (items[prop][0] !== 'extra') {
-        loader.load(prop, 'items/' + prop + '.PNG');
-      } else {
-        loader.load(prop, 'weapons/' + prop + '.png');
-      }
+      loader.load(prop, 'items/' + prop + '.PNG');
+    }
+  },
+
+  preloadWeapons: function () {
+    const weapons = Props.getAllWeapons();
+    const loader = new ImagePreloader('./img/');
+    for (const prop in weapons) {
+      loader.load(prop, 'weapons/' + prop + '.png');
     }
   },
 

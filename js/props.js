@@ -258,6 +258,26 @@ export default {
     return InventoryManager.getItem(item);
   },
 
+  getAllWeapons: function () {
+    return InventoryManager.getAllWeapons();
+  },
+
+  getAllInventoryWeapons: function () {
+    return InventoryManager.getAllInventoryWeapons();
+  },
+
+  getWeaponFromInventory: function (item) {
+    return InventoryManager.getWeaponFromInventory(item);
+  },
+
+  getWeapon: function (item) {
+    return InventoryManager.getWeapon(item);
+  },
+
+  isWeapon: function (name) {
+    return InventoryManager.isWeapon(name);
+  },
+
   getWeaponProps: function (itemName) {
     return InventoryManager.getWeaponProps(itemName);
   },
