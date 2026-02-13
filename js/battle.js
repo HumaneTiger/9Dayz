@@ -291,16 +291,18 @@ export default {
 
   spawnBattleDeck: function (surprised) {
     let sparedTools = 0;
-    const sortedKeys = Object.keys(inventory.items).sort((a, b) => a.localeCompare(b));
+    const inventoryItemsAndWeapons = { ...inventory.items, ...inventory.weapons };
+    // Makes battle deck construction deterministic rather than relying on JavaScript's object key ordering
+    const sortedKeys = Object.keys(inventoryItemsAndWeapons).sort((a, b) => a.localeCompare(b));
     for (const item of sortedKeys) {
-      for (let i = 0; i < inventory.items[item].amount; i++) {
+      for (let i = 0; i < inventoryItemsAndWeapons[item].amount; i++) {
         if (
           Props.getGameProp('character') === 'craftsmaniac' &&
           ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'nails'].includes(item)
         ) {
           sparedTools += 1;
         } else {
-          battleDeck.push(inventory.items[item]);
+          battleDeck.push(inventoryItemsAndWeapons[item]);
         }
       }
     }
@@ -490,7 +492,7 @@ export default {
   resolveMultiAttack: function (dragEl, dragTarget) {
     const zedId = dragTarget.id;
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
-    const item = Items.getItemByName(dragEl.dataset.item);
+    const item = Props.getItem(dragEl.dataset.item);
 
     /* hit 3 potential targets */
     let potentialTargets = [];
@@ -525,7 +527,7 @@ export default {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
     const zedCardRef = Cards.getCardById(zedId);
-    const item = Items.getItemByName(dragEl.dataset.item);
+    const item = Props.getItem(dragEl.dataset.item);
 
     if (!multiAttack) {
       Props.changePlayerProp('protection', item.protection);

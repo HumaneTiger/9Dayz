@@ -230,7 +230,7 @@ export default {
   },
 
   getItemInfoMarkup: function (item, itemActive) {
-    const action = items[item][0],
+    const action = items[item][0], // Props.getItem() und davon alles ableiten?
       itemProps = Props.calcItemProps(item),
       itemMods = ItemUtils.getItemModifier(Props.getGameProp('character'), item);
     let itemFood = itemProps.food,
