@@ -6,6 +6,19 @@
  */
 
 /**
+ * @typedef {Object} ItemProps
+ * @property {number} amount
+ * @property {string} name
+ * @property {string} type
+ * @property {number} damage
+ * @property {number} protection
+ * @property {number} food
+ * @property {number} drink
+ * @property {number} energy
+ * @export
+ */
+
+/**
  * @typedef {Object} WeaponProps
  * @property {number} [attack]
  * @property {number} [defense]

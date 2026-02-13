@@ -48,7 +48,7 @@ export default {
    * Calculate complete item properties including character modifiers
    * @param {string} item - Item name
    * @param {string} character - Character type
-   * @returns {object|undefined} Item properties object or undefined
+   * @returns {ItemProps | undefined}
    */
   calcItemProps: function (item, character) {
     const itemProps = items[item];
