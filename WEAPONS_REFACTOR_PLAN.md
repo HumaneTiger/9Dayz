@@ -46,14 +46,13 @@ var inventory = {
 
 **ROADBUMP: The "Combo Name" Problem**
 
-- `items-weapons-definitions.js` has items injected WITH weapon stats:
+- `items-weapons-definitions.js` currently has weapon entries mixed with items:
   ```javascript
   'improvised-axe': ['extra', 0, 0, 0, weaponProps['improvised-axe'].attack, ...]
   ```
-- This creates circular dependency concerns when you split
-- You'll need to update the items definition to reference weapons data
+- These need to be completely separated
 
-**RECOMMENDATION:** Create `weapons-definitions.js` and update `items-weapons-definitions.js` to import weapon stats:
+**RECOMMENDATION:** Create two independent definition files with no cross-imports:
 
 ```javascript
 // weapons-definitions.js - NEW
@@ -62,10 +61,14 @@ export default {
   weaponPropsUpgrades: {...}
 }
 
-// items-weapons-definitions.js - MODIFIED
-import WeaponsDefinitions from './weapons-definitions.js';
-// Then reference: WeaponsDefinitions.weaponProps['improvised-axe'].attack
+// items-definitions.js - NEW (or rename current to this)
+// Contains only non-weapon items, weapon entries removed completely
+export default {
+  items: {...}
+}
 ```
+
+Both are standalone, imported independently by other modules.
 
 ### 3. Game Logic Split (items.js)
 
@@ -223,14 +226,14 @@ Then update all check sites to use this single function.
 
 ### Files to Create
 
-- [ ] `data/definitions/weapons-definitions.js`
+- [ ] `data/definitions/weapons-definitions.js` - standalone weapons data
 - [ ] `js/core/weapons-manager.js`
 - [ ] `js/weapons.js`
 
 ### Files to Modify
 
-- [ ] `data/definitions/items-weapons-definitions.js` - import weapons definitions
-- [ ] `data/definitions/index.js` - export WeaponsDefinitions
+- [ ] `data/definitions/items-weapons-definitions.js` - remove weapon entries, keep only items
+- [ ] `data/definitions/index.js` - export WeaponsDefinitions (new) and update ItemsDefinitions
 - [ ] `data/utils/item-utils.js` - add `isWeapon()` utility
 - [ ] `js/core/inventory-manager.js` - remove weapon logic
 - [ ] `js/props.js` - update routing to WeaponsManager
