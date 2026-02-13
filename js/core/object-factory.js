@@ -405,7 +405,7 @@ export default {
   },
 
   setupWeapon: function (x, y, weaponName, forceStats) {
-    const props = InventoryManager.getWeapon(weaponName);
+    const props = InventoryManager.getWeaponDefinition(weaponName);
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
     ObjectState.setObject(
       currentObjectsIdCounter,

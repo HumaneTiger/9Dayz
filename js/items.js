@@ -229,17 +229,24 @@ export default {
     }
   },
 
-  getItemInfoMarkup: function (item, itemActive) {
-    const action = items[item][0], // Props.getItem() und davon alles ableiten?
-      itemProps = Props.calcItemProps(item),
+  getItemInfoMarkup: function (itemName, itemActive) {
+    const item = Props.isWeapon(itemName)
+      ? Props.getWeaponFromInventory(itemName)
+      : Props.getItemFromInventory(itemName);
+    if (!item) {
+      console.log('Item not found in inventory:', itemName);
+      return '';
+    }
+
+    const action = item.type || '',
       itemMods = ItemUtils.getItemModifier(Props.getGameProp('character'), item);
-    let itemFood = itemProps.food,
-      itemDrink = itemProps.drink,
-      itemEnergy = itemProps.energy || 0;
+    let itemFood = item.food,
+      itemDrink = item.drink,
+      itemEnergy = item.energy || 0;
 
     let itemInfoMarkup = Props.getGameProp('feedingCompanion')
-      ? `<span class="name">Feeding ${ItemUtils.extractItemName(item)} gives</span>`
-      : `<span class="name">${ItemUtils.extractItemName(item)}</span>`;
+      ? `<span class="name">Feeding ${ItemUtils.extractItemName(itemName)} gives</span>`
+      : `<span class="name">${ItemUtils.extractItemName(itemName)}</span>`;
 
     if (!Props.getGameProp('feedingCompanion')) {
       if (itemMods !== undefined && itemMods[0] !== 0) {
@@ -264,23 +271,23 @@ export default {
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       } else {
-        if (itemProps.food > 0 && this.inventoryContains(item)) {
+        if (item.food > 0 && this.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="food">${itemFood}<span class="material-symbols-outlined">lunch_dining</span></span>`;
         }
-        if (itemProps.drink > 0 && this.inventoryContains(item)) {
+        if (item.drink > 0 && this.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="drink">${itemDrink}<span class="material-symbols-outlined">water_medium</span></span>`;
         }
-        if (itemProps.energy > 0 && this.inventoryContains(item)) {
+        if (item.energy > 0 && this.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="energy">${itemEnergy}<span class="material-symbols-outlined">flash_on</span></span>`;
         }
-        if (Cooking.isItemPartOfRecipe(item) && this.inventoryContains(item)) {
+        if (Cooking.isItemPartOfRecipe(itemName) && this.inventoryContains(itemName)) {
           itemInfoMarkup +=
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       }
     } else {
-      if (Character.getCompanionFoodValue(itemProps.name) !== -1 && this.inventoryContains(item)) {
-        itemInfoMarkup += `<span class="food">${Character.getCompanionFoodValue(itemProps.name)}
+      if (Character.getCompanionFoodValue(itemName) !== -1 && this.inventoryContains(itemName)) {
+        itemInfoMarkup += `<span class="food">${Character.getCompanionFoodValue(itemName)}
               <span class="material-symbols-outlined">favorite</span></span>`;
       }
     }

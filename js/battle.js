@@ -492,7 +492,10 @@ export default {
   resolveMultiAttack: function (dragEl, dragTarget) {
     const zedId = dragTarget.id;
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
-    const item = Props.getItem(dragEl.dataset.item);
+    const dragItemName = dragEl.dataset.item;
+    const item = Props.isWeapon(dragItemName)
+      ? Props.getWeaponFromInventory(dragItemName)
+      : Props.getItemFromInventory(dragItemName);
 
     /* hit 3 potential targets */
     let potentialTargets = [];
@@ -527,8 +530,10 @@ export default {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
     const zedCardRef = Cards.getCardById(zedId);
-    const item = Props.getItem(dragEl.dataset.item);
-
+    const dragItemName = dragEl.dataset.item;
+    const item = Props.isWeapon(dragItemName)
+      ? Props.getWeaponFromInventory(dragItemName)
+      : Props.getItemFromInventory(dragItemName);
     if (!multiAttack) {
       Props.changePlayerProp('protection', item.protection);
       Props.changePlayerProp('actions', -1);
