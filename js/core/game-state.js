@@ -245,8 +245,12 @@ export default {
    * @returns {number}
    */
   changePlayerProp: function (prop, change) {
+    if (typeof change === 'string') {
+      console.error('change must be a number, got string:', change);
+      return playerProps[prop];
+    }
     const oldValue = playerProps[prop];
-    playerProps[prop] += parseInt(change);
+    playerProps[prop] += change;
     if (playerProps[prop] < 0) playerProps[prop] = 0;
     if (playerProps[prop] > 100) playerProps[prop] = 100;
 
