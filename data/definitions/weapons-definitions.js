@@ -81,53 +81,6 @@ const weaponPropsUpgrades = {
   },
 };
 
-/*
-const weapons = {
-  'improvised-axe': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['improvised-axe'].attack,
-    weaponProps['improvised-axe'].defense,
-  ],
-  'wooden-club': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['wooden-club'].attack,
-    weaponProps['wooden-club'].defense,
-  ],
-  wrench: ['extra', 0, 0, 0, weaponProps['wrench'].attack, weaponProps['wrench'].defense],
-  'baseball-bat': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['baseball-bat'].attack,
-    weaponProps['baseball-bat'].defense,
-  ],
-  axe: ['extra', 0, 0, 0, weaponProps['axe'].attack, weaponProps['axe'].defense],
-  'improvised-whip': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['improvised-whip'].attack,
-    weaponProps['improvised-whip'].defense,
-  ],
-  'fishing-rod': [
-    'extra',
-    0,
-    0,
-    0,
-    weaponProps['fishing-rod'].attack,
-    weaponProps['fishing-rod'].defense,
-  ],
-};
-*/
-
 export default {
   weapons,
   weaponPropsUpgrades,
