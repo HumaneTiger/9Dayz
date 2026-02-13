@@ -254,8 +254,12 @@ export default {
     return InventoryManager.getAllItems();
   },
 
-  getItem: function (item) {
-    return InventoryManager.getItem(item);
+  getItemDefinition: function (item) {
+    return InventoryManager.getItemDefinition(item);
+  },
+
+  getItemFromInventory: function (item) {
+    return InventoryManager.getItemFromInventory(item);
   },
 
   getAllWeapons: function () {
@@ -270,8 +274,8 @@ export default {
     return InventoryManager.getWeaponFromInventory(item);
   },
 
-  getWeapon: function (item) {
-    return InventoryManager.getWeapon(item);
+  getWeaponDefinition: function (item) {
+    return InventoryManager.getWeaponDefinition(item);
   },
 
   isWeapon: function (name) {

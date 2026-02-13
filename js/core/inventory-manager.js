@@ -246,8 +246,16 @@ export default {
    * @param {string} itemName - Item name
    * @returns {ItemDefinition}
    */
-  getItem: function (itemName) {
-    return items[itemName] || weapons[itemName];
+  getItemDefinition: function (itemName) {
+    return items[itemName];
+  },
+
+  /**
+   * @param {string} itemName - Item name
+   * @returns {ItemProps}
+   */
+  getItemFromInventory: function (itemName) {
+    return inventory.items[itemName];
   },
 
   /**
@@ -277,7 +285,7 @@ export default {
    * @param {string} weaponName - Weapon name
    * @returns {WeaponDefinition}
    */
-  getWeapon: function (weaponName) {
+  getWeaponDefinition: function (weaponName) {
     return weapons[weaponName];
   },
 
