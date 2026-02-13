@@ -1,5 +1,34 @@
-// TODO: Split into separate items and weapons files when architecture permits
+// @ts-check
 
+/**
+ * @typedef {[string, number, number, number, number?, number?]} ItemDefinition
+ * @export
+ */
+
+/**
+ * @typedef {Object} WeaponProps
+ * @property {number} [attack]
+ * @property {number} [defense]
+ * @property {number} [durability]
+ * @export
+ */
+
+/**
+ * @typedef {Object} WeaponUpgrade
+ * @property {number} [amount]
+ * @property {string} [item]
+ * @export
+ */
+
+/**
+ * @typedef {Object} WeaponUpgrades
+ * @property {WeaponUpgrade} [attack]
+ * @property {WeaponUpgrade} [defense]
+ * @property {WeaponUpgrade} [durability]
+ * @export
+ */
+
+/** @type {Record<string, WeaponProps>} */
 const weaponProps = {
   'baseball-bat': { attack: 10, defense: 3, durability: 4 },
   wrench: { attack: 14, defense: 4, durability: 4 },
@@ -10,6 +39,7 @@ const weaponProps = {
   'fishing-rod': { attack: 2, defense: 1, durability: 4 },
 };
 
+/** @type {Record<string, WeaponUpgrades>} */
 const weaponPropsUpgrades = {
   'baseball-bat': {
     attack: { amount: 1, item: 'nails' },
@@ -47,6 +77,7 @@ const weaponPropsUpgrades = {
 };
 
 /* ['type', hunger, thirst, energy, attack, defense] */
+/** @type {Record<string, ItemDefinition>} */
 const items = {
   acorn: ['eat', 1, 0, 0],
   rosehip: ['eat', 2, 2, 0],

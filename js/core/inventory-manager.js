@@ -1,14 +1,29 @@
+// @ts-check
+
+/**
+ * @import { ItemDefinition } from '../../data/definitions/items-weapons-definitions.js'
+ */
+
+/**
+ * @typedef {Object} Inventory
+ * @property {Record<string, ItemDefinition>} [items]
+ * @property {Record<string, ItemDefinition>} [weapons]
+ * @property {number} [itemNumbers]
+ * @export
+ */
+
 import Events, { EVENTS } from '../events.js';
 import { ItemsWeaponsDefinitions, CharacterDefinitions, ItemUtils } from '../../data/index.js';
 
 // Destructure items/weapons definitions
-const { items } = ItemsWeaponsDefinitions;
+/** @type {Record<string, ItemDefinition>} */
+const items = ItemsWeaponsDefinitions.items;
 
+/** @type {Inventory} */
 var inventory = {
-  items: new Array(),
+  items: {},
+  weapons: {} /* coming soon */,
   itemNumbers: 0,
-  leftHand: null,
-  rightHand: null,
 };
 
 var inventoryBatch = {
@@ -32,6 +47,7 @@ export default {
   /**
    * Begin batching inventory changes
    * Captures current total, multiple adds will emit single event
+   * @returns {void}
    */
   beginInventoryBatch: function () {
     inventoryBatch.active = true;
@@ -40,6 +56,7 @@ export default {
 
   /**
    * End batching and emit single INVENTORY_CHANGED event
+   * @returns {void}
    */
   endInventoryBatch: function () {
     inventoryBatch.active = false;
@@ -164,6 +181,12 @@ export default {
     }
   },
 
+  /**
+   * Recalculate the total count of items in inventory
+   * Only counts non-weapon items (type !== 'extra') with amount > 0
+   * Updates inventory.itemNumbers
+   * @returns {void}
+   */
   calcItemProps: function (item, character) {
     return ItemUtils.calcItemProps(item, character);
   },
