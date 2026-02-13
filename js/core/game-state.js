@@ -1,7 +1,62 @@
+// @ts-check
+/**
+ * @import { CharacterDefinition } from '../../data/definitions/character-definitions.js'
+ */
+
 import Events, { EVENTS } from '../events.js';
 import { CharacterDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
 
+/**
+ * @typedef {Object} PlayerProps
+ * @property {number} health
+ * @property {number} food
+ * @property {number} thirst
+ * @property {number} energy
+ * @property {number} protection
+ * @property {number} actions
+ */
+
+/**
+ * @typedef {Object} Companion
+ * @property {boolean} active
+ * @property {string|undefined} sort
+ * @property {string} name
+ * @property {number|undefined} damage
+ * @property {number|undefined} health
+ * @property {number|undefined} maxHealth
+ * @property {number|undefined} protection
+ * @property {boolean} dead
+ */
+
+/**
+ * @typedef {Object} TimeConfig
+ * @property {number} startHour
+ * @property {number} ticksPerHour
+ * @property {number} tickInterval
+ * @property {number} tickCurrent
+ * @property {number} gameTickThreshold
+ */
+
+/**
+ * @typedef {Object} TimeIsUnity
+ * @property {number} gameTick
+ * @property {number} gameHours
+ * @property {number} gameDays
+ * @property {number} todayHours
+ * @property {string} todayTime
+ */
+
+/**
+ * @typedef {Object} Crafting
+ * @property {number} total
+ */
+
+/**
+ * @typedef {Record<string, any>} GameState
+ */
+
+/** @type {PlayerProps} */
 var playerProps = {
   health: 0,
   food: 0,
@@ -11,6 +66,7 @@ var playerProps = {
   actions: 0,
 };
 
+/** @type {Companion} */
 var companion = {
   active: false,
   sort: undefined,
@@ -22,10 +78,30 @@ var companion = {
   dead: false,
 };
 
+/** @type {Crafting} */
 var crafting = {
   total: 0,
 };
 
+/** @type {TimeConfig} */
+var timeConfig = {
+  startHour: 7,
+  ticksPerHour: 6,
+  tickInterval: 100,
+  tickCurrent: 0,
+  gameTickThreshold: 4000, // ms before triggering a game tick (lower = faster)
+};
+
+/** @type {TimeIsUnity} */
+var timeIsUnity = {
+  gameTick: 0,
+  gameHours: 24 + 7, // 24 + startHour
+  gameDays: 1,
+  todayHours: 7, // startHour
+  todayTime: '07:00',
+};
+
+/** @type {GameState} */
 var game = {
   gameSeed: RngUtils.generateGameSeed(),
   mode: 'real',
@@ -60,23 +136,14 @@ var game = {
   firstInventoryOpen: false,
   firstCompanion: false,
   testPlayback: false,
-  timeConfig: {
-    startHour: 7,
-    ticksPerHour: 6,
-    tickInterval: 100,
-    tickCurrent: 0,
-    gameTickThreshold: 4000, // ms before triggering a game tick (lower = faster)
-  },
-  timeIsUnity: {
-    gameTick: 0,
-    gameHours: 24 + 7, // 24 + startHour
-    gameDays: 1,
-    todayHours: 7, // startHour
-    todayTime: '07:00',
-  },
+  timeConfig,
+  timeIsUnity,
 };
 
 export default {
+  /**
+   * @returns {void}
+   */
   init: function () {
     Events.on(
       EVENTS.GAME_PROP_CHANGED,
@@ -85,13 +152,17 @@ export default {
           this.handleTimeChange(value);
         }
       },
-      { prop: 'timeIsUnity', value: this.getGameProp('timeIsUnity') }
+      { prop: 'timeIsUnity', value: timeIsUnity }
     );
   },
 
+  /**
+   * @param {TimeIsUnity} time
+   * @returns {void}
+   */
   handleTimeChange: function (time) {
     const hour = time.todayHours;
-    const ticksPerHour = this.getGameProp('timeConfig').ticksPerHour;
+    const ticksPerHour = timeConfig.ticksPerHour;
     // Only execute on new hour (when gameTick is divisible by ticksPerHour)
     if (time.gameTick % ticksPerHour === 0) {
       if (hour === 21) {
@@ -103,6 +174,9 @@ export default {
     }
   },
 
+  /**
+   * @returns {CharacterDefinition}
+   */
   modifyObjectProperties: function () {
     const character = this.getGameProp('character');
     const charDef = CharacterDefinitions[character];
@@ -111,24 +185,44 @@ export default {
     return charDef;
   },
 
+  /**
+   * @returns {Object}
+   */
   getGameProps: function () {
     return game;
   },
 
+  /**
+   * @param {string} prop
+   * @returns {*}
+   */
   getGameProp: function (prop) {
     return game[prop];
   },
 
+  /**
+   * @param {string} prop
+   * @param {*} value
+   * @returns {void}
+   */
   setGameProp: function (prop, value) {
     game[prop] = value;
     Events.emit(EVENTS.GAME_PROP_CHANGED, { prop, value });
   },
 
+  /**
+   * @param {Partial<TimeIsUnity>} updates
+   * @returns {void}
+   */
   updateTimeIsUnity: function (updates) {
-    game.timeIsUnity = { ...game.timeIsUnity, ...updates };
-    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop: 'timeIsUnity', value: game.timeIsUnity });
+    Object.assign(timeIsUnity, updates);
+    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop: 'timeIsUnity', value: timeIsUnity });
   },
 
+  /**
+   * @param {boolean} pause
+   * @returns {void}
+   */
   pauseGame: function (pause) {
     this.setGameProp('gamePaused', pause);
     if (pause) {
@@ -138,13 +232,17 @@ export default {
     }
   },
 
+  /**
+   * @returns {PlayerProps}
+   */
   getPlayerProps: function () {
     return playerProps;
   },
 
   /**
-   * Change a player property (state only)
-   * Emits PLAYER_PROP_CHANGED event for UI updates
+   * @param {keyof PlayerProps} prop
+   * @param {number} change
+   * @returns {number}
    */
   changePlayerProp: function (prop, change) {
     const oldValue = playerProps[prop];
@@ -163,14 +261,25 @@ export default {
     return playerProps[prop];
   },
 
+  /**
+   * @returns {Companion}
+   */
   getCompanion: function () {
     return companion;
   },
 
+  /**
+   * @param {Partial<Companion>} newCompanion
+   * @returns {void}
+   */
   setCompanion: function (newCompanion) {
     Object.assign(companion, newCompanion); // Updates properties, keeps same reference
   },
 
+  /**
+   * @param {Object} companionData
+   * @returns {void}
+   */
   addCompanion: function (companionData) {
     this.setCompanion({
       active: true,
@@ -183,6 +292,9 @@ export default {
     });
   },
 
+  /**
+   * @returns {Object}
+   */
   getCrafting: function () {
     return crafting;
   },

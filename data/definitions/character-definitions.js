@@ -1,3 +1,14 @@
+// @ts-check
+
+/**
+ * @typedef {Object} CharacterDefinition
+ * @property {Record<string, number>} [inventoryPreset]
+ * @property {Record<string, Record<number, string>>} [buildingActionModifiers]
+ * @property {Record<string, number[]>} [itemModifiers]
+ * @export
+ */
+
+/** @type {Record<string, CharacterDefinition>} */
 export default {
   everyman: {
     inventoryPreset: {

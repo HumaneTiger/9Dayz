@@ -1,3 +1,14 @@
+// @ts-check
+
+/**
+ * @typedef {Object} BuildingDefinition
+ * @property {Record<string, string[]>} buildingTypes
+ * @property {Record<string, object>} buildingProps
+ * @property {Record<string, string[]>} buildingActions
+ * @export
+ */
+
+/** @type {BuildingDefinition} */
 export default {
   buildingTypes: {
     house: ['house', 'barn', 'cottage', 'old-villa', 'farm-house', 'town-house', 'basement'],

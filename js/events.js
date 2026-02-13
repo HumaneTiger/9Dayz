@@ -5,6 +5,8 @@
  * Use events for simple notifications only, not orchestration
  */
 
+// @ts-check
+
 // Central event registry - all events documented here
 export const EVENTS = {
   PLAYER_PROP_CHANGED: 'player:propChanged',
@@ -14,15 +16,22 @@ export const EVENTS = {
   WEAPON_CHANGED: 'weapon:changed',
 };
 
+/**
+ * @typedef {Object} PropChangeEvent
+ * @property {string} prop
+ * @property {any} value
+ */
+
 class EventBus {
   constructor() {
+    /** @type {Record<string, Function[]>} */
     this.listeners = {};
   }
 
   /**
    * Register an event listener
    * @param {string} event - The event to listen to
-   * @param {function} callback - Function to call when event is emitted
+   * @param {(data: PropChangeEvent) => void} callback - Function to call when event is emitted
    * @param {*} immediateData - Optional: If provided, callback is called immediately with this data
    *                            Useful for syncing initial state without duplicating handler logic
    */
@@ -38,12 +47,22 @@ class EventBus {
     }
   }
 
+  /**
+   * @param {string} event
+   * @param {any} data
+   * @returns {void}
+   */
   emit(event, data) {
     if (this.listeners[event]) {
       this.listeners[event].forEach(callback => callback(data));
     }
   }
 
+  /**
+   * @param {string} event
+   * @param {Function} callback
+   * @returns {void}
+   */
   off(event, callback) {
     if (!this.listeners[event]) return;
     this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);

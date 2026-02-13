@@ -1,3 +1,5 @@
+// @ts-check
+
 import {
   BuildingInstances,
   ZombieInstances,
@@ -10,12 +12,28 @@ import GameState from './game-state.js';
 import ObjectFactory from './object-factory.js';
 
 const { buildingActions } = BuildingDefinitions;
+
 const mapSize = GameState.getGameProp('mapSize');
 
-// create 2D array with map size for paths
+/**
+ * @typedef {Object} Path
+ * @property {number} x
+ * @property {number} y
+ */
+
+/* create 2D array with map size for paths */
+/** @type {Path[][]} */
 var paths = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
 
+/**
+ * Initializes the map by setting up buildings, zombies, and paths based on imported JSON data.
+ * Also modifies object properties based on the selected character's definition.
+ */
 export default {
+  /**
+   * Initializes the map with buildings
+   * @returns {void}
+   */
   setupAllBuildings: function () {
     // Setup all regular buildings from imported JSON
     BuildingInstances.buildings.forEach(entry => {
@@ -23,6 +41,10 @@ export default {
     });
   },
 
+  /**
+   * Initializes the map with zombies
+   * @returns {void}
+   */
   setupAllZeds: function () {
     // Setup all zombies from imported JSON
     ZombieInstances.zombies.forEach(entry => {
@@ -30,6 +52,10 @@ export default {
     });
   },
 
+  /**
+   * Initializes the map with paths
+   * @returns {void}
+   */
   setupAllPaths: function () {
     // Setup all paths from imported JSON
     PathInstances.paths.forEach(path => {
@@ -56,10 +82,16 @@ export default {
     });
   },
 
+  /**
+   * @returns {Path[][]}
+   */
   getAllPaths: function () {
     return paths;
   },
 
+  /**
+   * @returns {void}
+   */
   modifyObjectProperties: function () {
     const character = GameState.getGameProp('character');
     const charDef = CharacterDefinitions[character];
