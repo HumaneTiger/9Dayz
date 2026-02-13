@@ -365,6 +365,7 @@ export default {
         Props.setGameProp('battle', false);
         Crafting.checkCraftingPrerequisits();
         Player.updatePlayer();
+        Weapons.updateWeaponState();
         Player.lockMovement(false);
         Props.pauseGame(false);
         resolve();
@@ -554,8 +555,12 @@ export default {
       item.durability -= 1;
     }
     if (!item.durability) {
-      //remove item from inventory
-      Props.addItemToInventory(item.name, -1);
+      //remove item/weapon from inventory
+      if (Props.isWeapon(item.name)) {
+        Props.addWeaponToInventory(item.name, -1, { durability: -1 * item.durability });
+      } else {
+        Props.addItemToInventory(item.name, -1);
+      }
       //remove item from battle deck
       for (var i = 0; i < battleDeck.length; i += 1) {
         if (battleDeck[i].name === item.name) {
