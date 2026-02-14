@@ -1,21 +1,20 @@
-import Props from './props.js';
 import AudioUtils from './utils/audio-utils.js';
+import { GameState, ObjectState, PlayerManager } from './core/index.js';
 import Player from './player.js';
 import Cards from './cards.js';
 import CardsMarkup from './cards-markup.js';
 import TimingUtils from './utils/timing-utils.js';
 import { ActionsDefinitions } from '../data/definitions/index.js';
-import { GameState, ObjectState } from './core/index.js';
 
 export default {
   goToAndAction: async function (cardId, action, scope) {
-    const object = Props.getObject(cardId);
+    const object = ObjectState.getObject(cardId);
     const actionObject = object.actions.find(singleAction => singleAction.id === action);
     const actionProps = ActionsDefinitions.actionProps[action];
     const cardRef = Cards.getCardById(cardId);
 
     if (actionObject && actionProps && cardRef) {
-      if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
+      if (actionObject.energy && PlayerManager.getProp('energy') + actionObject.energy < 0) {
         this.notEnoughEnergyFeedback();
       } else if (actionObject?.locked) {
         this.actionLockedFeedback(cardRef);
@@ -40,10 +39,10 @@ export default {
   },
 
   prepareAction: function (cardId, action) {
-    const object = Props.getObject(cardId);
+    const object = ObjectState.getObject(cardId);
     const actionProps = ActionsDefinitions.actionProps[action];
     AudioUtils.sfx('click');
-    Player.lockMovement(true);
+    PlayerManager.lockMovement(true);
     Cards.disableActions();
     CardsMarkup.showActionFeedback(cardId, actionProps.label);
     if (action !== 'lure') {
@@ -67,7 +66,7 @@ export default {
   },
 
   removeOneTimeActions: function (cardId, action) {
-    const object = Props.getObject(cardId);
+    const object = ObjectState.getObject(cardId);
     const actionProps = ActionsDefinitions.actionProps[action];
     const cardRef = Cards.getCardById(cardId);
     if (actionProps.oneTime) {
@@ -86,7 +85,7 @@ export default {
     this.endAction(cardId);
     Player.updatePlayer(true);
     await TimingUtils.wait(1000);
-    Player.lockMovement(false);
+    PlayerManager.lockMovement(false);
   },
 
   endAction: function (cardId) {
@@ -94,20 +93,20 @@ export default {
     CardsMarkup.hideActionFeedback(cardRef);
   },
 
-  fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
-    const timeConfig = Props.getGameProp('timeConfig');
+  fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy, scope) {
+    const timeConfig = GameState.getGameProp('timeConfig');
     const defaultThreshold = timeConfig.gameTickThreshold;
     const newThreshold = newSpeedOpt || 400;
     if (time) {
       let ticks = parseInt(time) / 10;
       timeConfig.gameTickThreshold = newThreshold;
-      Props.setGameProp('timeConfig', timeConfig);
+      GameState.setGameProp('timeConfig', timeConfig);
       window.setTimeout(
         (defaultThreshold, cardId) => {
-          const timeConfig = Props.getGameProp('timeConfig');
+          const timeConfig = GameState.getGameProp('timeConfig');
           timeConfig.gameTickThreshold = defaultThreshold;
-          Props.setGameProp('timeConfig', timeConfig);
-          callbackfunction.call(this, cardId, energy);
+          GameState.setGameProp('timeConfig', timeConfig);
+          callbackfunction.call(scope, cardId, energy);
         },
         ticks * newThreshold,
         defaultThreshold,

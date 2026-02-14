@@ -48,7 +48,7 @@ export default {
   },
 
   fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
-    return ActionsManager.fastForward(callbackfunction, cardId, time, newSpeedOpt, energy);
+    return ActionsManager.fastForward(callbackfunction, cardId, time, newSpeedOpt, energy, this);
   },
 
   grabItem: async function (cardId, container, itemName) {

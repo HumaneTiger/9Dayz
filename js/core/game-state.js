@@ -8,28 +8,6 @@ import { CharacterDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
 
 /**
- * @typedef {Object} PlayerProps
- * @property {number} health
- * @property {number} food
- * @property {number} thirst
- * @property {number} energy
- * @property {number} protection
- * @property {number} actions
- */
-
-/**
- * @typedef {Object} Companion
- * @property {boolean} active
- * @property {string|undefined} sort
- * @property {string} name
- * @property {number|undefined} damage
- * @property {number|undefined} health
- * @property {number|undefined} maxHealth
- * @property {number|undefined} protection
- * @property {boolean} dead
- */
-
-/**
  * @typedef {Object} WeaponStats
  * @property {number} [attack]
  * @property {number} [defense]
@@ -62,28 +40,6 @@ import RngUtils from '../utils/rng-utils.js';
 /**
  * @typedef {Record<string, any>} GameState
  */
-
-/** @type {PlayerProps} */
-var playerProps = {
-  health: 0,
-  food: 0,
-  thirst: 0,
-  energy: 0,
-  protection: 0,
-  actions: 0,
-};
-
-/** @type {Companion} */
-var companion = {
-  active: false,
-  sort: undefined,
-  name: 'doggy',
-  damage: undefined,
-  health: undefined,
-  maxHealth: undefined,
-  protection: undefined,
-  dead: false,
-};
 
 /** @type {Crafting} */
 var crafting = {
@@ -237,70 +193,6 @@ export default {
     } else {
       document.body.classList.remove('is--paused');
     }
-  },
-
-  /**
-   * @returns {PlayerProps}
-   */
-  getPlayerProps: function () {
-    return playerProps;
-  },
-
-  /**
-   * @param {keyof PlayerProps} prop
-   * @param {number} change
-   * @returns {number}
-   */
-  changePlayerProp: function (prop, change) {
-    if (typeof change === 'string') {
-      console.error('change must be a number, got string:', change);
-      return playerProps[prop];
-    }
-    const oldValue = playerProps[prop];
-    playerProps[prop] += change;
-    if (playerProps[prop] < 0) playerProps[prop] = 0;
-    if (playerProps[prop] > 100) playerProps[prop] = 100;
-
-    // EVENT: Notify UI that player property changed
-    EventManager.emit(EVENTS.PLAYER_PROP_CHANGED, {
-      prop,
-      change,
-      oldValue,
-      newValue: playerProps[prop],
-    });
-
-    return playerProps[prop];
-  },
-
-  /**
-   * @returns {Companion}
-   */
-  getCompanion: function () {
-    return companion;
-  },
-
-  /**
-   * @param {Partial<Companion>} newCompanion
-   * @returns {void}
-   */
-  setCompanion: function (newCompanion) {
-    Object.assign(companion, newCompanion); // Updates properties, keeps same reference
-  },
-
-  /**
-   * @param {Companion} companionData
-   * @returns {void}
-   */
-  addCompanion: function (companionData) {
-    this.setCompanion({
-      active: true,
-      sort: companionData.sort,
-      name: companionData.name,
-      damage: companionData.damage,
-      health: companionData.health,
-      maxHealth: companionData.maxHealth,
-      protection: companionData.protection,
-    });
   },
 
   /**

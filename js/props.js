@@ -1,6 +1,7 @@
 import {
   GameState,
   ObjectState,
+  PlayerManager,
   InventoryManager,
   ObjectFactory,
   MapInitializer,
@@ -42,19 +43,19 @@ export default {
   },
 
   getPlayerProps: function () {
-    return GameState.getPlayerProps();
+    return PlayerManager.getPlayerProps();
   },
 
   changePlayerProp: function (prop, change) {
-    return GameState.changePlayerProp(prop, change);
+    return PlayerManager.changePlayerProp(prop, change);
   },
 
   getCompanion: function () {
-    return GameState.getCompanion();
+    return PlayerManager.getCompanion();
   },
 
   setCompanion: function (newCompanion) {
-    GameState.setCompanion(newCompanion);
+    PlayerManager.setCompanion(newCompanion);
   },
 
   getCrafting: function () {
@@ -104,7 +105,7 @@ export default {
   },
 
   addCompanion: function (object) {
-    GameState.addCompanion(object);
+    PlayerManager.addCompanion(object);
   },
 
   /* === ObjectState delegations === */

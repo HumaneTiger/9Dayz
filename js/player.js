@@ -1,4 +1,5 @@
 import Events, { EVENTS } from './core/event-manager.js';
+import { PlayerManager } from './core/index.js';
 import Props from './props.js';
 import Cards from './cards.js';
 import Map from './map.js';
@@ -242,7 +243,7 @@ export default {
   },
 
   lockMovement: function (moveable) {
-    Props.setGameProp('isMoveLocked', moveable);
+    return PlayerManager.lockMovement(moveable);
   },
 
   initMovement: function () {
