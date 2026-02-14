@@ -18,6 +18,12 @@ export default {
     Events.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, oldValue, newValue }) => {
       this.updatePropUI({ prop, change, oldValue, newValue });
     });
+    Events.on(EVENTS.PLAYER_MOVE_TO, ({ x, y }) => {
+      this.movePlayerTo(x, y);
+    });
+    Events.on(EVENTS.PLAYER_UPDATE, ({ noPenalty }) => {
+      this.updatePlayer(noPenalty);
+    });
     Props.changePlayerProp('health', 0); // trigger initial UI update
     Props.changePlayerProp('food', 0);
     Props.changePlayerProp('thirst', 0);

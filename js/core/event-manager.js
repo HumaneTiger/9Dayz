@@ -14,6 +14,8 @@ export const EVENTS = {
   INVENTORY_CHANGED: 'inventory:changed',
   FIRST_ITEM_ADDED: 'inventory:firstItemAdded',
   WEAPON_CHANGED: 'weapon:changed',
+  PLAYER_MOVE_TO: 'player:moveTo',
+  PLAYER_UPDATE: 'player:update',
 };
 
 /**
