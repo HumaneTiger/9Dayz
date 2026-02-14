@@ -1,12 +1,27 @@
+// @ts-check
+/**
+ * @import { GameObject, CreatureObject, AdditionalGameObject, CreatureType, LootItem, ObjectIdList, GameAction, ObjectType } from './object-state.js'
+ * @import { BuildingProp } from '../../data/definitions/building-definitions.js'
+ * @import { WeaponStats, Companion } from './game-state.js'
+ */
+
 import { LootUtils, BuildingUtils, BuildingDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
 import { GameState, ObjectState, InventoryManager } from './index.js';
 
 // Destructure building definitions for use throughout the file
-const { buildingProps } = BuildingDefinitions;
+/** @type {Record<string, BuildingProp>} */
+const buildingProps = BuildingDefinitions.buildingProps;
 
 export default {
+  /**
+   * @param {CreatureType} creatureType
+   * @param {number} x
+   * @param {number} y
+   * @returns {CreatureObject[]}
+   */
   createCreaturesList: function (creatureType, x, y) {
+    /** @type {CreatureObject[]} */
     let creaturesList = [];
     switch (creatureType) {
       case 'rat':
@@ -49,7 +64,15 @@ export default {
     return creaturesList;
   },
 
+  /**
+   * @param {string} buildingType
+   * @param {string} buildingName
+   * @param {number} x
+   * @param {number} y
+   * @returns {Array<AdditionalGameObject>}
+   */
   createAdditionalGameObjects: function (buildingType, buildingName, x, y) {
+    /** @type {Array<AdditionalGameObject>} */
     let additionalGameObjects = [];
     if (buildingType === 'house' && Math.random() < 0.25) {
       additionalGameObjects.push({
@@ -135,20 +158,37 @@ export default {
     return additionalGameObjects;
   },
 
+  /**
+   * @param {string} buildingName
+   * @param {boolean|LootItem[]} [forceLootItemList=false]
+   * @returns {LootItem[]}
+   */
   createBuildingLootItemList: function (buildingName, forceLootItemList = false) {
     const props = buildingProps[buildingName];
-    return (
-      forceLootItemList ||
-      LootUtils.createLootItemList(
-        props.spawn,
-        JSON.parse(JSON.stringify(props.items)),
-        BuildingUtils.getLootBuildingProbability(buildingName, GameState.getGameProp('character')),
-        props.amount,
-        () => RngUtils.lootRNG.random()
-      )
-    );
+    return Array.isArray(forceLootItemList)
+      ? forceLootItemList
+      : LootUtils.createLootItemList(
+          props.spawn,
+          JSON.parse(JSON.stringify(props.items)),
+          BuildingUtils.getLootBuildingProbability(
+            buildingName,
+            GameState.getGameProp('character')
+          ),
+          props.amount,
+          () => RngUtils.lootRNG.random()
+        );
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {string[]} buildingNamesArray
+   * @param {boolean} [forceInfested=false]
+   * @param {boolean|LootItem[]} [forceLootItemList=false]
+   * @param {boolean|CreatureObject[]} [forceCreaturesList=false]
+   * @param {boolean|Array<AdditionalGameObject>} [forceAdditionalGameObjects=false]
+   * @returns {void}
+   */
   setupBuilding: function (
     x,
     y,
@@ -161,10 +201,16 @@ export default {
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
       const type = BuildingUtils.getBuildingTypeOf(buildingName);
+      if (!props || !type) {
+        console.warn(`No building props or type found for ${buildingName}`);
+        return;
+      }
+      // Type is now guaranteed to be ObjectType after the guard
+      const buildingType = /** @type {ObjectType} */ (type);
       // Generate loot upfront
       const lootItemList = this.createBuildingLootItemList(buildingName, forceLootItemList);
 
-      // Random locked state
+      /* buildings define a "locked" property which can be a number (probability out of 10), or 11 for always locked */
       const locked = props.locked === 11 ? true : Math.random() * props.locked > 1 ? true : false;
 
       // Pre-generate random key if the building is locked
@@ -174,22 +220,29 @@ export default {
       }
 
       // Random infested state
-      const infested = type === 'house' && Math.random() < 0.5 ? true : false;
+      const infested = buildingType === 'house' && Math.random() < 0.5 ? true : false;
 
       // Pre-generate creatures if the building is infested
+      /** @type {CreatureObject[]} */
       let creaturesList = [];
       if (forceInfested || infested) {
         if (buildingName === 'beehive') {
-          creaturesList = forceCreaturesList || this.createCreaturesList('bee', x, y);
+          creaturesList = Array.isArray(forceCreaturesList)
+            ? forceCreaturesList
+            : this.createCreaturesList('bee', x, y);
         } else {
-          creaturesList = forceCreaturesList || this.createCreaturesList('rat', x, y);
+          creaturesList = Array.isArray(forceCreaturesList)
+            ? forceCreaturesList
+            : this.createCreaturesList('rat', x, y);
         }
       }
 
       // for certain buildings, add additional buildings which spawn when the building is searched
+      /** @type {Array<AdditionalGameObject>} */
       let additionalGameObjects = [];
-      additionalGameObjects =
-        forceAdditionalGameObjects || this.createAdditionalGameObjects(type, buildingName, x, y);
+      additionalGameObjects = Array.isArray(forceAdditionalGameObjects)
+        ? forceAdditionalGameObjects
+        : this.createAdditionalGameObjects(buildingType, buildingName, x, y);
 
       // Assign a stable object ID
       const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
@@ -204,15 +257,17 @@ export default {
           title: buildingName.startsWith('signpost-')
             ? 'signpost'
             : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
-          type: type,
+          type: buildingType,
           group: 'building',
           actions: props.preview
             ? [{ id: 'got-it', label: 'Got it!' }]
-            : BuildingUtils.getBuildingActionsFor(
-                buildingName,
-                locked,
-                forceInfested || infested,
-                GameState.getGameProp('character')
+            : /** @type {GameAction[]} */ (
+                BuildingUtils.getBuildingActionsFor(
+                  buildingName,
+                  locked,
+                  forceInfested || infested,
+                  GameState.getGameProp('character')
+                )
               ),
           items: lootItemList,
           locked: locked,
@@ -226,6 +281,14 @@ export default {
     });
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {number} amount
+   * @param {number|boolean} [forceAttack=false]
+   * @param {number|boolean} [forceDefense=false]
+   * @returns {void}
+   */
   setZedAt: function (x, y, amount, forceAttack = false, forceDefense = false) {
     for (let i = 0; i < amount; i += 1) {
       const distance = Math.sqrt(
@@ -233,8 +296,14 @@ export default {
           Math.pow(GameState.getGameProp('playerPosition').y - y, 2)
       );
 
-      const attack = forceAttack || Math.floor(Math.random() * 6 + Math.min(distance / 5, 9) + 1); // increase attack with distance
-      const defense = forceDefense || Math.floor(Math.random() * 9 + Math.min(distance / 4, 9)); // increase defense with distance
+      const attack =
+        typeof forceAttack === 'number'
+          ? forceAttack
+          : Math.floor(Math.random() * 6 + Math.min(distance / 5, 9) + 1); // increase attack with distance
+      const defense =
+        typeof forceDefense === 'number'
+          ? forceDefense
+          : Math.floor(Math.random() * 9 + Math.min(distance / 4, 9)); // increase defense with distance
       const lootItemList = LootUtils.createLootItemList(
         3,
         [
@@ -280,31 +349,46 @@ export default {
     }
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {string} title
+   * @param {string} text
+   * @returns {number}
+   */
   setEventAt: function (x, y, title, text) {
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
-    ObjectState.setObject(currentObjectsIdCounter, {
-      x: x,
-      y: y,
-      name: 'event',
-      title: title,
-      type: undefined,
-      group: 'event',
-      text: text,
-      actions: [
-        {
-          id: 'got-it',
-          label: 'Got it!',
-        },
-      ],
-      items: [],
-      discovered: false,
-      removed: false,
-    });
+    ObjectState.setObject(
+      currentObjectsIdCounter,
+      ObjectState.createGameObject({
+        x: x,
+        y: y,
+        name: 'event',
+        title: title,
+        group: 'event',
+        text: text,
+        actions: [
+          {
+            id: 'got-it',
+            label: 'Got it!',
+          },
+        ],
+        items: [],
+        discovered: false,
+      })
+    );
 
     return currentObjectsIdCounter;
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {CreatureObject[]} creaturesList
+   * @returns {ObjectIdList}
+   */
   spawnCreaturesAt: function (x, y, creaturesList) {
+    /** @type {ObjectIdList} */
     let spawnedCreatureIds = [];
     creaturesList.forEach(creature => {
       const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
@@ -334,6 +418,11 @@ export default {
     return spawnedCreatureIds;
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @returns {boolean}
+   */
   rngFishSpawn: function (x, y) {
     /**
      * 3/4 chance to catch a fish
@@ -356,7 +445,12 @@ export default {
     return false;
   },
 
+  /**
+   * @param {Partial<GameObject>} object
+   * @returns {void}
+   */
   spawnAnimal: function (object) {
+    if (!object.x || !object.y) return;
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(object.x, object.y);
     ObjectState.setObject(
       currentObjectsIdCounter,
@@ -370,13 +464,19 @@ export default {
           { id: 'cut', label: 'Cut', time: 20, energy: -15 },
         ],
         items: object.items,
-        attack: false,
-        defense: false,
+        attack: 0,
+        defense: 0,
         dead: object.dead,
       })
     );
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {Partial<Companion>} [optCompanionProps]
+   * @returns {number}
+   */
   spawnDoggyAt: function (x, y, optCompanionProps) {
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
     const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
@@ -394,7 +494,7 @@ export default {
         ],
         items: lootItemList,
         attack: optCompanionProps?.damage ?? 4,
-        defense: optCompanionProps?.defense ?? 0,
+        defense: optCompanionProps?.protection ?? 0,
         maxHealth: optCompanionProps?.maxHealth ?? 10,
         health: optCompanionProps?.health ?? 6,
         dead: optCompanionProps?.dead ?? false,
@@ -404,6 +504,13 @@ export default {
     return currentObjectsIdCounter;
   },
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {string} weaponName
+   * @param {WeaponStats|undefined} [forceStats]
+   * @returns {void}
+   */
   setupWeapon: function (x, y, weaponName, forceStats) {
     const props = InventoryManager.getWeaponDefinition(weaponName);
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
@@ -415,19 +522,19 @@ export default {
         name: weaponName,
         title: weaponName.replace('-', ' '),
         group: 'weapon',
-        actions: props.preview
-          ? [{ id: 'got-it', label: 'Got it!' }]
-          : [{ id: 'equip', label: 'Equip' }],
+        actions: [{ id: 'equip', label: 'Equip' }],
         attack: forceStats?.attack || props.attack,
         defense: forceStats?.defense || props.defense,
         durability: forceStats?.durability || props.durability,
-        preview: props.preview,
       })
     );
   },
 
   /* === Building Props Data Accessor === */
 
+  /**
+   * @returns {Object}
+   */
   getBuildingProps: function () {
     return buildingProps;
   },

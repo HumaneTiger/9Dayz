@@ -30,6 +30,13 @@ import RngUtils from '../utils/rng-utils.js';
  */
 
 /**
+ * @typedef {Object} WeaponStats
+ * @property {number} [attack]
+ * @property {number} [defense]
+ * @property {number} [durability]
+ */
+
+/**
  * @typedef {Object} TimeConfig
  * @property {number} startHour
  * @property {number} ticksPerHour

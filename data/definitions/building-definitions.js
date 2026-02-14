@@ -1,9 +1,20 @@
 // @ts-check
 
 /**
+ * @typedef {Object} BuildingProp
+ * @property {number} locked - Higher means more likely to be locked (11 means always locked, 0 means never locked)
+ * @property {number} spawn
+ * @property {string[]} items
+ * @property {number} [amount]
+ * @property {boolean} [preview]
+ * @property {string[]} [buidlings]
+ * @export
+ */
+
+/**
  * @typedef {Object} BuildingDefinition
  * @property {Record<string, string[]>} buildingTypes
- * @property {Record<string, object>} buildingProps
+ * @property {Record<string, BuildingProp>} buildingProps
  * @property {Record<string, string[]>} buildingActions
  * @export
  */

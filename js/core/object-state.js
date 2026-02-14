@@ -17,6 +17,11 @@
  */
 
 /**
+ * @typedef {Array<LootItem>} LootItemList
+ * @export
+ */
+
+/**
  * @typedef {'building' | 'animal' | 'zombie' | 'event' | 'weapon'} ObjectGroup
  * @export
  */
@@ -27,7 +32,35 @@
  */
 
 /**
- * @typedef {GameObject} CreatureObject
+ * @typedef {'rat' | 'bee'} CreatureType
+ * @export
+ */
+
+/**
+ * @typedef {Object} CreatureObject
+ * @property {number} x
+ * @property {number} y
+ * @property {string} name
+ * @property {CreatureType} type
+ * @property {LootItemList} items
+ * @property {number} attack
+ * @property {number} defense
+ * @property {boolean} dead
+ * @export
+ */
+
+/**
+ * @typedef {Object} AdditionalGameObject
+ * @property {number} x
+ * @property {number} y
+ * @property {string} name
+ * @property {ObjectGroup} group
+ * @property {boolean} [forceInfested]
+ * @property {LootItemList} [forceLootItemList]
+ * @property {Array<CreatureObject>} [forceCreaturesList]
+ * @property {Array<AdditionalGameObject>} [forceAdditionalGameObjects]
+ * @property {LootItemList} [items]
+ * @property {boolean} [dead]
  * @export
  */
 
@@ -35,9 +68,10 @@
  * @typedef {Object} GameObject
  * @property {boolean} active
  * @property {Array<GameAction>} actions
- * @property {Array<GameObject>} [additionalGameObjects]
+ * @property {Array<AdditionalGameObject>} [additionalGameObjects]
  * @property {number|undefined} [attack]
  * @property {number|undefined} [defense]
+ * @property {number|undefined} [durability]
  * @property {boolean|undefined} [dead]
  * @property {boolean} disabled
  * @property {boolean} discovered
@@ -50,14 +84,14 @@
  * @property {boolean} infested
  * @property {boolean} inreach
  * @property {Array<LootItem>} items
- * @property {number|undefined} [locked]
+ * @property {boolean|undefined} [locked]
  * @property {boolean} looted
  * @property {boolean|undefined} [luringSuccessful]
  * @property {number|undefined} [maxHealth]
  * @property {string} [name]
  * @property {boolean} [preview]
  * @property {boolean} removed
- * @property {boolean} text
+ * @property {string} text
  * @property {string} title
  * @property {ObjectType} [type]
  * @property {number} [x]
@@ -100,7 +134,7 @@ export default {
       title: '',
       type: undefined,
       group: undefined,
-      text: false,
+      text: '',
       actions: [],
       items: [],
       locked: undefined,

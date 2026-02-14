@@ -1,3 +1,8 @@
+// @ts-check
+/**
+ * @import { LootItem, LootItemList } from '../../js/core/object-state.js'
+ */
+
 /**
  * Utility functions for generating loot item lists
  */
@@ -6,8 +11,8 @@ export default {
   /**
    * Generate a forced loot list with guaranteed items
    * @param {string[]} forceItems - Array of item names to include
-   * @param {number} maxAmount - Maximum amount per item
-   * @returns {Array<{name: string, amount: number}>} Loot item list
+   * @param {number} [maxAmount=1] - Maximum amount per item
+   * @returns {LootItemList}
    */
   forceLootItemList: function (forceItems, maxAmount = 1) {
     let lootItemList = [];
@@ -25,8 +30,9 @@ export default {
    * @param {number} spawn - Number of items to potentially spawn
    * @param {string[]} allItems - Array of possible item names (will be mutated)
    * @param {number[]} allProbabilities - [firstItemChance, nextItemsChance]
-   * @param {number} amount - Maximum amount per item
-   * @returns {Array<{name: string, amount: number}>} Loot item list
+   * @param {number|undefined} [amount] - Maximum amount per item (defaults to 1)
+   * @param {()=>number} [rng] - Optional seeded PRNG function (defaults to Math.random)
+   * @returns {LootItemList}
    */
   createLootItemList: function (spawn, allItems, allProbabilities, amount, rng) {
     // fallback to Math.random() if no seeded PRNG is provided
