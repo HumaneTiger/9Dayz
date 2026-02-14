@@ -8,7 +8,7 @@ import Actions from './actions.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 
 var cardDeck = [];
 var lastHoverTarget;

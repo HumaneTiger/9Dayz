@@ -13,8 +13,7 @@
  * @export
  */
 
-import Events, { EVENTS } from '../events.js';
-import { GameState } from './index.js';
+import { GameState, EventManager, EVENTS } from './index.js';
 import {
   ItemsDefinitions,
   WeaponsDefinitions,
@@ -87,7 +86,7 @@ export default {
     const newTotal = inventory.itemNumbers;
 
     // EVENT: Notify that inventory changed
-    Events.emit(EVENTS.INVENTORY_CHANGED, {
+    EventManager.emit(EVENTS.INVENTORY_CHANGED, {
       oldTotal: inventoryBatch.oldTotal,
       newTotal: newTotal,
     });
@@ -147,7 +146,7 @@ export default {
 
     // EVENT: Emit if not batching
     if (!inventoryBatch.active) {
-      Events.emit(EVENTS.WEAPON_CHANGED, {
+      EventManager.emit(EVENTS.WEAPON_CHANGED, {
         oldTotal: oldTotal,
         newTotal: newTotal,
       });
@@ -191,7 +190,7 @@ export default {
       inventory.items[item] = ItemUtils.calcItemProps(item, character);
       inventory.items[item].amount = addAmount;
       // emit FIRST_ITEM_ADDED event for almanac tracking
-      Events.emit(EVENTS.FIRST_ITEM_ADDED, {
+      EventManager.emit(EVENTS.FIRST_ITEM_ADDED, {
         item: item,
       });
     } else {
@@ -201,7 +200,7 @@ export default {
 
     // EVENT: Emit if not batching
     if (!inventoryBatch.active) {
-      Events.emit(EVENTS.INVENTORY_CHANGED, {
+      EventManager.emit(EVENTS.INVENTORY_CHANGED, {
         oldTotal: oldTotal,
         newTotal: inventory.itemNumbers,
       });

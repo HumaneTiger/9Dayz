@@ -7,7 +7,7 @@ import Cooking from './cooking.js';
 import Character from './character.js';
 import Audio from './audio.js';
 import { ItemUtils } from '../data/index.js';
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const items = Props.getAllItems();

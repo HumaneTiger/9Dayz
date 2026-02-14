@@ -2,7 +2,7 @@ import Props from './props.js';
 import Items from './items.js';
 import Player from './player.js';
 import { RecipeDefinitions } from '../data/index.js';
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const craftingOptions = Props.getCrafting();

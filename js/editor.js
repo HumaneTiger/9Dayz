@@ -5,8 +5,8 @@ import Ui from './ui.js';
 import Items from './items.js';
 import Map from './map.js';
 import Player from './player.js';
-import TestPlayer from './test-player.js';
-import TestRecorder from './test-recorder.js';
+import TestPlayer from './test/test-player.js';
+import TestRecorder from './test/test-recorder.js';
 
 let squareX = 0,
   squareY = 0;

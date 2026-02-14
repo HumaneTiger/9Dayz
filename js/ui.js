@@ -5,7 +5,7 @@ import Player from './player.js';
 import Character from './character.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const viewport = document.getElementById('viewport');

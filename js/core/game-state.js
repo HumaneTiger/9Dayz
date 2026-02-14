@@ -3,7 +3,7 @@
  * @import { CharacterDefinition } from '../../data/definitions/character-definitions.js'
  */
 
-import Events, { EVENTS } from '../events.js';
+import { EventManager, EVENTS } from './index.js';
 import { CharacterDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
 
@@ -145,7 +145,7 @@ export default {
    * @returns {void}
    */
   init: function () {
-    Events.on(
+    EventManager.on(
       EVENTS.GAME_PROP_CHANGED,
       ({ prop, value }) => {
         if (prop === 'timeIsUnity') {
@@ -207,7 +207,7 @@ export default {
    */
   setGameProp: function (prop, value) {
     game[prop] = value;
-    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop, value });
+    EventManager.emit(EVENTS.GAME_PROP_CHANGED, { prop, value });
   },
 
   /**
@@ -216,7 +216,7 @@ export default {
    */
   updateTimeIsUnity: function (updates) {
     Object.assign(timeIsUnity, updates);
-    Events.emit(EVENTS.GAME_PROP_CHANGED, { prop: 'timeIsUnity', value: timeIsUnity });
+    EventManager.emit(EVENTS.GAME_PROP_CHANGED, { prop: 'timeIsUnity', value: timeIsUnity });
   },
 
   /**
@@ -255,7 +255,7 @@ export default {
     if (playerProps[prop] > 100) playerProps[prop] = 100;
 
     // EVENT: Notify UI that player property changed
-    Events.emit(EVENTS.PLAYER_PROP_CHANGED, {
+    EventManager.emit(EVENTS.PLAYER_PROP_CHANGED, {
       prop,
       change,
       oldValue,

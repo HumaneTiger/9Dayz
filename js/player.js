@@ -1,4 +1,4 @@
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 import Props from './props.js';
 import Cards from './cards.js';
 import Map from './map.js';

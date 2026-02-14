@@ -1,7 +1,7 @@
 import Props from './props.js';
 import Player from './player.js';
 import Ui from './ui.js';
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 
 const characterContainer = document.getElementById('character');
 const slot1 = characterContainer.querySelector('.slot-1');

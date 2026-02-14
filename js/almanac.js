@@ -1,6 +1,6 @@
 import Props from './props.js';
 import { ItemUtils, RecipeDefinitions } from '../data/index.js';
-import Events, { EVENTS } from './events.js';
+import Events, { EVENTS } from './core/event-manager.js';
 import AlmanacContent from './content/almanac-content.js';
 
 const almanacContainer = document.getElementById('almanac');

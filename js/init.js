@@ -14,8 +14,8 @@ import Almanac from './almanac.js';
 import Preloading from './preloading.js';
 import Player from './player.js';
 import Tutorial from './tutorial.js';
-import TestRecorder from './test-recorder.js';
-import TestPlayer from './test-player.js';
+import TestRecorder from './test/test-recorder.js';
+import TestPlayer from './test/test-player.js';
 
 // initialize everything
 {
