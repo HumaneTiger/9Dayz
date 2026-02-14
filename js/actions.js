@@ -12,43 +12,119 @@ import Checkpoint from './checkpoint.js';
 import Almanac from './almanac.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
+import AudioUtils from './utils/audio-utils.js';
 import ActionsManager from './actions-manager.js';
+import { PlayerManager, EventManager, ObjectState, GameState, EVENTS } from './core/index.js';
+import { ActionsDefinitions } from '../data/definitions/index.js';
 
 export default {
   init: function () {},
 
-  /* === ActionsManager delegations === */
+  goToAndAction: async function (cardId, action) {
+    const { actionObject, actionProps, isValid } = ActionsManager.getActionData(cardId, action);
 
-  goToAndAction: function (cardId, action) {
-    return ActionsManager.goToAndAction(cardId, action, this);
-  },
+    if (!isValid) {
+      console.log('Invalid action or card reference!', action, cardId);
+      return;
+    }
 
-  prepareAction: function (cardId, action) {
-    return ActionsManager.prepareAction(cardId, action);
-  },
-
-  notEnoughEnergyFeedback: function () {
-    return ActionsManager.notEnoughEnergyFeedback();
-  },
-
-  actionLockedFeedback: function (cardRef) {
-    return ActionsManager.actionLockedFeedback(cardRef);
-  },
-
-  removeOneTimeActions: function (cardId, action) {
-    return ActionsManager.removeOneTimeActions(cardId, action);
-  },
-
-  goBackFromAction: function (cardId) {
-    return ActionsManager.goBackFromAction(cardId);
-  },
-
-  endAction: function (cardId) {
-    return ActionsManager.endAction(cardId);
+    if (actionObject.energy && PlayerManager.getProp('energy') + actionObject.energy < 0) {
+      this.notEnoughEnergyFeedback();
+    } else if (actionObject?.locked) {
+      this.actionLockedFeedback(cardId);
+    } else {
+      this.prepareAction(cardId, action);
+      if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
+        // they all have the same effect
+        // if one is done and removed, all others have to be removed as well
+        this.removeOneTimeActions(cardId, 'unlock-door');
+        this.removeOneTimeActions(cardId, 'break-door');
+        this.removeOneTimeActions(cardId, 'smash-window');
+      } else {
+        this.removeOneTimeActions(cardId, action);
+      }
+      await TimingUtils.wait(actionProps.delay);
+      const simulateMethod = this[actionProps.method];
+      simulateMethod.call(this, cardId, actionObject.time, actionObject.energy);
+    }
   },
 
   fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
-    return ActionsManager.fastForward(callbackfunction, cardId, time, newSpeedOpt, energy, this);
+    const timeConfig = GameState.getGameProp('timeConfig');
+    const defaultThreshold = timeConfig.gameTickThreshold;
+    const newThreshold = newSpeedOpt || 400;
+    if (time) {
+      let ticks = parseInt(time) / 10;
+      timeConfig.gameTickThreshold = newThreshold;
+      GameState.setGameProp('timeConfig', timeConfig);
+      window.setTimeout(
+        (defaultThreshold, cardId) => {
+          const timeConfig = GameState.getGameProp('timeConfig');
+          timeConfig.gameTickThreshold = defaultThreshold;
+          GameState.setGameProp('timeConfig', timeConfig);
+          callbackfunction.call(this, cardId, energy);
+        },
+        ticks * newThreshold,
+        defaultThreshold,
+        cardId
+      );
+    }
+  },
+
+  prepareAction: function (cardId, action) {
+    const object = ObjectState.getObject(cardId);
+    const actionProps = ActionsDefinitions.actionProps[action];
+    AudioUtils.sfx('click');
+    PlayerManager.lockMovement(true);
+    Cards.disableActions();
+    CardsMarkup.showActionFeedback(cardId, actionProps.label);
+    if (action !== 'lure') {
+      EventManager.emit(EVENTS.PLAYER_MOVE_TO, { x: object.x, y: object.y });
+    }
+  },
+
+  notEnoughEnergyFeedback: async function () {
+    const energyMeter = document.querySelector('#properties li.energy');
+    energyMeter?.classList.add('heavy-shake');
+    await TimingUtils.wait(200);
+    energyMeter?.classList.remove('heavy-shake');
+    AudioUtils.sfx('nope');
+  },
+
+  actionLockedFeedback: async function (cardId) {
+    const cardRef = Cards.getCardById(cardId);
+    cardRef?.classList.add('card-shake');
+    await TimingUtils.wait(200);
+    cardRef?.classList.remove('card-shake');
+    AudioUtils.sfx('nope');
+  },
+
+  removeOneTimeActions: function (cardId, action) {
+    const object = ObjectState.getObject(cardId);
+    const actionProps = ActionsDefinitions.actionProps[action];
+    const cardRef = Cards.getCardById(cardId);
+    if (actionProps.oneTime) {
+      for (let i = object.actions.length - 1; i >= 0; i--) {
+        if (object.actions[i].id === action) {
+          if (!(object.infested && (action === 'search' || action === 'gather'))) {
+            cardRef.querySelector('li.' + action).remove();
+            object.actions.splice(i, 1);
+          }
+        }
+      }
+    }
+  },
+
+  goBackFromAction: async function (cardId) {
+    this.endAction(cardId);
+    EventManager.emit(EVENTS.PLAYER_UPDATE, { noPenalty: true });
+    await TimingUtils.wait(1000);
+    PlayerManager.lockMovement(false);
+  },
+
+  endAction: function (cardId) {
+    let cardRef = Cards.getCardById(cardId);
+    CardsMarkup.hideActionFeedback(cardRef);
   },
 
   grabItem: async function (cardId, container, itemName) {

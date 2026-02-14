@@ -2,7 +2,8 @@
 /**
  * @import { GameObject, CreatureObject, AdditionalGameObject, CreatureType, LootItem, ObjectIdList, GameAction, ObjectType } from './object-state.js'
  * @import { BuildingProp } from '../../data/definitions/building-definitions.js'
- * @import { WeaponStats, Companion } from './game-state.js'
+ * @import { WeaponStats } from './game-state.js'
+ * @import { Companion } from '../../data/definitions/player-definitions.js'
  */
 
 import { LootUtils, BuildingUtils, BuildingDefinitions } from '../../data/index.js';
