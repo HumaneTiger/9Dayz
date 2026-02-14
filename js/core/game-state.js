@@ -281,7 +281,7 @@ export default {
   },
 
   /**
-   * @param {Object} companionData
+   * @param {Companion} companionData
    * @returns {void}
    */
   addCompanion: function (companionData) {
@@ -289,10 +289,10 @@ export default {
       active: true,
       sort: companionData.sort,
       name: companionData.name,
-      damage: companionData.attack,
+      damage: companionData.damage,
       health: companionData.health,
       maxHealth: companionData.maxHealth,
-      protection: companionData.defense,
+      protection: companionData.protection,
     });
   },
 

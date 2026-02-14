@@ -451,7 +451,12 @@ export default {
       function (cardId, energy) {
         const object = Props.getObject(cardId);
         object.removed = true;
-        Props.addCompanion(cardId);
+        const { attack, defense, ...rest } = object;
+        Props.addCompanion({
+          ...rest,
+          damage: attack,
+          protection: defense,
+        });
         Character.updateCompanionSlot();
         Almanac.makeContentKnown(object.name);
         this.goBackFromAction(cardId);

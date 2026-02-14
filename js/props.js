@@ -103,8 +103,7 @@ export default {
     return InventoryManager.calcItemProps(item, this.getGameProp('character'));
   },
 
-  addCompanion: function (objectId) {
-    const object = ObjectState.getObject(objectId);
+  addCompanion: function (object) {
     GameState.addCompanion(object);
   },
 
