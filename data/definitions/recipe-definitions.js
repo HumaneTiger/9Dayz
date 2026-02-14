@@ -1,3 +1,25 @@
+// @ts-check
+
+/**
+ * @typedef {[string, string, number, string]} CookingRecipe
+ * Tuple: [primaryIngredient, secondaryIngredient, quantity, method]
+ * @export
+ */
+
+/**
+ * @typedef {Object} CraftingRecipe
+ * @property {string[][]} items - List of ingredients needed, including alternatives (e.g. [['fail', 'hacksaw'], ['stump']])
+ * @property {boolean} exclusive - Whether ingredients are consumed or reusable
+ * @property {string} result - Result type (weapon, building, inventory)
+ * @property {number} [amount] - Optional: quantity of result items created
+ * @export
+ */
+
+/**
+ * @typedef {Object.<string, string[]>} IngredientVariants
+ * @export
+ */
+
 export default {
   persistentIngredients: ['knife', 'sharp-stick'],
 
@@ -7,6 +29,7 @@ export default {
     fruits: ['fruit-1', 'fruit-2', 'fruit-3'],
   },
 
+  /** @type {Object.<string, CookingRecipe>} */
   cookingRecipes: {
     'roasted-meat': ['meat', 'sharp-stick', 1, 'roast'],
     'roasted-pepper': ['pepper', 'sharp-stick', 1, 'roast'],
@@ -22,6 +45,7 @@ export default {
     cookie: ['honey', 'dough', 3, 'bake'],
   },
 
+  /** @type {Object.<string, CraftingRecipe>} */
   craftingRecipes: {
     'wooden-club': {
       items: [['fail', 'hacksaw'], ['stump']],
