@@ -1,3 +1,4 @@
+export { default as ActionsDefinitions } from './actions-definitions.js';
 export { default as BuildingDefinitions } from './building-definitions.js';
 export { default as CharacterDefinitions } from './character-definitions.js';
 export { default as ItemsDefinitions } from './items-definitions.js';

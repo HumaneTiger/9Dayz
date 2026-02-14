@@ -12,302 +12,43 @@ import Checkpoint from './checkpoint.js';
 import Almanac from './almanac.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
+import ActionsManager from './actions-manager.js';
 
 export default {
   init: function () {},
 
-  actionProps: {
-    search: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateGathering(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 0,
-      label: 'searching',
-    },
-    cut: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateGathering(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'cutting',
-    },
-    pet: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulatePetting(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'petting',
-    },
-    scare: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateScaring(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'scaring',
-    },
-    gather: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateGathering(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 0,
-      label: 'gathering',
-    },
-    collect: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateCollecting(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'collecting',
-    },
-    'scout-area': {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateScouting(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'scouting',
-    },
-    rest: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateResting(cardId, time, energy);
-      },
-      oneTime: false,
-      delay: 1000,
-      label: 'resting',
-    },
-    sleep: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateSleeping(cardId, time, energy);
-      },
-      oneTime: false,
-      delay: 1000,
-      label: 'sleeping',
-    },
-    cook: {
-      callback: (scope, cardId) => {
-        scope.simulateCooking(cardId);
-      },
-      oneTime: false,
-      delay: 1000,
-      label: 'cooking',
-    },
-    equip: {
-      callback: (scope, cardId) => {
-        scope.simulateEquipping(cardId);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'equipping',
-    },
-    'cut-down': {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateCuttingDown(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'cutting',
-    },
-    'smash-window': {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateSmashing(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'smashing',
-    },
-    'break-door': {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateBreaking(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 500,
-      label: 'breaking',
-    },
-    'unlock-door': {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateOpening(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'opening',
-    },
-    'break-lock': {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateBreaking(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'breaking',
-    },
-    attack: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateAttacking(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: '',
-    },
-    lure: {
-      callback: (scope, cardId, time, energy) => {
-        scope.simulateLuring(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'luring',
-    },
-    'got-it': {
-      callback: (scope, cardId) => {
-        scope.gotIt(cardId);
-      },
-      oneTime: true,
-      delay: 0,
-      label: '',
-    },
-    read: {
-      callback: (scope, cardId, time, energy) => {
-        scope.reading(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 1000,
-      label: 'reading',
-    },
-    drink: {
-      callback: (scope, cardId, time, energy) => {
-        scope.drinking(cardId, time, energy);
-      },
-      oneTime: false,
-      delay: 1000,
-      label: 'drinking',
-    },
-    fish: {
-      callback: (scope, cardId, time, energy) => {
-        scope.fishing(cardId, time, energy);
-      },
-      oneTime: false,
-      delay: 1000,
-      label: 'fishing',
-    },
-    chomp: {
-      callback: (scope, cardId, time, energy) => {
-        scope.chomping(cardId, time, energy);
-      },
-      oneTime: true,
-      delay: 0,
-      label: 'Dog attacks',
-    },
-  },
+  /* === ActionsManager delegations === */
 
-  goToAndAction: async function (cardId, action) {
-    const object = Props.getObject(cardId);
-    const actionObject = object.actions.find(singleAction => singleAction.id === action);
-    const actionProps = this.actionProps[action];
-    const cardRef = Cards.getCardById(cardId);
-
-    if (actionObject && actionProps && cardRef) {
-      if (actionObject.energy && Player.getProp('energy') + actionObject.energy < 0) {
-        this.notEnoughEnergyFeedback();
-      } else if (actionObject?.locked) {
-        this.actionLockedFeedback(cardRef);
-      } else {
-        this.prepareAction(cardId, action);
-        if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
-          // they all have the same effect
-          // if one is done and removed, all others have to be removed as well
-          this.removeOneTimeActions(cardId, 'unlock-door');
-          this.removeOneTimeActions(cardId, 'break-door');
-          this.removeOneTimeActions(cardId, 'smash-window');
-        } else {
-          this.removeOneTimeActions(cardId, action);
-        }
-        await TimingUtils.wait(actionProps.delay);
-        actionProps.callback(this, cardId, actionObject.time, actionObject.energy);
-      }
-    } else {
-      console.log('Invalid action or card reference!', action, cardId);
-    }
+  goToAndAction: function (cardId, action) {
+    return ActionsManager.goToAndAction(cardId, action, this);
   },
 
   prepareAction: function (cardId, action) {
-    const object = Props.getObject(cardId);
-    const actionProps = this.actionProps[action];
-    Audio.sfx('click');
-    Player.lockMovement(true);
-    Cards.disableActions();
-    CardsMarkup.showActionFeedback(cardId, actionProps.label);
-    if (action !== 'lure') {
-      Player.movePlayerTo(object.x, object.y);
-    }
+    return ActionsManager.prepareAction(cardId, action);
   },
 
-  notEnoughEnergyFeedback: async function () {
-    const energyMeter = document.querySelector('#properties li.energy');
-    energyMeter?.classList.add('heavy-shake');
-    await TimingUtils.wait(200);
-    energyMeter?.classList.remove('heavy-shake');
-    Audio.sfx('nope');
+  notEnoughEnergyFeedback: function () {
+    return ActionsManager.notEnoughEnergyFeedback();
   },
 
-  actionLockedFeedback: async function (cardRef) {
-    cardRef?.classList.add('card-shake');
-    await TimingUtils.wait(200);
-    cardRef?.classList.remove('card-shake');
-    Audio.sfx('nope');
+  actionLockedFeedback: function (cardRef) {
+    return ActionsManager.actionLockedFeedback(cardRef);
   },
 
   removeOneTimeActions: function (cardId, action) {
-    const object = Props.getObject(cardId);
-    const actionProps = this.actionProps[action];
-    const cardRef = Cards.getCardById(cardId);
-    if (actionProps.oneTime) {
-      for (let i = object.actions.length - 1; i >= 0; i--) {
-        if (object.actions[i].id === action) {
-          if (!(object.infested && (action === 'search' || action === 'gather'))) {
-            cardRef.querySelector('li.' + action).remove();
-            object.actions.splice(i, 1);
-          }
-        }
-      }
-    }
+    return ActionsManager.removeOneTimeActions(cardId, action);
   },
 
-  goBackFromAction: async function (cardId) {
-    this.endAction(cardId);
-    Player.updatePlayer(true);
-    await TimingUtils.wait(1000);
-    Player.lockMovement(false);
+  goBackFromAction: function (cardId) {
+    return ActionsManager.goBackFromAction(cardId);
   },
 
   endAction: function (cardId) {
-    let cardRef = Cards.getCardById(cardId);
-    CardsMarkup.hideActionFeedback(cardRef);
+    return ActionsManager.endAction(cardId);
   },
 
   fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
-    const timeConfig = Props.getGameProp('timeConfig');
-    const defaultThreshold = timeConfig.gameTickThreshold;
-    const newThreshold = newSpeedOpt || 400;
-    if (time) {
-      let ticks = parseInt(time) / 10;
-      timeConfig.gameTickThreshold = newThreshold;
-      Props.setGameProp('timeConfig', timeConfig);
-      window.setTimeout(
-        (defaultThreshold, cardId) => {
-          const timeConfig = Props.getGameProp('timeConfig');
-          timeConfig.gameTickThreshold = defaultThreshold;
-          Props.setGameProp('timeConfig', timeConfig);
-          callbackfunction.call(this, cardId, energy);
-        },
-        ticks * newThreshold,
-        defaultThreshold,
-        cardId
-      );
-    }
+    return ActionsManager.fastForward(callbackfunction, cardId, time, newSpeedOpt, energy);
   },
 
   grabItem: async function (cardId, container, itemName) {
