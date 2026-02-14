@@ -1,63 +1,31 @@
-import TimingUtils from './utils/timing-utils.js';
-
-let allAudio = document.getElementById('all-audio');
-let ambientIndex = 1;
-let ambientTimes = [60, 110, 145, 145];
-let ambientDelay = 10;
+import AudioUtils from './utils/audio-utils.js';
 
 export default {
   init: function () {
-    //this.playAmbientLoop();
+    return AudioUtils.init();
   },
 
-  playAmbientLoop: async function () {
-    this.music('ambient-' + ambientIndex);
-    await TimingUtils.wait((ambientTimes[ambientIndex - 1] + ambientDelay) * 1000);
-    ambientIndex += 1;
-    if (ambientIndex > 4) ambientIndex = 1;
-    this.playAmbientLoop();
+  playAmbientLoop: function () {
+    return AudioUtils.playAmbientLoop();
   },
 
-  music: async function (name, delay, vol) {
-    await TimingUtils.wait(delay || 0);
-    let audio = allAudio.querySelector('.music-' + name);
-    let volume = vol || 0.2;
-    audio.volume = volume;
-
-    audio.play().catch(() => {});
+  music: function (name, delay, vol) {
+    return AudioUtils.music(name, delay, vol);
   },
 
-  voice: async function (name, delay, vol) {
-    await TimingUtils.wait(delay || 0);
-    let audio = allAudio.querySelector('.voice-' + name);
-    let volume = vol || 0.2;
-    audio.volume = volume;
-
-    audio.play().catch(() => {});
+  voice: function (name, delay, vol) {
+    return AudioUtils.voice(name, delay, vol);
   },
 
-  sfx: async function (name, delay, vol) {
-    await TimingUtils.wait(delay || 0);
-    this.sfxStop(name);
-    let audio = allAudio.querySelector('.sfx-' + name);
-    let volume = vol || 0.3;
-    audio.volume = name === 'click' ? 0.15 : volume;
-
-    audio.play().catch(() => {});
+  sfx: function (name, delay, vol) {
+    return AudioUtils.sfx(name, delay, vol);
   },
 
   sfxStop: function (name) {
-    let audio = allAudio.querySelector('.sfx-' + name);
-    audio.volume = 0;
-    audio.pause();
-    audio.currentTime = 0;
+    return AudioUtils.sfxStop(name);
   },
 
-  stop: async function (name, delay) {
-    await TimingUtils.wait(delay || 0);
-    let audio = allAudio.querySelector('.music-' + name);
-    audio.volume = 0;
-    audio.pause();
-    audio.currentTime = 0;
+  stop: function (name, delay) {
+    return AudioUtils.stop(name, delay);
   },
 };
