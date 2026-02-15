@@ -9,6 +9,7 @@ import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
 import Events, { EVENTS } from './core/event-manager.js';
 import ActionsOrchestration from './actions-orchestration.js';
+import ActionsUtils from './utils/actions-utils.js';
 
 var cardDeck = [];
 var lastHoverTarget;
@@ -57,7 +58,7 @@ export default {
         const itemName = itemContainer?.dataset.item;
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
         if (itemAmount && leftMouseButton) {
-          ActionsOrchestration.grabItem(cardId, itemContainer, itemName);
+          ActionsUtils.grabItem(cardId, itemContainer, itemName);
         }
       }
     }
