@@ -52,7 +52,13 @@ export default {
     return actionProps?.label;
   },
 
-  /* TODO: get actions for a type of game object, see object factory actions: for that */
-  /* TODO: find a definition based solution for getBuildingActionsFor in building-utils.js */
+  /* === Object type methods === */
+
+  getActionsForGameObjectType: function (objectType) {
+    const actions = ActionsDefinitions.objectTypeActions[objectType];
+    return actions ? JSON.parse(JSON.stringify(actions)) : [];
+  },
+
   /* TODO: get actions for building types, in building definitions there are building actions */
+  /* TODO: find a definition based solution for getBuildingActionsFor in building-utils.js */
 };

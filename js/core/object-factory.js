@@ -8,7 +8,7 @@
 
 import { LootUtils, BuildingUtils, BuildingDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
-import { GameState, ObjectState, InventoryManager } from './index.js';
+import { GameState, ObjectState, InventoryManager, ActionsManager } from './index.js';
 
 // Destructure building definitions for use throughout the file
 /** @type {Record<string, BuildingProp>} */
@@ -334,12 +334,7 @@ export default {
           y: y,
           name: name,
           group: 'zombie',
-          actions: [
-            { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-            { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-            { id: 'search', label: 'Search', time: 20, energy: -5 },
-            { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-          ],
+          actions: ActionsManager.getActionsForGameObjectType('zombie'),
           items: lootItemList,
           attack: attack,
           defense: defense,
@@ -368,12 +363,7 @@ export default {
         title: title,
         group: 'event',
         text: text,
-        actions: [
-          {
-            id: 'got-it',
-            label: 'Got it!',
-          },
-        ],
+        actions: ActionsManager.getActionsForGameObjectType('event'),
         items: [],
         discovered: false,
       })
@@ -401,12 +391,7 @@ export default {
           name: creature.name,
           type: creature.type,
           group: 'zombie',
-          actions: [
-            { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-            { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
-            { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
-            { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-          ],
+          actions: ActionsManager.getActionsForGameObjectType('creature'),
           items: creature.items,
           attack: creature.attack,
           defense: creature.defense,
@@ -460,10 +445,7 @@ export default {
         y: object.y,
         name: object.name,
         group: object.group,
-        actions: [
-          //{ id: 'catch', label: 'Catch', time: 20, energy: -20 },
-          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-        ],
+        actions: ActionsManager.getActionsForGameObjectType('animal'),
         items: object.items,
         attack: 0,
         defense: 0,
@@ -488,11 +470,7 @@ export default {
         y: y,
         name: optCompanionProps?.name ?? 'doggy',
         group: 'animal',
-        actions: [
-          { id: 'pet', label: 'Pet', time: 5, energy: -5 },
-          { id: 'scare', label: 'Scare Away', time: 5, energy: -5 },
-          { id: 'cut', label: 'Cut', time: 20, energy: -15 },
-        ],
+        actions: ActionsManager.getActionsForGameObjectType('companion'),
         items: lootItemList,
         attack: optCompanionProps?.damage ?? 4,
         defense: optCompanionProps?.protection ?? 0,
@@ -523,7 +501,7 @@ export default {
         name: weaponName,
         title: weaponName.replace('-', ' '),
         group: 'weapon',
-        actions: [{ id: 'equip', label: 'Equip' }],
+        actions: ActionsManager.getActionsForGameObjectType('weapon'),
         attack: forceStats?.attack || props.attack,
         defense: forceStats?.defense || props.defense,
         durability: forceStats?.durability || props.durability,

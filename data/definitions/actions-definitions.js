@@ -139,4 +139,28 @@ export default {
       label: 'Dog attacks',
     },
   },
+
+  /* === Object type default actions === */
+  objectTypeActions: {
+    zombie: [
+      { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+      { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+      { id: 'search', label: 'Search', time: 20, energy: -5 },
+      { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
+    ],
+    creature: [
+      { id: 'lure', label: 'Lure', time: 20, energy: -15 },
+      { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+      { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
+      { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+    ],
+    animal: [{ id: 'cut', label: 'Cut', time: 20, energy: -15 }],
+    companion: [
+      { id: 'pet', label: 'Pet', time: 5, energy: -5 },
+      { id: 'scare', label: 'Scare Away', time: 5, energy: -5 },
+      { id: 'cut', label: 'Cut', time: 20, energy: -15 },
+    ],
+    weapon: [{ id: 'equip', label: 'Equip' }],
+    event: [{ id: 'got-it', label: 'Got it!' }],
+  },
 };
