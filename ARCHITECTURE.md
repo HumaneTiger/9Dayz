@@ -2,20 +2,20 @@
 
 ## Quick Reference Matrix
 
-| #   | Domain                                  | Definition | Core Manager | Game Logic | Key Insights                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| --- | --------------------------------------- | :--------: | :----------: | :--------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **INVENTORY & ITEMS**                   |     ✅     |      ⚠️      |     ✅     | Inventory query functions (inventoryContains, inventoryKnows, inventoryItemAmount, getFirstItemOfType, getItemByName) scattered in items.js; should be moved to inventory-manager.js                                                                                                                                                                                                                                                                                                                                   |
-| 2   | **WORLD** (Map/Buildings/Paths/Zombies) |     ✅     |      ✅      |     ✅     | Pattern to follow                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| 3   | **RECIPES** (Cooking & Crafting)        |     ✅     |      ❌      |     ✅     | Both cooking.js and crafting.js directly import RecipeDefinitions; need recipes-manager.js                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| 4   | **ALMANAC**                             |     ✅     |      ❌      |     ✅     | Need almanac-manager.js to manage content unlocking and lifecycle                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| 5   | **CHARACTER**                           |     ✅     |      ⚠️      |     ✅     | Character state lives in game-state.js; need dedicated character-manager.js                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 6   | **COMPANION**                           |     ❌     |      ❌      |     ⚠️     | Companion typedef in game-state.js; UI mixed in character.js; need companion-definitions.js + companion-manager.js; `// todo: split` comment exists                                                                                                                                                                                                                                                                                                                                                                    |
-| 7   | **WEAPONS**                             |     ✅     |      ⚠️      |     ✅     | Creation logic in object-factory.js, combat in battle.js; need weapons-manager.js                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| 8   | **PLAYER STATS**                        |     ⚠️     |      ✅      |     ✅     | PlayerProps typedef in game-state.js; need player-definitions.js file                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| 9   | **BATTLE/COMBAT**                       |     ❌     |      ⚠️      |     ✅     | No battle-definitions.js; core logic mixed between object-factory.js and battle.js                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 10  | **TUTORIAL**                            |     ❌     |      ✅      |     ✅     | Massive hardcoding in tutorial.js: events object (with coordinates/titles/text), specialEvents object, battleTutorialStep; need tutorial-definitions.js                                                                                                                                                                                                                                                                                                                                                                |
-| 11  | **UTILITY LAYERS**                      |     ✅     |      -       |     -      | Add @ts-check to all utils (building-utils, item-utils, path-utils, instances)                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| 12  | **ACTIONS SYSTEM**                      |     ❌     |      ❌      |     ⚠️     | **CRITICAL:** 859-line monolith! Contains actionProps metadata (~300 LOC), orchestration logic (~300 LOC), and implementations (~300 LOC) all mixed. Split into: actions-definitions.js (actionProps config), actions-manager.js (core orchestration), actions.js (UI logic). **DEPENDENCY:** building-utils.js contains getBuildingActionsFor() with hardcoded action filtering logic (building+action combos, character restrictions, needsUnlock computations) - will need refactoring when actions system is split |
+| #   | Domain                                  | Definition | Core Manager | Game Logic | Key Insights                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --- | --------------------------------------- | :--------: | :----------: | :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **INVENTORY & ITEMS**                   |     ✅     |      ⚠️      |     ✅     | Inventory query functions (inventoryContains, inventoryKnows, inventoryItemAmount, getFirstItemOfType, getItemByName) scattered in items.js; should be moved to inventory-manager.js                                                                                                                                                                                                                                                                  |
+| 2   | **WORLD** (Map/Buildings/Paths/Zombies) |     ✅     |      ✅      |     ✅     | Pattern to follow                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 3   | **RECIPES** (Cooking & Crafting)        |     ✅     |      ❌      |     ✅     | Both cooking.js and crafting.js directly import RecipeDefinitions; need recipes-manager.js                                                                                                                                                                                                                                                                                                                                                            |
+| 4   | **ALMANAC**                             |     ✅     |      ❌      |     ✅     | Need almanac-manager.js to manage content unlocking and lifecycle                                                                                                                                                                                                                                                                                                                                                                                     |
+| 5   | **CHARACTER**                           |     ✅     |      ⚠️      |     ✅     | Character state lives in game-state.js; need dedicated character-manager.js                                                                                                                                                                                                                                                                                                                                                                           |
+| 6   | **COMPANION**                           |     ❌     |      ❌      |     ⚠️     | Companion typedef in game-state.js; UI mixed in character.js; need companion-definitions.js + companion-manager.js; `// todo: split` comment exists                                                                                                                                                                                                                                                                                                   |
+| 7   | **WEAPONS**                             |     ✅     |      ⚠️      |     ✅     | Creation logic in object-factory.js, combat in battle.js; need weapons-manager.js                                                                                                                                                                                                                                                                                                                                                                     |
+| 8   | **PLAYER STATS**                        |     ⚠️     |      ✅      |     ✅     | PlayerProps typedef in game-state.js; need player-definitions.js file                                                                                                                                                                                                                                                                                                                                                                                 |
+| 9   | **BATTLE/COMBAT**                       |     ❌     |      ⚠️      |     ✅     | No battle-definitions.js; core logic mixed between object-factory.js and battle.js                                                                                                                                                                                                                                                                                                                                                                    |
+| 10  | **TUTORIAL**                            |     ❌     |      ✅      |     ✅     | Massive hardcoding in tutorial.js: events object (with coordinates/titles/text), specialEvents object, battleTutorialStep; need tutorial-definitions.js                                                                                                                                                                                                                                                                                               |
+| 11  | **UTILITY LAYERS**                      |     ✅     |      -       |     -      | Add @ts-check to all utils (building-utils, item-utils, path-utils, instances)                                                                                                                                                                                                                                                                                                                                                                        |
+| 12  | **ACTIONS SYSTEM**                      |     ✅     |      ✅      |     ✅     | Fully refactored: actions-definitions.js (action metadata + object type actions), actions-manager.js (unified API with getActionsForGameObjectType + getActionsForBuildingType), actions-orchestration.js (UI logic). Building actions now declarative in building-definitions.js with filtering properties (excludeBuildings, excludeCharacters, forCharactersOnly, needsUnlock, requiresLocked). Unified GameAction type across all action sources. |
 
 **Legend:** ✅ Complete | ⚠️ Partial/Needs Work | ❌ Missing
 
@@ -59,11 +59,38 @@ Where:
 | Logic      | `map.js`                                                                                     | ✅     |
 | Utilities  | `building-utils.js`, `path-utils.js`                                                         | ✅     |
 
+#### 3. **ACTIONS SYSTEM**
+
+| Layer      | File                                        | Status |
+| ---------- | ------------------------------------------- | ------ |
+| Definition | `actions-definitions.js`                    | ✅     |
+| Core       | `actions-manager.js`                        | ✅     |
+| Logic      | `actions-orchestration.js`                  | ✅     |
+| Metadata   | Building actions in building-definitions.js | ✅     |
+
+**Architecture:**
+
+- **actions-definitions.js**: Central repository for `actionProps` (execution config) and `objectTypeActions` (zombie/creature/animal/companion/weapon/event actions)
+- **actions-manager.js**: Unified API with:
+  - Card-based queries: `getCardActionObject()`, `isValid()`, `getCardBasedEnergy()`, `getCardBasedTime()`, etc.
+  - Static properties: `getActionDelay()`, `getActionMethod()`, `getActionLabel()`
+  - Type-based queries: `getActionsForGameObjectType(objectType)`, `getActionsForBuildingType(buildingName, buildingType, locked, infested, character)`
+- **building-definitions.js**: Building actions now declarative with filtering properties: `excludeBuildings[]`, `excludeCharacters[]`, `forCharactersOnly[]`, `needsUnlock`, `requiresLocked`
+- **actions-orchestration.js**: UI layer consuming action manager API
+- **Unified Type System**: Single `GameAction` typedef used across all action sources with optional building-specific properties
+
+**Key Improvements:**
+
+- Removed ~80 lines of procedural filtering logic from building-utils.js
+- Eliminated pipe-delimited string parsing
+- Removed character modifier mutations from map-initializer
+- Type system unified and safer
+
 ---
 
 ### ⚠️ INCOMPLETE (Missing Core Layer)
 
-#### 3. **RECIPES (Cooking & Crafting)**
+#### 4. **RECIPES (Cooking & Crafting)**
 
 | Layer      | File                                                              | Status |
 | ---------- | ----------------------------------------------------------------- | ------ |
@@ -74,7 +101,7 @@ Where:
 
 **Gap:** No `recipes-manager.js` core layer to coordinate recipe logic, validation, and state.
 
-#### 4. **ALMANAC**
+#### 5. **ALMANAC**
 
 | Layer      | File                 | Status |
 | ---------- | -------------------- | ------ |
@@ -88,7 +115,7 @@ Where:
 
 ### ⚠️ MIXED/SCATTERED PATTERNS
 
-#### 5. **CHARACTER**
+#### 7. **CHARACTER**
 
 | Layer      | File                       | Status |
 | ---------- | -------------------------- | ------ |
@@ -98,7 +125,7 @@ Where:
 
 **Issue:** Character state lives in game-state but there's no dedicated character-manager core layer.
 
-#### 6. **COMPANION**
+#### 8. **COMPANION**
 
 | Layer      | File                                               | Status |
 | ---------- | -------------------------------------------------- | ------ |
@@ -114,7 +141,7 @@ Where:
 - Conflated with character UI in character.js
 - Internal comment: `// todo: split into character, companion`
 
-#### 7. **WEAPONS**
+#### 9. **WEAPONS**
 
 | Layer      | File                      | Status |
 | ---------- | ------------------------- | ------ |
@@ -128,7 +155,7 @@ Where:
 - Combat/damage logic in `battle.js`
 - No dedicated `weapons-manager.js` core layer
 
-#### 8. **PLAYER STATS**
+#### 10. **PLAYER STATS**
 
 | Layer      | File            | Status |
 | ---------- | --------------- | ------ |
@@ -138,7 +165,7 @@ Where:
 
 **Gap:** PlayerProps typedef in game-state.js but no separate `player-definitions.js` file.
 
-#### 9. **BATTLE/COMBAT**
+#### 11. **BATTLE/COMBAT**
 
 | Layer      | File            | Status |
 | ---------- | --------------- | ------ |
@@ -152,7 +179,7 @@ Where:
 - Core logic mixed between object-factory.js and battle.js
 - No dedicated battle-manager.js
 
-#### 10. **TUTORIAL**
+#### 12. **TUTORIAL**
 
 | Layer      | File                      | Status |
 | ---------- | ------------------------- | ------ |
@@ -162,17 +189,21 @@ Where:
 
 **Gap:** Tutorial setup is hardcoded in tutorial-initializer.js; no tutorial-definitions.js
 
+#### 13. **UTILITY LAYERS**
+
+TBD
+
 ---
 
 ## Summary Statistics
 
 | Category                     | Count  |
 | ---------------------------- | ------ |
-| ✅ Complete Patterns         | 2      |
+| ✅ Complete Patterns         | 3      |
 | ⚠️ Incomplete (missing core) | 2      |
 | ⚠️ Mixed/Scattered           | 6      |
 | ❌ Multiple Major Gaps       | 1      |
-| **Total Domains**            | **11** |
+| **Total Domains**            | **12** |
 
 ---
 
@@ -205,6 +236,8 @@ Where:
 
 **Already @ts-check enabled:**
 
+- ✅ actions-definitions.js
+- ✅ actions-manager.js
 - ✅ building-definitions.js
 - ✅ weapons-definitions.js
 - ✅ items-definitions.js
