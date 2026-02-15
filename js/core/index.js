@@ -1,4 +1,5 @@
 // @ts-check
+export { default as ActionsManager } from './actions-manager.js';
 export { default as GameState } from './game-state.js';
 export { default as ObjectState } from './object-state.js';
 export { default as PlayerManager } from './player-manager.js';

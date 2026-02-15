@@ -1,5 +1,5 @@
-import { ObjectState } from './core/index.js';
-import { ActionsDefinitions } from '../data/definitions/index.js';
+import { ObjectState } from './index.js';
+import { ActionsDefinitions } from '../../data/definitions/index.js';
 
 export default {
   getActionData: function (cardId, action) {

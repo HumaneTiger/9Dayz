@@ -13,8 +13,14 @@ import Almanac from './almanac.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 import AudioUtils from './utils/audio-utils.js';
-import ActionsManager from './actions-manager.js';
-import { PlayerManager, EventManager, ObjectState, GameState, EVENTS } from './core/index.js';
+import {
+  PlayerManager,
+  EventManager,
+  ObjectState,
+  GameState,
+  ActionsManager,
+  EVENTS,
+} from './core/index.js';
 import { ActionsDefinitions } from '../data/definitions/index.js';
 
 export default {
