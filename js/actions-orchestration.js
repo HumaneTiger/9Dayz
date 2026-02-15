@@ -12,36 +12,46 @@ import {
   ActionsManager,
   EVENTS,
 } from './core/index.js';
-import { ActionsDefinitions } from '../data/definitions/index.js';
 
 export default {
   goToAndAction: async function (cardId, action) {
-    const { actionObject, actionProps, isValid } = ActionsManager.getActionData(cardId, action);
-
-    if (!isValid) {
+    if (!ActionsManager.isValid(cardId, action)) {
       console.log('Invalid action or card reference!', action, cardId);
       return;
     }
 
-    if (actionObject.energy && PlayerManager.getProp('energy') + actionObject.energy < 0) {
+    const delay = ActionsManager.getActionDelay(action);
+    const simulationMethod = ActionsManager.getActionMethod(action);
+    /* make sure to fetch card-based values before one time actions get removed */
+    const cardEnergy = ActionsManager.getCardBasedEnergy(cardId, action);
+    const cardTime = ActionsManager.getCardBasedTime(cardId, action);
+
+    if (cardEnergy && PlayerManager.getProp('energy') + cardEnergy < 0) {
       ActionsUtils.notEnoughEnergyFeedback();
-    } else if (actionObject?.locked) {
-      ActionsUtils.actionLockedFeedback(cardId);
-    } else {
-      this.prepareAction(cardId, action);
-      if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
-        // they all have the same effect
-        // if one is done and removed, all others have to be removed as well
-        ActionsUtils.removeOneTimeActions(cardId, 'unlock-door');
-        ActionsUtils.removeOneTimeActions(cardId, 'break-door');
-        ActionsUtils.removeOneTimeActions(cardId, 'smash-window');
-      } else {
-        ActionsUtils.removeOneTimeActions(cardId, action);
-      }
-      await TimingUtils.wait(actionProps.delay);
-      const simulateMethod = ActionSimulations[actionProps.method];
-      simulateMethod.call(null, this, cardId, actionObject.time, actionObject.energy);
+      return;
     }
+
+    if (ActionsManager.isCardActionLocked(cardId, action)) {
+      ActionsUtils.actionLockedFeedback(cardId);
+      return;
+    }
+
+    this.prepareAction(cardId, action);
+
+    if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
+      // they all have the same effect
+      // if one is done and removed, all others have to be removed as well
+      ActionsUtils.removeOneTimeActions(cardId, 'unlock-door');
+      ActionsUtils.removeOneTimeActions(cardId, 'break-door');
+      ActionsUtils.removeOneTimeActions(cardId, 'smash-window');
+    } else {
+      ActionsUtils.removeOneTimeActions(cardId, action);
+    }
+
+    await TimingUtils.wait(delay);
+
+    const simulateFunction = ActionSimulations[simulationMethod];
+    simulateFunction.call(null, this, cardId, cardTime, cardEnergy);
   },
 
   fastForward: function (
@@ -75,11 +85,11 @@ export default {
 
   prepareAction: function (cardId, action) {
     const object = ObjectState.getObject(cardId);
-    const actionProps = ActionsDefinitions.actionProps[action];
+    const label = ActionsManager.getActionLabel(action);
     AudioUtils.sfx('click');
     PlayerManager.lockMovement(true);
     Cards.disableActions();
-    CardsMarkup.showActionFeedback(cardId, actionProps.label);
+    CardsMarkup.showActionFeedback(cardId, label);
     if (action !== 'lure') {
       EventManager.emit(EVENTS.PLAYER_MOVE_TO, { x: object.x, y: object.y });
     }

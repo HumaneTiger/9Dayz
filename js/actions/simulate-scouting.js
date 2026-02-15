@@ -1,5 +1,4 @@
 import Props from '../props.js';
-import Cards from '../cards.js';
 import Player from '../player.js';
 import Map from '../map.js';
 import ActionsUtils from '../utils/actions-utils.js';
