@@ -4,11 +4,11 @@ import Player from './player.js';
 import Items from './items.js';
 import Character from './character.js';
 import Map from './map.js';
-import Actions from './actions.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
 import Events, { EVENTS } from './core/event-manager.js';
+import ActionsOrchestration from './actions-orchestration.js';
 
 var cardDeck = [];
 var lastHoverTarget;
@@ -52,12 +52,12 @@ export default {
 
       if (actionButton && leftMouseButton && !object.disabled) {
         const action = actionButton.dataset.action;
-        Actions.goToAndAction(cardId, action);
+        ActionsOrchestration.goToAndAction(cardId, action);
       } else if (itemContainer) {
         const itemName = itemContainer?.dataset.item;
         const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
         if (itemAmount && leftMouseButton) {
-          Actions.grabItem(cardId, itemContainer, itemName);
+          ActionsOrchestration.grabItem(cardId, itemContainer, itemName);
         }
       }
     }

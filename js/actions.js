@@ -2,7 +2,6 @@ import Props from './props.js';
 import Audio from './audio.js';
 import Player from './player.js';
 import Cards from './cards.js';
-import CardsMarkup from './cards-markup.js';
 import Map from './map.js';
 import Items from './items.js';
 import Battle from './battle.js';
@@ -11,189 +10,18 @@ import Character from './character.js';
 import Checkpoint from './checkpoint.js';
 import Almanac from './almanac.js';
 import RngUtils from './utils/rng-utils.js';
+import ActionsUtils from './utils/actions-utils.js';
 import TimingUtils from './utils/timing-utils.js';
-import AudioUtils from './utils/audio-utils.js';
-import {
-  PlayerManager,
-  EventManager,
-  ObjectState,
-  GameState,
-  ActionsManager,
-  EVENTS,
-} from './core/index.js';
-import { ActionsDefinitions } from '../data/definitions/index.js';
 
 export default {
   init: function () {},
 
-  goToAndAction: async function (cardId, action) {
-    const { actionObject, actionProps, isValid } = ActionsManager.getActionData(cardId, action);
-
-    if (!isValid) {
-      console.log('Invalid action or card reference!', action, cardId);
-      return;
-    }
-
-    if (actionObject.energy && PlayerManager.getProp('energy') + actionObject.energy < 0) {
-      this.notEnoughEnergyFeedback();
-    } else if (actionObject?.locked) {
-      this.actionLockedFeedback(cardId);
-    } else {
-      this.prepareAction(cardId, action);
-      if (action === 'unlock-door' || action === 'break-door' || action === 'smash-window') {
-        // they all have the same effect
-        // if one is done and removed, all others have to be removed as well
-        this.removeOneTimeActions(cardId, 'unlock-door');
-        this.removeOneTimeActions(cardId, 'break-door');
-        this.removeOneTimeActions(cardId, 'smash-window');
-      } else {
-        this.removeOneTimeActions(cardId, action);
-      }
-      await TimingUtils.wait(actionProps.delay);
-      const simulateMethod = this[actionProps.method];
-      simulateMethod.call(this, cardId, actionObject.time, actionObject.energy);
-    }
-  },
-
-  fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
-    const timeConfig = GameState.getGameProp('timeConfig');
-    const defaultThreshold = timeConfig.gameTickThreshold;
-    const newThreshold = newSpeedOpt || 400;
-    if (time) {
-      let ticks = parseInt(time) / 10;
-      timeConfig.gameTickThreshold = newThreshold;
-      GameState.setGameProp('timeConfig', timeConfig);
-      window.setTimeout(
-        (defaultThreshold, cardId) => {
-          const timeConfig = GameState.getGameProp('timeConfig');
-          timeConfig.gameTickThreshold = defaultThreshold;
-          GameState.setGameProp('timeConfig', timeConfig);
-          callbackfunction.call(this, cardId, energy);
-        },
-        ticks * newThreshold,
-        defaultThreshold,
-        cardId
-      );
-    }
-  },
-
-  prepareAction: function (cardId, action) {
-    const object = ObjectState.getObject(cardId);
-    const actionProps = ActionsDefinitions.actionProps[action];
-    AudioUtils.sfx('click');
-    PlayerManager.lockMovement(true);
-    Cards.disableActions();
-    CardsMarkup.showActionFeedback(cardId, actionProps.label);
-    if (action !== 'lure') {
-      EventManager.emit(EVENTS.PLAYER_MOVE_TO, { x: object.x, y: object.y });
-    }
-  },
-
-  notEnoughEnergyFeedback: async function () {
-    const energyMeter = document.querySelector('#properties li.energy');
-    energyMeter?.classList.add('heavy-shake');
-    await TimingUtils.wait(200);
-    energyMeter?.classList.remove('heavy-shake');
-    AudioUtils.sfx('nope');
-  },
-
-  actionLockedFeedback: async function (cardId) {
-    const cardRef = Cards.getCardById(cardId);
-    cardRef?.classList.add('card-shake');
-    await TimingUtils.wait(200);
-    cardRef?.classList.remove('card-shake');
-    AudioUtils.sfx('nope');
-  },
-
-  removeOneTimeActions: function (cardId, action) {
-    const object = ObjectState.getObject(cardId);
-    const actionProps = ActionsDefinitions.actionProps[action];
-    const cardRef = Cards.getCardById(cardId);
-    if (actionProps.oneTime) {
-      for (let i = object.actions.length - 1; i >= 0; i--) {
-        if (object.actions[i].id === action) {
-          if (!(object.infested && (action === 'search' || action === 'gather'))) {
-            cardRef.querySelector('li.' + action).remove();
-            object.actions.splice(i, 1);
-          }
-        }
-      }
-    }
-  },
-
-  goBackFromAction: async function (cardId) {
-    this.endAction(cardId);
-    EventManager.emit(EVENTS.PLAYER_UPDATE, { noPenalty: true });
-    await TimingUtils.wait(1000);
-    PlayerManager.lockMovement(false);
-  },
-
-  endAction: function (cardId) {
-    let cardRef = Cards.getCardById(cardId);
-    CardsMarkup.hideActionFeedback(cardRef);
-  },
-
-  grabItem: async function (cardId, container, itemName) {
-    const object = Props.getObject(cardId);
-    const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
-    let cardRef = Cards.getCardById(cardId);
-    if (Props.isWeapon(itemName)) {
-      // spawn card representing the grabbed weapon item
-      Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
-    } else if (itemName === 'crate') {
-      // spawn card representing the grabbed crate item
-      Props.setupBuilding(
-        Player.getPlayerPosition().x,
-        Player.getPlayerPosition().y,
-        new Array('crate')
-      );
-    } else {
-      Props.addItemToInventory(itemName, itemAmount);
-    }
-    object.items.find(singleItem => singleItem.name === itemName).amount = 0;
-    Audio.sfx('pick', 0, 0.1);
-    container.classList.add('transfer');
-    await TimingUtils.waitForTransition(container);
-    if (cardRef) {
-      container.classList.add('is--hidden');
-      if (itemName === 'crate' || Props.isWeapon(itemName)) {
-        Player.findAndHandleObjects();
-      } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
-      if (
-        object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
-        !cardRef.querySelectorAll('ul.items li.preview:not(.is--hidden)')?.length
-      ) {
-        Cards.renderCardDeck();
-      }
-    }
-  },
-
-  addGuarenteedTapeToFirstSearch: function (object, cardRef, allItems) {
-    // adding a guaranteed tape to first searched car/house/train
-    if (
-      !Props.getGameProp('firstSearch') &&
-      (object.type === 'car' || object.type === 'house' || object.type === 'train') &&
-      cardRef.querySelector('ul.items')
-    ) {
-      Props.setGameProp('firstSearch', true);
-      // replace first item in data and markup
-      // but only if the item isn't already there
-      if (!allItems.some(el => el.name === 'tape' && el.amount > 0)) {
-        allItems[0] = { name: 'tape', amount: 1 };
-        cardRef.querySelector('ul.items li.preview').remove();
-        cardRef.querySelector('ul.items li.item').remove();
-        cardRef.querySelector('ul.items').innerHTML =
-          CardsMarkup.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;
-      }
-    }
-  },
-
-  simulateGathering: async function (cardId, time, energy) {
+  simulateGathering: async function (actionsOrchestration, cardId, time, energy) {
     const object = Props.getObject(cardId);
     const cardRef = Cards.getCardById(cardId);
     const allItems = object.items;
 
-    this.addGuarenteedTapeToFirstSearch(object, cardRef, allItems);
+    ActionsUtils.addGuarenteedTapeToFirstSearch(object, cardRef, allItems);
 
     let allPreviews = cardRef.querySelectorAll('ul.items li.preview');
 
@@ -201,9 +29,9 @@ export default {
     let delay = 2000;
 
     if (object.infested) {
-      this.spawnCreaturesIfInfested(cardId);
+      ActionsUtils.spawnCreaturesIfInfested(cardId);
       await TimingUtils.wait(1200);
-      this.endAction(cardId);
+      actionsOrchestration.endAction(cardId);
       Battle.startBattle(true); // instant attack when place is infested
     } else if (allPreviews) {
       /** it's a strange condition, but I think this is what it does:
@@ -246,7 +74,7 @@ export default {
           allPreviews[i + 1].querySelector('.searching').classList.remove('is--hidden');
         }
         if (i + 1 === allItems.length) {
-          this.goBackFromAction(cardId);
+          actionsOrchestration.goBackFromAction(cardId);
           Props.changePlayerProp('energy', energy);
           // furbuddy takes damage when cutting animals
           if (Props.getGameProp('character') === 'furbuddy' && object.group === 'animal') {
@@ -269,9 +97,10 @@ export default {
     }
   },
 
-  simulatePetting: function (cardId, time, energy) {
-    this.fastForward(
-      function (cardId, energy) {
+  simulatePetting: function (actionsOrchestration, cardId, time, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         const object = Props.getObject(cardId);
         object.removed = true;
         const { attack, defense, ...rest } = object;
@@ -282,7 +111,7 @@ export default {
         });
         Character.updateCompanionSlot();
         Almanac.makeContentKnown(object.name);
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
         Props.changePlayerProp('energy', energy);
       },
       cardId,
@@ -292,12 +121,13 @@ export default {
     );
   },
 
-  simulateScaring: function (cardId, time, energy) {
+  simulateScaring: function (actionsOrchestration, cardId, time, energy) {
     const object = Props.getObject(cardId);
     object.removed = true;
-    this.fastForward(
-      function (cardId, energy) {
-        this.goBackFromAction(cardId);
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
+        actionsOrchestration.goBackFromAction(cardId);
         Props.changePlayerProp('energy', energy);
       },
       cardId,
@@ -307,20 +137,21 @@ export default {
     );
   },
 
-  simulateScouting: function (cardId, time, energy) {
+  simulateScouting: function (actionsOrchestration, cardId, time, energy) {
     Map.showScoutMarkerFor(cardId);
 
-    this.fastForward(
-      function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         const object = Props.getObject(cardId);
-        this.searchForKey(object);
+        ActionsUtils.searchForKey(object);
         /* if (object.x % 4 === 0 || object.y % 4 === 0) { Map.mapUncoverAt(x, y); } */
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
         const allFoundObjectIds = Player.findObjects(object.x, object.y);
         Player.handleFoundObjectIds(allFoundObjectIds);
         Map.hideScoutMarker();
         Props.changePlayerProp('energy', energy);
-        this.spawnCreaturesIfInfested(cardId, true);
+        ActionsUtils.spawnCreaturesIfInfested(cardId, true);
       },
       cardId,
       time,
@@ -329,30 +160,20 @@ export default {
     );
   },
 
-  searchForKey: function (object) {
-    if (object.locked && object.hasKey) {
-      object.hasKey = false;
-      Props.setupBuilding(
-        Player.getPlayerPosition().x,
-        Player.getPlayerPosition().y,
-        new Array('key')
-      );
-    }
-  },
-
-  simulateResting: function (cardId, time, energy) {
+  simulateResting: function (actionsOrchestration, cardId, time, energy) {
     Map.showScoutMarkerFor(cardId);
     if (Props.getGameProp('timeMode') === 'night') {
       energy += 5;
     }
-    this.fastForward(
-      function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         Props.changePlayerProp('energy', energy);
         Props.changePlayerProp('health', Math.floor(energy / 2));
         Props.changePlayerProp('food', -10);
         Props.changePlayerProp('thirst', -14);
         Map.hideScoutMarker();
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
       },
       cardId,
       time,
@@ -361,19 +182,20 @@ export default {
     );
   },
 
-  simulateSleeping: function (cardId, time, energy) {
+  simulateSleeping: function (actionsOrchestration, cardId, time, energy) {
     Map.showScoutMarkerFor(cardId);
     if (Props.getGameProp('timeMode') === 'night') {
       energy += 20;
     }
-    this.fastForward(
-      function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         Props.changePlayerProp('energy', energy);
         Props.changePlayerProp('health', Math.floor(energy / 2));
         Props.changePlayerProp('food', -18);
         Props.changePlayerProp('thirst', -24);
         Map.hideScoutMarker();
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
       },
       cardId,
       time,
@@ -382,23 +204,23 @@ export default {
     );
   },
 
-  simulateCooking: async function (cardId) {
+  simulateCooking: async function (actionsOrchestration, cardId) {
     const cardRef = Cards.getCardById(cardId);
     await TimingUtils.wait(800);
     Cooking.start(cardRef);
-    this.goBackFromAction(cardId);
+    actionsOrchestration.goBackFromAction(cardId);
   },
 
-  simulateCollecting: async function (cardId, energy) {
+  simulateCollecting: async function (actionsOrchestration, cardId, energy) {
     const object = Props.getObject(cardId);
     object.removed = true;
     await TimingUtils.wait(1200);
     Props.addItemToInventory(object.name, 1);
     Props.changePlayerProp('energy', energy);
-    this.goBackFromAction(cardId);
+    actionsOrchestration.goBackFromAction(cardId);
   },
 
-  simulateEquipping: async function (cardId) {
+  simulateEquipping: async function (actionsOrchestration, cardId) {
     await TimingUtils.wait(800);
     const object = Props.getObject(cardId);
     if (object.group === 'weapon' && object.name) {
@@ -408,10 +230,10 @@ export default {
         protection: object.defense,
       });
     }
-    this.goBackFromAction(cardId);
+    actionsOrchestration.goBackFromAction(cardId);
   },
 
-  simulateCuttingDown: function (cardId, time, energy) {
+  simulateCuttingDown: function (actionsOrchestration, cardId, time, energy) {
     Audio.sfx('chop-wood');
     Audio.sfx('chop-wood', 800);
     Audio.sfx('chop-wood', 1600);
@@ -419,9 +241,10 @@ export default {
     const object = Props.getObject(cardId);
     object.removed = true;
 
-    this.fastForward(
-      function (cardId, energy) {
-        this.goBackFromAction(cardId);
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
+        actionsOrchestration.goBackFromAction(cardId);
         if (Items.inventoryContains('improvised-axe')) {
           Props.addWeaponToInventory('improvised-axe', 0, { durability: -1 });
         } else if (Items.inventoryContains('axe')) {
@@ -444,7 +267,7 @@ export default {
     );
   },
 
-  simulateLuring: async function (cardId, time, energy) {
+  simulateLuring: async function (actionsOrchestration, cardId, time, energy) {
     Player.lockMovement(true);
     Cards.disableActions();
 
@@ -454,10 +277,11 @@ export default {
     scoutMarker.style.top = Math.round(Player.getPlayerPosition().y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForward(
-      async function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      async function (actionsOrchestration, cardId, energy) {
         const object = Props.getObject(cardId);
-        this.endAction(cardId);
+        actionsOrchestration.endAction(cardId);
 
         Map.hideScoutMarker();
 
@@ -482,7 +306,7 @@ export default {
     );
   },
 
-  simulateAttacking: async function (cardId) {
+  simulateAttacking: async function (actionsOrchestration, cardId) {
     const object = Props.getObject(cardId);
     const allFoundObjectIds = Player.findObjects(object.x, object.y);
 
@@ -494,30 +318,17 @@ export default {
     Cards.disableActions();
 
     await TimingUtils.wait(800);
-    this.endAction(cardId);
+    actionsOrchestration.endAction(cardId);
     Battle.startBattle();
   },
 
-  gotIt: function (cardId) {
-    const object = Props.getObject(cardId);
-    if (object && object.title === 'You found it!') {
-      Player.checkForWin();
-    } else if (object.title === 'Waking Up') {
-      document.getElementById('player').classList.remove('highlight');
-      document.getElementById('player-hint').classList.add('is--hidden');
-    }
-    Cards.removeCard(cardId);
-    Player.lockMovement(false);
-    Player.updatePlayer(true);
-    Cards.renderCardDeck();
-  },
-
-  simulateBreaking: function (cardId, time, energy) {
+  simulateBreaking: function (actionsOrchestration, cardId, time, energy) {
     Audio.sfx('chop-wood');
     Audio.sfx('chop-wood', 800);
 
-    this.fastForward(
-      function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         const object = Props.getObject(cardId);
         object.locked = false;
         if (Items.inventoryContains('improvised-axe')) {
@@ -526,8 +337,8 @@ export default {
           Props.addWeaponToInventory('axe', 0, { durability: -1 });
         }
         Props.changePlayerProp('energy', energy);
-        this.goBackFromAction(cardId);
-        this.spawnCreaturesIfInfested(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
+        ActionsUtils.spawnCreaturesIfInfested(cardId);
       },
       cardId,
       time,
@@ -536,19 +347,20 @@ export default {
     );
   },
 
-  simulateOpening: function (cardId, time, energy) {
+  simulateOpening: function (actionsOrchestration, cardId, time, energy) {
     Audio.sfx('unlock', 0, 0.6);
 
-    this.fastForward(
-      function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         const object = Props.getObject(cardId);
         object.locked = false;
         if (Items.inventoryContains('key')) {
           Props.addItemToInventory('key', -1);
         }
         Props.changePlayerProp('energy', energy);
-        this.goBackFromAction(cardId);
-        this.spawnCreaturesIfInfested(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
+        ActionsUtils.spawnCreaturesIfInfested(cardId);
       },
       cardId,
       time,
@@ -557,34 +369,16 @@ export default {
     );
   },
 
-  spawnCreaturesIfInfested: function (cardId, onlyRats = false) {
-    /* when scouting/breaking/opening an infested building, spawn creatures (they do not attack) */
-    const cardRef = Cards.getCardById(cardId);
-    const object = Props.getObject(cardId);
-    if (object.infested && !object.locked) {
-      if (!onlyRats || object.name !== 'beehive') {
-        let hostileObjectIds = Props.spawnCreaturesAt(object.x, object.y, object.enemies);
-        // building not infested anymore
-        cardRef.classList.remove('infested');
-        object.infested = false;
-        // search action not critical any more
-        const action = object.actions?.find(a => a.name === 'search' || a.name === 'gather');
-        if (action) action.critical = false;
-        // update card deck with new creature cards
-        Player.handleFoundObjectIds(hostileObjectIds);
-      }
-    }
-  },
-
-  simulateSmashing: function (cardId, time, energy) {
+  simulateSmashing: function (actionsOrchestration, cardId, time, energy) {
     Audio.sfx('break-glass', 350);
 
-    this.fastForward(
-      function (cardId, energy) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         const object = Props.getObject(cardId);
         object.locked = false;
         Props.changePlayerProp('energy', energy);
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
       },
       cardId,
       time,
@@ -593,12 +387,13 @@ export default {
     );
   },
 
-  drinking: function (cardId, time) {
+  drinking: function (actionsOrchestration, cardId, time) {
     Audio.sfx('water');
-    this.fastForward(
-      function (cardId) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId) {
         Props.changePlayerProp('thirst', 50);
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
       },
       cardId,
       time,
@@ -606,11 +401,12 @@ export default {
     );
   },
 
-  fishing: function (cardId, time, energy) {
+  fishing: function (actionsOrchestration, cardId, time, energy) {
     Audio.sfx('water-dip');
     Map.showScoutMarkerFor(cardId);
-    this.fastForward(
-      function (cardId) {
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId, energy) {
         Map.hideScoutMarker();
         Props.changePlayerProp('energy', energy);
         Props.changePlayerProp('food', -5);
@@ -622,7 +418,7 @@ export default {
           Audio.sfx('fish-catch');
           Props.addWeaponToInventory('fishing-rod', 0, { durability: -1 });
         }
-        this.goBackFromAction(cardId);
+        actionsOrchestration.goBackFromAction(cardId);
       },
       cardId,
       time,
@@ -631,7 +427,7 @@ export default {
     );
   },
 
-  chomping: function (cardId, time, energy) {
+  chomping: function (actionsOrchestration, cardId, time, energy) {
     Player.lockMovement(true);
     Cards.disableActions();
     Audio.sfx('bark');
@@ -641,9 +437,10 @@ export default {
     scoutMarker.style.top = Math.round(Player.getPlayerPosition().y * 44.4) + 'px';
     scoutMarker.classList.remove('is--hidden');
 
-    this.fastForward(
-      function (cardId) {
-        this.endAction(cardId);
+    actionsOrchestration.fastForward(
+      actionsOrchestration,
+      function (actionsOrchestration, cardId) {
+        actionsOrchestration.endAction(cardId);
         Map.hideScoutMarker();
         Battle.startCompanionBattle(cardId);
       },
@@ -654,7 +451,7 @@ export default {
     );
   },
 
-  reading: async function (cardId) {
+  reading: async function (actionsOrchestration, cardId) {
     await TimingUtils.wait(1800);
     const targetLocationName = Props.getObject(cardId).name;
     Audio.sfx('note');
@@ -677,6 +474,6 @@ export default {
     if (Props.getGameProp('tutorial') === false) {
       Checkpoint.save(targetLocationName);
     }
-    this.goBackFromAction(cardId);
+    actionsOrchestration.goBackFromAction(cardId);
   },
 };

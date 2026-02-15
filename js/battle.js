@@ -3,7 +3,7 @@ import Props from './props.js';
 import Player from './player.js';
 import Cards from './cards.js';
 import CardsMarkup from './cards-markup.js';
-import Actions from './actions.js';
+import ActionsOrchestration from './actions-orchestration.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Character from './character.js';
@@ -389,7 +389,7 @@ export default {
       }
       CardsMarkup.hideActionFeedback(zedCardRef);
     });
-    Actions.goBackFromAction(cardZedDeck[0]);
+    ActionsOrchestration.goBackFromAction(cardZedDeck[0]);
     cardZedDeck = [];
   },
 
