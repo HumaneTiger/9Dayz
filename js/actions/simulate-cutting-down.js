@@ -23,10 +23,7 @@ export default function simulateCuttingDown(actionsOrchestration, cardId, time, 
       Props.beginInventoryBatch();
       Props.addItemToInventory('stump', 1);
       Props.addItemToInventory('branch', 2 + Math.round(RngUtils.cuttingTreeRNG.random() - 0.25));
-      Props.addItemToInventory(
-        'straw-wheet',
-        Math.round(RngUtils.cuttingTreeRNG.random() - 0.25)
-      );
+      Props.addItemToInventory('straw-wheet', Math.round(RngUtils.cuttingTreeRNG.random() - 0.25));
       Props.changePlayerProp('energy', energy);
       Props.endInventoryBatch();
     },
