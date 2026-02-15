@@ -125,8 +125,6 @@ export default {
     }
     Props.endInventoryBatch();
 
-    // Process inventory for UI
-    Props.modifyObjectProperties();
     Items.generateInventorySlots();
     Items.fillInventorySlots();
     Crafting.checkCraftingPrerequisits();

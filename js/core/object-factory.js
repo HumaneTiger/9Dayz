@@ -260,16 +260,13 @@ export default {
             : buildingName.replace('-1', '').replace('-2', '').replace('-', ' '),
           type: buildingType,
           group: 'building',
-          actions: props.preview
-            ? [{ id: 'got-it', label: 'Got it!' }]
-            : /** @type {GameAction[]} */ (
-                BuildingUtils.getBuildingActionsFor(
-                  buildingName,
-                  locked,
-                  forceInfested || infested,
-                  GameState.getGameProp('character')
-                )
-              ),
+          actions: ActionsManager.getActionsForBuildingType(
+            buildingName,
+            buildingType,
+            locked,
+            forceInfested || infested,
+            GameState.getGameProp('character')
+          ),
           items: lootItemList,
           locked: locked,
           hasKey: hasKey,

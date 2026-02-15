@@ -1,12 +1,7 @@
 // @ts-check
+
 /**
- * @typedef {Object} GameAction
- * @property {string} id
- * @property {string} label
- * @property {number} [time]
- * @property {number} [energy]
- * @property {boolean} [critical]
- * @export
+ * @import { GameAction } from '../../data/definitions/actions-definitions.js'
  */
 
 /**

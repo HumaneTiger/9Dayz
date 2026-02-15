@@ -38,10 +38,6 @@ export default {
     GameState.pauseGame(pause);
   },
 
-  modifyObjectProperties: function () {
-    MapInitializer.modifyObjectProperties();
-  },
-
   getPlayerProps: function () {
     return PlayerManager.getPlayerProps();
   },

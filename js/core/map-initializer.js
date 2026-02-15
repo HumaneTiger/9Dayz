@@ -1,17 +1,8 @@
 // @ts-check
 
-import {
-  BuildingInstances,
-  ZombieInstances,
-  PathInstances,
-  PathUtils,
-  BuildingDefinitions,
-  CharacterDefinitions,
-} from '../../data/index.js';
+import { BuildingInstances, ZombieInstances, PathInstances, PathUtils } from '../../data/index.js';
 import GameState from './game-state.js';
 import ObjectFactory from './object-factory.js';
-
-const { buildingActions } = BuildingDefinitions;
 
 const mapSize = GameState.getGameProp('mapSize');
 
@@ -87,22 +78,5 @@ export default {
    */
   getAllPaths: function () {
     return paths;
-  },
-
-  /**
-   * @returns {void}
-   */
-  modifyObjectProperties: function () {
-    const character = GameState.getGameProp('character');
-    const charDef = CharacterDefinitions[character];
-
-    if (charDef?.buildingActionModifiers) {
-      for (const buildingType in charDef.buildingActionModifiers) {
-        const modifiers = charDef.buildingActionModifiers[buildingType];
-        for (const actionIndex in modifiers) {
-          buildingActions[buildingType][actionIndex] = modifiers[actionIndex];
-        }
-      }
-    }
   },
 };

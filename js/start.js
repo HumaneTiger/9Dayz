@@ -114,7 +114,6 @@ export default {
     }
     Props.endInventoryBatch();
 
-    Props.modifyObjectProperties();
     Items.generateInventorySlots();
     Items.fillInventorySlots();
     Weapons.updateWeaponState();

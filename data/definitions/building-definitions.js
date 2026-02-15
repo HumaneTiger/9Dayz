@@ -1,13 +1,17 @@
 // @ts-check
 
 /**
+ * @import { GameAction } from './actions-definitions.js'
+ */
+
+/**
  * @typedef {Object} BuildingProp
  * @property {number} locked - Higher means more likely to be locked (11 means always locked, 0 means never locked)
  * @property {number} spawn
  * @property {string[]} items
  * @property {number} [amount]
  * @property {boolean} [preview]
- * @property {string[]} [buidlings]
+ * @property {string[]} [buildings]
  * @export
  */
 
@@ -15,7 +19,7 @@
  * @typedef {Object} BuildingDefinition
  * @property {Record<string, string[]>} buildingTypes
  * @property {Record<string, BuildingProp>} buildingProps
- * @property {Record<string, string[]>} buildingActions
+ * @property {Record<string, GameAction[]>} buildingActions
  * @export
  */
 
@@ -151,7 +155,7 @@ export default {
       locked: 0,
       spawn: 3,
       items: ['carrot', 'pepper', 'pumpkin', 'mushroom-2', 'straw-wheet', 'tomato'],
-      buidlings: ['scarecrow'],
+      buildings: ['scarecrow'],
       amount: 2,
     },
     compost: {
@@ -283,32 +287,179 @@ export default {
 
   buildingActions: {
     house: [
-      'break door|10|-15',
-      'unlock door|10|-5',
-      'search|20|-10',
-      'scout area|30',
-      'rest|60|+30',
-      'sleep|120|+60',
+      { id: 'break-door', label: 'break door', time: 10, energy: -15, requiresLocked: true },
+      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
+      { id: 'search', label: 'search', time: 20, energy: -10, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 30,
+        needsUnlock: true,
+        excludeCharacters: ['treehugger'],
+      },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 10,
+        needsUnlock: true,
+        forCharactersOnly: ['treehugger'],
+      },
+      {
+        id: 'sleep',
+        label: 'sleep',
+        time: 120,
+        energy: 60,
+        needsUnlock: true,
+        excludeCharacters: ['treehugger'],
+      },
+      {
+        id: 'sleep',
+        label: 'sleep',
+        time: 120,
+        energy: 30,
+        needsUnlock: true,
+        forCharactersOnly: ['treehugger'],
+      },
     ],
-    car: ['unlock door|10|-5', 'smash window|20', 'search|20|-5', 'scout area|30', 'rest|60|+20'],
-    farm: ['gather|15|-10', 'scout area|30'],
-    tree: ['gather|15|-5', 'scout area|30', 'cut down|25|-25', 'rest|60|+15'],
+    car: [
+      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
+      { id: 'smash-window', label: 'smash window', time: 20, requiresLocked: true },
+      { id: 'search', label: 'search', time: 20, energy: -5, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 20,
+        needsUnlock: true,
+        excludeCharacters: ['treehugger'],
+      },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 10,
+        needsUnlock: true,
+        forCharactersOnly: ['treehugger'],
+      },
+    ],
+    farm: [
+      { id: 'gather', label: 'gather', time: 15, energy: -10, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+    ],
+    tree: [
+      { id: 'gather', label: 'gather', time: 15, energy: -5, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'cut-down', label: 'cut down', time: 25, energy: -25, excludeBuildings: ['big-tree'] },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 15,
+        needsUnlock: true,
+        excludeCharacters: ['treehugger'],
+        excludeBuildings: ['small-tree'],
+      },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 20,
+        needsUnlock: true,
+        forCharactersOnly: ['treehugger'],
+        excludeBuildings: ['small-tree'],
+      },
+    ],
     church: [
-      'unlock door|10|-5',
-      'break door|10|-15',
-      'search|20|-10',
-      'scout area|30',
-      'rest|60|+30',
+      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
+      { id: 'break-door', label: 'break door', time: 10, energy: -15, requiresLocked: true },
+      { id: 'search', label: 'search', time: 20, energy: -10, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'rest', label: 'rest', time: 60, energy: 30, needsUnlock: true },
     ],
-    signpost: ['read|1'],
-    place: ['head toward|0', 'quick travel|0'],
-    train: ['search|20|-5', 'scout area|30'],
-    shop: ['unlock door|10|-5', 'break door|30|-20', 'search|20|-10', 'scout area|30'],
-    industrial: ['unlock door|10|-5', 'break door|30|-20', 'search|20|-15', 'scout area|30'],
-    water: ['gather|15|-5', 'drink|10', 'fish|30|-5'],
-    camping: ['break door|10|-15', 'search|20|-10', 'scout area|30', 'rest|60|+20'],
-    corpse: ['search|15|-5'],
-    container: ['break lock|30|-20', 'search|15|-5'],
-    collectable: ['collect|0'],
+    signpost: [{ id: 'read', label: 'read', time: 1, needsUnlock: true }],
+    place: [
+      { id: 'head-toward', label: 'head toward', time: 0 },
+      { id: 'quick-travel', label: 'quick travel', time: 0 },
+    ],
+    train: [
+      { id: 'search', label: 'search', time: 20, energy: -5, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+    ],
+    shop: [
+      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
+      { id: 'break-door', label: 'break door', time: 30, energy: -20, requiresLocked: true },
+      { id: 'search', label: 'search', time: 20, energy: -10, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+    ],
+    industrial: [
+      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
+      { id: 'break-door', label: 'break door', time: 30, energy: -20, requiresLocked: true },
+      { id: 'search', label: 'search', time: 20, energy: -15, needsUnlock: true },
+      { id: 'scout-area', label: 'scout area', time: 30 },
+    ],
+    water: [
+      { id: 'gather', label: 'gather', time: 15, energy: -5, needsUnlock: true },
+      {
+        id: 'drink',
+        label: 'drink',
+        time: 10,
+        needsUnlock: true,
+        excludeCharacters: ['snackivore'],
+      },
+      { id: 'fish', label: 'fish', time: 30, energy: -5, excludeBuildings: ['pump', 'well'] },
+    ],
+    camping: [
+      // break-door, search, scout-area, rest for most camping buildings
+      // fireplace excludes: break-door, search, scout-area but adds: cook, sleep
+      // seating excludes: break-door, scout-area, sleep
+      {
+        id: 'break-door',
+        label: 'break door',
+        time: 10,
+        energy: -15,
+        excludeBuildings: ['fireplace', 'seating', 'outhouse'],
+      },
+      {
+        id: 'search',
+        label: 'search',
+        time: 20,
+        energy: -10,
+        needsUnlock: true,
+        excludeBuildings: ['fireplace', 'seating'],
+      },
+      {
+        id: 'scout-area',
+        label: 'scout area',
+        time: 30,
+        excludeBuildings: ['fireplace', 'seating'],
+      },
+      { id: 'rest', label: 'rest', time: 60, energy: 20, needsUnlock: true },
+      // Fireplace-specific actions
+      {
+        id: 'cook',
+        label: 'cook',
+        time: 30,
+        excludeCharacters: ['craftsmaniac', 'cashmeister'],
+        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'barricades'],
+      },
+      {
+        id: 'sleep',
+        label: 'sleep',
+        time: 120,
+        energy: 60,
+        forCharactersOnly: ['treehugger'],
+        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'barricades'],
+      },
+    ],
+    corpse: [{ id: 'search', label: 'search', time: 15, energy: -5, needsUnlock: true }],
+    container: [
+      { id: 'break-lock', label: 'break lock', time: 30, energy: -20, requiresLocked: true },
+      { id: 'search', label: 'search', time: 15, energy: -5, needsUnlock: true },
+    ],
+    collectable: [{ id: 'collect', label: 'collect', time: 0 }],
   },
 };

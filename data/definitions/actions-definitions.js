@@ -1,3 +1,38 @@
+// @ts-check
+
+/**
+ * @typedef {Object} GameAction
+ * @property {string} id
+ * @property {string} label
+ * @property {number} [time]
+ * @property {number} [energy]
+ * @property {boolean} [critical]
+ * @property {boolean} [locked]
+ * @property {boolean} [needsUnlock] - Whether action requires building to be unlocked
+ * @property {boolean} [requiresLocked] - Whether action requires building to be locked
+ * @property {string[]} [excludeBuildings] - Building names where this action doesn't apply
+ * @property {string[]} [excludeCharacters] - Character types that cannot perform this action
+ * @property {string[]} [forCharactersOnly] - If set, only these characters can perform this action
+ * @export
+ */
+
+/**
+ * @typedef {Object} ActionProps
+ * @property {string} method - Function name to execute (e.g., 'simulateGathering')
+ * @property {boolean} oneTime - Whether action completes in one execution
+ * @property {number} delay - Delay in milliseconds before action starts
+ * @property {string} label - Display label during action execution
+ * @export
+ */
+
+/**
+ * @typedef {Object} ActionsDefinition
+ * @property {Record<string, ActionProps>} actionProps - Map of action ID to action properties
+ * @property {Record<string, GameAction[]>} objectTypeActions - Map of object type to available actions
+ * @export
+ */
+
+/** @type {ActionsDefinition} */
 export default {
   actionProps: {
     search: {

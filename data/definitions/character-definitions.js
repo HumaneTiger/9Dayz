@@ -3,7 +3,6 @@
 /**
  * @typedef {Object} CharacterDefinition
  * @property {Record<string, number>} [inventoryPreset]
- * @property {Record<string, Record<number, string>>} [buildingActionModifiers]
  * @property {Record<string, number[]>} [itemModifiers]
  * @export
  */
@@ -28,11 +27,6 @@ export default {
       branch: 1,
       'fruit-2': 2,
       knife: 1,
-    },
-    buildingActionModifiers: {
-      tree: { 3: 'rest|60|+20' },
-      house: { 3: 'rest|60|+10', 4: 'sleep|120|+30' },
-      car: { 3: 'rest|60|+10' },
     },
     itemModifiers: {
       acorn: [2, 0, 0],
