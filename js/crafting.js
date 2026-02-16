@@ -1,13 +1,13 @@
 import Props from './props.js';
 import Items from './items.js';
 import Player from './player.js';
-import { RecipeDefinitions } from '../data/index.js';
 import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
+import { RecipesManager } from './core/index.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
-const craftingRecipes = RecipeDefinitions.craftingRecipes;
+const craftingRecipes = RecipesManager.getCraftingRecipes();
 
 export default {
   init: function () {
@@ -199,19 +199,6 @@ export default {
       craftingOptions.total = craftingOptionsTotal;
       this.craftingChangeFeedback();
     }
-  },
-
-  isItemPartOfCrafting: function (item) {
-    for (const recipe in craftingRecipes) {
-      if (
-        craftingRecipes[recipe].items[0]?.includes(item) ||
-        craftingRecipes[recipe].items[1]?.includes(item) ||
-        craftingRecipes[recipe].items[2]?.includes(item)
-      ) {
-        return true;
-      }
-    }
-    return false;
   },
 
   craftingChangeFeedback: async function () {

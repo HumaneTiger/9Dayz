@@ -16,7 +16,7 @@
  */
 
 /**
- * @typedef {Object.<string, string[]>} IngredientVariants
+ * @typedef {Record<string, string[]>} IngredientVariants
  * @export
  */
 
@@ -29,7 +29,7 @@ export default {
     fruits: ['fruit-1', 'fruit-2', 'fruit-3'],
   },
 
-  /** @type {Object.<string, CookingRecipe>} */
+  /** @type {Record<string, CookingRecipe>} */
   cookingRecipes: {
     'roasted-meat': ['meat', 'sharp-stick', 1, 'roast'],
     'roasted-pepper': ['pepper', 'sharp-stick', 1, 'roast'],
@@ -45,7 +45,7 @@ export default {
     cookie: ['honey', 'dough', 3, 'bake'],
   },
 
-  /** @type {Object.<string, CraftingRecipe>} */
+  /** @type {Record<string, CraftingRecipe>} */
   craftingRecipes: {
     'wooden-club': {
       items: [['fail', 'hacksaw'], ['stump']],

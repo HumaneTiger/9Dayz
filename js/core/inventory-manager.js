@@ -258,6 +258,109 @@ export default {
   },
 
   /**
+   * @param {string} itemName - Item name
+   * @returns {boolean}
+   */
+  inventoryContains: function (itemName) {
+    if (inventory.items[itemName]?.amount > 0) {
+      return true;
+    } else if (inventory.weapons[itemName]?.amount > 0) {
+      return true;
+    } else if (itemName === 'water') {
+      if (inventory.items['drink-1']?.amount > 0 || inventory.items['drink-2']?.amount > 0) {
+        return true;
+      }
+    } else if (itemName === 'mushrooms') {
+      if (inventory.items['mushroom-1']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0) {
+        return true;
+      }
+    } else if (itemName === 'fruits') {
+      if (
+        inventory.items['fruit-1']?.amount > 0 ||
+        inventory.items['fruit-2']?.amount > 0 ||
+        inventory.items['fruit-3']?.amount > 0
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  /**
+   * @param {string} itemName - Item name
+   * @returns {boolean}
+   */
+  inventoryKnows: function (itemName) {
+    if (inventory.items[itemName]) {
+      return true;
+    } else if (inventory.weapons[itemName]) {
+      return true;
+    } else if (itemName === 'water') {
+      if (inventory.items['drink-1'] || inventory.items['drink-2']) {
+        return true;
+      }
+    } else if (itemName === 'mushrooms') {
+      if (inventory.items['mushroom-1'] || inventory.items['mushroom-2']) {
+        return true;
+      }
+    } else if (itemName === 'fruits') {
+      if (inventory.items['fruit-1'] || inventory.items['fruit-2'] || inventory.items['fruit-3']) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  /**
+   * @param {string} itemName - Item name
+   * @returns {number}
+   */
+  inventoryItemAmount: function (itemName) {
+    if (inventory.items[itemName]) {
+      return inventory.items[itemName].amount;
+    } else if (itemName === 'water') {
+      return (inventory.items['drink-1']?.amount || 0) + (inventory.items['drink-2']?.amount || 0);
+    } else if (itemName === 'mushrooms') {
+      return (
+        (inventory.items['mushroom-1']?.amount || 0) + (inventory.items['mushroom-2']?.amount || 0)
+      );
+    } else if (itemName === 'fruits') {
+      if (
+        inventory.items['fruit-1']?.amount > 0 ||
+        inventory.items['fruit-2']?.amount > 0 ||
+        inventory.items['fruit-3']?.amount > 0
+      ) {
+        return (
+          (inventory.items['fruit-1']?.amount || 0) +
+          (inventory.items['fruit-2']?.amount || 0) +
+          (inventory.items['fruit-3']?.amount || 0)
+        );
+      }
+    }
+    return 0;
+  },
+
+  /**
+   * @param {string} itemType - Item type
+   * @returns {ItemProps | undefined}
+   */
+  getFirstItemOfType: function (itemType) {
+    for (const item in inventory.items) {
+      if (inventory.items[item].type === itemType && inventory.items[item].amount) {
+        return inventory.items[item];
+      }
+    }
+  },
+
+  /**
+   * @param {string} itemName - Item name
+   * @returns {ItemProps | undefined}
+   */
+  getItemByName: function (itemName) {
+    return inventory.items[itemName];
+  },
+
+  /**
    * @returns {Record<string, WeaponProps>}
    */
   getAllInventoryWeapons: function () {

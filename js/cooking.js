@@ -1,18 +1,16 @@
-import Props from './props.js';
 import Items from './items.js';
 import Audio from './audio.js';
-import { RecipeDefinitions } from '../data/index.js';
-import Events, { EVENTS } from './core/event-manager.js';
+import { EventManager, EVENTS, RecipesManager, InventoryManager } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
-const cookingRecipes = RecipeDefinitions.cookingRecipes;
+//const cookingRecipes = RecipeDefinitions.cookingRecipes;
 
 export default {
   init: function () {
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
 
     // EVENT: React to inventory changes
-    Events.on(EVENTS.INVENTORY_CHANGED, () => {
+    EventManager.on(EVENTS.INVENTORY_CHANGED, () => {
       this.checkAllCookingModeCards();
     });
   },
@@ -40,26 +38,27 @@ export default {
   },
 
   checkCookingRecipePrerequisits: function (cardRef) {
+    const cookingRecipes = RecipesManager.getCookingRecipes();
     for (const recipe in cookingRecipes) {
       const recipeRow = cardRef.querySelector(`ul.cooking li[data-recipe="${recipe}"]`);
       if (!recipeRow) {
         continue;
       }
-      if (Items.inventoryKnows(cookingRecipes[recipe][0])) {
+      if (InventoryManager.inventoryKnows(cookingRecipes[recipe][0])) {
         Items.fillItemSlot(
           recipeRow.querySelectorAll('.slot.item-' + cookingRecipes[recipe][0]),
-          Items.inventoryItemAmount(cookingRecipes[recipe][0]) || 0
+          InventoryManager.inventoryItemAmount(cookingRecipes[recipe][0]) || 0
         );
       }
-      if (Items.inventoryKnows(cookingRecipes[recipe][1])) {
+      if (InventoryManager.inventoryKnows(cookingRecipes[recipe][1])) {
         Items.fillItemSlot(
           recipeRow.querySelectorAll('.slot.item-' + cookingRecipes[recipe][1]),
-          Items.inventoryItemAmount(cookingRecipes[recipe][1]) || 0
+          InventoryManager.inventoryItemAmount(cookingRecipes[recipe][1]) || 0
         );
       }
       if (
-        Items.inventoryKnows(cookingRecipes[recipe][0]) &&
-        Items.inventoryKnows(cookingRecipes[recipe][1])
+        InventoryManager.inventoryKnows(cookingRecipes[recipe][0]) &&
+        InventoryManager.inventoryKnows(cookingRecipes[recipe][1])
       ) {
         const actionSlot = recipeRow.querySelector('.slot.action.item-' + recipe);
         if (!actionSlot) {
@@ -67,8 +66,8 @@ export default {
         }
         actionSlot.classList.remove('unknown');
         if (
-          !Items.inventoryContains(cookingRecipes[recipe][0]) ||
-          !Items.inventoryContains(cookingRecipes[recipe][1])
+          !InventoryManager.inventoryContains(cookingRecipes[recipe][0]) ||
+          !InventoryManager.inventoryContains(cookingRecipes[recipe][1])
         ) {
           actionSlot.classList.remove('active');
           actionSlot.classList.add('inactive');
@@ -80,15 +79,6 @@ export default {
     }
   },
 
-  isItemPartOfRecipe: function (item) {
-    for (const recipe in cookingRecipes) {
-      if (item === cookingRecipes[recipe][0] || item === cookingRecipes[recipe][1]) {
-        return true;
-      }
-    }
-    return false;
-  },
-
   checkForCardClick: function (ev) {
     const target = ev.target;
     const actionButton = target.closest('div.action-button');
@@ -98,7 +88,8 @@ export default {
     if (cookingContainer) {
       if (actionSlotActive && leftMouseButton) {
         const recipe = actionSlotActive.dataset?.item;
-        this.resolveRecipeIngredients(recipe);
+        Audio.sfx('roast');
+        RecipesManager.resolveRecipeIngredients(recipe);
       } else if (
         actionButton &&
         leftMouseButton &&
@@ -110,41 +101,5 @@ export default {
         }, 100);
       }
     }
-  },
-
-  resolveRecipeIngredients: function (recipe) {
-    if (!recipe) {
-      return;
-    }
-
-    // Add result to inventory
-    Props.addItemToInventory(recipe, cookingRecipes[recipe][2]);
-    Audio.sfx('roast');
-
-    // Get ingredients for this recipe
-    const ingredients = [cookingRecipes[recipe][0], cookingRecipes[recipe][1]];
-
-    // Remove each ingredient based on definitions
-    ingredients.forEach(ingredient => {
-      // Skip persistent ingredients
-      if (RecipeDefinitions.persistentIngredients.includes(ingredient)) {
-        return;
-      }
-
-      let itemToRemove = ingredient;
-
-      // Check if ingredient is a variant key (generic name)
-      if (RecipeDefinitions.ingredientVariants[ingredient]) {
-        // Find which variant is in inventory
-        itemToRemove = RecipeDefinitions.ingredientVariants[ingredient].find(variant =>
-          Items.inventoryContains(variant)
-        );
-      }
-
-      // Remove the ingredient
-      if (itemToRemove) {
-        Props.addItemToInventory(itemToRemove, -1);
-      }
-    });
   },
 };

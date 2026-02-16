@@ -2,13 +2,11 @@ import Props from './props.js';
 import Player from './player.js';
 import Ui from './ui.js';
 import Cards from './cards.js';
-import Crafting from './crafting.js';
-import Cooking from './cooking.js';
 import Character from './character.js';
 import Audio from './audio.js';
 import { ItemUtils } from '../data/index.js';
-import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
+import { EventManager, EVENTS, RecipesManager, InventoryManager } from './core/index.js';
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -19,7 +17,7 @@ export default {
     inventoryContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     inventoryContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
     // EVENT: React to inventory changes and trigger callback imimediately
-    Events.on(
+    EventManager.on(
       EVENTS.INVENTORY_CHANGED,
       ({ oldTotal, newTotal }) => {
         this.fillInventorySlots();
@@ -35,86 +33,24 @@ export default {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 
-  inventoryContains: function (item) {
-    if (inventory.items[item]?.amount > 0) {
-      return true;
-    } else if (inventory.weapons[item]?.amount > 0) {
-      return true;
-    } else if (item === 'water') {
-      if (inventory.items['drink-1']?.amount > 0 || inventory.items['drink-2']?.amount > 0) {
-        return true;
-      }
-    } else if (item === 'mushrooms') {
-      if (inventory.items['mushroom-1']?.amount > 0 || inventory.items['mushroom-2']?.amount > 0) {
-        return true;
-      }
-    } else if (item === 'fruits') {
-      if (
-        inventory.items['fruit-1']?.amount > 0 ||
-        inventory.items['fruit-2']?.amount > 0 ||
-        inventory.items['fruit-3']?.amount > 0
-      ) {
-        return true;
-      }
-    }
-    return false;
+  inventoryContains: function (itemName) {
+    return InventoryManager.inventoryContains(itemName);
   },
 
-  inventoryKnows: function (item) {
-    if (inventory.items[item]) {
-      return true;
-    } else if (inventory.weapons[item]) {
-      return true;
-    } else if (item === 'water') {
-      if (inventory.items['drink-1'] || inventory.items['drink-2']) {
-        return true;
-      }
-    } else if (item === 'mushrooms') {
-      if (inventory.items['mushroom-1'] || inventory.items['mushroom-2']) {
-        return true;
-      }
-    } else if (item === 'fruits') {
-      if (inventory.items['fruit-1'] || inventory.items['fruit-2'] || inventory.items['fruit-3']) {
-        return true;
-      }
-    }
-    return false;
+  inventoryKnows: function (itemName) {
+    return InventoryManager.inventoryKnows(itemName);
   },
 
-  inventoryItemAmount: function (item) {
-    if (inventory.items[item]) {
-      return inventory.items[item].amount;
-    } else if (item === 'water') {
-      return (inventory.items['drink-1']?.amount || 0) + (inventory.items['drink-2']?.amount || 0);
-    } else if (item === 'mushrooms') {
-      return (
-        (inventory.items['mushroom-1']?.amount || 0) + (inventory.items['mushroom-2']?.amount || 0)
-      );
-    } else if (item === 'fruits') {
-      if (
-        inventory.items['fruit-1']?.amount > 0 ||
-        inventory.items['fruit-2']?.amount > 0 ||
-        inventory.items['fruit-3']?.amount > 0
-      ) {
-        return (
-          (inventory.items['fruit-1']?.amount || 0) +
-          (inventory.items['fruit-2']?.amount || 0) +
-          (inventory.items['fruit-3']?.amount || 0)
-        );
-      }
-    }
+  inventoryItemAmount: function (itemName) {
+    return InventoryManager.inventoryItemAmount(itemName);
   },
 
-  getFirstItemOfType: function (type) {
-    for (const item in inventory.items) {
-      if (inventory.items[item].type === type && inventory.items[item].amount) {
-        return inventory.items[item];
-      }
-    }
+  getItemByName: function (itemName) {
+    return InventoryManager.getItemByName(itemName);
   },
 
-  getItemByName: function (name) {
-    return inventory.items[name];
+  getFirstItemOfType: function (itemType) {
+    return InventoryManager.getFirstItemOfType(itemType);
   },
 
   inventoryChangeFeedback: async function () {
@@ -204,7 +140,7 @@ export default {
       );
 
       if (action === 'craft' && itemActive) {
-        if (Crafting.isItemPartOfCrafting(item)) {
+        if (RecipesManager.isItemPartOfCraftingRecipe(item)) {
           document.querySelector('#actions li.craft').classList.add('transfer');
         }
       } else {
@@ -262,11 +198,11 @@ export default {
       if (action === 'craft' && itemActive) {
         itemInfoMarkup +=
           '<span class="fighting">+<span class="material-symbols-outlined">swords</span></span>';
-        if (Crafting.isItemPartOfCrafting(item)) {
+        if (RecipesManager.isItemPartOfCraftingRecipe(item)) {
           itemInfoMarkup +=
             '<span class="crafting">+<span class="material-symbols-outlined">construction</span></span>';
         }
-        if (Cooking.isItemPartOfRecipe(item)) {
+        if (RecipesManager.isItemPartOfRecipe(item)) {
           itemInfoMarkup +=
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
@@ -280,7 +216,7 @@ export default {
         if (item.energy > 0 && this.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="energy">${itemEnergy}<span class="material-symbols-outlined">flash_on</span></span>`;
         }
-        if (Cooking.isItemPartOfRecipe(itemName) && this.inventoryContains(itemName)) {
+        if (RecipesManager.isItemPartOfRecipe(itemName) && this.inventoryContains(itemName)) {
           itemInfoMarkup +=
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
@@ -357,7 +293,7 @@ export default {
       this.fillItemSlot(
         inventoryContainer.querySelectorAll(`.slot.item-${inventory.items[item].name}`),
         inventory.items[item].amount,
-        Crafting.isItemPartOfCrafting(item),
+        RecipesManager.isItemPartOfCraftingRecipe(item),
         Props.calcItemProps(item)
       );
     }
