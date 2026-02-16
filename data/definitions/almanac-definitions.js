@@ -1,4 +1,16 @@
+// @ts-check
+
+/**
+ * AlmanacDefinitions contains all the static data for the Almanac content, such as which content is known and the markup for each content page.
+ */
+
+/** @typedef {{motive: string, markup: string|undefined}} AlmanacContentPage */
+/** @typedef {string[]} knownContent */
+/** @typedef {{knownContent: knownContent, contentPages: Record<string, AlmanacContentPage>}} AlmanacDefinitions */
+
+/** @type {AlmanacDefinitions} */
 export default {
+  /** @type {knownContent} */
   knownContent: [
     'battle',
     'health',
@@ -11,6 +23,7 @@ export default {
     'craftsmaniac',
     'furbuddy',
   ],
+  /** @type {Record<string, AlmanacContentPage>} */
   contentPages: {
     water: {
       motive: './img/items/water.PNG',
@@ -95,23 +108,23 @@ export default {
     },
     everyman: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="everyman"]').innerHTML,
+      markup: document.querySelector('div[data-character="everyman"]')?.innerHTML,
     },
     treehugger: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="treehugger"]').innerHTML,
+      markup: document.querySelector('div[data-character="treehugger"]')?.innerHTML,
     },
     snackivore: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="snackivore"]').innerHTML,
+      markup: document.querySelector('div[data-character="snackivore"]')?.innerHTML,
     },
     craftsmaniac: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="craftsmaniac"]').innerHTML,
+      markup: document.querySelector('div[data-character="craftsmaniac"]')?.innerHTML,
     },
     furbuddy: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="furbuddy"]').innerHTML,
+      markup: document.querySelector('div[data-character="furbuddy"]')?.innerHTML,
     },
   },
 };

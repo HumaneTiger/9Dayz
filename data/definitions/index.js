@@ -1,4 +1,5 @@
 export { default as ActionsDefinitions } from './actions-definitions.js';
+export { default as AlmanacDefinitions } from './almanac-definitions.js';
 export { default as BuildingDefinitions } from './building-definitions.js';
 export { default as CharacterDefinitions } from './character-definitions.js';
 export { default as CompanionDefinitions } from './companion-definitions.js';

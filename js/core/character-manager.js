@@ -1,3 +1,4 @@
+// @ts-check
 import { CharacterDefinitions } from '../../data/index.js';
 
 export default {

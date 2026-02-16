@@ -1,6 +1,6 @@
 import Props from '../props.js';
 import Companion from '../companion.js';
-import Almanac from '../almanac.js';
+import AlmanacManager from '../core/almanac-manager.js';
 import ActionsOrchestration from '../actions-orchestration.js';
 
 export default function simulatePetting(cardId, time, energy) {
@@ -15,7 +15,7 @@ export default function simulatePetting(cardId, time, energy) {
         protection: defense,
       });
       Companion.updateCompanionSlot();
-      Almanac.makeContentKnown(object.name);
+      AlmanacManager.makeContentKnown(object.name);
       ActionsOrchestration.endAction(cardId);
       ActionsOrchestration.goBackFromAction();
       Props.changePlayerProp('energy', energy);

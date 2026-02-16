@@ -1,7 +1,6 @@
 import Props from './props.js';
 import { ItemUtils, RecipeDefinitions } from '../data/index.js';
-import { EventManager, EVENTS, CharacterManager } from './core/index.js';
-import AlmanacContent from './content/almanac-content.js';
+import { EventManager, EVENTS, CharacterManager, AlmanacManager } from './core/index.js';
 
 const almanacContainer = document.getElementById('almanac');
 const markupSection = almanacContainer.querySelector('div.markup');
@@ -22,7 +21,7 @@ export default {
     document.body.addEventListener('mousedown', this.handleAlmanacOpenPage.bind(this));
     // EVENT: React to first item of a kind being added to inventory to make it known in almanac
     EventManager.on(EVENTS.FIRST_ITEM_ADDED, ({ item }) => {
-      this.makeContentKnown(item);
+      AlmanacManager.makeContentKnown(item);
       this.updatePage();
     });
   },
@@ -163,16 +162,6 @@ export default {
     }
   },
 
-  makeContentKnown: function (content) {
-    if (!AlmanacContent.knownContent.includes(content)) {
-      AlmanacContent.knownContent.push(content);
-    }
-  },
-
-  isContentKnown: function (content) {
-    return AlmanacContent.knownContent.includes(content);
-  },
-
   renderItemPageContent: function (item) {
     const itemProps = Props.calcItemProps(item);
     // update motive image for both types
@@ -182,7 +171,7 @@ export default {
       .querySelector('img.motive')
       .setAttribute('src', `./img/${imgSubPath}/${item}.${imgExtension}`);
 
-    if (this.isContentKnown(item)) {
+    if (AlmanacManager.isContentKnown(item)) {
       // stats
       if (itemProps) {
         if (itemProps.food || itemProps.drink || itemProps.energy) {
@@ -287,11 +276,11 @@ export default {
   },
 
   renderContentPageContent: function (item) {
-    if (this.isContentKnown(item)) {
+    if (AlmanacManager.isContentKnown(item)) {
       almanacContainer
         .querySelector('img.motive')
-        .setAttribute('src', AlmanacContent.contentPages[item].motive);
-      markupSection.innerHTML = AlmanacContent.contentPages[item].markup;
+        .setAttribute('src', AlmanacManager.getAlmanacContentPage(item).motive);
+      markupSection.innerHTML = AlmanacManager.getAlmanacContentPage(item).markup;
       markupSection.classList.remove('is--hidden');
 
       if (markupSection.offsetHeight > 200) {
@@ -301,7 +290,7 @@ export default {
     } else {
       almanacContainer
         .querySelector('img.motive')
-        .setAttribute('src', AlmanacContent.contentPages[item].motive);
+        .setAttribute('src', AlmanacManager.getAlmanacContentPage(item).motive);
       almanacContainer.querySelector('img.motive').classList.add('unknown');
       contentParagraph.innerHTML = "You haven't discovered this item yet.";
       contentParagraph.classList.remove('is--hidden');
@@ -358,7 +347,7 @@ export default {
     // set title text
     almanacContainer.querySelector('h3').textContent = ItemUtils.extractItemName(item);
     this.resetAlmanacPageContent();
-    if (AlmanacContent.contentPages[item] === undefined) {
+    if (AlmanacManager.getAlmanacContentPage(item) === undefined) {
       this.renderItemPageContent(item);
     } else {
       this.renderContentPageContent(item);

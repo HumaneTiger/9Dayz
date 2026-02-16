@@ -4,7 +4,7 @@ import Companion from './companion.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
-import Almanac from './almanac.js';
+import AlmanacManager from './core/almanac-manager.js';
 
 export default {
   /**
@@ -134,7 +134,7 @@ export default {
     if (checkpoint.companion) {
       Props.setCompanion(checkpoint.companion);
       Companion.updateCompanionSlot();
-      Almanac.makeContentKnown(checkpoint.companion.name);
+      AlmanacManager.makeContentKnown(checkpoint.companion.name);
     }
 
     // ===== OBJECTS SYSTEM =====
