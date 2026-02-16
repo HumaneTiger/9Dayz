@@ -6,7 +6,7 @@ import {
   InventoryManager,
   ObjectFactory,
   MapInitializer,
-  TutorialInitializer,
+  TutorialManager,
 } from './core/index.js';
 
 import { LocationInstances } from '../../data/index.js';
@@ -244,7 +244,7 @@ export default {
   },
 
   setupTutorialMap: function () {
-    TutorialInitializer.setupTutorialMap();
+    TutorialManager.setupTutorialMap();
   },
 
   getAllItems: function () {

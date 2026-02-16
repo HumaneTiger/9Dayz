@@ -5,4 +5,5 @@ export { default as CompanionDefinitions } from './companion-definitions.js';
 export { default as ItemsDefinitions } from './items-definitions.js';
 export { default as PlayerDefinitions } from './player-definitions.js';
 export { default as RecipeDefinitions } from './recipe-definitions.js';
+export { default as TutorialDefinitions } from './tutorial-definitions.js';
 export { default as WeaponsDefinitions } from './weapons-definitions.js';

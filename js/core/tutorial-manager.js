@@ -1,9 +1,10 @@
 // @ts-check
 /**
  * @import { WeaponDefinition } from '../../data/definitions/weapons-definitions.js'
+ * @import { TutorialEvent, SpecialEvent } from '../../data/definitions/tutorial-definitions.js'
  */
 
-import { LootUtils } from '../../data/index.js';
+import { LootUtils, TutorialDefinitions } from '../../data/index.js';
 import ObjectFactory from './object-factory.js';
 import Props from '../props.js';
 
@@ -12,6 +13,20 @@ import Props from '../props.js';
  */
 
 export default {
+  /**
+   * @returns {Record<string, TutorialEvent>}
+   */
+  getTutorialEvents: function () {
+    return TutorialDefinitions.events;
+  },
+
+  /**
+   * @returns {Record<string, SpecialEvent>}
+   */
+  getSpecialEvents: function () {
+    return TutorialDefinitions.specialEvents;
+  },
+
   /** Tutorial-specific map setup
    * For now it only sets up the building with the weapon and the zed, but it can be expanded in the future if needed
    * @returns {void}
