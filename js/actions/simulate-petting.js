@@ -1,5 +1,5 @@
 import Props from '../props.js';
-import Character from '../character.js';
+import Companion from '../companion.js';
 import Almanac from '../almanac.js';
 import ActionsOrchestration from '../actions-orchestration.js';
 
@@ -14,7 +14,7 @@ export default function simulatePetting(cardId, time, energy) {
         damage: attack,
         protection: defense,
       });
-      Character.updateCompanionSlot();
+      Companion.updateCompanionSlot();
       Almanac.makeContentKnown(object.name);
       ActionsOrchestration.endAction(cardId);
       ActionsOrchestration.goBackFromAction();

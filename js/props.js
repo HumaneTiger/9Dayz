@@ -1,4 +1,5 @@
 import {
+  CompanionManager,
   GameState,
   ObjectState,
   PlayerManager,
@@ -47,11 +48,11 @@ export default {
   },
 
   getCompanion: function () {
-    return PlayerManager.getCompanion();
+    return CompanionManager.getCompanion();
   },
 
   setCompanion: function (newCompanion) {
-    PlayerManager.setCompanion(newCompanion);
+    CompanionManager.setCompanion(newCompanion);
   },
 
   getCrafting: function () {
@@ -101,7 +102,7 @@ export default {
   },
 
   addCompanion: function (object) {
-    PlayerManager.addCompanion(object);
+    CompanionManager.addCompanion(object);
   },
 
   /* === ObjectState delegations === */

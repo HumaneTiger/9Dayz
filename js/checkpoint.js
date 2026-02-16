@@ -1,6 +1,6 @@
 import Props from './props.js';
 import Player from './player.js';
-import Character from './character.js';
+import Companion from './companion.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
@@ -133,7 +133,7 @@ export default {
     // Restore companion (doggy) state
     if (checkpoint.companion) {
       Props.setCompanion(checkpoint.companion);
-      Character.updateCompanionSlot();
+      Companion.updateCompanionSlot();
       Almanac.makeContentKnown(checkpoint.companion.name);
     }
 

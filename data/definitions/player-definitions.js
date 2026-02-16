@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * @typedef {Object} PlayerProps
  * @property {number} health
@@ -8,19 +9,8 @@
  * @property {number} actions
  */
 
-/**
- * @typedef {Object} Companion
- * @property {boolean} active
- * @property {string|undefined} sort
- * @property {string} name
- * @property {number|undefined} damage
- * @property {number|undefined} health
- * @property {number|undefined} maxHealth
- * @property {number|undefined} protection
- * @property {boolean} dead
- */
-
 export default {
+  /** @type {PlayerProps} */
   PlayerProps: {
     health: 0,
     food: 0,
@@ -28,15 +18,5 @@ export default {
     energy: 0,
     protection: 0,
     actions: 0,
-  },
-  Companion: {
-    active: false,
-    sort: undefined,
-    name: 'doggy',
-    damage: undefined,
-    health: undefined,
-    maxHealth: undefined,
-    protection: undefined,
-    dead: false,
   },
 };

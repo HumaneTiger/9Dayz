@@ -2,7 +2,7 @@ import Props from './props.js';
 import Battle from './battle.js';
 import Audio from './audio.js';
 import Player from './player.js';
-import Character from './character.js';
+import Companion from './companion.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
 import Events, { EVENTS } from './core/event-manager.js';
@@ -404,7 +404,7 @@ export default {
     inventoryContainer.classList.remove('active');
     if (Props.getGameProp('feedingCompanion')) {
       document.getElementById('inventory').classList.remove('feeding-companion');
-      Character.toggleCompanionFeedingState(false);
+      Companion.toggleCompanionFeedingState(false);
       Props.setGameProp('feedingCompanion', false);
       Items.fillInventorySlots();
     }

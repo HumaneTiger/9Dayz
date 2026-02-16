@@ -6,7 +6,7 @@ import CardsMarkup from './cards-markup.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
-import Character from './character.js';
+import Companion from './companion.js';
 import Weapons from './weapons.js';
 import { ItemUtils } from '../data/index.js';
 import RngUtils from './utils/rng-utils.js';
@@ -117,7 +117,7 @@ export default {
       enemyObject.dead = true;
       enemyObject.fighting = false;
       window.setTimeout(() => {
-        Character.updateCompanionSlot();
+        Companion.updateCompanionSlot();
         this.endBattle();
       }, 880);
       return true;
@@ -126,7 +126,7 @@ export default {
       companionRef.classList.add('dead');
       companionObject.dead = true;
       window.setTimeout(async () => {
-        Character.updateCompanionSlot();
+        Companion.updateCompanionSlot();
         this.endBattle();
       }, 800);
       return true;

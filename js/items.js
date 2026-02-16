@@ -2,7 +2,7 @@ import Props from './props.js';
 import Player from './player.js';
 import Ui from './ui.js';
 import Cards from './cards.js';
-import Character from './character.js';
+import Companion from './companion.js';
 import Audio from './audio.js';
 import { ItemUtils } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
@@ -102,7 +102,7 @@ export default {
         }
       } else {
         Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
-        Character.feedCompanion(item, itemProps.food);
+        Companion.feedCompanion(item, itemProps.food);
         Props.addItemToInventory(item, -1);
         if (!this.inventoryContains(item)) {
           this.resetInventorySlotHoverEffect();
@@ -222,8 +222,8 @@ export default {
         }
       }
     } else {
-      if (Character.getCompanionFoodValue(itemName) !== -1 && this.inventoryContains(itemName)) {
-        itemInfoMarkup += `<span class="food">${Character.getCompanionFoodValue(itemName)}
+      if (Companion.getCompanionFoodValue(itemName) !== -1 && this.inventoryContains(itemName)) {
+        itemInfoMarkup += `<span class="food">${Companion.getCompanionFoodValue(itemName)}
               <span class="material-symbols-outlined">favorite</span></span>`;
       }
     }
