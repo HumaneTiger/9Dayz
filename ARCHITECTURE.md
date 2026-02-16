@@ -3,10 +3,10 @@
 ## Quick Reference Matrix
 
 | #   | Domain                                  | Definition | Core Manager | Game Logic | Key Insights                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| --- | --------------------------------------- | :--------: | :----------: | :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **INVENTORY & ITEMS**                   |     ✅     |      ⚠️      |     ✅     | Inventory query functions (inventoryContains, inventoryKnows, inventoryItemAmount, getFirstItemOfType, getItemByName) scattered in items.js; should be moved to inventory-manager.js                                                                                                                                                                                                                                                                  |
+| --- | --------------------------------------- | :--------: | :----------: | :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| 1   | **INVENTORY & ITEMS**                   |     ✅     |      ✅      |     ✅     | Inventory query functions (inventoryContains, inventoryKnows, inventoryItemAmount, getFirstItemOfType, getItemByName) moved to inventory-manager.js; items.js now delegates to InventoryManager                                                                                                                                                                                                                                                       |     |
 | 2   | **WORLD** (Map/Buildings/Paths/Zombies) |     ✅     |      ✅      |     ✅     | Pattern to follow                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 3   | **RECIPES** (Cooking & Crafting)        |     ✅     |      ❌      |     ✅     | Both cooking.js and crafting.js directly import RecipeDefinitions; need recipes-manager.js                                                                                                                                                                                                                                                                                                                                                            |
+| 3   | **RECIPES** (Cooking & Crafting)        |     ✅     |      ✅      |     ✅     | recipes-manager.js created with unified API; cooking.js and crafting.js now use RecipesManager                                                                                                                                                                                                                                                                                                                                                        |
 | 4   | **ALMANAC**                             |     ✅     |      ❌      |     ✅     | Need almanac-manager.js to manage content unlocking and lifecycle                                                                                                                                                                                                                                                                                                                                                                                     |
 | 5   | **CHARACTER**                           |     ✅     |      ⚠️      |     ✅     | Character state lives in game-state.js; need dedicated character-manager.js                                                                                                                                                                                                                                                                                                                                                                           |
 | 6   | **COMPANION**                           |     ❌     |      ❌      |     ⚠️     | Companion typedef in game-state.js; UI mixed in character.js; need companion-definitions.js + companion-manager.js; `// todo: split` comment exists                                                                                                                                                                                                                                                                                                   |
@@ -48,6 +48,25 @@ Where:
 | Definition | `items-definitions.js` | ✅     |
 | Core       | `inventory-manager.js` | ✅     |
 | Logic      | `items.js`             | ✅     |
+
+**Architecture:**
+
+- **items-definitions.js**: Central repository for `ItemDefinition` typedefs and item metadata
+- **inventory-manager.js**: Unified API with:
+  - Query functions: `inventoryContains()`, `inventoryKnows()`, `inventoryItemAmount()`, `getFirstItemOfType()`, `getItemByName()`
+  - Modification functions: `addItemToInventory()`, `addWeaponToInventory()`
+  - State accessors: `getInventory()`, `getAllItems()`, `getItemDefinition()`, `getItemFromInventory()`
+  - Variant handling: `inventoryContains()` and related functions handle ingredient variants (water, mushrooms, fruits)
+  - Batching support: `beginInventoryBatch()`, `endInventoryBatch()` for multi-item operations
+- **items.js**: UI layer consuming inventory manager API
+- **Type System**: Full @ts-check with proper imports and typedefs
+
+**Key Improvements:**
+
+- All inventory query functions moved from items.js to inventory-manager.js
+- Centralized variant handling logic
+- Proper event emission with batching support
+- Type-safe inventory operations
 
 #### 2. **WORLD (Map, Buildings, Paths, Zombies)**
 
@@ -92,14 +111,30 @@ Where:
 
 #### 4. **RECIPES (Cooking & Crafting)**
 
-| Layer      | File                                                              | Status |
-| ---------- | ----------------------------------------------------------------- | ------ |
-| Definition | `recipe-definitions.js`                                           | ✅     |
-| Core       | **→ MISSING**                                                     | ❌     |
-| Logic      | `cooking.js`, `crafting.js`                                       | ✅     |
-| Note       | Both cooking.js and crafting.js directly import RecipeDefinitions | ⚠️     |
+| Layer      | File                        | Status |
+| ---------- | --------------------------- | ------ |
+| Definition | `recipe-definitions.js`     | ✅     |
+| Core       | `recipes-manager.js`        | ✅     |
+| Logic      | `cooking.js`, `crafting.js` | ✅     |
 
-**Gap:** No `recipes-manager.js` core layer to coordinate recipe logic, validation, and state.
+**Architecture:**
+
+- **recipe-definitions.js**: Central repository for `CookingRecipe`, `CraftingRecipe`, and `IngredientVariants` typedefs; defines all recipes and ingredient variant mappings
+- **recipes-manager.js**: Unified API with:
+  - Recipe accessors: `getCookingRecipes()`, `getCraftingRecipes()`
+  - Recipe metadata: `getIngredientsForCookingRecipe()`, `getCookingMethod()`, `getCookingResultAmount()`, `getIngredientsForCraftingRecipe()`
+  - Recipe validation: `isItemPartOfRecipe()`, `isItemPartOfCraftingRecipe()`
+  - Recipe resolution: `resolveRecipeIngredients()` - handles ingredient variants and persistent ingredients
+  - Variant accessors: `getIngredientVariants()`, `getPersistentIngredients()`
+- **cooking.js**, **crafting.js**: UI layers using RecipesManager API
+- **Type System**: Full @ts-check with proper imports and typedefs
+
+**Key Improvements:**
+
+- Centralized recipe logic in dedicated manager
+- Automatic handling of ingredient variants and persistent ingredients
+- Unified API for both cooking and crafting
+- Type-safe recipe operations
 
 #### 5. **ALMANAC**
 
@@ -199,8 +234,8 @@ TBD
 
 | Category                     | Count  |
 | ---------------------------- | ------ |
-| ✅ Complete Patterns         | 3      |
-| ⚠️ Incomplete (missing core) | 2      |
+| ✅ Complete Patterns         | 4      |
+| ⚠️ Incomplete (missing core) | 1      |
 | ⚠️ Mixed/Scattered           | 6      |
 | ❌ Multiple Major Gaps       | 1      |
 | **Total Domains**            | **12** |
@@ -211,7 +246,7 @@ TBD
 
 ### Phase 1: Fill Critical Gaps (Missing Core Layers)
 
-1. **recipes-manager.js** - Consolidate cooking/crafting logic
+1. ~~**recipes-manager.js**~~ ✅ DONE - Consolidate cooking/crafting logic
 2. **almanac-manager.js** - Manage content unlocking
 
 ### Phase 2: Separate Conflated Domains
@@ -242,6 +277,9 @@ TBD
 - ✅ weapons-definitions.js
 - ✅ items-definitions.js
 - ✅ character-definitions.js
+- ✅ recipe-definitions.js
+- ✅ recipes-manager.js
+- ✅ inventory-manager.js
 - ✅ loot-utils.js
 - ✅ All core modules (game-state.js, object-state.js, object-factory.js, etc.)
 
