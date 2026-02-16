@@ -4,7 +4,7 @@
  */
 
 import { ObjectState } from './index.js';
-import { ActionsDefinitions, BuildingDefinitions } from '../../data/definitions/index.js';
+import { ActionsDefinitions } from '../../data/definitions/index.js';
 
 export default {
   /* === Card-based (instance-specific) methods === */
@@ -129,7 +129,7 @@ export default {
    * @returns {GameAction[]} Array of filtered action objects
    */
   getActionsForBuildingType: function (buildingName, buildingType, locked, infested, character) {
-    const baseActions = BuildingDefinitions.buildingActions[buildingType];
+    const baseActions = ActionsDefinitions.buildingActions[buildingType];
     if (!baseActions) return [];
 
     return baseActions
