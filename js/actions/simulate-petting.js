@@ -1,11 +1,11 @@
 import Props from '../props.js';
 import Character from '../character.js';
 import Almanac from '../almanac.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function simulatePetting(actionsOrchestration, cardId, time, energy) {
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    function (actionsOrchestration, cardId, energy) {
+export default function simulatePetting(cardId, time, energy) {
+  ActionsOrchestration.fastForward(
+    function (cardId, energy) {
       const object = Props.getObject(cardId);
       object.removed = true;
       const { attack, defense, ...rest } = object;
@@ -16,7 +16,8 @@ export default function simulatePetting(actionsOrchestration, cardId, time, ener
       });
       Character.updateCompanionSlot();
       Almanac.makeContentKnown(object.name);
-      actionsOrchestration.goBackFromAction(cardId);
+      ActionsOrchestration.endAction(cardId);
+      ActionsOrchestration.goBackFromAction();
       Props.changePlayerProp('energy', energy);
     },
     cardId,

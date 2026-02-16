@@ -3,8 +3,9 @@ import Player from '../player.js';
 import Cards from '../cards.js';
 import Battle from '../battle.js';
 import TimingUtils from '../utils/timing-utils.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default async function simulateAttacking(actionsOrchestration, cardId) {
+export default async function simulateAttacking(cardId) {
   const object = Props.getObject(cardId);
   const allFoundObjectIds = Player.findObjects(object.x, object.y);
 
@@ -16,6 +17,6 @@ export default async function simulateAttacking(actionsOrchestration, cardId) {
   Cards.disableActions();
 
   await TimingUtils.wait(800);
-  actionsOrchestration.endAction(cardId);
+  ActionsOrchestration.endAction(cardId);
   Battle.startBattle();
 }

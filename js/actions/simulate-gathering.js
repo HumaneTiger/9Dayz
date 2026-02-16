@@ -3,8 +3,9 @@ import Cards from '../cards.js';
 import Battle from '../battle.js';
 import TimingUtils from '../utils/timing-utils.js';
 import ActionsUtils from '../utils/actions-utils.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default async function simulateGathering(actionsOrchestration, cardId, time, energy) {
+export default async function simulateGathering(cardId, time, energy) {
   const object = Props.getObject(cardId);
   const cardRef = Cards.getCardById(cardId);
   const allItems = object.items;
@@ -19,7 +20,7 @@ export default async function simulateGathering(actionsOrchestration, cardId, ti
   if (object.infested) {
     ActionsUtils.spawnCreaturesIfInfested(cardId);
     await TimingUtils.wait(1200);
-    actionsOrchestration.endAction(cardId);
+    ActionsOrchestration.endAction(cardId);
     Battle.startBattle(true); // instant attack when place is infested
   } else if (allPreviews) {
     /** it's a strange condition, but I think this is what it does:
@@ -62,7 +63,8 @@ export default async function simulateGathering(actionsOrchestration, cardId, ti
         allPreviews[i + 1].querySelector('.searching').classList.remove('is--hidden');
       }
       if (i + 1 === allItems.length) {
-        actionsOrchestration.goBackFromAction(cardId);
+        ActionsOrchestration.endAction(cardId);
+        ActionsOrchestration.goBackFromAction();
         Props.changePlayerProp('energy', energy);
         // furbuddy takes damage when cutting animals
         if (Props.getGameProp('character') === 'furbuddy' && object.group === 'animal') {

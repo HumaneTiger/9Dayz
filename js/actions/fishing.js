@@ -1,13 +1,13 @@
 import Audio from '../audio.js';
 import Map from '../map.js';
 import Props from '../props.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function fishing(actionsOrchestration, cardId, time, energy) {
+export default function fishing(cardId, time, energy) {
   Audio.sfx('water-dip');
   Map.showScoutMarkerFor(cardId);
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    function (actionsOrchestration, cardId, energy) {
+  ActionsOrchestration.fastForward(
+    function (cardId, energy) {
       Map.hideScoutMarker();
       Props.changePlayerProp('energy', energy);
       Props.changePlayerProp('food', -5);
@@ -19,7 +19,8 @@ export default function fishing(actionsOrchestration, cardId, time, energy) {
         Audio.sfx('fish-catch');
         Props.addWeaponToInventory('fishing-rod', 0, { durability: -1 });
       }
-      actionsOrchestration.goBackFromAction(cardId);
+      ActionsOrchestration.endAction(cardId);
+      ActionsOrchestration.goBackFromAction();
     },
     cardId,
     time,

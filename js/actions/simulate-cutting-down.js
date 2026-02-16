@@ -2,8 +2,9 @@ import Audio from '../audio.js';
 import Props from '../props.js';
 import Items from '../items.js';
 import RngUtils from '../utils/rng-utils.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function simulateCuttingDown(actionsOrchestration, cardId, time, energy) {
+export default function simulateCuttingDown(cardId, time, energy) {
   Audio.sfx('chop-wood');
   Audio.sfx('chop-wood', 800);
   Audio.sfx('chop-wood', 1600);
@@ -11,10 +12,10 @@ export default function simulateCuttingDown(actionsOrchestration, cardId, time, 
   const object = Props.getObject(cardId);
   object.removed = true;
 
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    function (actionsOrchestration, cardId, energy) {
-      actionsOrchestration.goBackFromAction(cardId);
+  ActionsOrchestration.fastForward(
+    function (cardId, energy) {
+      ActionsOrchestration.endAction(cardId);
+      ActionsOrchestration.goBackFromAction();
       if (Items.inventoryContains('improvised-axe')) {
         Props.addWeaponToInventory('improvised-axe', 0, { durability: -1 });
       } else if (Items.inventoryContains('axe')) {

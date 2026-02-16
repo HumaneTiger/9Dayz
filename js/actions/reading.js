@@ -3,8 +3,9 @@ import Props from '../props.js';
 import Audio from '../audio.js';
 import Map from '../map.js';
 import Checkpoint from '../checkpoint.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default async function reading(actionsOrchestration, cardId) {
+export default async function reading(cardId) {
   await TimingUtils.wait(1800);
   const targetLocationName = Props.getObject(cardId).name;
   Audio.sfx('note');
@@ -27,5 +28,6 @@ export default async function reading(actionsOrchestration, cardId) {
   if (Props.getGameProp('tutorial') === false) {
     Checkpoint.save(targetLocationName);
   }
-  actionsOrchestration.goBackFromAction(cardId);
+  ActionsOrchestration.endAction(cardId);
+  ActionsOrchestration.goBackFromAction();
 }

@@ -5,8 +5,9 @@ import Map from '../map.js';
 import Battle from '../battle.js';
 import TimingUtils from '../utils/timing-utils.js';
 import Audio from '../audio.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default async function simulateLuring(actionsOrchestration, cardId, time, energy) {
+export default async function simulateLuring(cardId, time, energy) {
   Player.lockMovement(true);
   Cards.disableActions();
 
@@ -16,11 +17,10 @@ export default async function simulateLuring(actionsOrchestration, cardId, time,
   scoutMarker.style.top = Math.round(Player.getPlayerPosition().y * 44.4) + 'px';
   scoutMarker.classList.remove('is--hidden');
 
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    async function (actionsOrchestration, cardId, energy) {
+  ActionsOrchestration.fastForward(
+    async function (cardId, energy) {
       const object = Props.getObject(cardId);
-      actionsOrchestration.endAction(cardId);
+      ActionsOrchestration.endAction(cardId);
 
       Map.hideScoutMarker();
 

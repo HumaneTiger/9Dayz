@@ -389,7 +389,8 @@ export default {
       }
       CardsMarkup.hideActionFeedback(zedCardRef);
     });
-    ActionsOrchestration.goBackFromAction(cardZedDeck[0]);
+    ActionsOrchestration.endAction(cardZedDeck[0]);
+    ActionsOrchestration.goBackFromAction();
     cardZedDeck = [];
   },
 

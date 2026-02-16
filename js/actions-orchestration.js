@@ -51,17 +51,10 @@ export default {
     await TimingUtils.wait(delay);
 
     const simulateFunction = ActionSimulations[simulationMethod];
-    simulateFunction.call(null, this, cardId, cardTime, cardEnergy);
+    simulateFunction.call(null, cardId, cardTime, cardEnergy);
   },
 
-  fastForward: function (
-    actionsOrchestration,
-    callbackfunction,
-    cardId,
-    time,
-    newSpeedOpt,
-    energy
-  ) {
+  fastForward: function (callbackfunction, cardId, time, newSpeedOpt, energy) {
     const timeConfig = GameState.getGameProp('timeConfig');
     const defaultThreshold = timeConfig.gameTickThreshold;
     const newThreshold = newSpeedOpt || 400;
@@ -74,7 +67,7 @@ export default {
           const timeConfig = GameState.getGameProp('timeConfig');
           timeConfig.gameTickThreshold = defaultThreshold;
           GameState.setGameProp('timeConfig', timeConfig);
-          callbackfunction.call(null, actionsOrchestration, cardId, energy);
+          callbackfunction.call(null, cardId, energy);
         },
         ticks * newThreshold,
         defaultThreshold,
@@ -95,8 +88,7 @@ export default {
     }
   },
 
-  goBackFromAction: async function (cardId) {
-    this.endAction(cardId);
+  goBackFromAction: async function () {
     EventManager.emit(EVENTS.PLAYER_UPDATE, { noPenalty: true });
     await TimingUtils.wait(1000);
     PlayerManager.lockMovement(false);

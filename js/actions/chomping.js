@@ -3,8 +3,9 @@ import Cards from '../cards.js';
 import Audio from '../audio.js';
 import Map from '../map.js';
 import Battle from '../battle.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function chomping(actionsOrchestration, cardId, time, energy) {
+export default function chomping(cardId, time, energy) {
   Player.lockMovement(true);
   Cards.disableActions();
   Audio.sfx('bark');
@@ -14,10 +15,9 @@ export default function chomping(actionsOrchestration, cardId, time, energy) {
   scoutMarker.style.top = Math.round(Player.getPlayerPosition().y * 44.4) + 'px';
   scoutMarker.classList.remove('is--hidden');
 
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    function (actionsOrchestration, cardId) {
-      actionsOrchestration.endAction(cardId);
+  ActionsOrchestration.fastForward(
+    function (cardId) {
+      ActionsOrchestration.endAction(cardId);
       Map.hideScoutMarker();
       Battle.startCompanionBattle(cardId);
     },

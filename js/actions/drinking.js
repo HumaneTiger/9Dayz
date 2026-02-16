@@ -1,13 +1,14 @@
 import Audio from '../audio.js';
 import Props from '../props.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function drinking(actionsOrchestration, cardId, time) {
+export default function drinking(cardId, time) {
   Audio.sfx('water');
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    function (actionsOrchestration, cardId) {
+  ActionsOrchestration.fastForward(
+    function (cardId) {
       Props.changePlayerProp('thirst', 50);
-      actionsOrchestration.goBackFromAction(cardId);
+      ActionsOrchestration.endAction(cardId);
+      ActionsOrchestration.goBackFromAction();
     },
     cardId,
     time,

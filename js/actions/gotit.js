@@ -1,8 +1,9 @@
 import Player from '../player.js';
 import Props from '../props.js';
 import Cards from '../cards.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function gotIt(actionsOrchestration, cardId) {
+export default function gotIt(cardId) {
   const object = Props.getObject(cardId);
   if (object && object.title === 'You found it!') {
     Player.checkForWin();
@@ -10,6 +11,7 @@ export default function gotIt(actionsOrchestration, cardId) {
     document.getElementById('player').classList.remove('highlight');
     document.getElementById('player-hint').classList.add('is--hidden');
   }
+  ActionsOrchestration.endAction(cardId);
   Cards.removeCard(cardId);
   Player.lockMovement(false);
   Player.updatePlayer(true);

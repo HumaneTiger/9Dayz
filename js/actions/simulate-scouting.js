@@ -2,26 +2,25 @@ import Props from '../props.js';
 import Player from '../player.js';
 import Map from '../map.js';
 import ActionsUtils from '../utils/actions-utils.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default function simulateScouting(actionsOrchestration, cardId, time, energy) {
+export default function simulateScouting(cardId, time) {
   Map.showScoutMarkerFor(cardId);
 
-  actionsOrchestration.fastForward(
-    actionsOrchestration,
-    function (actionsOrchestration, cardId, energy) {
+  ActionsOrchestration.fastForward(
+    function (cardId) {
       const object = Props.getObject(cardId);
       ActionsUtils.searchForKey(object);
       /* if (object.x % 4 === 0 || object.y % 4 === 0) { Map.mapUncoverAt(x, y); } */
-      actionsOrchestration.goBackFromAction(cardId);
+      ActionsOrchestration.endAction(cardId);
+      ActionsOrchestration.goBackFromAction();
       const allFoundObjectIds = Player.findObjects(object.x, object.y);
       Player.handleFoundObjectIds(allFoundObjectIds);
       Map.hideScoutMarker();
-      Props.changePlayerProp('energy', energy);
       ActionsUtils.spawnCreaturesIfInfested(cardId, true);
     },
     cardId,
     time,
-    800,
-    energy
+    800
   );
 }

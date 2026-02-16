@@ -35,8 +35,8 @@ export default {
    * @returns {number}
    */
   changePlayerProp: function (prop, change) {
-    if (typeof change === 'string') {
-      console.error('change must be a number, got string:', change);
+    if (typeof change === 'string' || isNaN(change)) {
+      console.info('[changePlayerProp] change must be a number, got string or NaN:', change);
       return playerProps[prop];
     }
     const oldValue = playerProps[prop];

@@ -1,7 +1,8 @@
 import Props from '../props.js';
 import TimingUtils from '../utils/timing-utils.js';
+import ActionsOrchestration from '../actions-orchestration.js';
 
-export default async function simulateEquipping(actionsOrchestration, cardId) {
+export default async function simulateEquipping(cardId) {
   await TimingUtils.wait(800);
   const object = Props.getObject(cardId);
   if (object.group === 'weapon' && object.name) {
@@ -11,5 +12,6 @@ export default async function simulateEquipping(actionsOrchestration, cardId) {
       protection: object.defense,
     });
   }
-  actionsOrchestration.goBackFromAction(cardId);
+  ActionsOrchestration.endAction(cardId);
+  ActionsOrchestration.goBackFromAction();
 }
