@@ -8,9 +8,9 @@ import Items from './items.js';
 import Crafting from './crafting.js';
 import Companion from './companion.js';
 import Weapons from './weapons.js';
-import { ItemUtils } from '../data/index.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
+import { CharacterManager } from './core/index.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -312,7 +312,7 @@ export default {
     for (let card = 0; card < battleDeck.length; card += 1) {
       battleDeck[card].modifyDamage = 0;
       if (Props.getGameProp('character') === 'snackivore') {
-        const itemModifier = ItemUtils.getItemModifier('snackivore', battleDeck[card].name);
+        const itemModifier = CharacterManager.getItemModifier('snackivore', battleDeck[card].name);
         if (itemModifier && itemModifier[0] < 0) {
           battleDeck[card].modifyDamage = 1;
         }

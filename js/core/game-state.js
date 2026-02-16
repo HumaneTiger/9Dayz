@@ -4,7 +4,6 @@
  */
 
 import { EventManager, EVENTS } from './index.js';
-import { CharacterDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
 
 /**
@@ -135,17 +134,6 @@ export default {
         this.setGameProp('timeMode', 'day');
       }
     }
-  },
-
-  /**
-   * @returns {CharacterDefinition}
-   */
-  modifyObjectProperties: function () {
-    const character = this.getGameProp('character');
-    const charDef = CharacterDefinitions[character];
-    // Note: buildingActions modifications require buildingDefinitions destructuring
-    // This is handled in Props facade due to shared definition scope
-    return charDef;
   },
 
   /**

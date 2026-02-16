@@ -1,7 +1,6 @@
-import itemsWeaponsDefinitions from '../definitions/items-definitions.js';
-import characterDefinitions from '../definitions/character-definitions.js';
+import { ItemsDefinitions, CharacterDefinitions } from '../index.js';
 
-const { items } = itemsWeaponsDefinitions;
+const { items } = ItemsDefinitions;
 
 export default {
   /**
@@ -31,20 +30,6 @@ export default {
   },
 
   /**
-   * Get item modifier for a specific character type
-   * Returns modifiers for [hunger, thirst, energy]
-   * @param {string} characterType - Character type (treehugger, snackivore, etc.)
-   * @param {string} item - Item name
-   * @returns {number[]|undefined} Array of modifiers or undefined
-   */
-  getItemModifier: function (characterType, item) {
-    const charDef = characterDefinitions[characterType];
-    if (charDef?.itemModifiers) {
-      return charDef.itemModifiers[item];
-    }
-  },
-
-  /**
    * Calculate complete item properties including character modifiers
    * @param {string} item - Item name
    * @param {string} character - Character type
@@ -52,7 +37,7 @@ export default {
    */
   calcItemProps: function (item, character) {
     const itemProps = items[item];
-    const itemMods = this.getItemModifier(character, item);
+    const itemMods = CharacterDefinitions[character]?.itemModifiers?.[item];
     if (itemProps) {
       return {
         name: item,

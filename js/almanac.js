@@ -1,6 +1,6 @@
 import Props from './props.js';
 import { ItemUtils, RecipeDefinitions } from '../data/index.js';
-import Events, { EVENTS } from './core/event-manager.js';
+import { EventManager, EVENTS, CharacterManager } from './core/index.js';
 import AlmanacContent from './content/almanac-content.js';
 
 const almanacContainer = document.getElementById('almanac');
@@ -21,7 +21,7 @@ export default {
     almanacContainer.addEventListener('mousedown', this.handleAlmanacAction.bind(this));
     document.body.addEventListener('mousedown', this.handleAlmanacOpenPage.bind(this));
     // EVENT: React to first item of a kind being added to inventory to make it known in almanac
-    Events.on(EVENTS.FIRST_ITEM_ADDED, ({ item }) => {
+    EventManager.on(EVENTS.FIRST_ITEM_ADDED, ({ item }) => {
       this.makeContentKnown(item);
       this.updatePage();
     });
@@ -186,7 +186,7 @@ export default {
       // stats
       if (itemProps) {
         if (itemProps.food || itemProps.drink || itemProps.energy) {
-          let itemMods = ItemUtils.getItemModifier(Props.getGameProp('character'), item);
+          let itemMods = CharacterManager.getItemModifier(Props.getGameProp('character'), item);
           let itemFood = itemProps.food,
             itemDrink = itemProps.drink,
             itemEnergy = itemProps.energy || 0;

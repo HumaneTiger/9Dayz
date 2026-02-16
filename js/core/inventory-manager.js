@@ -14,12 +14,7 @@
  */
 
 import { GameState, EventManager, EVENTS } from './index.js';
-import {
-  ItemsDefinitions,
-  WeaponsDefinitions,
-  CharacterDefinitions,
-  ItemUtils,
-} from '../../data/index.js';
+import { ItemsDefinitions, WeaponsDefinitions, ItemUtils } from '../../data/index.js';
 
 // Destructure items/weapons definitions
 /** @type {Record<string, ItemDefinition>} */
@@ -57,14 +52,6 @@ export default {
    */
   getInventoryItemNumbers: function () {
     return inventory.itemNumbers;
-  },
-
-  /**
-   * @param {string} character
-   * @returns {Record<string, number>}
-   */
-  getInventoryPresets: function (character) {
-    return CharacterDefinitions[character]?.inventoryPreset || {};
   },
 
   /**

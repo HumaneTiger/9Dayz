@@ -8,12 +8,12 @@
 | 2   | **WORLD** (Map/Buildings/Paths/Zombies) |     ✅     |      ✅      |     ✅     | Pattern to follow                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | 3   | **RECIPES** (Cooking & Crafting)        |     ✅     |      ✅      |     ✅     | recipes-manager.js created with unified API; cooking.js and crafting.js now use RecipesManager                                                                                                                                                                                                                                                                                                                                          |
 | 4   | **ALMANAC**                             |     ✅     |      ❌      |     ✅     | Need almanac-manager.js to manage content unlocking and lifecycle                                                                                                                                                                                                                                                                                                                                                                       |
-| 5   | **CHARACTER**                           |     ✅     |      ⚠️      |     ✅     | Character state lives in game-state.js; need dedicated character-manager.js                                                                                                                                                                                                                                                                                                                                                             |
+| 5   | **CHARACTER**                           |     ✅     |      ✅      |     ✅     | character-definitions.js and character-manager.js provide getInventoryPresets() and getItemModifier() getters; character.js delegates character logic to manager                                                                                                                                                                                                                                                                        |
 | 6   | **COMPANION**                           |     ✅     |      ✅      |     ✅     | Companion system now has companion-definitions.js and companion-manager.js; UI logic split in character.js and companion.js                                                                                                                                                                                                                                                                                                             |
 | 7   | **WEAPONS**                             |     ✅     |      ⚠️      |     ✅     | Creation logic in object-factory.js, combat in battle.js; need weapons-manager.js                                                                                                                                                                                                                                                                                                                                                       |
 | 8   | **PLAYER STATS**                        |     ✅     |      ✅      |     ✅     | Fully refactored with player-definitions.js and player-manager.js; PlayerManager handles all player prop changes                                                                                                                                                                                                                                                                                                                        |
 | 9   | **BATTLE/COMBAT**                       |     ❌     |      ⚠️      |     ✅     | No battle-definitions.js; core logic mixed between object-factory.js and battle.js                                                                                                                                                                                                                                                                                                                                                      |
-| 10  | **TUTORIAL**                            |     ❌     |      ✅      |     ✅     | Massive hardcoding in tutorial.js: events object (with coordinates/titles/text), specialEvents object, battleTutorialStep; need tutorial-definitions.js                                                                                                                                                                                                                                                                                 |
+| 10  | **TUTORIAL**                            |     ✅     |      ✅      |     ✅     | tutorial-definitions.js exports events and specialEvents; tutorial-manager.js provides getTutorialEvents() and getSpecialEvents() getters plus setupTutorialMap() for tutorial-specific initialization                                                                                                                                                                                                                                  |
 | 11  | **UTILITY LAYERS**                      |     ✅     |      -       |     -      | Add @ts-check to all utils (building-utils, item-utils, path-utils, instances)                                                                                                                                                                                                                                                                                                                                                          |
 | 12  | **ACTIONS SYSTEM**                      |     ✅     |      ✅      |     ✅     | Fully refactored: actions-definitions.js (action metadata + object type actions), actions-manager.js (unified API with getActionsForGameObjectType + getActionsForBuildingType), actions-orchestration.js (UI logic). All 20 simulation functions call ActionsOrchestration directly as singletons (no scope threading). Building actions now declarative with filtering properties. Unified GameAction type across all action sources. |
 
@@ -150,17 +150,32 @@ Where:
 
 ---
 
-### ⚠️ MIXED/SCATTERED PATTERNS
+### ✅ COMPLETE & WELL-ORGANIZED (continued)
 
 #### 7. **CHARACTER**
 
 | Layer      | File                       | Status |
 | ---------- | -------------------------- | ------ |
 | Definition | `character-definitions.js` | ✅     |
-| Core       | `game-state.js` (partial)  | ⚠️     |
+| Core       | `character-manager.js`     | ✅     |
 | Logic      | `character.js`             | ✅     |
 
-**Issue:** Character state lives in game-state but there's no dedicated character-manager core layer.
+**Architecture:**
+
+- **character-definitions.js**: Central repository for character typedefs and character-specific properties
+- **character-manager.js**: Core manager providing:
+  - Preset accessors: `getInventoryPresets()` - retrieves character's starting inventory
+  - Modifier accessors: `getItemModifier()` - returns item effect modifiers (hunger/thirst/energy) for specific characters
+- **character.js**: Logic layer using CharacterManager API
+- **Type System**: Full @ts-check with proper imports from definitions
+
+**Key Improvements:**
+
+- Extracted character-specific business logic from character.js into dedicated manager
+- Centralized character stat modifiers and inventory presets
+- Unified API for character-specific queries
+
+### ⚠️ MIXED/SCATTERED PATTERNS
 
 #### 8. **COMPANION**
 
@@ -186,7 +201,7 @@ Where:
 - Combat/damage logic in `battle.js`
 - No dedicated `weapons-manager.js` core layer
 
-#### 9. **PLAYER STATS**
+#### 10. **PLAYER STATS**
 
 | Layer      | File                    | Status |
 | ---------- | ----------------------- | ------ |
@@ -214,11 +229,25 @@ Where:
 
 | Layer      | File                      | Status |
 | ---------- | ------------------------- | ------ |
-| Definition | **→ HARDCODED**           | ⚠️     |
-| Core       | `tutorial-initializer.js` | ✅     |
+| Definition | `tutorial-definitions.js` | ✅     |
+| Core       | `tutorial-manager.js`     | ✅     |
 | Logic      | `tutorial.js`             | ✅     |
 
-**Gap:** Tutorial setup is hardcoded in tutorial-initializer.js; no tutorial-definitions.js
+**Architecture:**
+
+- **tutorial-definitions.js**: Central repository for `TutorialEvent` and `SpecialEvent` typedefs; defines all tutorial events (with map coordinates) and special events (infestation, locked-building, corpse, etc.)
+- **tutorial-manager.js**: Core manager providing:
+  - Event accessors: `getTutorialEvents()`, `getSpecialEvents()`
+  - Map setup: `setupTutorialMap()` - initializes tutorial-specific buildings, weapons, and zombies
+  - Full @ts-check with proper type imports from definitions
+- **tutorial.js**: Logic layer using TutorialManager API for `setupAllEvents()` and `setupSpecialEvent()`
+- **Type System**: Full @ts-check with proper imports and typedefs
+
+**Key Improvements:**
+
+- Extracted hardcoded events and specialEvents from tutorial.js into definitions layer
+- Created dedicated manager to encapsulate tutorial-specific initialization logic
+- Unified API for accessing tutorial content and setting up tutorial maps
 
 #### 13. **UTILITY LAYERS**
 
@@ -230,9 +259,9 @@ TBD
 
 | Category                     | Count  |
 | ---------------------------- | ------ |
-| ✅ Complete Patterns         | 5      |
+| ✅ Complete Patterns         | 7      |
 | ⚠️ Incomplete (missing core) | 1      |
-| ⚠️ Mixed/Scattered           | 5      |
+| ⚠️ Mixed/Scattered           | 3      |
 | ❌ Multiple Major Gaps       | 1      |
 | **Total Domains**            | **12** |
 
@@ -247,19 +276,20 @@ TBD
 
 ### Phase 2: Separate Conflated Domains
 
-3. **companion-manager.js** + **companion-definitions.js** - Extract from character
-4. Refactor **character.js** to separate character and companion UI
+3. ~~**companion-manager.js** + **companion-definitions.js**~~ ✅ DONE
+4. ~~**character-manager.js**~~ ✅ DONE - Extract character-specific logic
+5. Refactor **character.js** to separate character and companion UI
 
 ### Phase 3: Consolidate Scattered Logic
 
-5. **weapons-manager.js** - Unify weapon creation and upgrade logic
-6. **battle-definitions.js** - Define combat constants and formulas
-7. Extract core battle logic to dedicated layer
+6. **weapons-manager.js** - Unify weapon creation and upgrade logic
+7. **battle-definitions.js** - Define combat constants and formulas
+8. Extract core battle logic to dedicated layer
 
 ### Phase 4: Formalize Implicit Patterns
 
-8. **player-definitions.js** - Extract PlayerProps and related typedefs
-9. **tutorial-definitions.js** - Extract hardcoded tutorial setup
+9. ~~**player-definitions.js**~~ ✅ DONE
+10. ~~**tutorial-definitions.js**~~ ✅ DONE - Extract hardcoded tutorial setup into definitions and manager
 
 ---
 
@@ -270,13 +300,20 @@ TBD
 - ✅ actions-definitions.js
 - ✅ actions-manager.js
 - ✅ building-definitions.js
-- ✅ weapons-definitions.js
-- ✅ items-definitions.js
 - ✅ character-definitions.js
+- ✅ character-manager.js
+- ✅ companion-definitions.js
+- ✅ companion-manager.js
+- ✅ inventory-manager.js
+- ✅ items-definitions.js
+- ✅ loot-utils.js
+- ✅ player-definitions.js
+- ✅ player-manager.js
 - ✅ recipe-definitions.js
 - ✅ recipes-manager.js
-- ✅ inventory-manager.js
-- ✅ loot-utils.js
+- ✅ tutorial-definitions.js
+- ✅ tutorial-manager.js
+- ✅ weapons-definitions.js
 - ✅ All core modules (game-state.js, object-state.js, object-factory.js, etc.)
 
 **Missing @ts-check (candidates for Phase 1 of type coverage):**

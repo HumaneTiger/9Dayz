@@ -6,7 +6,13 @@ import Companion from './companion.js';
 import Audio from './audio.js';
 import { ItemUtils } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
-import { EventManager, EVENTS, RecipesManager, InventoryManager } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  RecipesManager,
+  InventoryManager,
+  CharacterManager,
+} from './core/index.js';
 
 const items = Props.getAllItems();
 const inventory = Props.getInventory();
@@ -175,7 +181,7 @@ export default {
     }
 
     const action = item.type || '',
-      itemMods = ItemUtils.getItemModifier(Props.getGameProp('character'), item);
+      itemMods = CharacterManager.getItemModifier(Props.getGameProp('character'), item);
     let itemFood = item.food,
       itemDrink = item.drink,
       itemEnergy = item.energy || 0;

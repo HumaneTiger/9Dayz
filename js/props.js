@@ -1,4 +1,5 @@
 import {
+  CharacterManager,
   CompanionManager,
   GameState,
   ObjectState,
@@ -70,7 +71,7 @@ export default {
   },
 
   getInventoryPresets: function (character) {
-    return InventoryManager.getInventoryPresets(character);
+    return CharacterManager.getInventoryPresets(character);
   },
 
   beginInventoryBatch: function () {
