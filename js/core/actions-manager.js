@@ -3,7 +3,14 @@
  * @import { GameAction } from '../../data/definitions/actions-definitions.js'
  */
 
-import { ObjectState } from './index.js';
+import {
+  CharacterManager,
+  CompanionManager,
+  GameState,
+  InventoryManager,
+  ObjectState,
+  PlayerManager,
+} from './index.js';
 import { ActionsDefinitions } from '../../data/definitions/index.js';
 
 export default {
@@ -167,5 +174,140 @@ export default {
 
         return result;
       });
+  },
+
+  /**
+   *
+   * @param {number} objectId
+   */
+  updateActionsForObject: function (objectId) {
+    let object = ObjectState.getObject(objectId);
+    if (!object || !object.x || !object.y) return;
+
+    const playerPosition = GameState.getGameProp('playerPosition');
+    let distance = Math.sqrt(
+      Math.pow(playerPosition.x - object.x, 2) + Math.pow(playerPosition.y - object.y, 2)
+    );
+
+    // event cards are always closest
+    if (object.group === 'event') {
+      distance = -1;
+    }
+    // distance
+    object.distance = distance;
+
+    // active
+    if (object.distance > 4) {
+      object.active = false;
+    }
+    if (object.distance < 1.5) {
+      object.active = true;
+    }
+
+    // too far
+    if (object.distance > 1.5) {
+      object.inreach = false;
+    } else {
+      object.inreach = true;
+    }
+
+    // zedNearby
+    if (object.type !== 'signpost' && object.name !== 'key') {
+      const allFoundObjectIds = ObjectState.findAllObjectsNearby(object.x, object.y);
+      object.zednearby = allFoundObjectIds.some(function (id) {
+        return ObjectState.getObject(id).group === 'zombie' && !ObjectState.getObject(id).dead;
+      });
+    } else {
+      object.zednearby = false;
+    }
+
+    // set action states
+    object.actions?.forEach(action => {
+      action.locked = false;
+      if (object.locked && action.needsUnlock) {
+        action.locked = true;
+      }
+      if (!object.inreach && object.group !== 'event') {
+        action.locked = true;
+      }
+      if (
+        object.zednearby &&
+        object.group !== 'event' &&
+        object.group !== 'zombie' &&
+        action.id !== 'scout-area' &&
+        action.id !== 'read' &&
+        action.id !== 'collect' &&
+        action.id !== 'equip'
+      ) {
+        action.locked = true;
+      }
+      if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
+        action.locked = true;
+      }
+      if (action.energy && PlayerManager.getProp('energy') + action.energy < 0) {
+        action.locked = true;
+      }
+      if (
+        action.id === 'equip' &&
+        object.group === 'weapon' &&
+        (InventoryManager.inventoryContains(object.name) ||
+          CharacterManager.getNumberFilledSlots() >= 2)
+      ) {
+        action.locked = true;
+      }
+      if (action.id === 'smash-window') {
+        if (
+          !InventoryManager.inventoryContains('stone') &&
+          !InventoryManager.inventoryContains('axe') &&
+          !InventoryManager.inventoryContains('improvised-axe') &&
+          !InventoryManager.inventoryContains('wrench')
+        ) {
+          action.locked = true;
+        }
+      }
+      if (action.id === 'cut-down' || action.id === 'break-door' || action.id === 'break-lock') {
+        if (
+          !InventoryManager.inventoryContains('axe') &&
+          !InventoryManager.inventoryContains('improvised-axe')
+        ) {
+          action.locked = true;
+        }
+      }
+      if (action.id === 'unlock-door') {
+        if (!InventoryManager.inventoryContains('key')) {
+          action.locked = true;
+        }
+      }
+      if (action.id === 'cut') {
+        if (!InventoryManager.inventoryContains('knife')) {
+          action.locked = true;
+        }
+      }
+      if (action.id === 'fish') {
+        if (!InventoryManager.inventoryContains('fishing-rod')) {
+          action.locked = true;
+        }
+      }
+      if (action.id === 'chomp' && CompanionManager.getCompanion().active === false) {
+        action.locked = true;
+      }
+    });
+
+    if (
+      object.actions.filter(
+        singleAction => singleAction.id === 'search' || singleAction.id === 'gather'
+      ).length === 0 &&
+      object.items.filter(singleItem => singleItem.amount > 0).length === 0
+    ) {
+      object.looted = true;
+    }
+
+    // no actions and items left: remove Card
+    if (
+      !object.actions?.length &&
+      object.items.filter(singleItem => singleItem.amount > 0).length === 0
+    ) {
+      object.removed = true;
+    }
   },
 };
