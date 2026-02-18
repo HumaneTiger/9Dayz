@@ -91,7 +91,7 @@
  * @property {ObjectType} [type]
  * @property {number} [x]
  * @property {number} [y]
- * @property {null|string|number} [zednearby]
+ * @property {boolean} [zednearby]
  * @export
  */
 
@@ -136,7 +136,7 @@ export default {
       hasKey: false,
       looted: false,
       infested: false,
-      zednearby: null,
+      zednearby: false,
       active: true,
       inreach: false,
       discovered: false,
@@ -179,6 +179,46 @@ export default {
       allObjectsAt.push(this.getObject(id));
     });
     return allObjectsAt;
+  },
+
+  /**
+   * Finds all objects in the 8 surrounding tiles + current tile and returns their ids
+   * @param {number} x
+   * @param {number} y
+   * @returns {number[]}
+   */
+  findAllObjectsNearby: function (x, y) {
+    /** @type {number[]} */
+    let allFoundObjectIds = [];
+
+    let ids = this.getObjectIdsAt(x, y);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x, y - 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x + 1, y - 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x + 1, y);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x + 1, y + 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x, y + 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x - 1, y + 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x - 1, y);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    ids = this.getObjectIdsAt(x - 1, y - 1);
+    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
+
+    return allFoundObjectIds;
   },
 
   /**
