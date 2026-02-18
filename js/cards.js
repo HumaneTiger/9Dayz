@@ -1,24 +1,22 @@
 import Audio from './audio.js';
 import Props from './props.js';
 import Player from './player.js';
-import Items from './items.js';
-import Character from './character.js';
 import Map from './map.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
-import Events, { EVENTS } from './core/event-manager.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import ActionsUtils from './utils/actions-utils.js';
+import { EventManager, EVENTS, CardsManager, ActionsManager, ObjectState } from './core/index.js';
 
-var cardDeck = [];
+//var cardDeck = [];
 var lastHoverTarget;
 
 export default {
   init: function () {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
-    Events.on(
+    EventManager.on(
       EVENTS.GAME_PROP_CHANGED,
       ({ prop, value }) => {
         if (prop === 'timeIsUnity') {
@@ -138,42 +136,20 @@ export default {
     return document.getElementById(cardId);
   },
 
-  getAllZedsNearbyIds: function () {
-    let allZeds = [];
-    cardDeck?.forEach(card => {
-      const id = card.id;
-      let object = Props.getObject(id);
-      if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
-        allZeds.push(id);
-      }
-    });
-    return allZeds;
-  },
-
   showAllZedsNearby: function () {
-    cardDeck?.forEach(card => {
+    CardsManager.getCardDeck().forEach(card => {
       let object = Props.getObject(card.id);
       if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
         const cardRef = this.getCardById(card.id);
         object.active = true;
-        cardRef.classList.remove('is--hidden'); // not strictly needed, but because of timeout crazieness
-        cardRef.classList.remove('out-of-queue');
+        cardRef && cardRef.classList.remove('is--hidden'); // not strictly needed, but because of timeout crazieness
+        cardRef && cardRef.classList.remove('out-of-queue');
       }
     });
   },
 
   addObjectsByIds: function (objectIds) {
-    if (objectIds !== undefined) {
-      objectIds?.forEach(objectId => {
-        let object = Props.getObject(objectId);
-        if (!object.discovered && !object.removed) {
-          cardDeck.push({
-            id: objectId,
-            distance: 0,
-          });
-        }
-      });
-    }
+    CardsManager.addObjectIdsToCardDeck(objectIds);
     this.renderCardDeck();
   },
 
@@ -194,143 +170,21 @@ export default {
   revealAction(actionId, cardRef, object) {
     // only reveal if action exists on the object
     if (object.actions.some(a => a.id === actionId)) {
-      cardRef.querySelector('li.' + actionId)?.classList.remove('is--hidden');
+      cardRef?.querySelector('li.' + actionId)?.classList.remove('is--hidden');
     }
   },
 
   calculateCardDeckProperties: function () {
-    const playerPosition = Player.getPlayerPosition();
-
-    cardDeck?.forEach((card, index) => {
-      const id = card.id;
-      let object = Props.getObject(id);
-      let distance = Math.sqrt(
-        Math.pow(playerPosition.x - object.x, 2) + Math.pow(playerPosition.y - object.y, 2)
-      );
-
-      // show event cards always first
-      if (object.group === 'event') {
-        distance = -1;
-      }
-      // distance
-      object.distance = distance;
-      cardDeck[index].distance = distance;
-
-      // active
-      if (object.distance > 4) {
-        object.active = false;
-      }
-      if (object.distance < 1.5) {
-        object.active = true;
-      }
-
-      // too far
-      if (object.distance > 1.5) {
-        object.inreach = false;
-      } else {
-        object.inreach = true;
-      }
-
-      // zedNearby
-      if (object.type !== 'signpost' && object.name !== 'key') {
-        const allFoundObjectIds = Player.findObjects(object.x, object.y);
-        object.zednearby = allFoundObjectIds.some(function (id) {
-          return Props.getObject(id).group === 'zombie' && !Props.getObject(id).dead;
-        });
-      } else {
-        object.zednearby = false;
-      }
-
-      // set action states
-      object.actions?.forEach(action => {
-        action.locked = false;
-        if (object.locked && action.needsUnlock) {
-          action.locked = true;
-        }
-        if (!object.inreach && object.group !== 'event') {
-          action.locked = true;
-        }
-        if (
-          object.zednearby &&
-          object.group !== 'event' &&
-          object.group !== 'zombie' &&
-          action.id !== 'scout-area' &&
-          action.id !== 'read' &&
-          action.id !== 'collect' &&
-          action.id !== 'equip'
-        ) {
-          action.locked = true;
-        }
-        if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
-          action.locked = true;
-        }
-        if (action.energy && Player.getProp('energy') + action.energy < 0) {
-          action.locked = true;
-        }
-        if (
-          action.id === 'equip' &&
-          object.group === 'weapon' &&
-          (Items.inventoryContains(object.name) || Character.numberFilledSlots() >= 2)
-        ) {
-          action.locked = true;
-        }
-        if (action.id === 'smash-window') {
-          if (
-            !Items.inventoryContains('stone') &&
-            !Items.inventoryContains('axe') &&
-            !Items.inventoryContains('improvised-axe') &&
-            !Items.inventoryContains('wrench')
-          ) {
-            action.locked = true;
-          }
-        }
-        if (action.id === 'cut-down' || action.id === 'break-door' || action.id === 'break-lock') {
-          if (!Items.inventoryContains('axe') && !Items.inventoryContains('improvised-axe')) {
-            action.locked = true;
-          }
-        }
-        if (action.id === 'unlock-door') {
-          if (!Items.inventoryContains('key')) {
-            action.locked = true;
-          }
-        }
-        if (action.id === 'cut') {
-          if (!Items.inventoryContains('knife')) {
-            action.locked = true;
-          }
-        }
-        if (action.id === 'fish') {
-          if (!Items.inventoryContains('fishing-rod')) {
-            action.locked = true;
-          }
-        }
-        if (action.id === 'chomp' && Props.getCompanion().active === false) {
-          action.locked = true;
-        }
-      });
-
-      if (
-        object.actions.filter(
-          singleAction => singleAction.id === 'search' || singleAction.id === 'gather'
-        ).length === 0 &&
-        object.items.filter(singleItem => singleItem.amount > 0).length === 0
-      ) {
-        object.looted = true;
-      }
-
-      // no actions and items left: remove Card
-      if (
-        !object.actions?.length &&
-        object.items.filter(singleItem => singleItem.amount > 0).length === 0
-      ) {
-        object.removed = true;
-      }
+    CardsManager.updateCardDeckProperties();
+    CardsManager.getCardDeck().forEach(card => {
+      ActionsManager.updateActionsForObject(card.id);
     });
   },
 
   renderCardDeck: function () {
     this.addSpecialEventCards();
     this.calculateCardDeckProperties();
+    let cardDeck = CardsManager.getCardDeck();
     cardDeck.sort(this.compare);
 
     cardDeck?.forEach(card => {
@@ -358,35 +212,24 @@ export default {
     });
 
     this.updateCardDeck();
-    this.cleanupRemovedCards(); // call directly after update, as the removed card effect has to be applied before
+    CardsManager.cleanupCardDeck(); // call directly after update, as the removed card effect has to be applied before
 
     this.switchDayNight();
     this.logDeck();
   },
 
   updateCardDeck: function () {
-    CardsMarkup.updateCardDeckMarkup(cardDeck);
-  },
-
-  cleanupRemovedCards: function () {
-    // removing all removed ids at the very end outside the foreach
-    // doing it the very old school "go backward" way, as this is the most solid approach to avoid any kind of crazy problems
-    for (let i = cardDeck.length - 1; i >= 0; i--) {
-      const object = Props.getObject(cardDeck[i].id);
-      if (object.removed) {
-        cardDeck.splice(i, 1);
-      }
-    }
+    CardsMarkup.updateCardDeckMarkup();
   },
 
   addSpecialEventCards: function () {
     /* candidates for event bus */
     if (Props.getGameProp('tutorial')) {
-      const specialEventObjectIds = Tutorial.checkForSpecialEvents(cardDeck);
+      const specialEventObjectIds = Tutorial.checkForSpecialEvents();
       specialEventObjectIds?.forEach(objectId => {
-        let object = Props.getObject(objectId);
+        let object = ObjectState.getObject(objectId);
         if (!object.discovered && !object.removed) {
-          cardDeck.push({
+          CardsManager.addCardToCardDeck({
             id: objectId,
             distance: -1,
           });
@@ -398,10 +241,10 @@ export default {
   logDeck: function () {},
 
   switchDayNight: function () {
-    cardDeck?.forEach(card => {
+    CardsManager.getCardDeck().forEach(card => {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
-      if (!object.removed) {
+      if (cardRef && !object.removed) {
         if (object.active) {
           if (Props.getGameProp('timeMode') === 'day') {
             cardRef.classList.remove('night');
@@ -416,12 +259,12 @@ export default {
   },
 
   disableActions: function () {
-    cardDeck.forEach(function (card) {
+    CardsManager.getCardDeck().forEach(function (card) {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       if (object.group !== 'event') {
         object.disabled = true;
-        cardRef.classList.add('actions-locked');
+        cardRef && cardRef.classList.add('actions-locked');
       }
     });
     document.querySelector('#craft')?.classList.add('actions-locked');
@@ -429,11 +272,11 @@ export default {
   },
 
   enableActions: function () {
-    cardDeck.forEach(function (card) {
+    CardsManager.getCardDeck().forEach(function (card) {
       const object = Props.getObject(card.id);
       const cardRef = document.getElementById(card.id);
       object.disabled = false;
-      cardRef.classList.remove('actions-locked');
+      cardRef && cardRef.classList.remove('actions-locked');
     });
     document.querySelector('#craft')?.classList.remove('actions-locked');
     document.querySelector('#character')?.classList.remove('actions-locked');

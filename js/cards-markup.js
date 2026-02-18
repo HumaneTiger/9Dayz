@@ -7,6 +7,7 @@ import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
+import { CardsManager } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
 
@@ -444,7 +445,8 @@ export default {
     return activeCardDeckSize;
   },
 
-  updateCardDeckMarkup: function (cardDeck) {
+  updateCardDeckMarkup: function () {
+    const cardDeck = CardsManager.getCardDeck();
     if (!cardDeck || cardDeck.length === 0) return;
 
     const sharedDeckState = {

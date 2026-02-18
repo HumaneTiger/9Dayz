@@ -245,11 +245,13 @@ export default {
   },
 
   /**
-   * @param {string} itemName - Item name
+   * @param {string|undefined} itemName - Item name
    * @returns {boolean}
    */
   inventoryContains: function (itemName) {
-    if (inventory.items[itemName]?.amount > 0) {
+    if (itemName === undefined) {
+      return false;
+    } else if (inventory.items[itemName]?.amount > 0) {
       return true;
     } else if (inventory.weapons[itemName]?.amount > 0) {
       return true;

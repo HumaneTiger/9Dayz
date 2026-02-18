@@ -4,10 +4,11 @@ import Cards from '../cards.js';
 import Battle from '../battle.js';
 import TimingUtils from '../utils/timing-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
+import { ObjectState } from '../core/index.js';
 
 export default async function simulateAttacking(cardId) {
   const object = Props.getObject(cardId);
-  const allFoundObjectIds = Player.findObjects(object.x, object.y);
+  const allFoundObjectIds = ObjectState.findAllObjectsNearby(object.x, object.y);
 
   const zedsOnly = allFoundObjectIds.filter(
     singleObject => Props.getObject(singleObject).group === 'zombie'

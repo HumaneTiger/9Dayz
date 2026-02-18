@@ -1,5 +1,4 @@
-import Events, { EVENTS } from './core/event-manager.js';
-import { PlayerManager } from './core/index.js';
+import { EventManager, EVENTS, PlayerManager, ObjectState } from './core/index.js';
 import Props from './props.js';
 import Cards from './cards.js';
 import Map from './map.js';
@@ -15,13 +14,13 @@ let player = document.getElementById('player');
 export default {
   init: function () {
     // Register event listeners
-    Events.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, oldValue, newValue }) => {
+    EventManager.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, oldValue, newValue }) => {
       this.updatePropUI({ prop, change, oldValue, newValue });
     });
-    Events.on(EVENTS.PLAYER_MOVE_TO, ({ x, y }) => {
+    EventManager.on(EVENTS.PLAYER_MOVE_TO, ({ x, y }) => {
       this.movePlayerTo(x, y);
     });
-    Events.on(EVENTS.PLAYER_UPDATE, ({ noPenalty }) => {
+    EventManager.on(EVENTS.PLAYER_UPDATE, ({ noPenalty }) => {
       this.updatePlayer(noPenalty);
     });
     Props.changePlayerProp('health', 0); // trigger initial UI update
@@ -210,7 +209,7 @@ export default {
   },
 
   findAndHandleObjects: function () {
-    const allFoundObjectIds = this.findObjects(playerPosition.x, playerPosition.y);
+    const allFoundObjectIds = ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y);
     this.handleFoundObjectIds(allFoundObjectIds);
   },
 
@@ -397,41 +396,6 @@ export default {
 
   getProp: function (prop) {
     return playerProps[prop];
-  },
-
-  findObjects: function (x, y) {
-    let allFoundObjectIds = [];
-    x = parseInt(x);
-    y = parseInt(y);
-
-    let ids = Props.getObjectIdsAt(x, y);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x, y - 1);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x + 1, y - 1);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x + 1, y);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x + 1, y + 1);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x, y + 1);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x - 1, y + 1);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x - 1, y);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    ids = Props.getObjectIdsAt(x - 1, y - 1);
-    if (ids) allFoundObjectIds = allFoundObjectIds.concat(ids);
-
-    return allFoundObjectIds;
   },
 
   handleFoundObjectIds: function (allFoundObjectIds) {

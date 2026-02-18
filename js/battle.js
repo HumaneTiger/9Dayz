@@ -10,7 +10,7 @@ import Companion from './companion.js';
 import Weapons from './weapons.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
-import { CharacterManager } from './core/index.js';
+import { CharacterManager, CardsManager } from './core/index.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -228,7 +228,7 @@ export default {
       // result of successful luring
       cardZedDeck.push(singleZedId);
     } else {
-      cardZedDeck = Cards.getAllZedsNearbyIds();
+      cardZedDeck = CardsManager.getAllZedsNearbyIds();
     }
 
     if (cardZedDeck.length > 0) {

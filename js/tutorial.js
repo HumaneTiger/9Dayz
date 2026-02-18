@@ -3,7 +3,7 @@ import Player from './player.js';
 import Items from './items.js';
 import Audio from './audio.js';
 import TimingUtils from './utils/timing-utils.js';
-import { TutorialManager } from './core/index.js';
+import { TutorialManager, CardsManager } from './core/index.js';
 
 let battleTutorialStep = 0;
 
@@ -104,13 +104,13 @@ export default {
     }
   },
 
-  checkForSpecialEvents: function (cardDeck) {
-    const playerPosition = Player.getPlayerPosition();
-    const crafting = Props.getCrafting();
+  checkForSpecialEvents: function () {
     let specialEventObjectIds = [];
 
     if (Props.getGameProp('tutorial')) {
-      cardDeck?.forEach(card => {
+      const playerPosition = Player.getPlayerPosition();
+      const crafting = Props.getCrafting();
+      CardsManager.getCardDeck().forEach(card => {
         const id = card.id;
         let object = Props.getObject(id);
 
