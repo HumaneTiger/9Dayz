@@ -226,11 +226,9 @@ export default {
       action.locked = false;
       if (object.locked && action.needsUnlock) {
         action.locked = true;
-      }
-      if (!object.inreach && object.group !== 'event') {
+      } else if (!object.inreach && object.group !== 'event') {
         action.locked = true;
-      }
-      if (
+      } else if (
         object.zednearby &&
         object.group !== 'event' &&
         object.group !== 'zombie' &&
@@ -240,22 +238,18 @@ export default {
         action.id !== 'equip'
       ) {
         action.locked = true;
-      }
-      if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
+      } else if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
         action.locked = true;
-      }
-      if (action.energy && PlayerManager.getProp('energy') + action.energy < 0) {
+      } else if (action.energy && PlayerManager.getProp('energy') + action.energy < 0) {
         action.locked = true;
-      }
-      if (
+      } else if (
         action.id === 'equip' &&
         object.group === 'weapon' &&
         (InventoryManager.inventoryContains(object.name) ||
           CharacterManager.getNumberFilledSlots() >= 2)
       ) {
         action.locked = true;
-      }
-      if (action.id === 'smash-window') {
+      } else if (action.id === 'smash-window') {
         if (
           !InventoryManager.inventoryContains('stone') &&
           !InventoryManager.inventoryContains('axe') &&
@@ -264,31 +258,30 @@ export default {
         ) {
           action.locked = true;
         }
-      }
-      if (action.id === 'cut-down' || action.id === 'break-door' || action.id === 'break-lock') {
+      } else if (
+        action.id === 'cut-down' ||
+        action.id === 'break-door' ||
+        action.id === 'break-lock'
+      ) {
         if (
           !InventoryManager.inventoryContains('axe') &&
           !InventoryManager.inventoryContains('improvised-axe')
         ) {
           action.locked = true;
         }
-      }
-      if (action.id === 'unlock-door') {
+      } else if (action.id === 'unlock-door') {
         if (!InventoryManager.inventoryContains('key')) {
           action.locked = true;
         }
-      }
-      if (action.id === 'cut') {
+      } else if (action.id === 'cut') {
         if (!InventoryManager.inventoryContains('knife')) {
           action.locked = true;
         }
-      }
-      if (action.id === 'fish') {
+      } else if (action.id === 'fish') {
         if (!InventoryManager.inventoryContains('fishing-rod')) {
           action.locked = true;
         }
-      }
-      if (action.id === 'chomp' && CompanionManager.getCompanion().active === false) {
+      } else if (action.id === 'chomp' && CompanionManager.getCompanion().active === false) {
         action.locked = true;
       }
     });
