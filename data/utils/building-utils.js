@@ -1,3 +1,4 @@
+// @ts-check
 import { BuildingDefinitions } from '../index.js';
 
 const { buildingTypes } = BuildingDefinitions;

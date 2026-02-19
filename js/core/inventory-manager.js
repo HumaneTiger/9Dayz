@@ -1,13 +1,13 @@
 // @ts-check
 
 /**
- * @import { ItemDefinition, ItemProps } from '../../data/definitions/items-definitions.js'
+ * @import { ItemDefinition, Item, ItemProps } from '../../data/definitions/items-definitions.js'
  * @import { WeaponDefinition, WeaponProps, WeaponUpgrade, WeaponUpgrades } from '../../data/definitions/weapons-definitions.js'
  */
 
 /**
  * @typedef {Object} Inventory
- * @property {Record<string, ItemProps>} items
+ * @property {Record<string, Item>} items
  * @property {Record<string, WeaponProps>} weapons
  * @property {number} itemNumbers
  * @export
@@ -185,8 +185,10 @@ export default {
     } else if (itemProps !== undefined) {
       // item is added first time to inventory
       const character = GameState.getGameProp('character');
-      inventory.items[item] = ItemUtils.calcItemProps(item, character);
-      inventory.items[item].amount = addAmount;
+      inventory.items[item] = {
+        ...ItemUtils.calcItemProps(item, character),
+        amount: addAmount,
+      };
       // emit FIRST_ITEM_ADDED event for almanac tracking
       EventManager.emit(EVENTS.FIRST_ITEM_ADDED, {
         item: item,
@@ -223,7 +225,7 @@ export default {
   /**
    * @param {string} item
    * @param {string} character
-   * @returns {ItemProps | undefined}
+   * @returns {ItemProps}
    */
   calcItemProps: function (item, character) {
     return ItemUtils.calcItemProps(item, character);
@@ -249,7 +251,7 @@ export default {
 
   /**
    * @param {string} itemName - Item name
-   * @returns {ItemProps}
+   * @returns {Item}
    */
   getItemFromInventory: function (itemName) {
     return inventory.items[itemName];
@@ -342,7 +344,7 @@ export default {
 
   /**
    * @param {string} itemType - Item type
-   * @returns {ItemProps | undefined}
+   * @returns {Item | undefined}
    */
   getFirstItemOfType: function (itemType) {
     for (const item in inventory.items) {
@@ -354,7 +356,7 @@ export default {
 
   /**
    * @param {string} itemName - Item name
-   * @returns {ItemProps | undefined}
+   * @returns {Item | undefined}
    */
   getItemByName: function (itemName) {
     return inventory.items[itemName];

@@ -7,7 +7,6 @@
 
 /**
  * @typedef {Object} ItemProps
- * @property {number} amount
  * @property {string} name
  * @property {string} type
  * @property {number} damage
@@ -15,6 +14,11 @@
  * @property {number} food
  * @property {number} drink
  * @property {number} energy
+ * @export
+ */
+
+/**
+ * @typedef {ItemProps & {amount: number}} Item
  * @export
  */
 

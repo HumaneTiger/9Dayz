@@ -1,3 +1,7 @@
+// @ts-check
+/**
+ * @import { ItemProps } from '../definitions/items-definitions.js'
+ */
 import { ItemsDefinitions, CharacterDefinitions } from '../index.js';
 
 const { items } = ItemsDefinitions;
@@ -33,24 +37,23 @@ export default {
    * Calculate complete item properties including character modifiers
    * @param {string} item - Item name
    * @param {string} character - Character type
-   * @returns {ItemProps | undefined}
+   * @returns {ItemProps}
    */
   calcItemProps: function (item, character) {
     const itemProps = items[item];
     const itemMods = CharacterDefinitions[character]?.itemModifiers?.[item];
-    if (itemProps) {
-      return {
-        name: item,
-        type: itemProps[0],
-        damage: this.calcItemDamage(item),
-        protection: this.calcItemProtection(item),
-        food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
-        drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
-        energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3],
-      };
-    } else {
+    if (!itemProps) {
       console.log('No props for item ' + item);
     }
+    return {
+      name: item,
+      type: itemProps[0],
+      damage: this.calcItemDamage(item),
+      protection: this.calcItemProtection(item),
+      food: itemMods !== undefined ? itemProps[1] + itemMods[0] : itemProps[1],
+      drink: itemMods !== undefined ? itemProps[2] + itemMods[1] : itemProps[2],
+      energy: itemMods !== undefined ? itemProps[3] + itemMods[2] : itemProps[3],
+    };
   },
 
   /**
