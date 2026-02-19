@@ -1,20 +1,12 @@
 // @ts-check
 
-import { BuildingInstances, ZombieInstances, PathInstances, PathUtils } from '../../data/index.js';
-import GameState from './game-state.js';
-import ObjectFactory from './object-factory.js';
-
-const mapSize = GameState.getGameProp('mapSize');
-
 /**
- * @typedef {Object} Path
- * @property {number} x
- * @property {number} y
+ * @import { GameMap } from '../../data/definitions/map-definitions.js'
  */
 
-/* create 2D array with map size for paths */
-/** @type {Path[][]} */
-var paths = Array.from({ length: mapSize.width }, () => new Array(mapSize.height));
+import { BuildingInstances, ZombieInstances, PathInstances, PathUtils } from '../../data/index.js';
+import { MapDefinitions } from '../../data/definitions/index.js';
+import ObjectFactory from './object-factory.js';
 
 /**
  * Initializes the map by setting up buildings, zombies, and paths based on imported JSON data.
@@ -49,34 +41,30 @@ export default {
    */
   setupAllPaths: function () {
     // Setup all paths from imported JSON
-    PathInstances.paths.forEach(path => {
-      switch (path.type) {
-        case 'vertical':
-          PathUtils.setupPathVer(paths, path.x, path.y1, path.y2);
-          break;
-        case 'horizontal':
-          PathUtils.setupPathHor(paths, path.x1, path.x2, path.y);
-          break;
-        case 'diagonalDown':
-          PathUtils.setupPathDiaDown(paths, path.x1, path.x2, path.y);
-          break;
-        case 'diagonalUp':
-          PathUtils.setupPathDiaUp(paths, path.x1, path.x2, path.y);
-          break;
-        case 'single':
-          PathUtils.setupPath(paths, path.x, path.y);
-          break;
-        case 'remove':
-          PathUtils.removePath(paths, path.x, path.y);
-          break;
-      }
+    PathInstances.paths.vertical.forEach(path => {
+      PathUtils.setupPathVer(path.x, path.y1, path.y2);
+    });
+    PathInstances.paths.horizontal.forEach(path => {
+      PathUtils.setupPathHor(path.x1, path.x2, path.y);
+    });
+    PathInstances.paths.diagonalDown.forEach(path => {
+      PathUtils.setupPathDiaDown(path.x1, path.x2, path.y);
+    });
+    PathInstances.paths.diagonalUp.forEach(path => {
+      PathUtils.setupPathDiaUp(path.x1, path.x2, path.y);
+    });
+    PathInstances.paths.single.forEach(path => {
+      PathUtils.setupPath(path.x, path.y);
+    });
+    PathInstances.paths.remove.forEach(path => {
+      PathUtils.removePath(path.x, path.y);
     });
   },
 
   /**
-   * @returns {Path[][]}
+   * @returns {GameMap['paths']} - the 2D array representing the map's paths
    */
   getAllPaths: function () {
-    return paths;
+    return MapDefinitions.paths;
   },
 };

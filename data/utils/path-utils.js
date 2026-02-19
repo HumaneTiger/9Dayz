@@ -1,33 +1,64 @@
+// @ts-check
+import { MapDefinitions } from '../definitions/index.js';
+
 export default {
-  setupPath: function (pathsArray, x, y) {
-    pathsArray[x][y] = true;
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  setupPath: function (x, y) {
+    MapDefinitions.paths[x][y] = true;
   },
 
-  setupPathVer: function (pathsArray, x, y1, y2) {
+  /**
+   * @param {number} x
+   * @param {number} y1
+   * @param {number} y2
+   */
+  setupPathVer: function (x, y1, y2) {
     for (var vert = y1; vert <= y2; vert += 1) {
-      pathsArray[x][vert] = true;
+      MapDefinitions.paths[x][vert] = true;
     }
   },
 
-  setupPathHor: function (pathsArray, x1, x2, y) {
+  /**
+   * @param {number} x1
+   * @param {number} x2
+   * @param {number} y
+   */
+  setupPathHor: function (x1, x2, y) {
     for (var hor = x1; hor <= x2; hor += 1) {
-      pathsArray[hor][y] = true;
+      MapDefinitions.paths[hor][y] = true;
     }
   },
 
-  setupPathDiaDown: function (pathsArray, x1, x2, y) {
+  /**
+   * @param {number} x1
+   * @param {number} x2
+   * @param {number} y
+   */
+  setupPathDiaDown: function (x1, x2, y) {
     for (var dia = 0; dia <= x2 - x1; dia += 1) {
-      pathsArray[x1 + dia][y + dia] = true;
+      MapDefinitions.paths[x1 + dia][y + dia] = true;
     }
   },
 
-  setupPathDiaUp: function (pathsArray, x1, x2, y) {
+  /**
+   * @param {number} x1
+   * @param {number} x2
+   * @param {number} y
+   */
+  setupPathDiaUp: function (x1, x2, y) {
     for (var dia = 0; dia <= x2 - x1; dia += 1) {
-      pathsArray[x1 + dia][y - dia] = true;
+      MapDefinitions.paths[x1 + dia][y - dia] = true;
     }
   },
 
-  removePath: function (pathsArray, x, y) {
-    pathsArray[x][y] = undefined;
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  removePath: function (x, y) {
+    MapDefinitions.paths[x][y] = false;
   },
 };
