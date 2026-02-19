@@ -56,7 +56,12 @@ export default {
     CardsDefinitions.cardDeck.forEach(
       /** @type {Card} */ card => {
         let object = ObjectState.getObject(card.id);
-        if (object.group === 'zombie' && object.distance && object.distance < 2.5 && !object.dead) {
+        if (
+          object.distance !== null &&
+          object.group === 'zombie' &&
+          object.distance < 2.5 &&
+          !object.dead
+        ) {
           allZedIds.push(card.id);
         }
       }

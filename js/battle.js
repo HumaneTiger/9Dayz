@@ -217,15 +217,10 @@ export default {
 
   startBattle(surprised, singleZedId) {
     this.prepareBattle();
-    const cardZedDeck = CardsManager.getOpponentDeck();
-
-    if (singleZedId) {
-      // result of successful luring
-      CardsManager.addIdToOpponentDeck(singleZedId);
-    } else {
-      CardsManager.addAllZedsNearby();
-    }
-
+    // singleZedId is the result of successful luring
+    let cardZedDeck = singleZedId
+      ? CardsManager.addIdToOpponentDeck(singleZedId)
+      : CardsManager.addAllZedsNearby();
     if (cardZedDeck.length > 0) {
       this.spawnZedDeck(cardZedDeck);
       this.enterUIBattleMode();
