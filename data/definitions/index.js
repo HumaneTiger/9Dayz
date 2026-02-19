@@ -6,6 +6,7 @@ export { default as CardsDefinitions } from './cards-definitions.js';
 export { default as CharacterDefinitions } from './character-definitions.js';
 export { default as CompanionDefinitions } from './companion-definitions.js';
 export { default as ItemsDefinitions } from './items-definitions.js';
+export { default as MapDefinitions } from './map-definitions.js';
 export { default as PlayerDefinitions } from './player-definitions.js';
 export { default as RecipeDefinitions } from './recipe-definitions.js';
 export { default as TutorialDefinitions } from './tutorial-definitions.js';
