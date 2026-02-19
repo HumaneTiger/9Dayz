@@ -1,10 +1,10 @@
 // @ts-check
 /**
- * @import { Card, CardDeck } from '../../data/definitions/cards-definitions.js'
+ * @import { Card, CardDeck, BattleCard, BattleDeck } from '../../data/definitions/cards-definitions.js'
  */
 
 import { CardsDefinitions } from '../../data/index.js';
-import { GameState, ObjectState } from './index.js';
+import { CharacterManager, GameState, InventoryManager, ObjectState } from './index.js';
 
 export default {
   /**
@@ -87,5 +87,129 @@ export default {
    */
   addCardToCardDeck: function (card) {
     CardsDefinitions.cardDeck.push(card);
+  },
+
+  /**
+   * @returns {CardDeck}
+   */
+  getOpponentDeck: function () {
+    return CardsDefinitions.opponentDeck;
+  },
+
+  /**
+   * @returns {BattleDeck}
+   */
+  getBattleDeck: function () {
+    return CardsDefinitions.battleDeck;
+  },
+
+  /**
+   *
+   * @param {string} itemName
+   * @returns {BattleCard|undefined} the battle card corresponding to the given item name
+   */
+  getBattleDeckCard: function (itemName) {
+    return CardsDefinitions.battleDeck.find(card => card.name === itemName);
+  },
+
+  /**
+   * @param {string} itemName
+   */
+  removeFromBattleDeck: function (itemName) {
+    for (let i = 0; i < CardsDefinitions.battleDeck.length; i += 1) {
+      if (CardsDefinitions.battleDeck[i].name === itemName) {
+        CardsDefinitions.battleDeck.splice(i, 1);
+        break;
+      }
+    }
+  },
+
+  /**
+   * Calculates the modifyDamage for a card at the given index in the battle deck, based on the character and the item
+   * @param {number} index
+   * @returns {number} - the modifyDamage based on the character and the item
+   */
+  calculateModifyDamageForItem: function (index) {
+    let modifyDamage = 0;
+    if (GameState.getGameProp('character') === 'snackivore') {
+      const itemModifier = CharacterManager.getItemModifier(
+        'snackivore',
+        CardsDefinitions.battleDeck[index].name
+      );
+      /** all items with negative effects (natural food) deal one extra damage */
+      if (itemModifier && itemModifier[0] < 0) {
+        modifyDamage = 1;
+      }
+    }
+    return modifyDamage;
+  },
+
+  /**
+   * @returns {number} - the number of spared tools
+   */
+  generateBattleDeck: function () {
+    CardsDefinitions.battleDeck = [];
+    const inventory = InventoryManager.getInventory();
+    let sparedTools = 0;
+    const inventoryItemsAndWeapons = { ...inventory.items, ...inventory.weapons };
+    // Makes battle deck construction deterministic rather than relying on JavaScript's object key ordering
+    const sortedKeys = Object.keys(inventoryItemsAndWeapons).sort((a, b) => a.localeCompare(b));
+    for (const item of sortedKeys) {
+      for (let i = 0; i < inventoryItemsAndWeapons[item].amount; i++) {
+        if (
+          GameState.getGameProp('character') === 'craftsmaniac' &&
+          ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'nails'].includes(item)
+        ) {
+          sparedTools += 1;
+        } else {
+          CardsDefinitions.battleDeck.push({
+            damage: inventoryItemsAndWeapons[item].damage,
+            modifyDamage: this.calculateModifyDamageForItem(i) || 0,
+            id: i,
+            name: item,
+            protection: inventoryItemsAndWeapons[item].protection || 0,
+          });
+        }
+      }
+    }
+    return sparedTools;
+  },
+
+  /**
+   * @returns {number} - the size of the battle deck
+   */
+  getBattleDeckSize: function () {
+    return CardsDefinitions.battleDeck.length;
+  },
+
+  /**
+   * Removes all cards from the battle deck, effectively resetting it for the next battle
+   */
+  removeBattleDeck: function () {
+    CardsDefinitions.battleDeck = [];
+  },
+
+  /**
+   * Reduces the durability of a weapon or removes an item from the battle deck
+   * @param {string} itemName
+   */
+  reduceDurabilityOrRemove: function (itemName) {
+    if (InventoryManager.isWeapon(itemName)) {
+      const weapon = InventoryManager.getWeaponFromInventory(itemName);
+      if (weapon.durability && weapon.durability > 0) {
+        weapon.durability -= 1;
+      }
+      if (!weapon.durability) {
+        // remove weapon from inventory
+        InventoryManager.removeWeaponFromInventory(weapon.name);
+        // remove card from battle deck
+        this.removeFromBattleDeck(itemName);
+      }
+    } else {
+      // remove item from inventory
+      InventoryManager.addItemToInventory(itemName, -1);
+      // remove card from battle deck
+      this.removeFromBattleDeck(itemName);
+    }
   },
 };

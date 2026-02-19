@@ -1,7 +1,7 @@
 // @ts-check
-
 /**
  * @typedef {Array<Card>} CardDeck
+ * @typedef {Array<BattleCard>} BattleDeck
  */
 
 /**
@@ -10,10 +10,19 @@
  * @property {number} distance
  */
 
+/**
+ * @typedef {Object} BattleCard
+ * @property {number} id
+ * @property {string} name
+ * @property {number} damage
+ * @property {number} modifyDamage
+ * @property {number} protection
+ */
+
 export default {
   /** @type {CardDeck} */
   cardDeck: [],
-  /** @type {CardDeck} */
+  /** @type {BattleDeck} */
   battleDeck: [],
   /** @type {CardDeck} */
   opponentDeck: [],

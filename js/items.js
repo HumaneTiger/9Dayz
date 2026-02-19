@@ -56,6 +56,7 @@ export default {
   },
 
   getFirstItemOfType: function (itemType) {
+    /* needed for rat attacks */
     return InventoryManager.getFirstItemOfType(itemType);
   },
 

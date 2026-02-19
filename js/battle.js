@@ -10,7 +10,7 @@ import Companion from './companion.js';
 import Weapons from './weapons.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
-import { CharacterManager, CardsManager } from './core/index.js';
+import { CardsManager, InventoryManager } from './core/index.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -18,14 +18,8 @@ const battleCompanionContainer = document.querySelector('#companion-cards');
 const battleHealthMeter = document.querySelector('#properties li.health');
 const scratch = document.querySelector('.scratch');
 
-const inventory = Props.getInventory();
-
 let cardZedDeck = [];
-let battleDeck = [];
 let allDrawPileCards = [];
-let battleDeckProps = {
-  number: 0,
-};
 
 export default {
   prepareBattle: function () {
@@ -247,19 +241,21 @@ export default {
     }
   },
 
-  renderDrawPile: function () {
-    document.getElementById('draw-amount').textContent = battleDeckProps.number;
-    const pileSize = Math.min(battleDeck.length, 24);
+  renderDrawPile: function (remainingCards) {
+    const totalCards =
+      remainingCards !== undefined ? remainingCards : CardsManager.getBattleDeckSize();
+    document.getElementById('draw-amount').textContent = totalCards;
+
+    const pileSize = Math.min(CardsManager.getBattleDeckSize(), 24);
     for (let card = 0; card < pileSize; card += 1) {
-      if (card < battleDeckProps.number) {
+      if (card < totalCards) {
         allDrawPileCards[card].classList.remove('is--hidden');
       } else {
         allDrawPileCards[card].classList.add('is--hidden');
       }
     }
-    document.getElementById('draw-amount').style.left =
-      200 + Math.min(battleDeckProps.number, 24) * 4 + 'px';
-    if (battleDeckProps.number === 0) {
+    document.getElementById('draw-amount').style.left = 200 + Math.min(totalCards, 24) * 4 + 'px';
+    if (totalCards === 0) {
       document.getElementById('draw-amount').classList.add('is--hidden');
     } else {
       document.getElementById('draw-amount').classList.remove('is--hidden');
@@ -290,34 +286,12 @@ export default {
   },
 
   spawnBattleDeck: function (surprised) {
-    let sparedTools = 0;
-    const inventoryItemsAndWeapons = { ...inventory.items, ...inventory.weapons };
-    // Makes battle deck construction deterministic rather than relying on JavaScript's object key ordering
-    const sortedKeys = Object.keys(inventoryItemsAndWeapons).sort((a, b) => a.localeCompare(b));
-    for (const item of sortedKeys) {
-      for (let i = 0; i < inventoryItemsAndWeapons[item].amount; i++) {
-        if (
-          Props.getGameProp('character') === 'craftsmaniac' &&
-          ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'nails'].includes(item)
-        ) {
-          sparedTools += 1;
-        } else {
-          battleDeck.push(inventoryItemsAndWeapons[item]);
-        }
-      }
-    }
+    const sparedTools = CardsManager.generateBattleDeck();
+    const battleDeck = CardsManager.getBattleDeck();
     if (sparedTools > 0) {
       this.showBattleMessage('Craftsmaniac spares ' + sparedTools + ' tools', 2000);
     }
-    for (let card = 0; card < battleDeck.length; card += 1) {
-      battleDeck[card].modifyDamage = 0;
-      if (Props.getGameProp('character') === 'snackivore') {
-        const itemModifier = CharacterManager.getItemModifier('snackivore', battleDeck[card].name);
-        if (itemModifier && itemModifier[0] < 0) {
-          battleDeck[card].modifyDamage = 1;
-        }
-      }
-    }
+    /* generate draw pile */
     for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
       battleDrawContainer.insertAdjacentHTML(
         'beforeend',
@@ -325,6 +299,7 @@ export default {
       );
     }
     allDrawPileCards = battleDrawContainer.querySelectorAll('.battle-card-back');
+    /* render draw pile */
     this.renderDrawPile();
     battleHealthMeter.classList.add('in-battle');
     if (surprised) {
@@ -374,7 +349,7 @@ export default {
   },
 
   endBattle: async function () {
-    battleDeck = [];
+    CardsManager.removeBattleDeck();
     await this.leaveUIBattleMode();
     cardZedDeck.forEach(function (zedId) {
       let zedCardRef = Cards.getCardById(zedId);
@@ -402,7 +377,6 @@ export default {
     document.querySelector('#action-points-warning .very-low')?.classList.add('is--hidden');
     document.querySelector('#action-points-warning .low')?.classList.add('is--hidden');
     document.querySelector('#action-points')?.classList.remove('low-energy');
-
     // AP buffs when energy is low
     if (Player.getProp('energy') < 10) {
       Props.changePlayerProp('actions', -2);
@@ -413,6 +387,8 @@ export default {
       document.querySelector('#action-points-warning .low')?.classList.remove('is--hidden');
       document.querySelector('#action-points')?.classList.add('low-energy');
     }
+
+    const battleDeck = CardsManager.getBattleDeck();
 
     // shuffle deck here, this is super important, do not do it later
     // otherwise the drawn cards are not deterministic
@@ -428,10 +404,10 @@ export default {
     if (maxItems + weaponsDeck.length > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (let i = 0; i < maxItems; i += 1) {
-        this.addCardToPlay(itemsDeck[i]);
+        this.addCardToPlay(itemsDeck[i].name);
       }
       for (let i = 0; i < weaponsDeck.length; i += 1) {
-        this.addCardToPlay(weaponsDeck[i]);
+        this.addCardToPlay(weaponsDeck[i].name);
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       for (let i = 0; i < battlePlayContainer.children.length; i += 1) {
@@ -440,8 +416,7 @@ export default {
             child.style.left = index * 170 + 'px';
             child.classList.remove('inactive');
             child.dataset.index = index;
-            battleDeckProps.number = totalCards + index;
-            this.renderDrawPile();
+            this.renderDrawPile(totalCards + index);
           },
           500 + i * 300,
           battlePlayContainer.children.length - i - 1,
@@ -454,17 +429,20 @@ export default {
     }
   },
 
-  addCardToPlay: function (item) {
+  addCardToPlay: function (itemName) {
+    const card = CardsManager.getBattleDeckCard(itemName);
+    const weapon =
+      InventoryManager.getWeaponFromInventory(
+        itemName
+      ); /* get the inventory weapon as it contains the reduced durability */
     const modifyDamageMarkup =
-      item.modifyDamage > 0 ? '<span class="modify">(+' + item.modifyDamage + ')<span>' : '';
-    const maxDurabilityChars = Props.getWeaponProps(item.name)
-      ? '◈'.repeat(Props.getWeaponProps(item.name).durability)
-      : '';
-    const durabilityMarkup = item.durability
+      card.modifyDamage > 0 ? '<span class="modify">(+' + card.modifyDamage + ')<span>' : '';
+    const maxDurabilityChars = weapon ? '◈'.repeat(weapon.durability) : '';
+    const durabilityMarkup = weapon?.durability
       ? '<span class="durability">' +
-        maxDurabilityChars.substring(0, item.durability) +
+        maxDurabilityChars.substring(0, weapon.durability) +
         '<u>' +
-        maxDurabilityChars.substring(0, maxDurabilityChars.length - item.durability) +
+        maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) +
         '</u>' +
         '</span>'
       : '';
@@ -472,23 +450,34 @@ export default {
     battlePlayContainer.insertAdjacentHTML(
       'beforeend',
       '<div class="battle-card inactive" data-item="' +
-        item.name +
+        card.name +
         '"><div class="inner">' +
-        (!Props.isWeapon(item.name)
-          ? '<img class="item-pic" src="./img/items/' + item.name + '.PNG">'
-          : '<img class="item-pic" src="./img/weapons/' + item.name + '.png">') +
-        (Props.isWeapon(item.name) && item.durability === 1
+        (!Props.isWeapon(card.name)
+          ? '<img class="item-pic" src="./img/items/' + card.name + '.PNG">'
+          : '<img class="item-pic" src="./img/weapons/' + card.name + '.png">') +
+        (Props.isWeapon(card.name) && weapon.durability === 1
           ? '<img class="last-use" src="./img/weapons/last-use.png">'
           : '') +
         '<div class="attack">' +
-        (item.damage + item.modifyDamage) +
+        (card.damage + card.modifyDamage) +
         modifyDamageMarkup +
         '</div><div class="shield">' +
-        item.protection +
+        card.protection +
         '</div>' +
         durabilityMarkup +
         '</div></div>'
     );
+  },
+
+  resolveSingleAttack: function (dragEl, dragTarget) {
+    const dragItemName = dragEl.dataset.item;
+    const battleCard = CardsManager.getBattleDeckCard(dragItemName);
+    Props.changePlayerProp('protection', battleCard.protection);
+    Props.changePlayerProp('actions', -1);
+    this.resolveAttack(dragItemName, dragTarget);
+    this.runHitAnimation(dragEl, dragTarget);
+    CardsManager.reduceDurabilityOrRemove(dragItemName);
+    this.endAttack();
   },
 
   resolveMultiAttack: function (dragEl, dragTarget) {
@@ -514,71 +503,26 @@ export default {
     /* do this only once upfront for all attacks */
     Props.changePlayerProp('protection', item.protection);
     Props.changePlayerProp('actions', -1);
-    if (item.durability && item.durability > 0) {
-      item.durability -= 1;
-    }
+    CardsManager.reduceDurabilityOrRemove(dragItemName);
     potentialTargets.forEach((targetId, index) => {
       window.setTimeout(
         targetId => {
-          this.resolveAttack(dragEl, Cards.getCardById(targetId), true);
+          this.resolveAttack(dragItemName, Cards.getCardById(targetId));
+          this.runHitAnimation(dragEl, Cards.getCardById(targetId));
         },
         index * 150,
         targetId
       );
     });
+    this.endAttack();
   },
 
-  resolveAttack: function (dragEl, dragTarget, multiAttack) {
-    const zedId = dragTarget.id;
-    const zedObject = Props.getObject(zedId);
-    const zedCardRef = Cards.getCardById(zedId);
-    const dragItemName = dragEl.dataset.item;
-    const item = Props.isWeapon(dragItemName)
-      ? Props.getWeaponFromInventory(dragItemName)
-      : Props.getItemFromInventory(dragItemName);
-    if (!multiAttack) {
-      Props.changePlayerProp('protection', item.protection);
-      Props.changePlayerProp('actions', -1);
-    }
-    this.showBattleStats('+' + item.protection, 'blue');
+  runHitAnimation: function (dragEl, zedCardRef) {
     Audio.sfx('punch');
-
-    zedObject.defense -= item.damage + item.modifyDamage;
-    if (zedObject.defense <= 0) {
-      zedCardRef.classList.add('dead');
-      zedObject.dead = true;
-      zedObject.fighting = false;
-    } else {
-      zedCardRef.querySelector('.health').textContent = zedObject.defense;
-    }
-
-    if (!multiAttack && item.durability && item.durability > 0) {
-      item.durability -= 1;
-    }
-    if (!item.durability) {
-      //remove item/weapon from inventory
-      if (Props.isWeapon(item.name)) {
-        Props.addWeaponToInventory(item.name, -1, { durability: -1 * item.durability });
-      } else {
-        Props.addItemToInventory(item.name, -1);
-      }
-      //remove item from battle deck
-      for (var i = 0; i < battleDeck.length; i += 1) {
-        if (battleDeck[i].name === item.name) {
-          battleDeck.splice(i, 1);
-          break;
-        }
-      }
-    }
-    // check if any items are left
-    if (battleDeck.length === 0) {
-      this.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
-    }
-    Items.fillInventorySlots();
-
-    // run "hit" animation, resolve item card
+    // run "hit" animation
     this.scratchAnim(zedCardRef);
     zedCardRef.classList.add('card-heavy-shake');
+    // resolve item card
     dragEl.classList.add('resolve');
 
     // cleanup
@@ -591,7 +535,32 @@ export default {
       dragEl,
       zedCardRef
     );
+  },
 
+  resolveAttack: function (itemName, dragTarget) {
+    const zedId = dragTarget.id;
+    const zedObject = Props.getObject(zedId);
+    const zedCardRef = Cards.getCardById(zedId);
+    const battleCard = CardsManager.getBattleDeckCard(itemName);
+    this.showBattleStats('+' + battleCard.protection, 'blue');
+    zedObject.defense -= battleCard.damage + battleCard.modifyDamage;
+    if (zedObject.defense <= 0) {
+      zedCardRef.classList.add('dead');
+      zedObject.dead = true;
+      zedObject.fighting = false;
+    } else {
+      zedCardRef.querySelector('.health').textContent = zedObject.defense;
+    }
+  },
+
+  endAttack: function () {
+    // check if any items are left
+    if (CardsManager.getBattleDeckSize() === 0) {
+      this.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
+    }
+    // refresh inventory slots
+    Items.fillInventorySlots();
+    // decide next steps
     if (this.zedIsDead()) {
       window.setTimeout(() => {
         Props.changePlayerProp('energy', -15);
@@ -611,7 +580,7 @@ export default {
 
   endTurn: function () {
     const allBattleCards = battlePlayContainer.querySelectorAll('.battle-card');
-    battleDeckProps.number = battleDeck.length;
+    /*battleDeckProps.number = battleDeck.length;*/
     this.renderDrawPile();
     if (allBattleCards) {
       allBattleCards.forEach(battleCard => {
@@ -619,7 +588,7 @@ export default {
       });
     }
     document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
-    if (battleDeck.length <= 0) {
+    if (CardsManager.getBattleDeckSize() <= 0) {
       this.zedAttack();
     } else {
       this.showBattleMessage('Enemies Turn', 800);
@@ -630,7 +599,7 @@ export default {
   },
 
   zedAttack: function () {
-    const delay = battleDeck.length <= 0 ? 400 : 1200;
+    const delay = CardsManager.getBattleDeckSize() <= 0 ? 400 : 1200;
     const allAttackingZeds = cardZedDeck.filter(zed => Props.getObject(zed).fighting);
 
     for (let index = 0; index < allAttackingZeds.length; index += 1) {
@@ -651,13 +620,8 @@ export default {
               //remove item from inventory
               Props.addItemToInventory(foodItem.name, -1);
               //remove item from battle deck
-              for (var i = 0; i < battleDeck.length; i += 1) {
-                if (battleDeck[i].name === foodItem.name) {
-                  battleDeck.splice(i, 1);
-                  break;
-                }
-              }
-              battleDeckProps.number = battleDeck.length;
+              CardsManager.removeFromBattleDeck(foodItem.name);
+              /*battleDeckProps.number = battleDeck.length;*/
               this.renderDrawPile();
               this.showBattleStats(foodItem.name, 'image');
             }

@@ -258,7 +258,7 @@ export default {
         if (itemName === 'improvised-whip') {
           Battle.resolveMultiAttack(dragEl, dragTarget);
         } else {
-          Battle.resolveAttack(dragEl, dragTarget, false);
+          Battle.resolveSingleAttack(dragEl, dragTarget);
         }
       }
     } else if (dragEl?.id === 'almanac') {

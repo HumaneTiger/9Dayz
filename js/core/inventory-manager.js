@@ -141,6 +141,17 @@ export default {
   },
 
   /**
+   * @param {string} weaponName
+   */
+  removeWeaponFromInventory: function (weaponName) {
+    // only if weapon was added to inventory before
+    if (inventory.weapons[weaponName] !== undefined) {
+      inventory.weapons[weaponName].amount = 0;
+      inventory.weapons[weaponName].durability = 0;
+    }
+  },
+
+  /**
    * @returns {number}
    */
   getWeaponTotal: function () {
