@@ -10,12 +10,14 @@
 | 4   | **ALMANAC**                             |     ✅     |      ✅      |     ✅     | almanac-manager.js created with unified API (makeContentKnown, isContentKnown, getAlmanacContentPage); almanac-definitions.js contains all content pages and known content state; almanac.js delegates to AlmanacManager                                                                                                                                                                                                                |
 | 5   | **CHARACTER**                           |     ✅     |      ✅      |     ✅     | character-definitions.js and character-manager.js provide getInventoryPresets() and getItemModifier() getters; character.js delegates character logic to manager                                                                                                                                                                                                                                                                        |
 | 6   | **COMPANION**                           |     ✅     |      ✅      |     ✅     | Companion system now has companion-definitions.js and companion-manager.js; UI logic split in character.js and companion.js                                                                                                                                                                                                                                                                                                             |
-| 7   | **WEAPONS**                             |     ✅     |      ⚠️      |     ✅     | Creation logic in object-factory.js, combat in battle.js; need weapons-manager.js                                                                                                                                                                                                                                                                                                                                                       |
+| 7   | **WEAPONS**                             |     ✅     |      ✅      |     ✅     | Weapons live in inventory and managed through InventoryManager; weapons-definitions.js defines all weapon metadata; read-only access via WeaponsDefinitions                                                                                                                                                                                                                                                                             |
 | 8   | **PLAYER STATS**                        |     ✅     |      ✅      |     ✅     | Fully refactored with player-definitions.js and player-manager.js; PlayerManager handles all player prop changes                                                                                                                                                                                                                                                                                                                        |
-| 9   | **BATTLE/COMBAT**                       |     ❌     |      ⚠️      |     ✅     | No battle-definitions.js; core logic mixed between object-factory.js and battle.js                                                                                                                                                                                                                                                                                                                                                      |
+| 9   | **BATTLE/COMBAT**                       |     ✅     |      ✅      |     ✅     | battle-definitions.js defines CombatCard and combat constants; battle-manager.js provides unified combat API; battle.js coordinates battle flow                                                                                                                                                                                                                                                                                         |
 | 10  | **TUTORIAL**                            |     ✅     |      ✅      |     ✅     | tutorial-definitions.js exports events and specialEvents; tutorial-manager.js provides getTutorialEvents() and getSpecialEvents() getters plus setupTutorialMap() for tutorial-specific initialization                                                                                                                                                                                                                                  |
-| 11  | **UTILITY LAYERS**                      |     ✅     |      -       |     -      | Add @ts-check to all utils (building-utils, item-utils, path-utils, instances)                                                                                                                                                                                                                                                                                                                                                          |
-| 12  | **ACTIONS SYSTEM**                      |     ✅     |      ✅      |     ✅     | Fully refactored: actions-definitions.js (action metadata + object type actions), actions-manager.js (unified API with getActionsForGameObjectType + getActionsForBuildingType), actions-orchestration.js (UI logic). All 20 simulation functions call ActionsOrchestration directly as singletons (no scope threading). Building actions now declarative with filtering properties. Unified GameAction type across all action sources. |
+| 11  | **CARDS SYSTEM**                        |     ✅     |      ✅      |     ✅     | cards-definitions.js defines Card, CardDeck, BattleCard, BattleDeck, OpponentDeck types; cards-manager.js provides deck management and zombie status tracking; cards.js handles card UI                                                                                                                                                                                                                                                 |
+| 12  | **EVENT BUS**                           |     ✅     |      -       |     -      | event-manager.js provides central event registry (PLAYER_PROP_CHANGED, GAME_PROP_CHANGED, INVENTORY_CHANGED, etc.) for decoupling state changes from UI updates; no events should chain                                                                                                                                                                                                                                                 |
+| 13  | **ACTIONS SYSTEM**                      |     ✅     |      ✅      |     ✅     | Fully refactored: actions-definitions.js (action metadata + object type actions), actions-manager.js (unified API with getActionsForGameObjectType + getActionsForBuildingType), actions-orchestration.js (UI logic). All 20 simulation functions call ActionsOrchestration directly as singletons (no scope threading). Building actions now declarative with filtering properties. Unified GameAction type across all action sources. |
+| 14  | **UTILITY LAYERS**                      |     ✅     |      -       |     -      | @ts-check enabled on all definition files; utils still need @ts-check: building-utils.js, item-utils.js, path-utils.js, and instance files (building-instances.js, zombie-instances.js, path-instances.js, location-instances.js)                                                                                                                                                                                                       |
 
 **Legend:** ✅ Complete | ⚠️ Partial/Needs Work | ❌ Missing
 
@@ -140,13 +142,28 @@ Where:
 
 #### 5. **ALMANAC**
 
-| Layer      | File                 | Status |
-| ---------- | -------------------- | ------ |
-| Definition | `almanac-content.js` | ✅     |
-| Core       | **→ MISSING**        | ❌     |
-| Logic      | `almanac.js`         | ✅     |
+| Layer      | File                     | Status |
+| ---------- | ------------------------ | ------ |
+| Definition | `almanac-definitions.js` | ✅     |
+| Core       | `almanac-manager.js`     | ✅     |
+| Logic      | `almanac.js`             | ✅     |
 
-**Gap:** No `almanac-manager.js` core layer to manage content unlocking and lifecycle.
+**Architecture:**
+
+- **almanac-definitions.js**: Central repository for almanac content pages and known content state
+- **almanac-manager.js**: Core manager providing unified API:
+  - `makeContentKnown()` - mark content as discovered
+  - `isContentKnown()` - query discovery status
+  - `getAlmanacContentPage()` - retrieve content entries
+  - Full @ts-check with proper type imports
+- **almanac.js**: Logic layer using AlmanacManager API
+- **Type System**: Full @ts-check with proper imports and typedefs
+
+**Key Improvements:**
+
+- Extracted content management logic into dedicated manager
+- Centralized almanac state and discovery tracking
+- Unified API for content operations
 
 ---
 
@@ -183,25 +200,34 @@ Where:
 | ---------- | -------------------------- | ------ |
 | Definition | `companion-definitions.js` | ✅     |
 | Core       | `companion-manager.js`     | ✅     |
-| Logic      | `character.js`             | ⚠️     |
+| Logic      | `companion.js`             | ✅     |
 
-**Status:** Companion system now has dedicated definitions and manager. UI still mixed in character.js but core logic is properly separated.
+**Status:** Companion system is properly separated. companion.js handles UI and interactions; companion-definitions.js provides data structure; companion-manager.js manages state. Well-organized pattern.
 
-#### 9. **WEAPONS**
+**Optimization Opportunity:**
+
+- Move business logic from companion.js (`getCompanionFoodValue`, `feedCompanion`) to companion-manager.js
+- Replace direct Props mutations in companion.js with CompanionManager API calls for better encapsulation
+
+#### 8. **WEAPONS**
 
 | Layer      | File                      | Status |
 | ---------- | ------------------------- | ------ |
 | Definition | `weapons-definitions.js`  | ✅     |
-| Core       | **→ SCATTERED**           | ⚠️     |
+| Core       | `inventory-manager.js`    | ✅     |
 | Logic      | `weapons.js`, `battle.js` | ✅     |
 
-**Issues:**
+**Architecture:**
 
-- Weapon creation logic in `object-factory.js`
-- Combat/damage logic in `battle.js`
-- No dedicated `weapons-manager.js` core layer
+- **weapons-definitions.js**: Central repository for weapon metadata and definitions
+- **inventory-manager.js**: Weapons are managed as inventory items and accessed via `addWeaponToInventory()` and related methods
+- Weapons live entirely within the inventory system - no separate manager needed
+- Read-only metadata access through `WeaponsDefinitions`
+- **Type System**: Full @ts-check with proper imports
 
-#### 10. **PLAYER STATS**
+**Key Insight:** Weapons don't require a dedicated manager because they're fully integrated into the inventory system with read-only metadata lookup.
+
+#### 9. **PLAYER STATS**
 
 | Layer      | File                    | Status |
 | ---------- | ----------------------- | ------ |
@@ -211,21 +237,28 @@ Where:
 
 **Status:** Fully organized with PlayerManager handling all player prop changes.
 
-#### 11. **BATTLE/COMBAT**
+#### 10. **BATTLE/COMBAT**
 
-| Layer      | File            | Status |
-| ---------- | --------------- | ------ |
-| Definition | **→ NONE**      | ❌     |
-| Core       | **→ SCATTERED** | ❌     |
-| Logic      | `battle.js`     | ✅     |
+| Layer      | File                    | Status |
+| ---------- | ----------------------- | ------ |
+| Definition | `battle-definitions.js` | ✅     |
+| Core       | `battle-manager.js`     | ✅     |
+| Logic      | `battle.js`             | ✅     |
 
-**Issues:**
+**Architecture:**
 
-- No battle-definitions.js or combat-definitions.js
-- Core logic mixed between object-factory.js and battle.js
-- No dedicated battle-manager.js
+- **battle-definitions.js**: Central repository for `CombatCard` typedef and battle constants
+- **battle-manager.js**: Core manager providing unified combat API
+- **battle.js**: Game logic layer coordinating battle flow
+- **Type System**: Full @ts-check with proper imports and typedefs
 
-#### 12. **TUTORIAL**
+**Key Improvements:**
+
+- Extracted battle-specific data structures and constants into definitions layer
+- Dedicated manager layer for combat logic encapsulation
+- Unified API for battle operations
+
+#### 11. **TUTORIAL**
 
 | Layer      | File                      | Status |
 | ---------- | ------------------------- | ------ |
@@ -249,77 +282,122 @@ Where:
 - Created dedicated manager to encapsulate tutorial-specific initialization logic
 - Unified API for accessing tutorial content and setting up tutorial maps
 
-#### 13. **UTILITY LAYERS**
+#### 12. **CARDS SYSTEM**
 
-TBD
+| Layer      | File                   | Status |
+| ---------- | ---------------------- | ------ |
+| Definition | `cards-definitions.js` | ✅     |
+| Core       | `cards-manager.js`     | ✅     |
+| Logic      | `cards.js`             | ✅     |
 
----
+**Architecture:**
 
-## Summary Statistics
+- **cards-definitions.js**: Central repository for `Card`, `CardDeck`, `BattleCard`, `BattleDeck`, `OpponentDeck` typedefs
+- **cards-manager.js**: Core manager providing:
+  - Deck access: `getCardDeck()`, `getOpponentDeck()`
+  - Card operations: `addCardToCardDeck()`, `removeOpponentDeck()`, `cleanupCardDeck()`
+  - Queries: `getAllZedsNearbyIds()`, `zedIsDead()` (checks if all opponent zombies are dead)
+  - Card properties: `updateCardDeckProperties()` - calculates distances from player
+  - Full @ts-check with proper type imports
+- **cards.js**: UI layer managing card display and interaction
+- **Type System**: Full @ts-check with proper imports and typedefs
 
-| Category                     | Count  |
-| ---------------------------- | ------ |
-| ✅ Complete Patterns         | 7      |
-| ⚠️ Incomplete (missing core) | 1      |
-| ⚠️ Mixed/Scattered           | 3      |
-| ❌ Multiple Major Gaps       | 1      |
-| **Total Domains**            | **12** |
+**Key Improvements:**
 
----
+- Centralized card deck management
+- Type-safe card operations
+- Decoupled deck logic from UI rendering
 
-## Priority Refactoring Order
+#### 13. **EVENT BUS**
 
-### Phase 1: Fill Critical Gaps (Missing Core Layers)
+| Layer | File               | Status |
+| ----- | ------------------ | ------ |
+| Core  | `event-manager.js` | ✅     |
 
-1. ~~**recipes-manager.js**~~ ✅ DONE - Consolidate cooking/crafting logic
-2. **almanac-manager.js** - Manage content unlocking
+**Architecture:**
 
-### Phase 2: Separate Conflated Domains
+- **event-manager.js**: Central event registry providing:
+  - Standardized event types: `PLAYER_PROP_CHANGED`, `GAME_PROP_CHANGED`, `INVENTORY_CHANGED`, `FIRST_ITEM_ADDED`, `WEAPON_CHANGED`, `PLAYER_MOVE_TO`, `PLAYER_UPDATE`
+  - PropChangeEvent typedef for typed event data
+  - Convention: Event handlers should NEVER emit new events (no chaining) - events are for notifications only, not orchestration
+  - Full @ts-check for type safety
 
-3. ~~**companion-manager.js** + **companion-definitions.js**~~ ✅ DONE
-4. ~~**character-manager.js**~~ ✅ DONE - Extract character-specific logic
-5. Refactor **character.js** to separate character and companion UI
+**Key Improvements:**
 
-### Phase 3: Consolidate Scattered Logic
+- Decouples state changes from UI updates
+- Prevents event chain reactions and cascading side effects
+- Centralized event management for debugging and maintenance
 
-6. **weapons-manager.js** - Unify weapon creation and upgrade logic
-7. **battle-definitions.js** - Define combat constants and formulas
-8. Extract core battle logic to dedicated layer
+#### 14. **ACTIONS SYSTEM**
 
-### Phase 4: Formalize Implicit Patterns
+| Layer      | File                                        | Status |
+| ---------- | ------------------------------------------- | ------ |
+| Definition | `actions-definitions.js`                    | ✅     |
+| Core       | `actions-manager.js`                        | ✅     |
+| Logic      | `actions-orchestration.js`                  | ✅     |
+| Metadata   | Building actions in building-definitions.js | ✅     |
 
-9. ~~**player-definitions.js**~~ ✅ DONE
-10. ~~**tutorial-definitions.js**~~ ✅ DONE - Extract hardcoded tutorial setup into definitions and manager
+**Architecture:**
+
+- **actions-definitions.js**: Central repository for `actionProps` (execution config) and `objectTypeActions` (zombie/creature/animal/companion/weapon/event actions)
+- **actions-manager.js**: Unified API with:
+  - Card-based queries: `getCardActionObject()`, `isValid()`, `getCardBasedEnergy()`, `getCardBasedTime()`, etc.
+  - Static properties: `getActionDelay()`, `getActionMethod()`, `getActionLabel()`
+  - Type-based queries: `getActionsForGameObjectType(objectType)`, `getActionsForBuildingType(buildingName, buildingType, locked, infested, character)`
+- **building-definitions.js**: Building actions now declarative with filtering properties: `excludeBuildings[]`, `excludeCharacters[]`, `forCharactersOnly[]`, `needsUnlock`, `requiresLocked`
+- **actions-orchestration.js**: Core orchestration layer with simplified `fastForward()` (no scope threading); 20 simulation functions in `/js/actions/` all call methods directly as singletons
+- **Simulation Functions**: chomping, drinking, fishing, gotit, reading, simulate-\* (20 total) - all refactored to call `ActionsOrchestration.endAction()` and `ActionsOrchestration.goBackFromAction()` directly
+- **Unified Type System**: Single `GameAction` typedef used across all action sources with optional building-specific properties
+- **Type System**: Full @ts-check across all files
+
+**Key Improvements:**
+
+- Removed ~80 lines of procedural filtering logic from building-utils.js
+- Eliminated pipe-delimited string parsing
+- Removed character modifier mutations from map-initializer
+- **Complete scope threading removal**: All 20 simulation functions refactored to call ActionsOrchestration methods directly (no parameter passing through layers)
+- Type system unified and safer
 
 ---
 
 ## Type Safety Notes
 
-**Already @ts-check enabled:**
+**All definition files now have @ts-check:**
 
 - ✅ actions-definitions.js
-- ✅ actions-manager.js
+- ✅ almanac-definitions.js
+- ✅ battle-definitions.js
 - ✅ building-definitions.js
+- ✅ cards-definitions.js
 - ✅ character-definitions.js
-- ✅ character-manager.js
 - ✅ companion-definitions.js
-- ✅ companion-manager.js
-- ✅ inventory-manager.js
 - ✅ items-definitions.js
-- ✅ loot-utils.js
 - ✅ player-definitions.js
-- ✅ player-manager.js
 - ✅ recipe-definitions.js
-- ✅ recipes-manager.js
 - ✅ tutorial-definitions.js
-- ✅ tutorial-manager.js
 - ✅ weapons-definitions.js
+
+**All core managers have @ts-check:**
+
+- ✅ actions-manager.js
+- ✅ almanac-manager.js
+- ✅ battle-manager.js
+- ✅ cards-manager.js
+- ✅ character-manager.js
+- ✅ companion-manager.js
+- ✅ event-manager.js
+- ✅ inventory-manager.js
+- ✅ player-manager.js
+- ✅ recipes-manager.js
+- ✅ tutorial-manager.js
 - ✅ All core modules (game-state.js, object-state.js, object-factory.js, etc.)
 
-**Missing @ts-check (candidates for Phase 1 of type coverage):**
+**Remaining files without @ts-check (utilities & instances):**
 
-- recipe-definitions.js
 - building-utils.js
 - item-utils.js
 - path-utils.js
-- All instance files
+- building-instances.js
+- zombie-instances.js
+- path-instances.js
+- location-instances.js
