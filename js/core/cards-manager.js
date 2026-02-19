@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * @import { Card, CardDeck, BattleCard, BattleDeck } from '../../data/definitions/cards-definitions.js'
+ * @import { Card, CardDeck, BattleCard, BattleDeck, OpponentDeck } from '../../data/definitions/cards-definitions.js'
  */
 
 import { CardsDefinitions } from '../../data/index.js';
@@ -90,10 +90,44 @@ export default {
   },
 
   /**
-   * @returns {CardDeck}
+   * @returns {OpponentDeck}
    */
   getOpponentDeck: function () {
     return CardsDefinitions.opponentDeck;
+  },
+
+  /**
+   * @param {number} id
+   * @returns {OpponentDeck} the updated opponent deck with the new id added
+   */
+  addIdToOpponentDeck: function (id) {
+    CardsDefinitions.opponentDeck.push(id);
+    return CardsDefinitions.opponentDeck;
+  },
+
+  /**
+   * @returns {OpponentDeck} the updated opponent deck with all nearby zed ids added
+   */
+  addAllZedsNearby: function () {
+    const allZedIdsNearby = this.getAllZedsNearbyIds();
+    allZedIdsNearby.forEach(zedId => {
+      this.addIdToOpponentDeck(zedId);
+    });
+    return CardsDefinitions.opponentDeck;
+  },
+
+  zedIsDead: function () {
+    return CardsDefinitions.opponentDeck.every(
+      /** @type {(id: number) => boolean} */
+      id => ObjectState.getObject(id).dead ?? false
+    );
+  },
+
+  /**
+   * Removes all cards from the opponent deck, effectively resetting it for the next battle
+   */
+  removeOpponentDeck: function () {
+    CardsDefinitions.opponentDeck = [];
   },
 
   /**

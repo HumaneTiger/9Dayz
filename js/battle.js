@@ -18,7 +18,7 @@ const battleCompanionContainer = document.querySelector('#companion-cards');
 const battleHealthMeter = document.querySelector('#properties li.health');
 const scratch = document.querySelector('.scratch');
 
-let cardZedDeck = [];
+//let cardZedDeck = [];
 let allDrawPileCards = [];
 
 export default {
@@ -79,7 +79,7 @@ export default {
       return;
     }
     this.prepareBattle();
-    cardZedDeck.push(singleZedId);
+    const cardZedDeck = CardsManager.addIdToOpponentDeck(singleZedId);
     this.spawnZedDeck(cardZedDeck);
     this.enterUIBattleMode();
     // start auto battle after short delay
@@ -217,12 +217,13 @@ export default {
 
   startBattle(surprised, singleZedId) {
     this.prepareBattle();
+    const cardZedDeck = CardsManager.getOpponentDeck();
 
     if (singleZedId) {
       // result of successful luring
-      cardZedDeck.push(singleZedId);
+      CardsManager.addIdToOpponentDeck(singleZedId);
     } else {
-      cardZedDeck = CardsManager.getAllZedsNearbyIds();
+      CardsManager.addAllZedsNearby();
     }
 
     if (cardZedDeck.length > 0) {
@@ -350,6 +351,7 @@ export default {
 
   endBattle: async function () {
     CardsManager.removeBattleDeck();
+    const cardZedDeck = CardsManager.getOpponentDeck();
     await this.leaveUIBattleMode();
     cardZedDeck.forEach(function (zedId) {
       let zedCardRef = Cards.getCardById(zedId);
@@ -366,7 +368,7 @@ export default {
     });
     ActionsOrchestration.endAction(cardZedDeck[0]);
     ActionsOrchestration.goBackFromAction();
-    cardZedDeck = [];
+    CardsManager.removeOpponentDeck();
   },
 
   nextTurn: function () {
@@ -482,6 +484,7 @@ export default {
 
   resolveMultiAttack: function (dragEl, dragTarget) {
     const zedId = dragTarget.id;
+    const cardZedDeck = CardsManager.getOpponentDeck();
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
     const dragItemName = dragEl.dataset.item;
     const item = Props.isWeapon(dragItemName)
@@ -561,7 +564,7 @@ export default {
     // refresh inventory slots
     Items.fillInventorySlots();
     // decide next steps
-    if (this.zedIsDead()) {
+    if (CardsManager.zedIsDead()) {
       window.setTimeout(() => {
         Props.changePlayerProp('energy', -15);
         this.endBattle();
@@ -571,16 +574,8 @@ export default {
     }
   },
 
-  zedIsDead: function () {
-    const zedIsDead = id => Props.getObject(id).dead;
-    return cardZedDeck.every(function (id) {
-      return zedIsDead(id);
-    });
-  },
-
   endTurn: function () {
     const allBattleCards = battlePlayContainer.querySelectorAll('.battle-card');
-    /*battleDeckProps.number = battleDeck.length;*/
     this.renderDrawPile();
     if (allBattleCards) {
       allBattleCards.forEach(battleCard => {
@@ -600,7 +595,9 @@ export default {
 
   zedAttack: function () {
     const delay = CardsManager.getBattleDeckSize() <= 0 ? 400 : 1200;
-    const allAttackingZeds = cardZedDeck.filter(zed => Props.getObject(zed).fighting);
+    const allAttackingZeds = CardsManager.getOpponentDeck().filter(
+      zed => Props.getObject(zed).fighting
+    );
 
     for (let index = 0; index < allAttackingZeds.length; index += 1) {
       const zedId = allAttackingZeds[index];

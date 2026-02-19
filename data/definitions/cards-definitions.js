@@ -2,6 +2,7 @@
 /**
  * @typedef {Array<Card>} CardDeck
  * @typedef {Array<BattleCard>} BattleDeck
+ * @typedef {Array<number>} OpponentDeck
  */
 
 /**
@@ -24,6 +25,6 @@ export default {
   cardDeck: [],
   /** @type {BattleDeck} */
   battleDeck: [],
-  /** @type {CardDeck} */
+  /** @type {OpponentDeck} */
   opponentDeck: [],
 };
