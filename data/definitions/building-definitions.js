@@ -1,10 +1,6 @@
 // @ts-check
 
 /**
- * @import { GameAction } from './actions-definitions.js'
- */
-
-/**
  * @typedef {Object} BuildingProp
  * @property {number} locked - Higher means more likely to be locked (11 means always locked, 0 means never locked)
  * @property {number} spawn
