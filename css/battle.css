@@ -344,17 +344,17 @@
   border: 1px rgba(94, 195, 195, 0.2) solid;
 }
 #action-points {
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 158px;
   background-image: url('../img/ui/action-points.png');
   background-position: center center;
   background-size: 100% 100%;
-  padding-top: 27px;
+  padding-top: 36px;
   position: absolute;
   left: 465px;
-  bottom: 56px;
+  bottom: 30px;
   text-align: center;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(53, 35, 26, 0.66);
   font-size: 48px;
 }
 #action-points.low-energy {
@@ -365,7 +365,7 @@
   width: 214px;
   position: absolute;
   left: calc(465px - 44px);
-  bottom: 18px;
+  bottom: 14px;
   text-align: center;
   color: rgb(255, 180, 190);
   font-size: 22px;
