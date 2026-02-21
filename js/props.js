@@ -5,6 +5,7 @@ import {
   ObjectState,
   PlayerManager,
   InventoryManager,
+  WeaponsManager,
   ObjectFactory,
   MapInitializer,
   TutorialManager,
@@ -75,7 +76,7 @@ export default {
   },
 
   addWeaponToInventory: function (item, addAmount, setWeaponProps) {
-    InventoryManager.addWeaponToInventory(item, addAmount, setWeaponProps);
+    WeaponsManager.addWeaponToInventory(item, addAmount, setWeaponProps);
   },
 
   addCompanionToInventory: function (companionName, props) {
@@ -83,7 +84,7 @@ export default {
   },
 
   getWeaponTotal: function () {
-    return InventoryManager.getWeaponTotal();
+    return WeaponsManager.getWeaponTotal();
   },
 
   addItemToInventory: function (item, addAmount) {
@@ -253,31 +254,31 @@ export default {
   },
 
   getAllWeapons: function () {
-    return InventoryManager.getAllWeapons();
+    return WeaponsManager.getAllWeapons();
   },
 
   getAllInventoryWeapons: function () {
-    return InventoryManager.getAllInventoryWeapons();
+    return WeaponsManager.getAllInventoryWeapons();
   },
 
   getWeaponFromInventory: function (item) {
-    return InventoryManager.getWeaponFromInventory(item);
+    return WeaponsManager.getWeaponFromInventory(item);
   },
 
   getWeaponDefinition: function (item) {
-    return InventoryManager.getWeaponDefinition(item);
+    return WeaponsManager.getWeaponDefinition(item);
   },
 
   isWeapon: function (name) {
-    return InventoryManager.isWeapon(name);
+    return WeaponsManager.isWeapon(name);
   },
 
   getWeaponProps: function (itemName) {
-    return InventoryManager.getWeaponProps(itemName);
+    return WeaponsManager.getWeaponProps(itemName);
   },
 
   getWeaponPropsUpgrades: function (itemName) {
-    return InventoryManager.getWeaponPropsUpgrades(itemName);
+    return WeaponsManager.getWeaponPropsUpgrades(itemName);
   },
 
   getBuildingProps: function () {

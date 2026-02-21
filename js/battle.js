@@ -12,7 +12,7 @@ import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
 import {
   CardsManager,
-  InventoryManager,
+  WeaponsManager,
   CompanionManager,
   ObjectState,
   GameState,
@@ -454,7 +454,7 @@ export default {
   addCardToPlay: function (itemName) {
     const card = CardsManager.getBattleDeckCard(itemName);
     const weapon =
-      InventoryManager.getWeaponFromInventory(
+      WeaponsManager.getWeaponFromInventory(
         itemName
       ); /* get the inventory weapon as it contains the reduced durability */
     const modifyDamageMarkup =
@@ -508,7 +508,7 @@ export default {
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
     const dragItemName = dragEl.dataset.item;
     const item = Props.isWeapon(dragItemName)
-      ? Props.getWeaponFromInventory(dragItemName)
+      ? WeaponsManager.getWeaponFromInventory(dragItemName)
       : Props.getItemFromInventory(dragItemName);
 
     /* hit 3 potential targets */

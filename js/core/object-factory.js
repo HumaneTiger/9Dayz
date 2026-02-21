@@ -11,9 +11,9 @@ import RngUtils from '../utils/rng-utils.js';
 import {
   GameState,
   ObjectState,
-  InventoryManager,
   ActionsManager,
   CompanionManager,
+  WeaponsManager,
 } from './index.js';
 
 // Destructure building definitions for use throughout the file
@@ -518,7 +518,7 @@ export default {
    * @returns {void}
    */
   setupWeapon: function (x, y, weaponName, forceStats) {
-    const props = InventoryManager.getWeaponDefinition(weaponName);
+    const props = WeaponsManager.getWeaponDefinition(weaponName);
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
     ObjectState.setObject(
       currentObjectsIdCounter,

@@ -4,7 +4,13 @@
  */
 
 import { CardsDefinitions } from '../../data/index.js';
-import { CharacterManager, GameState, InventoryManager, ObjectState } from './index.js';
+import {
+  CharacterManager,
+  GameState,
+  InventoryManager,
+  ObjectState,
+  WeaponsManager,
+} from './index.js';
 
 export default {
   /**
@@ -233,14 +239,14 @@ export default {
    * @param {string} itemName
    */
   reduceDurabilityOrRemove: function (itemName) {
-    if (InventoryManager.isWeapon(itemName)) {
-      const weapon = InventoryManager.getWeaponFromInventory(itemName);
+    if (WeaponsManager.isWeapon(itemName)) {
+      const weapon = WeaponsManager.getWeaponFromInventory(itemName);
       if (weapon.durability && weapon.durability > 0) {
         weapon.durability -= 1;
       }
       if (!weapon.durability) {
         // remove weapon from inventory
-        InventoryManager.removeWeaponFromInventory(weapon.name);
+        WeaponsManager.removeWeaponFromInventory(weapon.name);
         // remove card from battle deck
         this.removeFromBattleDeck(itemName);
       }
