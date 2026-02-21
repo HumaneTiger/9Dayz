@@ -2,7 +2,7 @@
 
 /**
  * @import { ItemDefinition, Item, ItemProps } from '../../data/definitions/items-definitions.js'
- * @import { Companion } from '../../data/definitions/companion-definitions.js'
+ * @import { CompanionDefinition } from '../../data/definitions/companion-definitions.js'
  * @import { WeaponDefinition, WeaponProps, WeaponUpgrade, WeaponUpgrades } from '../../data/definitions/weapons-definitions.js'
  */
 
@@ -10,12 +10,12 @@
  * @typedef {Object} Inventory
  * @property {Record<string, Item>} items
  * @property {Record<string, WeaponProps>} weapons
- * @property {Companion} companion
+ * @property {Record<string, CompanionDefinition>} companions
  * @property {number} itemNumbers
  * @export
  */
 
-import { GameState, EventManager, EVENTS, CompanionManager } from './index.js';
+import { GameState, EventManager, EVENTS } from './index.js';
 import { ItemsDefinitions, WeaponsDefinitions, ItemUtils } from '../../data/index.js';
 
 // Destructure items/weapons definitions
@@ -29,7 +29,7 @@ const weapons = WeaponsDefinitions.weapons;
 var inventory = {
   items: {},
   weapons: {},
-  companion: CompanionManager.getCompanion(),
+  companions: {},
   itemNumbers: 0,
 };
 
@@ -112,11 +112,11 @@ export default {
       if (setDurability !== undefined) {
         inventory.weapons[weaponName].durability += setDurability;
         if (inventory.weapons[weaponName].durability <= 0) {
-          // remove and reset inventory weapon props
-          inventory.weapons[weaponName].amount = 0;
+          // reset weapon props
           inventory.weapons[weaponName].damage = weapons[weaponName].attack;
           inventory.weapons[weaponName].protection = weapons[weaponName].defense;
-          inventory.weapons[weaponName].durability = 0;
+          // remove from inventory
+          this.removeWeaponFromInventory(weaponName);
         }
       }
     } else if (weaponProps !== undefined) {

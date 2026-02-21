@@ -1,27 +1,25 @@
 // @ts-check
 
 /**
- * @typedef {Object} Companion
- * @property {boolean} active
- * @property {string|undefined} sort
+ * @typedef {Object} CompanionDefinition
  * @property {string} name
- * @property {number|undefined} damage
- * @property {number|undefined} health
- * @property {number|undefined} maxHealth
- * @property {number|undefined} protection
- * @property {boolean} dead
+ * @property {number} attack
+ * @property {number} defense
+ * @property {number} health
+ * @property {number} maxHealth
  */
 
-export default {
-  /** @type {Companion} */
-  companion: {
-    active: false,
-    sort: undefined,
+/** @type {Record<string, CompanionDefinition>} */
+const companions = {
+  doggy: {
     name: 'doggy',
-    damage: undefined,
-    health: undefined,
-    maxHealth: undefined,
-    protection: undefined,
-    dead: false,
+    attack: 4,
+    defense: 3,
+    health: 6,
+    maxHealth: 10,
   },
+};
+
+export default {
+  companions,
 };

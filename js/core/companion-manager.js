@@ -1,49 +1,71 @@
 // @ts-check
 /**
- * @import { Companion } from '../../data/definitions/companion-definitions.js'
+ * @import { CompanionDefinition } from '../../data/definitions/companion-definitions.js'
+ * @import { Inventory } from './inventory-manager.js'
  */
 
 import { CompanionDefinitions } from '../../data/index.js';
+import InventoryManager from './inventory-manager.js';
 
-/** @type {Companion} */
-const companion = { ...CompanionDefinitions.companion };
+/** @type {Record<string, CompanionDefinition>} */
+const companions = CompanionDefinitions.companions;
+
+/** @type {Inventory} */
+const inventory = InventoryManager.getInventory();
 
 export default {
   /**
-   * @returns {Companion}
+   * Get companion definition by name
+   * @param {string} companionName - Companion name
+   * @returns {CompanionDefinition}
    */
-  getCompanion: function () {
-    return companion;
+  getCompanionDefinition: function (companionName) {
+    return companions[companionName];
+  },
+
+  /**
+   * @param {string} name - Possible companion name
+   * @returns {boolean} True if name is a valid companion, false otherwise
+   */
+  isCompanion: function (name) {
+    return !!companions[name];
+  },
+
+  /**
+   * @returns {CompanionDefinition | undefined}
+   */
+  getCompanionFromInventory: function () {
+    /* there can only be one companion at a time, so we take the first one in the companions object */
+    const companionName = Object.keys(inventory.companions)[0];
+    return inventory.companions[companionName];
   },
 
   /**
    * @returns {boolean}
    */
   isCompanionActive: function () {
-    return companion.active;
+    return Object.keys(inventory.companions).length > 0;
   },
 
   /**
-   * @param {Partial<Companion>} newCompanion
+   *
+   * @param {string} companionName
+   * @param {CompanionDefinition} props
    * @returns {void}
    */
-  setCompanion: function (newCompanion) {
-    Object.assign(companion, newCompanion); // Updates properties, keeps same reference
+  addCompanionToInventory: function (companionName, props) {
+    if (this.isCompanionActive()) {
+      console.warn('Cannot add companion "' + companionName + '" to inventory');
+      return;
+    }
+    inventory.companions[companionName] = props;
   },
 
   /**
-   * @param {Companion} companionData
+   * Removes companion from inventory (used when companion is lost or removed)
    * @returns {void}
    */
-  addCompanion: function (companionData) {
-    this.setCompanion({
-      active: true,
-      sort: companionData.sort,
-      name: companionData.name,
-      damage: companionData.damage,
-      health: companionData.health,
-      maxHealth: companionData.maxHealth,
-      protection: companionData.protection,
-    });
+  removeCompanionFromInventory: function () {
+    inventory.companions = {};
   },
 };

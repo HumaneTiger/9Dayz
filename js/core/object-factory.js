@@ -1,14 +1,20 @@
 // @ts-check
 /**
- * @import { GameObject, CreatureObject, AdditionalGameObject, CreatureType, LootItem, ObjectIdList, GameAction, ObjectType } from './object-state.js'
+ * @import { GameObject, CreatureObject, AdditionalGameObject, CreatureType, LootItem, ObjectIdList, ObjectType } from './object-state.js'
  * @import { BuildingProp } from '../../data/definitions/building-definitions.js'
  * @import { WeaponStats } from './game-state.js'
- * @import { Companion } from '../../data/definitions/companion-definitions.js'
+ * @import { CompanionDefinition } from '../../data/definitions/companion-definitions.js'
  */
 
 import { LootUtils, BuildingUtils, BuildingDefinitions } from '../../data/index.js';
 import RngUtils from '../utils/rng-utils.js';
-import { GameState, ObjectState, InventoryManager, ActionsManager } from './index.js';
+import {
+  GameState,
+  ObjectState,
+  InventoryManager,
+  ActionsManager,
+  CompanionManager,
+} from './index.js';
 
 // Destructure building definitions for use throughout the file
 /** @type {Record<string, BuildingProp>} */
@@ -451,13 +457,8 @@ export default {
     );
   },
 
-  /**
-   * @param {number} x
-   * @param {number} y
-   * @param {Partial<Companion>} [optCompanionProps]
-   * @returns {number}
-   */
-  spawnDoggyAt: function (x, y, optCompanionProps) {
+  /*
+    spawnDoggyAt: function (x, y, optCompanionProps) {
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
     const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
     ObjectState.setObject(
@@ -478,6 +479,35 @@ export default {
     );
 
     return currentObjectsIdCounter;
+  },*/
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {string} companionName
+   * @param {(Partial<CompanionDefinition> & { dead?: boolean })|undefined} [forceStats]
+   * @returns {void}
+   */
+  spawnCompanionAt: function (x, y, companionName, forceStats) {
+    const props = CompanionManager.getCompanionDefinition(companionName);
+    const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
+    const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
+    ObjectState.setObject(
+      currentObjectsIdCounter,
+      ObjectState.createGameObject({
+        x: x,
+        y: y,
+        name: companionName,
+        group: 'animal',
+        actions: ActionsManager.getActionsForGameObjectType('companion'),
+        items: lootItemList,
+        attack: forceStats?.attack || props.attack,
+        defense: forceStats?.defense || props.defense,
+        maxHealth: forceStats?.maxHealth || props.maxHealth,
+        health: forceStats?.health || props.health,
+        dead: forceStats?.dead || false,
+      })
+    );
   },
 
   /**
