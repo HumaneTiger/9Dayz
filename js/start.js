@@ -136,9 +136,9 @@ export default {
     //Player.setPlayerPosition(18, 37);
     if (Props.getGameProp('character') === 'furbuddy') {
       const playerPosition = Props.getGameProp('playerPosition');
-      Props.spawnDoggyAt(playerPosition.x, playerPosition.y);
+      Props.spawnCompanionAt(playerPosition.x, playerPosition.y, 'doggy');
     } else {
-      Props.spawnDoggyAt(12, 44);
+      Props.spawnCompanionAt(12, 44, 'doggy');
     }
 
     Props.changePlayerProp('health', 100);

@@ -48,14 +48,6 @@ export default {
     return PlayerManager.changePlayerProp(prop, change);
   },
 
-  getCompanion: function () {
-    return CompanionManager.getCompanion();
-  },
-
-  setCompanion: function (newCompanion) {
-    CompanionManager.setCompanion(newCompanion);
-  },
-
   getCrafting: function () {
     return GameState.getCrafting();
   },
@@ -86,6 +78,10 @@ export default {
     InventoryManager.addWeaponToInventory(item, addAmount, setWeaponProps);
   },
 
+  addCompanionToInventory: function (companionName, props) {
+    CompanionManager.addCompanionToInventory(companionName, props);
+  },
+
   getWeaponTotal: function () {
     return InventoryManager.getWeaponTotal();
   },
@@ -100,10 +96,6 @@ export default {
 
   calcItemProps: function (item) {
     return InventoryManager.calcItemProps(item, this.getGameProp('character'));
-  },
-
-  addCompanion: function (object) {
-    CompanionManager.addCompanion(object);
   },
 
   /* === ObjectState delegations === */
@@ -232,8 +224,8 @@ export default {
     ObjectFactory.spawnAnimal(object);
   },
 
-  spawnDoggyAt: function (x, y, optCompanionProps) {
-    return ObjectFactory.spawnDoggyAt(x, y, optCompanionProps);
+  spawnCompanionAt: function (x, y, name, forceStats) {
+    return ObjectFactory.spawnCompanionAt(x, y, name, forceStats);
   },
 
   setupWeapon: function (x, y, weaponName, forceStats) {

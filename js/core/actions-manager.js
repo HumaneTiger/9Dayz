@@ -281,7 +281,7 @@ export default {
         if (!InventoryManager.inventoryContains('fishing-rod')) {
           action.locked = true;
         }
-      } else if (action.id === 'chomp' && CompanionManager.getCompanion().active === false) {
+      } else if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
         action.locked = true;
       }
     });

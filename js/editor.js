@@ -93,7 +93,7 @@ export default {
               } else if (selectedObject === 'beehive') {
                 Props.setupBuilding(squareX, squareY, ['beehive'], true); // infested
               } else if (selectedObject === 'doggy') {
-                Props.spawnDoggyAt(squareX, squareY);
+                Props.spawnCompanionAt(squareX, squareY, 'doggy');
               } else {
                 Props.setupBuilding(squareX, squareY, new Array(selectedObject));
               }

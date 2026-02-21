@@ -7,7 +7,7 @@ import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
-import { CardsManager } from './core/index.js';
+import { CardsManager, CompanionManager } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
 
@@ -402,7 +402,7 @@ export default {
         actionRef.classList.remove('critical');
         actionRef.querySelector('span.text').innerHTML = action.label;
       }
-      if (action.id === 'chomp' && !Props.getCompanion().active) {
+      if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
         actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
       }
     });

@@ -10,7 +10,13 @@ import Companion from './companion.js';
 import Weapons from './weapons.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
-import { CardsManager, InventoryManager, ObjectState, GameState } from './core/index.js';
+import {
+  CardsManager,
+  InventoryManager,
+  CompanionManager,
+  ObjectState,
+  GameState,
+} from './core/index.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -84,21 +90,22 @@ export default {
     this.enterUIBattleMode();
     // start auto battle after short delay
     window.setTimeout(() => {
-      this.spawnCompanionDeck(Props.getCompanion());
+      this.spawnCompanionDeck();
       const enemyObject = Props.getObject(singleZedId);
+      const companionObject = CompanionManager.getCompanionFromInventory();
       if (enemyObject.name === 'rat' || enemyObject.name === 'bee') {
         this.startAutoBattleEnemyFirst(
           Cards.getCardById(singleZedId),
           document.querySelector('#companion-cards .battle-card'),
           enemyObject,
-          Props.getCompanion()
+          companionObject
         );
       } else {
         this.startAutoBattleCompanionFirst(
           Cards.getCardById(singleZedId),
           document.querySelector('#companion-cards .battle-card'),
           enemyObject,
-          Props.getCompanion()
+          companionObject
         );
       }
     }, 600);
@@ -132,7 +139,7 @@ export default {
   startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companionObject) {
     window.setTimeout(async () => {
       await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
-      enemyObject.defense -= companionObject.damage;
+      enemyObject.defense -= companionObject.attack;
       if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
         enemyRef.querySelector('.health').textContent = enemyObject.defense;
         window.setTimeout(async () => {
@@ -162,7 +169,7 @@ export default {
         companionRef.querySelector('.health').textContent = companionObject.health;
         window.setTimeout(async () => {
           await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
-          enemyObject.defense -= companionObject.damage;
+          enemyObject.defense -= companionObject.attack;
           if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
             enemyRef.querySelector('.health').textContent = enemyObject.defense;
             window.setTimeout(() => {
@@ -276,7 +283,8 @@ export default {
     battleDrawContainer.style.width = 160 + pileSize * 4 + 'px';
   },
 
-  spawnCompanionDeck: function (companion) {
+  spawnCompanionDeck: function () {
+    const companion = CompanionManager.getCompanionFromInventory();
     battlePlayContainer.innerHTML = '';
 
     battleCompanionContainer.insertAdjacentHTML(
@@ -289,7 +297,7 @@ export default {
         '.png">' +
         '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
         '<div class="attack">' +
-        companion.damage +
+        companion.attack +
         '</div><div class="health">' +
         companion.health +
         '</div></div></div>'

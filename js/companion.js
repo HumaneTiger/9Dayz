@@ -1,11 +1,11 @@
 import Props from './props.js';
 import Player from './player.js';
 import Ui from './ui.js';
+import { CompanionManager } from './core/index.js';
 
 const companionContainer = document.getElementById('character');
 
 const slotCompanion = companionContainer.querySelector('.slot-companion');
-const companion = Props.getCompanion();
 
 /**
  * Companion module to handle companion interactions
@@ -21,12 +21,13 @@ export default {
     const actionButton = target.closest('div.action-button');
     const leftMouseButton = ev.button === 0;
 
-    if (actionButton && leftMouseButton) {
+    if (CompanionManager.isCompanionActive() && actionButton && leftMouseButton) {
       const action = actionButton.dataset.action;
-      if (action === 'leave' && companion.active) {
-        this.removeCompanion();
+      const companionName = slotCompanion.dataset.item;
+      if (action === 'leave') {
+        this.removeCompanion(companionName);
         this.updateCompanionSlot();
-      } else if (action === 'feed' && companion.active) {
+      } else if (action === 'feed') {
         this.toggleCompanionFeedingState(true);
       }
       Player.updatePlayer();
@@ -58,7 +59,8 @@ export default {
   },
 
   feedCompanion: function (itemName) {
-    if (!companion || !companion.active) return;
+    if (!CompanionManager.isCompanionActive()) return;
+    const companion = CompanionManager.getCompanionFromInventory();
     companion.health += this.getCompanionFoodValue(itemName);
     if (companion.health > companion.maxHealth) {
       companion.health = companion.maxHealth;
@@ -67,21 +69,23 @@ export default {
   },
 
   updateCompanionSlot: function () {
-    if (!companion) return;
-    if (companion.active && companion.health > 0) {
+    const companion = CompanionManager.getCompanionFromInventory();
+    if (CompanionManager.isCompanionActive() && companion.health > 0) {
       companionContainer.classList.add('companion-active');
       slotCompanion.classList.add('active');
       slotCompanion.dataset.item = companion.name;
       slotCompanion
         .querySelector('img.motive')
         .setAttribute('src', './img/animals/' + companion.name.toLowerCase() + '.png');
-      slotCompanion.querySelector('.attack').textContent = companion.damage;
-      if (companion.protection) {
+      slotCompanion.querySelector('.attack').textContent = companion.attack;
+      /*
+      if (companion.defense) {
         slotCompanion.querySelector('.shield').classList.remove('is--hidden');
-        slotCompanion.querySelector('.shield').textContent = companion.protection;
+        slotCompanion.querySelector('.shield').textContent = companion.defense;
       } else {
         slotCompanion.querySelector('.shield').classList.add('is--hidden');
-      }
+      }*/
+      slotCompanion.querySelector('.shield').classList.add('is--hidden');
       const maxHealthChars = '♥'.repeat(companion.maxHealth);
       const health =
         maxHealthChars.substring(0, companion.health) +
@@ -89,20 +93,39 @@ export default {
         maxHealthChars.substring(0, maxHealthChars.length - companion.health) +
         '</u>';
       slotCompanion.querySelector('.distance').innerHTML = health;
-    } else if (companion.health <= 0) {
-      this.removeCompanion();
+    }
+    if (CompanionManager.isCompanionActive() && companion.health <= 0) {
+      companion.dead = true;
+      this.removeCompanion(companion.name);
       companionContainer.classList.remove('companion-active');
       slotCompanion.classList.remove('active');
       delete slotCompanion.dataset.item;
-    } else {
+    }
+    if (!CompanionManager.isCompanionActive()) {
       companionContainer.classList.remove('companion-active');
       slotCompanion.classList.remove('active');
       delete slotCompanion.dataset.item;
     }
   },
 
-  removeCompanion: function () {
-    companion.active = false;
-    Props.spawnDoggyAt(Player.getPlayerPosition().x, Player.getPlayerPosition().y, companion);
+  removeCompanion: function (companionName) {
+    const companion = CompanionManager.getCompanionFromInventory();
+    if (companionName !== companion.name) {
+      console.warn(
+        'Attempting to remove companion "' +
+          companionName +
+          '" but active companion is "' +
+          companion.name +
+          '"'
+      );
+      return;
+    }
+    Props.spawnCompanionAt(
+      Player.getPlayerPosition().x,
+      Player.getPlayerPosition().y,
+      companionName,
+      companion
+    );
+    CompanionManager.removeCompanionFromInventory();
   },
 };
