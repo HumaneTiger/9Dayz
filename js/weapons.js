@@ -60,6 +60,7 @@ export default {
           durability: weaponInstance.durability,
         });
         InventoryManager.removeWeaponFromInventory(weaponName);
+        this.updateWeaponState();
       }
       Player.updatePlayer();
     } else if (upgradeButton && leftMouseButton) {
