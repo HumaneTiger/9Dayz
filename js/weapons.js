@@ -3,6 +3,7 @@ import Items from './items.js';
 import Player from './player.js';
 import Audio from './audio.js';
 import Events, { EVENTS } from './core/event-manager.js';
+import { InventoryManager } from './core/index.js';
 
 const weaponSlotsContainer = document.getElementById('character');
 const slot1 = weaponSlotsContainer.querySelector('.slot-1');
@@ -58,11 +59,7 @@ export default {
           defense: weaponInstance.protection,
           durability: weaponInstance.durability,
         });
-        // set weapon amount in inventory to 0 and set durability to 0
-        // TODO: implement remove weapon from inventory method in Props and use it here
-        Props.addWeaponToInventory(weaponName, -1, {
-          durability: -1 * weaponInstance.durability,
-        });
+        InventoryManager.removeWeaponFromInventory(weaponName);
       }
       Player.updatePlayer();
     } else if (upgradeButton && leftMouseButton) {

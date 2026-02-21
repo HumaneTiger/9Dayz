@@ -10,7 +10,7 @@ import Companion from './companion.js';
 import Weapons from './weapons.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
-import { CardsManager, InventoryManager } from './core/index.js';
+import { CardsManager, InventoryManager, ObjectState, GameState } from './core/index.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -215,6 +215,22 @@ export default {
     }, 600);
   },
 
+  includeBarricade: function () {
+    /* crafted objects get placed at players position, so player should be the reference position */
+    const playerPosition = GameState.getGameProp('playerPosition');
+    const allFoundObjectIds = ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y);
+    const barricadesOnly = allFoundObjectIds.filter(
+      singleObject => Props.getObject(singleObject).name === 'barricades'
+    );
+    if (barricadesOnly.length > 0) {
+      //BattleManager.includeBarricadeInBattle(barricadesOnly[0]);
+      /* add dedicated "battle card" with title and durability */
+      /* blue icon for 4 protection */
+      /* add 4 protection by default each turn as long as card is present */
+      /* has 10 durability when it spawns to make it worth it */
+    }
+  },
+
   startBattle(surprised, singleZedId) {
     this.prepareBattle();
     // singleZedId is the result of successful luring
@@ -224,6 +240,7 @@ export default {
     if (cardZedDeck.length > 0) {
       this.spawnZedDeck(cardZedDeck);
       this.enterUIBattleMode();
+      this.includeBarricade();
       window.setTimeout(() => {
         this.spawnBattleDeck(surprised);
       }, 600);

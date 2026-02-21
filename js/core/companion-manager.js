@@ -6,7 +6,7 @@
 import { CompanionDefinitions } from '../../data/index.js';
 
 /** @type {Companion} */
-const companion = { ...CompanionDefinitions.Companion };
+const companion = { ...CompanionDefinitions.companion };
 
 export default {
   /**
@@ -14,6 +14,13 @@ export default {
    */
   getCompanion: function () {
     return companion;
+  },
+
+  /**
+   * @returns {boolean}
+   */
+  isCompanionActive: function () {
+    return companion.active;
   },
 
   /**

@@ -2,6 +2,7 @@
 
 /**
  * @import { ItemDefinition, Item, ItemProps } from '../../data/definitions/items-definitions.js'
+ * @import { Companion } from '../../data/definitions/companion-definitions.js'
  * @import { WeaponDefinition, WeaponProps, WeaponUpgrade, WeaponUpgrades } from '../../data/definitions/weapons-definitions.js'
  */
 
@@ -9,11 +10,12 @@
  * @typedef {Object} Inventory
  * @property {Record<string, Item>} items
  * @property {Record<string, WeaponProps>} weapons
+ * @property {Companion} companion
  * @property {number} itemNumbers
  * @export
  */
 
-import { GameState, EventManager, EVENTS } from './index.js';
+import { GameState, EventManager, EVENTS, CompanionManager } from './index.js';
 import { ItemsDefinitions, WeaponsDefinitions, ItemUtils } from '../../data/index.js';
 
 // Destructure items/weapons definitions
@@ -26,7 +28,8 @@ const weapons = WeaponsDefinitions.weapons;
 /** @type {Inventory} */
 var inventory = {
   items: {},
-  weapons: {} /* coming soon */,
+  weapons: {},
+  companion: CompanionManager.getCompanion(),
   itemNumbers: 0,
 };
 

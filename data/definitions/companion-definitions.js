@@ -14,7 +14,7 @@
 
 export default {
   /** @type {Companion} */
-  Companion: {
+  companion: {
     active: false,
     sort: undefined,
     name: 'doggy',
