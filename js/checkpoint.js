@@ -5,6 +5,7 @@ import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
 import AlmanacManager from './core/almanac-manager.js';
+import { CompanionManager } from './core/index.js';
 
 export default {
   /**
@@ -31,7 +32,7 @@ export default {
 
       // ===== COMPANION =====
       // Companion state (doggy) - stored separately from inventory
-      companion: Props.getCompanion(),
+      companion: CompanionManager.getCompanionFromInventory(),
 
       // ===== OBJECTS SYSTEM =====
       // All game entities: buildings, zombies, rats, bees, animals, weapons
@@ -131,8 +132,8 @@ export default {
 
     // ===== COMPANION =====
     // Restore companion (doggy) state
-    if (checkpoint.companion) {
-      Props.setCompanion(checkpoint.companion);
+    if (checkpoint.companion && checkpoint.companion.name) {
+      Props.addCompanionToInventory(checkpoint.companion.name, checkpoint.companion);
       Companion.updateCompanionSlot();
       AlmanacManager.makeContentKnown(checkpoint.companion.name);
     }

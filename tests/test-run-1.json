@@ -1819,11 +1819,7 @@
       "protection": 3
     }
   },
-  "companion": {
-    "active": false,
-    "name": "doggy",
-    "dead": false
-  },
+  "companion": {},
   "objects": [
     {
       "x": 17,
