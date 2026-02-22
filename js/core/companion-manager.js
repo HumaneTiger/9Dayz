@@ -68,4 +68,21 @@ export default {
   removeCompanionFromInventory: function () {
     inventory.companions = {};
   },
+
+  /**
+   * @returns {string} HTML markup representing companion's health
+   */
+  generateHealthMarkup: function () {
+    const companion = this.getCompanionFromInventory();
+    if (!companion) {
+      return '';
+    }
+    const maxHealthChars = '♥'.repeat(companion.maxHealth);
+    return (
+      maxHealthChars.substring(0, companion.health) +
+      '<u>' +
+      maxHealthChars.substring(0, maxHealthChars.length - companion.health) +
+      '</u>'
+    );
+  },
 };

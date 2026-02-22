@@ -12,6 +12,7 @@ import {
   RecipesManager,
   InventoryManager,
   CharacterManager,
+  CompanionManager,
 } from './core/index.js';
 
 const items = Props.getAllItems();
@@ -173,9 +174,14 @@ export default {
   },
 
   getItemInfoMarkup: function (itemName, itemActive) {
-    const item = Props.isWeapon(itemName)
-      ? Props.getWeaponFromInventory(itemName)
-      : Props.getItemFromInventory(itemName);
+    let item;
+    if (Props.isWeapon(itemName)) {
+      item = Props.getWeaponFromInventory(itemName);
+    } else if (CompanionManager.isCompanion(itemName)) {
+      item = CompanionManager.getCompanionFromInventory();
+    } else {
+      item = Props.getItemFromInventory(itemName);
+    }
     if (!item) {
       console.log('Item not found in inventory:', itemName);
       return '';
@@ -233,6 +239,10 @@ export default {
         itemInfoMarkup += `<span class="food">${Companion.getCompanionFoodValue(itemName)}
               <span class="material-symbols-outlined">favorite</span></span>`;
       }
+    }
+
+    if (CompanionManager.isCompanion(itemName)) {
+      itemInfoMarkup += `looses 3 ♥ when used!`;
     }
 
     return itemInfoMarkup;

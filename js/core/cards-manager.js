@@ -10,6 +10,7 @@ import {
   InventoryManager,
   ObjectState,
   WeaponsManager,
+  CompanionManager,
 } from './index.js';
 
 export default {
@@ -196,7 +197,22 @@ export default {
     CardsDefinitions.battleDeck = [];
     const inventory = InventoryManager.getInventory();
     let sparedTools = 0;
-    const inventoryItemsAndWeapons = { ...inventory.items, ...inventory.weapons };
+    const inventoryItemsAndWeapons = {
+      ...inventory.items,
+      ...inventory.weapons,
+    };
+    /* add companion when character is furbuddy */
+    if (CompanionManager.isCompanionActive() && GameState.getGameProp('character') === 'furbuddy') {
+      const companion = CompanionManager.getCompanionFromInventory();
+      if (companion !== undefined) {
+        inventoryItemsAndWeapons[companion.name] = {
+          ...companion,
+          durability: 1 /* just a placeholder */,
+          amount: 1 /* there is always 1 companion */,
+        };
+      }
+    }
+
     // Makes battle deck construction deterministic rather than relying on JavaScript's object key ordering
     const sortedKeys = Object.keys(inventoryItemsAndWeapons).sort((a, b) => a.localeCompare(b));
     for (const item of sortedKeys) {
@@ -207,17 +223,33 @@ export default {
         ) {
           sparedTools += 1;
         } else {
-          CardsDefinitions.battleDeck.push({
-            damage: inventoryItemsAndWeapons[item].damage,
-            modifyDamage: this.calculateModifyDamageForItem(i) || 0,
-            id: i,
-            name: item,
-            protection: inventoryItemsAndWeapons[item].protection || 0,
-          });
+          CardsDefinitions.battleDeck.push(
+            this.getBattleCard({
+              damage: inventoryItemsAndWeapons[item].damage,
+              modifyDamage: this.calculateModifyDamageForItem(i) || 0,
+              id: i,
+              name: item,
+              protection: inventoryItemsAndWeapons[item].protection || 0,
+            })
+          );
         }
       }
     }
     return sparedTools;
+  },
+
+  /**
+   * @param {BattleCard} props
+   * @returns {BattleCard}
+   */
+  getBattleCard: function (props) {
+    return {
+      damage: props.damage,
+      modifyDamage: props.modifyDamage,
+      id: props.id,
+      name: props.name,
+      protection: props.protection,
+    };
   },
 
   /**
@@ -247,6 +279,25 @@ export default {
       if (!weapon.durability) {
         // remove weapon from inventory
         WeaponsManager.removeWeaponFromInventory(weapon.name);
+        // remove card from battle deck
+        this.removeFromBattleDeck(itemName);
+      }
+    } else if (CompanionManager.isCompanion(itemName)) {
+      const companion = CompanionManager.getCompanionFromInventory();
+      if (!companion) {
+        console.warn(
+          'Attempting to reduce durability of companion "' +
+            itemName +
+            '" but no active companion found'
+        );
+        return;
+      }
+      if (companion.health > 0) {
+        companion.health -= 3; // companion takes 3 damage when used in battle
+      }
+      if (companion.health <= 0) {
+        // remove companion from inventory
+        companion.health = 0;
         // remove card from battle deck
         this.removeFromBattleDeck(itemName);
       }

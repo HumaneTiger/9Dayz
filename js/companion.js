@@ -77,22 +77,17 @@ export default {
       slotCompanion
         .querySelector('img.motive')
         .setAttribute('src', './img/animals/' + companion.name.toLowerCase() + '.png');
-      slotCompanion.querySelector('.attack').textContent = companion.attack;
+      slotCompanion.querySelector('.attack').textContent = companion.damage;
       /*
-      if (companion.defense) {
+      if (companion.protection) {
         slotCompanion.querySelector('.shield').classList.remove('is--hidden');
-        slotCompanion.querySelector('.shield').textContent = companion.defense;
+        slotCompanion.querySelector('.shield').textContent = companion.protection;
       } else {
         slotCompanion.querySelector('.shield').classList.add('is--hidden');
       }*/
       slotCompanion.querySelector('.shield').classList.add('is--hidden');
-      const maxHealthChars = '♥'.repeat(companion.maxHealth);
-      const health =
-        maxHealthChars.substring(0, companion.health) +
-        '<u>' +
-        maxHealthChars.substring(0, maxHealthChars.length - companion.health) +
-        '</u>';
-      slotCompanion.querySelector('.distance').innerHTML = health;
+      const healthMarkup = CompanionManager.generateHealthMarkup();
+      slotCompanion.querySelector('.distance').innerHTML = healthMarkup;
     }
     if (CompanionManager.isCompanionActive() && companion.health <= 0) {
       companion.dead = true;

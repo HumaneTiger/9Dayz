@@ -92,26 +92,26 @@ export default {
     window.setTimeout(() => {
       this.spawnCompanionDeck();
       const enemyObject = Props.getObject(singleZedId);
-      const companionObject = CompanionManager.getCompanionFromInventory();
+      const companion = CompanionManager.getCompanionFromInventory();
       if (enemyObject.name === 'rat' || enemyObject.name === 'bee') {
         this.startAutoBattleEnemyFirst(
           Cards.getCardById(singleZedId),
           document.querySelector('#companion-cards .battle-card'),
           enemyObject,
-          companionObject
+          companion
         );
       } else {
         this.startAutoBattleCompanionFirst(
           Cards.getCardById(singleZedId),
           document.querySelector('#companion-cards .battle-card'),
           enemyObject,
-          companionObject
+          companion
         );
       }
     }, 600);
   },
 
-  resolveAutoBattle: function (enemyRef, companionRef, enemyObject, companionObject) {
+  resolveAutoBattle: function (enemyRef, companionRef, enemyObject, companion) {
     if (enemyObject.defense <= 0) {
       // enemy is dead
       enemyRef.classList.add('dead');
@@ -122,10 +122,12 @@ export default {
         this.endBattle();
       }, 880);
       return true;
-    } else if (companionObject.health <= 0) {
+    } else if (companion.health <= 0) {
       // companion is dead
+      const healthMarkup = CompanionManager.generateHealthMarkup();
+      companionRef.querySelector('.durability').innerHTML = healthMarkup;
       companionRef.classList.add('dead');
-      companionObject.dead = true;
+      companion.dead = true;
       window.setTimeout(async () => {
         Companion.updateCompanionSlot();
         this.endBattle();
@@ -136,24 +138,20 @@ export default {
     }
   },
 
-  startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companionObject) {
+  startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion) {
     window.setTimeout(async () => {
       await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
-      enemyObject.defense -= companionObject.attack;
-      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
+      enemyObject.defense -= companion.damage;
+      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
         enemyRef.querySelector('.health').textContent = enemyObject.defense;
         window.setTimeout(async () => {
           await this.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
-          companionObject.health -= enemyObject.attack;
-          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
-            companionRef.querySelector('.health').textContent = companionObject.health;
+          companion.health -= enemyObject.attack;
+          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
+            const healthMarkup = CompanionManager.generateHealthMarkup();
+            companionRef.querySelector('.durability').innerHTML = healthMarkup;
             window.setTimeout(() => {
-              this.startAutoBattleCompanionFirst(
-                enemyRef,
-                companionRef,
-                enemyObject,
-                companionObject
-              );
+              this.startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion);
             }, 880);
           }
         }, 1800);
@@ -161,19 +159,20 @@ export default {
     }, 500);
   },
 
-  startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companionObject) {
+  startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion) {
     window.setTimeout(async () => {
       await this.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
-      companionObject.health -= enemyObject.attack;
-      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
-        companionRef.querySelector('.health').textContent = companionObject.health;
+      companion.health -= enemyObject.attack;
+      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
+        const healthMarkup = CompanionManager.generateHealthMarkup();
+        companionRef.querySelector('.durability').innerHTML = healthMarkup;
         window.setTimeout(async () => {
           await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
-          enemyObject.defense -= companionObject.attack;
-          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companionObject)) {
+          enemyObject.defense -= companion.damage;
+          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
             enemyRef.querySelector('.health').textContent = enemyObject.defense;
             window.setTimeout(() => {
-              this.startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companionObject);
+              this.startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion);
             }, 880);
           }
         }, 1800);
@@ -286,6 +285,7 @@ export default {
   spawnCompanionDeck: function () {
     const companion = CompanionManager.getCompanionFromInventory();
     battlePlayContainer.innerHTML = '';
+    const healthMarkup = CompanionManager.generateHealthMarkup();
 
     battleCompanionContainer.insertAdjacentHTML(
       'beforeend',
@@ -297,10 +297,12 @@ export default {
         '.png">' +
         '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
         '<div class="attack">' +
-        companion.attack +
-        '</div><div class="health">' +
-        companion.health +
-        '</div></div></div>'
+        companion.damage +
+        '</div>' +
+        '<span class="durability">' +
+        healthMarkup +
+        '</span>' +
+        '</div></div>'
     );
 
     battleCompanionContainer.classList.remove('is--hidden');
@@ -372,6 +374,7 @@ export default {
   endBattle: async function () {
     CardsManager.removeBattleDeck();
     const cardZedDeck = CardsManager.getOpponentDeck();
+    Companion.updateCompanionSlot();
     await this.leaveUIBattleMode();
     cardZedDeck.forEach(function (zedId) {
       let zedCardRef = Cards.getCardById(zedId);
@@ -418,8 +421,12 @@ export default {
 
     // draw up to 5 cards
     // split deck into 2 parts, weapons and others
-    let weaponsDeck = battleDeck.filter(item => Props.getWeaponProps(item.name));
-    let itemsDeck = battleDeck.filter(item => !Props.getWeaponProps(item.name));
+    let weaponsDeck = battleDeck.filter(
+      item => Props.isWeapon(item.name) || CompanionManager.isCompanion(item.name)
+    );
+    let itemsDeck = battleDeck.filter(
+      item => !Props.isWeapon(item.name) && !CompanionManager.isCompanion(item.name)
+    );
     battlePlayContainer.innerHTML = '';
     let maxItems = 5 - weaponsDeck.length;
     if (itemsDeck.length < maxItems) maxItems = itemsDeck.length;
@@ -451,35 +458,70 @@ export default {
     }
   },
 
+  getDurabilityMarkup: function (itemName) {
+    if (Props.isWeapon(itemName)) {
+      const weapon = WeaponsManager.getWeaponFromInventory(itemName);
+      if (weapon.durability && weapon.durability > 0) {
+        const maxDurabilityChars = '◈'.repeat(weapon.durability);
+        return (
+          '<span class="durability">' +
+          maxDurabilityChars.substring(0, weapon.durability) +
+          '<u>' +
+          maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) +
+          '</u>' +
+          '</span>'
+        );
+      }
+    }
+    if (CompanionManager.isCompanion(itemName)) {
+      const healthMarkup = CompanionManager.generateHealthMarkup();
+      return '<span class="durability">' + healthMarkup + '</span>';
+    }
+    return '';
+  },
+
+  getPictureMarkup: function (itemName) {
+    if (Props.isWeapon(itemName)) {
+      return '<img class="item-pic" src="./img/weapons/' + itemName + '.png">';
+    }
+    if (CompanionManager.isCompanion(itemName)) {
+      return '<img class="item-pic" src="./img/animals/' + itemName + '-portrait.png">';
+    }
+    return '<img class="item-pic" src="./img/items/' + itemName + '.PNG">';
+  },
+
+  getLastUseMarkup: function (itemName) {
+    if (Props.isWeapon(itemName)) {
+      /* get weapon from inventory as it contains the actual durability */
+      const weapon = WeaponsManager.getWeaponFromInventory(itemName);
+      return weapon.durability === 1
+        ? '<img class="last-use" src="./img/weapons/last-use.png">'
+        : '';
+    }
+    if (CompanionManager.isCompanion(itemName)) {
+      const companion = CompanionManager.getCompanionFromInventory();
+      return companion.health <= 3
+        ? '<img class="last-use" src="./img/animals/almost-dead.png">'
+        : '';
+    }
+    return '';
+  },
+
   addCardToPlay: function (itemName) {
     const card = CardsManager.getBattleDeckCard(itemName);
-    const weapon =
-      WeaponsManager.getWeaponFromInventory(
-        itemName
-      ); /* get the inventory weapon as it contains the reduced durability */
     const modifyDamageMarkup =
       card.modifyDamage > 0 ? '<span class="modify">(+' + card.modifyDamage + ')<span>' : '';
-    const maxDurabilityChars = weapon ? '◈'.repeat(weapon.durability) : '';
-    const durabilityMarkup = weapon?.durability
-      ? '<span class="durability">' +
-        maxDurabilityChars.substring(0, weapon.durability) +
-        '<u>' +
-        maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) +
-        '</u>' +
-        '</span>'
-      : '';
+    const durabilityMarkup = this.getDurabilityMarkup(itemName);
+    const pictureMarkup = this.getPictureMarkup(itemName);
+    const lastUseMarkup = this.getLastUseMarkup(itemName);
 
     battlePlayContainer.insertAdjacentHTML(
       'beforeend',
       '<div class="battle-card inactive" data-item="' +
         card.name +
         '"><div class="inner">' +
-        (!Props.isWeapon(card.name)
-          ? '<img class="item-pic" src="./img/items/' + card.name + '.PNG">'
-          : '<img class="item-pic" src="./img/weapons/' + card.name + '.png">') +
-        (Props.isWeapon(card.name) && weapon.durability === 1
-          ? '<img class="last-use" src="./img/weapons/last-use.png">'
-          : '') +
+        pictureMarkup +
+        lastUseMarkup +
         '<div class="attack">' +
         (card.damage + card.modifyDamage) +
         modifyDamageMarkup +

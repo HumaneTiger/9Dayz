@@ -11,8 +11,8 @@ export default function simulatePetting(cardId, time, energy) {
         object.removed = true;
         Props.addCompanionToInventory(object.name, {
           name: object.name,
-          attack: object.attack,
-          defense: object.defense,
+          damage: object.attack,
+          protection: object.defense,
           health: object.health,
           maxHealth: object.maxHealth,
         });

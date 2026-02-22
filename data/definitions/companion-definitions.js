@@ -3,8 +3,8 @@
 /**
  * @typedef {Object} CompanionDefinition
  * @property {string} name
- * @property {number} attack
- * @property {number} defense
+ * @property {number} damage
+ * @property {number} protection
  * @property {number} health
  * @property {number} maxHealth
  */
@@ -13,8 +13,8 @@
 const companions = {
   doggy: {
     name: 'doggy',
-    attack: 4,
-    defense: 3,
+    damage: 4,
+    protection: 3,
     health: 6,
     maxHealth: 10,
   },

@@ -45,7 +45,7 @@ export default {
     cut: {
       method: 'simulateGathering',
       oneTime: true,
-      delay: 1000,
+      delay: 0,
       label: 'cutting',
     },
     pet: {
