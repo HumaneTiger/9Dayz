@@ -21,7 +21,7 @@
  */
 
 export default {
-  persistentIngredients: ['knife', 'sharp-stick'],
+  persistentIngredients: ['knife', 'sharp-stick', 'mallet'],
 
   ingredientVariants: {
     water: ['drink-1', 'drink-2'],
