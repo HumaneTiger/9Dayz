@@ -96,7 +96,7 @@ export default {
     const itemContainer = target.closest('li.item:not(.is--hidden)');
     if (cardContainer && itemContainer) {
       const itemName = itemContainer.dataset.item;
-      this.makeContentKnown(itemName);
+      AlmanacManager.makeContentKnown(itemName);
       this.showPage(itemName, itemContainer.closest('ul.items'), cardContainer);
       return;
     }
@@ -111,7 +111,7 @@ export default {
       ) {
         const item = cookingItemSlot.dataset?.item;
         if (item !== undefined) {
-          this.makeContentKnown(item);
+          AlmanacManager.makeContentKnown(item);
           this.showPage(item, cookingItemSlot, cookingContainer);
         }
       }
