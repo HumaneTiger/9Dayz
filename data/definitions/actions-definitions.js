@@ -262,11 +262,11 @@ export default {
       },
     ],
     farm: [
-      { id: 'gather', label: 'gather', time: 15, energy: -10, needsUnlock: true },
+      { id: 'gather', label: 'gather', time: 15, energy: -10 },
       { id: 'scout-area', label: 'scout area', time: 30 },
     ],
     tree: [
-      { id: 'gather', label: 'gather', time: 15, energy: -5, needsUnlock: true },
+      { id: 'gather', label: 'gather', time: 15, energy: -5 },
       { id: 'scout-area', label: 'scout area', time: 30 },
       { id: 'cut-down', label: 'cut down', time: 25, energy: -25, excludeBuildings: ['big-tree'] },
       {
@@ -274,7 +274,6 @@ export default {
         label: 'rest',
         time: 60,
         energy: 15,
-        needsUnlock: true,
         excludeCharacters: ['treehugger'],
         excludeBuildings: ['small-tree'],
       },
@@ -283,7 +282,6 @@ export default {
         label: 'rest',
         time: 60,
         energy: 20,
-        needsUnlock: true,
         forCharactersOnly: ['treehugger'],
         excludeBuildings: ['small-tree'],
       },
@@ -295,13 +293,13 @@ export default {
       { id: 'scout-area', label: 'scout area', time: 30 },
       { id: 'rest', label: 'rest', time: 60, energy: 30, needsUnlock: true },
     ],
-    signpost: [{ id: 'read', label: 'read', time: 1, needsUnlock: true }],
+    signpost: [{ id: 'read', label: 'read', time: 1 }],
     place: [
       { id: 'head-toward', label: 'head toward', time: 0 },
       { id: 'quick-travel', label: 'quick travel', time: 0 },
     ],
     train: [
-      { id: 'search', label: 'search', time: 20, energy: -5, needsUnlock: true },
+      { id: 'search', label: 'search', time: 20, energy: -5 },
       { id: 'scout-area', label: 'scout area', time: 30 },
     ],
     shop: [
@@ -317,18 +315,17 @@ export default {
       { id: 'scout-area', label: 'scout area', time: 30 },
     ],
     water: [
-      { id: 'gather', label: 'gather', time: 15, energy: -5, needsUnlock: true },
+      { id: 'gather', label: 'gather', time: 15, energy: -5 },
       {
         id: 'drink',
         label: 'drink',
         time: 10,
-        needsUnlock: true,
         excludeCharacters: ['snackivore'],
       },
       { id: 'fish', label: 'fish', time: 30, energy: -5, excludeBuildings: ['pump', 'well'] },
     ],
     camping: [
-      // break-door, search, scout-area, rest for most camping buildings
+      // break-door, search, scout-area, rest for cabin
       // fireplace excludes: break-door, search, scout-area but adds: cook, sleep
       // seating excludes: break-door, scout-area, sleep
       {
@@ -337,6 +334,7 @@ export default {
         time: 10,
         energy: -15,
         excludeBuildings: ['fireplace', 'seating', 'outhouse'],
+        requiresLocked: true,
       },
       {
         id: 'search',
@@ -344,13 +342,7 @@ export default {
         time: 20,
         energy: -10,
         needsUnlock: true,
-        excludeBuildings: ['fireplace', 'seating'],
-      },
-      {
-        id: 'scout-area',
-        label: 'scout area',
-        time: 30,
-        excludeBuildings: ['fireplace', 'seating'],
+        excludeBuildings: ['fireplace'],
       },
       { id: 'rest', label: 'rest', time: 60, energy: 20, needsUnlock: true },
       // Fireplace-specific actions
