@@ -85,13 +85,9 @@ export default {
         object.infested = false;
         // search action not critical any more
         const action = object.actions?.find(a => a.id === 'search' || a.id === 'gather');
-        console.log('actions', object.actions);
-        console.log('action', action);
-        console.log('critical', action?.critical);
         if (action) {
           action.critical = false;
           // update actions
-          console.log('updating card actions for', cardId);
           CardsMarkup.updateCardActions(cardId);
         }
         // update card deck with new creature cards
