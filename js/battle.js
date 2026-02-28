@@ -17,6 +17,7 @@ import {
   ObjectState,
   GameState,
 } from './core/index.js';
+import TimingUtils from './utils/timing-utils.js';
 
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
@@ -544,7 +545,7 @@ export default {
     this.endAttack();
   },
 
-  resolveMultiAttack: function (dragEl, dragTarget) {
+  async resolveMultiAttack(dragEl, dragTarget) {
     const zedId = dragTarget.id;
     const cardZedDeck = CardsManager.getOpponentDeck();
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
@@ -568,17 +569,15 @@ export default {
     /* do this only once upfront for all attacks */
     Props.changePlayerProp('protection', item.protection);
     Props.changePlayerProp('actions', -1);
+
+    for (let index = 0; index < potentialTargets.length; index++) {
+      const targetId = potentialTargets[index];
+      this.resolveAttack(dragItemName, Cards.getCardById(targetId));
+      this.runHitAnimation(dragEl, Cards.getCardById(targetId));
+      await TimingUtils.wait(150);
+    }
+
     CardsManager.reduceDurabilityOrRemove(dragItemName);
-    potentialTargets.forEach((targetId, index) => {
-      window.setTimeout(
-        targetId => {
-          this.resolveAttack(dragItemName, Cards.getCardById(targetId));
-          this.runHitAnimation(dragEl, Cards.getCardById(targetId));
-        },
-        index * 150,
-        targetId
-      );
-    });
     this.endAttack();
   },
 

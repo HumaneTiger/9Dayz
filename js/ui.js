@@ -251,12 +251,12 @@ export default {
     }
   },
 
-  resolveMouseUp: function (dragTarget, dragEl) {
+  async resolveMouseUp(dragTarget, dragEl) {
     if (dragTarget && dragEl) {
       if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
         const itemName = dragEl.dataset.item;
         if (itemName === 'improvised-whip') {
-          Battle.resolveMultiAttack(dragEl, dragTarget);
+          await Battle.resolveMultiAttack(dragEl, dragTarget);
         } else {
           Battle.resolveSingleAttack(dragEl, dragTarget);
         }
