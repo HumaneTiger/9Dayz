@@ -457,30 +457,6 @@ export default {
     );
   },
 
-  /*
-    spawnDoggyAt: function (x, y, optCompanionProps) {
-    const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
-    const lootItemList = LootUtils.createLootItemList(2, ['meat', 'bones'], [10, 8], 3);
-    ObjectState.setObject(
-      currentObjectsIdCounter,
-      ObjectState.createGameObject({
-        x: x,
-        y: y,
-        name: optCompanionProps?.name ?? 'doggy',
-        group: 'animal',
-        actions: ActionsManager.getActionsForGameObjectType('companion'),
-        items: lootItemList,
-        attack: optCompanionProps?.damage ?? 4,
-        defense: optCompanionProps?.protection ?? 0,
-        maxHealth: optCompanionProps?.maxHealth ?? 10,
-        health: optCompanionProps?.health ?? 6,
-        dead: optCompanionProps?.dead ?? false,
-      })
-    );
-
-    return currentObjectsIdCounter;
-  },*/
-
   /**
    * @param {number} x
    * @param {number} y
