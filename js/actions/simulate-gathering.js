@@ -4,6 +4,7 @@ import Battle from '../battle.js';
 import TimingUtils from '../utils/timing-utils.js';
 import ActionsUtils from '../utils/actions-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
+import { CharacterManager } from '../core/index.js';
 
 export default async function simulateGathering(cardId, time, energy) {
   const object = Props.getObject(cardId);
@@ -67,9 +68,7 @@ export default async function simulateGathering(cardId, time, energy) {
         ActionsOrchestration.goBackFromAction();
         Props.changePlayerProp('energy', energy);
         // furbuddy takes damage when cutting animals
-        if (Props.getGameProp('character') === 'furbuddy' && object.group === 'animal') {
-          Props.changePlayerProp('health', -10);
-        }
+        CharacterManager.applyActionPenalty('gathering', object.group);
         if (
           !allItems.some(function (item) {
             return item.amount > 0;

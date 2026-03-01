@@ -79,8 +79,22 @@ export default {
     return false;
   },
 
+  /**
+   * @returns {boolean} - whether the character should preserve resources when upgrading weapons
+   */
   shouldPreserveUpgradeResources: function () {
     const character = GameState.getGameProp('character');
     return character === 'craftsmaniac' && Math.random() * 10 <= 2.25 ? true : false;
+  },
+
+  /**
+   * @param {string} actionType
+   * @param {string} objectGroup
+   */
+  applyActionPenalty: function (actionType, objectGroup) {
+    const character = GameState.getGameProp('character');
+    if (character === 'furbuddy' && objectGroup === 'animal') {
+      PlayerManager.changePlayerProp('health', -10);
+    }
   },
 };
