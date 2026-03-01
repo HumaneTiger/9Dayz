@@ -182,7 +182,7 @@ export default {
       ...inventory.weapons,
     };
     /* add companion when character is furbuddy */
-    if (CompanionManager.isCompanionActive() && GameState.getGameProp('character') === 'furbuddy') {
+    if (CharacterManager.addCompanionToBattleDeck()) {
       const companion = CompanionManager.getCompanionFromInventory();
       if (companion !== undefined) {
         inventoryItemsAndWeapons[companion.name] = {

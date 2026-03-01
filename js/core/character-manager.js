@@ -1,6 +1,6 @@
 // @ts-check
 import { CharacterDefinitions } from '../../data/index.js';
-import { GameState, PlayerManager } from './index.js';
+import { CompanionManager, GameState, PlayerManager } from './index.js';
 
 export default {
   /**
@@ -96,5 +96,23 @@ export default {
     if (character === 'furbuddy' && objectGroup === 'animal') {
       PlayerManager.changePlayerProp('health', -10);
     }
+  },
+
+  addCompanionToBattleDeck: function () {
+    const character = GameState.getGameProp('character');
+    return character === 'furbuddy' && CompanionManager.isCompanionActive();
+  },
+
+  /**
+   *
+   * @param {string} itemName
+   * @returns {boolean} whether the character can eat the given item
+   */
+  canEatItem: function (itemName) {
+    const character = GameState.getGameProp('character');
+    if (character === 'furbuddy' && ['meat', 'roasted-meat'].includes(itemName)) {
+      return false;
+    }
+    return true;
   },
 };

@@ -338,6 +338,9 @@ p.item-info {
   text-align: center;
   text-transform: capitalize;
 }
+p.item-info::first-letter {
+  text-transform: uppercase;
+}
 p.item-info .material-symbols-outlined {
   display: inline-block;
   padding-left: 4px;

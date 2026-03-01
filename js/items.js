@@ -236,11 +236,8 @@ export default {
         }
       }
 
-      if (
-        GameState.getGameProp('character') === 'furbuddy' &&
-        (itemName === 'meat' || itemName === 'roasted-meat')
-      ) {
-        itemInfoMarkup = `<span>Furbuddy won't eat meat.</span>`;
+      if (!CharacterManager.canEatItem(itemName)) {
+        itemInfoMarkup = `${GameState.getGameProp('character')} won't eat ${ItemUtils.extractItemName(itemName)}.`;
       }
     } else {
       if (Companion.getCompanionFoodValue(itemName) === -1) {
@@ -300,15 +297,12 @@ export default {
           itemSlot.classList.add('inactive');
         }
       } else if (amount > 0) {
-        if (
-          GameState.getGameProp('character') === 'furbuddy' &&
-          (itemProps?.name === 'meat' || itemProps?.name === 'roasted-meat')
-        ) {
-          itemSlot.classList.remove('active');
-          itemSlot.classList.add('inactive');
-        } else {
+        if (CharacterManager.canEatItem(itemProps?.name)) {
           itemSlot.classList.remove('inactive');
           itemSlot.classList.add('active');
+        } else {
+          itemSlot.classList.remove('active');
+          itemSlot.classList.add('inactive');
         }
         itemSlot.querySelector('.amount').textContent = amount;
       } else {
