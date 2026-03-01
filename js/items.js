@@ -13,6 +13,7 @@ import {
   InventoryManager,
   CharacterManager,
   CompanionManager,
+  GameState,
 } from './core/index.js';
 
 const items = Props.getAllItems();
@@ -153,7 +154,7 @@ export default {
         }
       } else {
         Player.resetPreviewProps();
-        if (!Props.getGameProp('feedingCompanion')) {
+        if (hoverSlot.classList.contains('active') && !Props.getGameProp('feedingCompanion')) {
           if (itemProps.food > 0 && this.inventoryContains(item)) {
             document.querySelector('#properties li.food').classList.add('transfer');
             Player.previewProps('food', itemProps.food);
@@ -234,8 +235,17 @@ export default {
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       }
+
+      if (
+        GameState.getGameProp('character') === 'furbuddy' &&
+        (itemName === 'meat' || itemName === 'roasted-meat')
+      ) {
+        itemInfoMarkup = `<span>Furbuddy won't eat meat.</span>`;
+      }
     } else {
-      if (Companion.getCompanionFoodValue(itemName) !== -1 && this.inventoryContains(itemName)) {
+      if (Companion.getCompanionFoodValue(itemName) === -1) {
+        itemInfoMarkup = `Not suitable for feeding`;
+      } else {
         itemInfoMarkup += `<span class="food">${Companion.getCompanionFoodValue(itemName)}
               <span class="material-symbols-outlined">favorite</span></span>`;
       }
@@ -274,33 +284,42 @@ export default {
   },
 
   fillItemSlot: function (itemSlots, amount, crafting, itemProps) {
-    if (itemSlots) {
-      for (let i = 0; i < itemSlots.length; i += 1) {
-        const itemSlot = itemSlots[i];
-        itemSlot.classList.remove('unknown');
-        if (Props.getGameProp('feedingCompanion')) {
-          if ((itemProps?.food > 0 || itemProps.name === 'bones') && amount > 0) {
-            itemSlot.classList.remove('inactive');
-            itemSlot.classList.add('active');
-            itemSlot.querySelector('.amount').textContent = amount;
-          } else {
-            itemSlot.classList.remove('active');
-            itemSlot.classList.add('inactive');
-          }
-        } else if (amount > 0) {
+    if (!itemSlots || itemSlots.length === 0) {
+      return;
+    }
+    for (let i = 0; i < itemSlots.length; i += 1) {
+      const itemSlot = itemSlots[i];
+      itemSlot.classList.remove('unknown');
+      if (Props.getGameProp('feedingCompanion')) {
+        if ((itemProps?.food > 0 || itemProps?.name === 'bones') && amount > 0) {
           itemSlot.classList.remove('inactive');
           itemSlot.classList.add('active');
           itemSlot.querySelector('.amount').textContent = amount;
         } else {
-          itemSlot.querySelector('.amount').textContent = '';
           itemSlot.classList.remove('active');
           itemSlot.classList.add('inactive');
         }
-        if (crafting) {
-          itemSlot.classList.add('already');
+      } else if (amount > 0) {
+        if (
+          GameState.getGameProp('character') === 'furbuddy' &&
+          (itemProps?.name === 'meat' || itemProps?.name === 'roasted-meat')
+        ) {
+          itemSlot.classList.remove('active');
+          itemSlot.classList.add('inactive');
         } else {
-          itemSlot.classList.remove('already');
+          itemSlot.classList.remove('inactive');
+          itemSlot.classList.add('active');
         }
+        itemSlot.querySelector('.amount').textContent = amount;
+      } else {
+        itemSlot.querySelector('.amount').textContent = '';
+        itemSlot.classList.remove('active');
+        itemSlot.classList.add('inactive');
+      }
+      if (crafting) {
+        itemSlot.classList.add('already');
+      } else {
+        itemSlot.classList.remove('already');
       }
     }
   },
