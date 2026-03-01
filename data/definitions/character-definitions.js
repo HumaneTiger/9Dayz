@@ -98,7 +98,7 @@ export default {
 
   craftsmaniac: {
     inventoryPreset: {
-      spanner: 1,
+      fail: 1,
       tape: 1,
       knife: 1,
       'drink-2': 1,
