@@ -399,7 +399,17 @@
   font-size: 0.6em;
 }
 
-@media screen and (max-height: 860px) {
+@media screen and (max-height: 1020px) {
+  #startscreen .screen__2a .container {
+    transform: translateY(-50%) scale(0.9);
+    top: 49%;
+  }
+  #startscreen .screen__2a p.screen__logo {
+    display: none;
+  }
+}
+
+@media screen and (max-height: 880px) {
   #startscreen .screen__2a .container {
     transform: translateY(-50%) scale(0.8);
     top: 49%;
