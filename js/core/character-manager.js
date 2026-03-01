@@ -1,5 +1,6 @@
 // @ts-check
 import { CharacterDefinitions } from '../../data/index.js';
+import { GameState, PlayerManager } from './index.js';
 
 export default {
   /**
@@ -33,5 +34,31 @@ export default {
     return (
       (slot1?.classList.contains('active') ? 1 : 0) + (slot2?.classList.contains('active') ? 1 : 0)
     );
+  },
+
+  applyHighCalorieConsumptionChanges: function () {
+    const character = GameState.getGameProp('character');
+    if (character === 'snackivore') {
+      PlayerManager.changePlayerProp('energy', -1);
+      PlayerManager.changePlayerProp('thirst', -1);
+      PlayerManager.changePlayerProp('food', -1);
+    }
+    // hardcharger will be another candidate here
+  },
+
+  /**
+   * Calculates the modifyDamage for a card at the given index in the battle deck, based on the character and the item
+   * @param {string} itemName
+   * @returns {number} - the modifyDamage based on the character and the item
+   */
+  calculateModifyDamageForItem: function (itemName) {
+    if (GameState.getGameProp('character') === 'snackivore') {
+      const itemModifier = this.getItemModifier('snackivore', itemName);
+      /** all items with negative effects (natural food) deal one extra damage */
+      if (itemModifier && itemModifier[0] < 0) {
+        return 1;
+      }
+    }
+    return 0;
   },
 };

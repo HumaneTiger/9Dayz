@@ -171,26 +171,6 @@ export default {
   },
 
   /**
-   * Calculates the modifyDamage for a card at the given index in the battle deck, based on the character and the item
-   * @param {number} index
-   * @returns {number} - the modifyDamage based on the character and the item
-   */
-  calculateModifyDamageForItem: function (index) {
-    let modifyDamage = 0;
-    if (GameState.getGameProp('character') === 'snackivore') {
-      const itemModifier = CharacterManager.getItemModifier(
-        'snackivore',
-        CardsDefinitions.battleDeck[index].name
-      );
-      /** all items with negative effects (natural food) deal one extra damage */
-      if (itemModifier && itemModifier[0] < 0) {
-        modifyDamage = 1;
-      }
-    }
-    return modifyDamage;
-  },
-
-  /**
    * @returns {number} - the number of spared tools
    */
   generateBattleDeck: function () {
@@ -226,7 +206,7 @@ export default {
           CardsDefinitions.battleDeck.push(
             this.getBattleCard({
               damage: inventoryItemsAndWeapons[item].damage,
-              modifyDamage: this.calculateModifyDamageForItem(i) || 0,
+              modifyDamage: CharacterManager.calculateModifyDamageForItem(item) || 0,
               id: i,
               name: item,
               protection: inventoryItemsAndWeapons[item].protection || 0,

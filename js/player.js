@@ -1,4 +1,10 @@
-import { EventManager, EVENTS, PlayerManager, ObjectState } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  PlayerManager,
+  ObjectState,
+  CharacterManager,
+} from './core/index.js';
 import Props from './props.js';
 import Cards from './cards.js';
 import Map from './map.js';
@@ -195,11 +201,7 @@ export default {
       Props.changePlayerProp('food', -1);
     }
 
-    if (Props.getGameProp('character') === 'snackivore') {
-      Props.changePlayerProp('energy', -1);
-      Props.changePlayerProp('thirst', -1);
-      Props.changePlayerProp('food', -1);
-    }
+    CharacterManager.applyHighCalorieConsumptionChanges();
 
     if (this.getProp('food') <= 0) Props.changePlayerProp('health', -5);
     if (this.getProp('thirst') <= 0) Props.changePlayerProp('health', -5);
