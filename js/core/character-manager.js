@@ -78,4 +78,9 @@ export default {
     }
     return false;
   },
+
+  shouldPreserveUpgradeResources: function () {
+    const character = GameState.getGameProp('character');
+    return character === 'craftsmaniac' && Math.random() * 10 <= 2.25 ? true : false;
+  },
 };

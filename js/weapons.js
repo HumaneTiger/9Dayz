@@ -3,7 +3,7 @@ import Items from './items.js';
 import Player from './player.js';
 import Audio from './audio.js';
 import Events, { EVENTS } from './core/event-manager.js';
-import { WeaponsManager } from './core/index.js';
+import { WeaponsManager, CharacterManager } from './core/index.js';
 
 const weaponSlotsContainer = document.getElementById('character');
 const slot1 = weaponSlotsContainer.querySelector('.slot-1');
@@ -67,10 +67,6 @@ export default {
       const weaponName = cardSlot.dataset?.item;
       const weaponInstance = Props.getWeaponFromInventory(weaponName);
       const weaponPropsUpgrade = Props.getWeaponPropsUpgrades(weaponName);
-      const preserveResources =
-        Props.getGameProp('character') === 'craftsmaniac' && Math.random() * 10 <= 2.25
-          ? true
-          : false;
       if (weaponPropsUpgrade) {
         const upgradeType = this.getUpgradeType(upgradeButton);
         switch (upgradeType) {
@@ -78,24 +74,33 @@ export default {
             if (Items.inventoryContains(weaponPropsUpgrade.attack.item)) {
               weaponInstance.damage += weaponPropsUpgrade.attack.amount;
               Audio.sfx('improve-weapon');
-              if (!preserveResources) {
+              if (!CharacterManager.shouldPreserveUpgradeResources()) {
                 Props.addItemToInventory(weaponPropsUpgrade.attack.item, -1);
+              } else {
+                // TODO: show some feedback that the upgrade was applied but the resource was preserved (e.g. different sound, visual effect, etc.)
               }
+              this.updateWeaponState();
             }
             break;
           case 'defense-upgrade':
             weaponInstance.protection += weaponPropsUpgrade.defense.amount;
             Audio.sfx('improve-weapon');
-            if (!preserveResources) {
+            if (!CharacterManager.shouldPreserveUpgradeResources()) {
               Props.addItemToInventory(weaponPropsUpgrade.defense.item, -1);
+            } else {
+              // TODO: show some feedback
             }
+            this.updateWeaponState();
             break;
           case 'durability-upgrade':
             weaponInstance.durability += weaponPropsUpgrade.durability.amount;
             Audio.sfx('repair-weapon');
-            if (!preserveResources) {
+            if (!CharacterManager.shouldPreserveUpgradeResources()) {
               Props.addItemToInventory(weaponPropsUpgrade.durability.item, -1);
+            } else {
+              // TODO: show some feedback
             }
+            this.updateWeaponState();
             break;
           default:
             break;
