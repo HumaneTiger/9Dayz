@@ -310,10 +310,13 @@ export default {
   },
 
   spawnBattleDeck: function (surprised) {
-    const sparedTools = CardsManager.generateBattleDeck();
+    const sparedItems = CardsManager.generateBattleDeck();
     const battleDeck = CardsManager.getBattleDeck();
-    if (sparedTools > 0) {
-      this.showBattleMessage('Craftsmaniac spares ' + sparedTools + ' tools', 2000);
+    if (sparedItems > 0) {
+      this.showBattleMessage(
+        `${GameState.getGameProp('character')} spares ${sparedItems} items`,
+        2000
+      );
     }
     /* generate draw pile */
     for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {

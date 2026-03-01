@@ -171,12 +171,12 @@ export default {
   },
 
   /**
-   * @returns {number} - the number of spared tools
+   * @returns {number} - the number of spared items
    */
   generateBattleDeck: function () {
     CardsDefinitions.battleDeck = [];
     const inventory = InventoryManager.getInventory();
-    let sparedTools = 0;
+    let sparedItems = 0;
     const inventoryItemsAndWeapons = {
       ...inventory.items,
       ...inventory.weapons,
@@ -197,11 +197,8 @@ export default {
     const sortedKeys = Object.keys(inventoryItemsAndWeapons).sort((a, b) => a.localeCompare(b));
     for (const item of sortedKeys) {
       for (let i = 0; i < inventoryItemsAndWeapons[item].amount; i++) {
-        if (
-          GameState.getGameProp('character') === 'craftsmaniac' &&
-          ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'nails'].includes(item)
-        ) {
-          sparedTools += 1;
+        if (CharacterManager.shouldExcludeItemFromBattle(item)) {
+          sparedItems += 1;
         } else {
           CardsDefinitions.battleDeck.push(
             this.getBattleCard({
@@ -215,7 +212,7 @@ export default {
         }
       }
     }
-    return sparedTools;
+    return sparedItems;
   },
 
   /**

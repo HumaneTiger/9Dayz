@@ -61,4 +61,21 @@ export default {
     }
     return 0;
   },
+
+  /**
+   * @param {string} itemName
+   * @returns {boolean} - whether the item should be excluded from battle cards based on the character
+   */
+  shouldExcludeItemFromBattle: function (itemName) {
+    const character = GameState.getGameProp('character');
+    if (
+      character === 'craftsmaniac' &&
+      ['fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'spanner', 'nails'].includes(itemName)
+    ) {
+      return true;
+    } else if (character === 'furbuddy' && ['meat', 'roasted-meat', 'bones'].includes(itemName)) {
+      return true;
+    }
+    return false;
+  },
 };
