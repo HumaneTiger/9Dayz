@@ -155,8 +155,8 @@ export default {
 
   removeAction(actionId, cardRef, object) {
     // find index and remove if present
-    if (!object.actions) {
-      console.log('object has no actions', object);
+    if (!cardRef || !object.actions) {
+      console.log('no matching card or object has no actions', object);
       return;
     }
     const idx = object.actions.findIndex(a => a.id === actionId);
@@ -169,6 +169,10 @@ export default {
 
   revealAction(actionId, cardRef, object) {
     // only reveal if action exists on the object
+    if (!cardRef || !object.actions) {
+      console.log('no matching card or object has no actions', object);
+      return;
+    }
     if (object.actions.some(a => a.id === actionId)) {
       cardRef?.querySelector('li.' + actionId)?.classList.remove('is--hidden');
     }

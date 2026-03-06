@@ -11,6 +11,7 @@ import { default as Cooking } from './cooking.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 import Preloading from './preloading.js';
+import { ObjectFactory } from './core/index.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -92,6 +93,18 @@ export default {
     if (Props.getGameProp('local')) {
       //Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       //Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
+      /*
+      ObjectFactory.setupWeapon(
+        Props.getGameProp('playerPosition').x,
+        Props.getGameProp('playerPosition').y,
+        'barricades'
+      );
+      ObjectFactory.setZedAt(
+        Props.getGameProp('playerPosition').x,
+        Props.getGameProp('playerPosition').y - 1,
+        4
+      );
+      */
       /*
       Props.addItemToInventory('honey', 1);
       Props.addItemToInventory('fruit-1', 1);

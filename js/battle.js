@@ -22,6 +22,7 @@ import TimingUtils from './utils/timing-utils.js';
 const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
 const battleCompanionContainer = document.querySelector('#companion-cards');
+const defensiveCardsContainer = document.querySelector('#defensive-cards');
 const battleHealthMeter = document.querySelector('#properties li.health');
 const scratch = document.querySelector('.scratch');
 
@@ -206,6 +207,8 @@ export default {
     Weapons.updateWeaponState();
     document.getElementById('cards').classList.add('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
+    defensiveCardsContainer.classList.remove('heavy-shake');
+    defensiveCardsContainer.classList.remove('is--hidden');
 
     Player.resetPreviewProps();
 
@@ -218,11 +221,12 @@ export default {
       document.getElementById('properties').classList.remove('active');
       document.getElementById('actions').classList.remove('active');
       document.querySelector('#cards .cards-blocker').classList.add('active');
+      defensiveCardsContainer.classList.add('in-battle');
     }, 600);
   },
 
-  includeBarricade: function () {
-    /* crafted objects get placed at players position, so player should be the reference position */
+  includeDefensiveObjects: function () {
+    /* defensive objects stand around the player, so player should be the reference position */
     const playerPosition = GameState.getGameProp('playerPosition');
     const allFoundObjectIds = ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y);
     const barricadesOnly = allFoundObjectIds.filter(
@@ -230,11 +234,47 @@ export default {
     );
     if (barricadesOnly.length > 0) {
       BattleManager.includeBarricadesInBattle(barricadesOnly);
-      /* add dedicated "battle card" with title and durability */
-      /* blue icon for 4 protection */
-      /* add 4 protection by default each turn as long as card is present */
-      /* has 10 durability when it spawns to make it worth it */
     }
+    this.updateDefensiveCardsContainer();
+  },
+
+  updateDefensiveCardsContainer: function () {
+    const defensiveDeck = BattleManager.getDefensiveDeck();
+    if (!defensiveDeck || defensiveDeck.length === 0) {
+      return;
+    }
+    defensiveCardsContainer.innerHTML = '';
+    for (var i = defensiveDeck.length; i > 0; i -= 1) {
+      const defensiveObject = Props.getObject(defensiveDeck[i - 1]);
+      if (defensiveObject.durability > 0) {
+        this.addDefensiveCard(defensiveObject, (i - 1) * 15);
+      }
+    }
+  },
+
+  addDefensiveCard: function (defensiveObject, offsetX = 0) {
+    const durabilityMarkup = this.createDurabilityMarkup(
+      defensiveObject.name,
+      defensiveObject.durability || 0
+    );
+    const cardMarkup =
+      '<div style="margin-left: ' +
+      offsetX +
+      'px;" class="battle-card" data-item="' +
+      defensiveObject.name +
+      '"><div class="inner">' +
+      '<img class="item-pic" src="./img/weapons/' +
+      defensiveObject.name.toLowerCase() +
+      '.png">' +
+      '<div class="attack">' +
+      defensiveObject.attack +
+      '</div><div class="shield">' +
+      defensiveObject.defense +
+      '</div>' +
+      durabilityMarkup +
+      '</div></div>';
+
+    defensiveCardsContainer.insertAdjacentHTML('beforeend', cardMarkup);
   },
 
   startBattle(surprised, singleZedId) {
@@ -246,7 +286,7 @@ export default {
     if (cardZedDeck.length > 0) {
       this.spawnZedDeck(cardZedDeck);
       this.enterUIBattleMode();
-      this.includeBarricade();
+      this.includeDefensiveObjects();
       window.setTimeout(() => {
         this.spawnBattleDeck(surprised);
       }, 600);
@@ -345,6 +385,9 @@ export default {
       // Hide Battle UI
       document.getElementById('battle-cards').classList.add('is--hidden');
       battleCompanionContainer.classList.add('is--hidden');
+      defensiveCardsContainer.innerHTML = '';
+      defensiveCardsContainer.classList.remove('in-battle');
+      defensiveCardsContainer.classList.add('is--hidden');
 
       battleDrawContainer.innerHTML = '';
       battlePlayContainer.innerHTML = '';
@@ -377,6 +420,7 @@ export default {
   endBattle: async function () {
     BattleManager.removeBattleDeck();
     const cardZedDeck = BattleManager.getOpponentDeck();
+    const defensiveDeck = BattleManager.getDefensiveDeck();
     Companion.updateCompanionSlot();
     await this.leaveUIBattleMode();
     cardZedDeck.forEach(function (zedId) {
@@ -392,15 +436,29 @@ export default {
       }
       CardsMarkup.hideActionFeedback(zedCardRef);
     });
+    defensiveDeck.forEach(function (defensiveId) {
+      const defensiveObject = Props.getObject(defensiveId);
+      const defensiveCardRef = Cards.getCardById(defensiveId);
+      if (defensiveObject.durability <= 0) {
+        Cards.removeAction('rest', defensiveCardRef, defensiveObject);
+      }
+    });
     ActionsOrchestration.endAction(cardZedDeck[0]);
     ActionsOrchestration.goBackFromAction();
     BattleManager.removeOpponentDeck();
+    BattleManager.removeDefensiveDeck();
   },
 
   nextTurn: function () {
     Props.changePlayerProp('protection', -100);
     Props.changePlayerProp('actions', -100);
     Props.changePlayerProp('actions', 3);
+
+    const firstDurableCard = BattleManager.getFirstDurableCardFromDefensiveDeck();
+    if (firstDurableCard) {
+      /* add protection from first defensive card if present */
+      Props.changePlayerProp('protection', firstDurableCard.defense);
+    }
 
     document.querySelector('#action-points-warning .very-low')?.classList.add('is--hidden');
     document.querySelector('#action-points-warning .low')?.classList.add('is--hidden');
@@ -461,19 +519,24 @@ export default {
     }
   },
 
+  createDurabilityMarkup: function (weaponName, durability) {
+    const weaponDefiniton = Props.getWeaponDefinition(weaponName);
+    const maxDurabilityChars = '◈'.repeat(weaponDefiniton.durability);
+    return (
+      '<span class="durability">' +
+      maxDurabilityChars.substring(0, durability) +
+      '<u>' +
+      maxDurabilityChars.substring(0, maxDurabilityChars.length - durability) +
+      '</u>' +
+      '</span>'
+    );
+  },
+
   getDurabilityMarkup: function (itemName) {
     if (Props.isWeapon(itemName)) {
-      const weapon = WeaponsManager.getWeaponFromInventory(itemName);
-      if (weapon.durability && weapon.durability > 0) {
-        const maxDurabilityChars = '◈'.repeat(weapon.durability);
-        return (
-          '<span class="durability">' +
-          maxDurabilityChars.substring(0, weapon.durability) +
-          '<u>' +
-          maxDurabilityChars.substring(0, maxDurabilityChars.length - weapon.durability) +
-          '</u>' +
-          '</span>'
-        );
+      const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
+      if (inventoryWeapon.durability && inventoryWeapon.durability > 0) {
+        return this.createDurabilityMarkup(itemName, inventoryWeapon.durability);
       }
     }
     if (CompanionManager.isCompanion(itemName)) {
@@ -496,8 +559,8 @@ export default {
   getLastUseMarkup: function (itemName) {
     if (Props.isWeapon(itemName)) {
       /* get weapon from inventory as it contains the actual durability */
-      const weapon = WeaponsManager.getWeaponFromInventory(itemName);
-      return weapon.durability === 1
+      const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
+      return inventoryWeapon.durability === 1
         ? '<img class="last-use" src="./img/weapons/last-use.png">'
         : '';
     }
@@ -510,30 +573,35 @@ export default {
     return '';
   },
 
-  addCardToPlay: function (itemName) {
+  getCardMarkup: function (itemName) {
     const card = BattleManager.getBattleDeckCard(itemName);
     const modifyDamageMarkup =
-      card.modifyDamage > 0 ? '<span class="modify">(+' + card.modifyDamage + ')<span>' : '';
+      card?.modifyDamage && card.modifyDamage > 0
+        ? '<span class="modify">(+' + card.modifyDamage + ')<span>'
+        : '';
     const durabilityMarkup = this.getDurabilityMarkup(itemName);
     const pictureMarkup = this.getPictureMarkup(itemName);
     const lastUseMarkup = this.getLastUseMarkup(itemName);
 
-    battlePlayContainer.insertAdjacentHTML(
-      'beforeend',
+    return (
       '<div class="battle-card inactive" data-item="' +
-        card.name +
-        '"><div class="inner">' +
-        pictureMarkup +
-        lastUseMarkup +
-        '<div class="attack">' +
-        (card.damage + card.modifyDamage) +
-        modifyDamageMarkup +
-        '</div><div class="shield">' +
-        card.protection +
-        '</div>' +
-        durabilityMarkup +
-        '</div></div>'
+      card.name +
+      '"><div class="inner">' +
+      pictureMarkup +
+      lastUseMarkup +
+      '<div class="attack">' +
+      (card.damage + card.modifyDamage) +
+      modifyDamageMarkup +
+      '</div><div class="shield">' +
+      card.protection +
+      '</div>' +
+      durabilityMarkup +
+      '</div></div>'
     );
+  },
+
+  addCardToPlay: function (itemName) {
+    battlePlayContainer.insertAdjacentHTML('beforeend', this.getCardMarkup(itemName));
   },
 
   resolveSingleAttack: function (dragEl, dragTarget) {
@@ -603,13 +671,9 @@ export default {
     );
   },
 
-  resolveAttack: function (itemName, dragTarget) {
-    const zedId = dragTarget.id;
+  updateZedCard: function (zedId) {
     const zedObject = Props.getObject(zedId);
     const zedCardRef = Cards.getCardById(zedId);
-    const battleCard = BattleManager.getBattleDeckCard(itemName);
-    this.showBattleStats('+' + battleCard.protection, 'blue');
-    zedObject.defense -= battleCard.damage + battleCard.modifyDamage;
     if (zedObject.defense <= 0) {
       zedCardRef.classList.add('dead');
       zedObject.dead = true;
@@ -617,6 +681,15 @@ export default {
     } else {
       zedCardRef.querySelector('.health').textContent = zedObject.defense;
     }
+  },
+
+  resolveAttack: function (itemName, dragTarget) {
+    const zedId = dragTarget.id;
+    const zedObject = Props.getObject(zedId);
+    const battleCard = BattleManager.getBattleDeckCard(itemName);
+    this.showBattleStats('+' + battleCard.protection, 'blue');
+    zedObject.defense -= battleCard.damage + battleCard.modifyDamage;
+    this.updateZedCard(zedId);
   },
 
   endAttack: function () {
@@ -627,14 +700,20 @@ export default {
     // refresh inventory slots
     Items.fillInventorySlots();
     // decide next steps
+    if (!this.checkForAllZedsDefeated() && Player.getProp('actions') === 0) {
+      this.endTurn();
+    }
+  },
+
+  checkForAllZedsDefeated: function () {
     if (BattleManager.zedIsDead()) {
       window.setTimeout(() => {
         Props.changePlayerProp('energy', -15);
         this.endBattle();
       }, 800);
-    } else if (Player.getProp('actions') === 0) {
-      this.endTurn();
+      return true;
     }
+    return false;
   },
 
   endTurn: function () {
@@ -681,13 +760,28 @@ export default {
               Props.addItemToInventory(foodItem.name, -1);
               //remove item from battle deck
               BattleManager.removeFromBattleDeck(foodItem.name);
-              /*battleDeckProps.number = battleDeck.length;*/
               this.renderDrawPile();
               this.showBattleStats(foodItem.name, 'image');
             }
           }
           if (!ratAteFood) {
             const attack = zedObject.attack;
+            const defensiveCard = BattleManager.getFirstDurableCardFromDefensiveDeck();
+            if (defensiveCard) {
+              defensiveCardsContainer.classList.add('heavy-shake');
+              /* we already added the protection effect of that card */
+              /* here we apply the cards damage to the zed */
+              /* we also check if zed is dead before zeds damage is applied to the player */
+              zedObject.defense -= defensiveCard.attack;
+              this.updateZedCard(zedId);
+              /* reduce durability or defensive card itself */
+              defensiveCard.durability -= 1;
+              if (defensiveCard.durability <= 0) {
+                this.showBattleMessage('Your ' + defensiveCard.name + ' broke!', 2000);
+              }
+              this.updateDefensiveCardsContainer();
+            }
+            /* zed is dealing damage to player even if it died from defensive card */
             const dmg = Player.getProp('protection') - attack;
             if (dmg < 0) {
               Props.changePlayerProp('health', dmg);
@@ -707,6 +801,7 @@ export default {
         () => {
           zedCardRef.classList.add('anim-punch');
           battleHealthMeter.classList.remove('heavy-shake');
+          defensiveCardsContainer.classList.remove('heavy-shake');
           if (zedObject.name === 'rat') {
             Audio.sfx('rat-attacks');
           } else if (zedObject.name === 'bee') {
@@ -727,7 +822,7 @@ export default {
           zedCardRef.classList.remove('attacking');
           zedCardRef.classList.remove('anim-punch');
         });
-        if (!Player.checkForDeath(false)) {
+        if (!this.checkForAllZedsDefeated() && !Player.checkForDeath(false)) {
           this.nextTurn();
         }
       },

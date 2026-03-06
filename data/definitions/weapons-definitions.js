@@ -42,6 +42,7 @@ const weapons = {
   'wooden-club': { attack: 6, defense: 3, durability: 3 },
   'improvised-whip': { attack: 3, defense: 3, durability: 3 },
   'fishing-rod': { attack: 2, defense: 1, durability: 4 },
+  barricades: { attack: 2, defense: 8, durability: 4 },
 };
 
 /** @type {Record<string, WeaponUpgrades>} */

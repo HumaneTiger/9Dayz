@@ -168,6 +168,21 @@ export default {
   },
 
   /**
+   * Removes an object ID from the specified coordinates
+   * @param {number} x
+   * @param {number} y
+   * @param {number} id
+   */
+  removeObjectIdAt: function (x, y, id) {
+    if (objectIdsAt[x] && objectIdsAt[x][y]) {
+      const index = objectIdsAt[x][y].indexOf(id);
+      if (index > -1) {
+        objectIdsAt[x][y].splice(index, 1);
+      }
+    }
+  },
+
+  /**
    * @param {number} x
    * @param {number} y
    * @returns {GameObject[]}

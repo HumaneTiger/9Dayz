@@ -1,6 +1,7 @@
 // @ts-check
 /**
- * @import { BattleCard, BattleDeck, OpponentDeck } from '../../data/definitions/cards-definitions.js'
+ * @import { BattleCard, BattleDeck, DefensiveDeck, OpponentDeck } from '../../data/definitions/cards-definitions.js'
+ * @import { GameObject } from './object-state.js'
  */
 
 import { CardsDefinitions } from '../../data/index.js';
@@ -162,11 +163,58 @@ export default {
    * @param {number[]} barricadeIds
    */
   includeBarricadesInBattle: function (barricadeIds) {
-    console.log(barricadeIds);
     barricadeIds.forEach(id => {
-      let barricadeObject = ObjectState.getObject(id);
-      console.log(barricadeObject);
+      this.addIdToDefensiveDeck(id);
     });
+  },
+
+  /**
+   * @returns {DefensiveDeck}
+   */
+  getDefensiveDeck: function () {
+    return CardsDefinitions.defensiveDeck;
+  },
+
+  /**
+   *
+   * @returns {GameObject|null} the first defensive card object in the defensive deck that has durability left, or null if there are no such cards
+   */
+  getFirstDurableCardFromDefensiveDeck: function () {
+    const defensiveDeck = CardsDefinitions.defensiveDeck;
+    const firstCardId = defensiveDeck.find(id => {
+      const defensiveObject = ObjectState.getObject(id);
+      return defensiveObject.durability && defensiveObject.durability > 0;
+    });
+    if (firstCardId === undefined) {
+      return null;
+    }
+    return ObjectState.getObject(firstCardId);
+  },
+
+  /**
+   * @param {number} id
+   * @returns {DefensiveDeck} the updated defensive deck with the new id added
+   */
+  addIdToDefensiveDeck: function (id) {
+    CardsDefinitions.defensiveDeck.push(id);
+    return CardsDefinitions.defensiveDeck;
+  },
+
+  /**
+   * @param {number} id
+   */
+  removeIdFromDefensiveDeck: function (id) {
+    const index = CardsDefinitions.defensiveDeck.indexOf(id);
+    if (index > -1) {
+      CardsDefinitions.defensiveDeck.splice(index, 1);
+    }
+  },
+
+  /**
+   * Removes all cards from the defensive deck, effectively resetting it for the next battle
+   */
+  removeDefensiveDeck: function () {
+    CardsDefinitions.defensiveDeck = [];
   },
 
   /**

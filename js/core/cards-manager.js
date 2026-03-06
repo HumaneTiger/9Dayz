@@ -40,9 +40,13 @@ export default {
     // removing all removed ids at the very end outside the foreach
     // doing it the very old school "go backward" way, as this is the most solid approach to avoid any kind of crazy problems
     for (let i = CardsDefinitions.cardDeck.length - 1; i >= 0; i--) {
-      const object = ObjectState.getObject(CardsDefinitions.cardDeck[i].id);
+      const objectId = CardsDefinitions.cardDeck[i].id;
+      const object = ObjectState.getObject(objectId);
       if (object.removed) {
         CardsDefinitions.cardDeck.splice(i, 1);
+        if (object.x !== undefined && object.y !== undefined) {
+          ObjectState.removeObjectIdAt(object.x, object.y, objectId);
+        }
       }
     }
   },

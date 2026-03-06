@@ -20,6 +20,14 @@
  * @property {number} protection
  */
 
+/**
+ * @typedef {number} DefensiveCard
+ */
+
+/**
+ * @typedef {Array<DefensiveCard>} DefensiveDeck
+ */
+
 export default {
   /** @type {CardDeck} */
   cardDeck: [],
@@ -27,4 +35,6 @@ export default {
   battleDeck: [],
   /** @type {OpponentDeck} */
   opponentDeck: [],
+  /** @type {DefensiveDeck} */
+  defensiveDeck: [],
 };

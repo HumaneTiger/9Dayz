@@ -109,12 +109,37 @@ export default {
   /* === Object type methods === */
 
   /**
+   * Get available actions for an object based on type and name
+   * Filters object actions by:
+   * - excludeObjects: removes actions for specific object names
+   * - includeObjects: restricts actions to specific object names only
+   *
    * @param {string} objectType - Game object type (zombie, creature, animal, etc.)
+   * @param {string} objectName - Name of the specific game object
    * @returns {GameAction[]} Array of available actions for that object type
    */
-  getActionsForGameObjectType: function (objectType) {
+  getActionsForGameObject: function (objectType, objectName) {
     const actions = ActionsDefinitions.objectTypeActions[objectType];
-    return actions ? JSON.parse(JSON.stringify(actions)) : [];
+    if (!actions) return [];
+
+    return actions
+      .filter(action => {
+        // Skip if excluded for this object name
+        if (action.excludeObjects && action.excludeObjects.includes(objectName)) {
+          return false;
+        }
+
+        // Skip if restricted to specific objects and this object is not included
+        if (action.includeObjects && !action.includeObjects.includes(objectName)) {
+          return false;
+        }
+
+        return true;
+      })
+      .map(action => {
+        // Deep copy the action object
+        return JSON.parse(JSON.stringify(action));
+      });
   },
 
   /* === Building action methods === */

@@ -13,6 +13,8 @@
  * @property {string[]} [excludeBuildings] - Building names where this action doesn't apply
  * @property {string[]} [excludeCharacters] - Character types that cannot perform this action
  * @property {string[]} [forCharactersOnly] - If set, only these characters can perform this action
+ * @property {string[]} [excludeObjects] - Object names where this action doesn't apply
+ * @property {string[]} [includeObjects] - If set, only these objects can be acted upon with this action
  * @export
  */
 
@@ -196,7 +198,10 @@ export default {
       { id: 'scare', label: 'Scare Away', time: 5, energy: -5 },
       { id: 'cut', label: 'Cut', time: 20, energy: -15 },
     ],
-    weapon: [{ id: 'equip', label: 'Equip' }],
+    weapon: [
+      { id: 'equip', label: 'Equip', excludeObjects: ['barricades'] },
+      { id: 'rest', label: 'Rest', time: 60, energy: 20, includeObjects: ['barricades'] },
+    ],
     event: [{ id: 'got-it', label: 'Got it!' }],
   },
 
@@ -333,7 +338,7 @@ export default {
         label: 'break door',
         time: 10,
         energy: -15,
-        excludeBuildings: ['fireplace', 'seating', 'outhouse', 'barricades'],
+        excludeBuildings: ['fireplace', 'seating', 'outhouse'],
         requiresLocked: true,
       },
       {
@@ -342,7 +347,7 @@ export default {
         time: 20,
         energy: -10,
         needsUnlock: true,
-        excludeBuildings: ['fireplace', 'barricades'],
+        excludeBuildings: ['fireplace'],
       },
       {
         id: 'rest',
@@ -357,7 +362,7 @@ export default {
         label: 'cook',
         time: 30,
         excludeCharacters: ['craftsmaniac', 'cashmeister'],
-        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'barricades'],
+        excludeBuildings: ['log-cabine', 'outhouse', 'seating'],
       },
       {
         id: 'sleep',
@@ -365,7 +370,7 @@ export default {
         time: 120,
         energy: 60,
         forCharactersOnly: ['treehugger'],
-        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'barricades'],
+        excludeBuildings: ['log-cabine', 'outhouse', 'seating'],
       },
     ],
     corpse: [{ id: 'search', label: 'search', time: 15, energy: -5, needsUnlock: true }],
