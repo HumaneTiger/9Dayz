@@ -333,7 +333,7 @@ export default {
         label: 'break door',
         time: 10,
         energy: -15,
-        excludeBuildings: ['fireplace', 'seating', 'outhouse'],
+        excludeBuildings: ['fireplace', 'seating', 'outhouse', 'barricades'],
         requiresLocked: true,
       },
       {
@@ -342,9 +342,15 @@ export default {
         time: 20,
         energy: -10,
         needsUnlock: true,
-        excludeBuildings: ['fireplace'],
+        excludeBuildings: ['fireplace', 'barricades'],
       },
-      { id: 'rest', label: 'rest', time: 60, energy: 20, needsUnlock: true },
+      {
+        id: 'rest',
+        label: 'rest',
+        time: 60,
+        energy: 20,
+        needsUnlock: true,
+      },
       // Fireplace-specific actions
       {
         id: 'cook',

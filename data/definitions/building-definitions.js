@@ -257,7 +257,7 @@ export default {
       items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'],
     },
     fireplace: { locked: 0, spawn: 0, items: [] },
-    barricades: { locked: 0, spawn: 0, items: [], preview: true },
+    barricades: { locked: 0, spawn: 0, items: [] },
     crate: { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'] }, // always locked
     'human-corpse-1': {
       locked: 0,
