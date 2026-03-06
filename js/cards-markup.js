@@ -286,6 +286,7 @@ export default {
       !(
         object.name.startsWith('signpost') ||
         object.name === 'fireplace' ||
+        object.name === 'barricades' ||
         object.name === 'bee' ||
         object.name === 'key'
       )
