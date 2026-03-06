@@ -11,11 +11,11 @@ import Weapons from './weapons.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
 import {
-  CardsManager,
   WeaponsManager,
   CompanionManager,
   ObjectState,
   GameState,
+  BattleManager,
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -25,7 +25,6 @@ const battleCompanionContainer = document.querySelector('#companion-cards');
 const battleHealthMeter = document.querySelector('#properties li.health');
 const scratch = document.querySelector('.scratch');
 
-//let cardZedDeck = [];
 let allDrawPileCards = [];
 
 export default {
@@ -86,7 +85,7 @@ export default {
       return;
     }
     this.prepareBattle();
-    const cardZedDeck = CardsManager.addIdToOpponentDeck(singleZedId);
+    const cardZedDeck = BattleManager.addIdToOpponentDeck(singleZedId);
     this.spawnZedDeck(cardZedDeck);
     this.enterUIBattleMode();
     // start auto battle after short delay
@@ -230,7 +229,7 @@ export default {
       singleObject => Props.getObject(singleObject).name === 'barricades'
     );
     if (barricadesOnly.length > 0) {
-      //BattleManager.includeBarricadeInBattle(barricadesOnly[0]);
+      BattleManager.includeBarricadesInBattle(barricadesOnly);
       /* add dedicated "battle card" with title and durability */
       /* blue icon for 4 protection */
       /* add 4 protection by default each turn as long as card is present */
@@ -242,8 +241,8 @@ export default {
     this.prepareBattle();
     // singleZedId is the result of successful luring
     let cardZedDeck = singleZedId
-      ? CardsManager.addIdToOpponentDeck(singleZedId)
-      : CardsManager.addAllZedsNearby();
+      ? BattleManager.addIdToOpponentDeck(singleZedId)
+      : BattleManager.addAllZedsNearby();
     if (cardZedDeck.length > 0) {
       this.spawnZedDeck(cardZedDeck);
       this.enterUIBattleMode();
@@ -263,10 +262,10 @@ export default {
 
   renderDrawPile: function (remainingCards) {
     const totalCards =
-      remainingCards !== undefined ? remainingCards : CardsManager.getBattleDeckSize();
+      remainingCards !== undefined ? remainingCards : BattleManager.getBattleDeckSize();
     document.getElementById('draw-amount').textContent = totalCards;
 
-    const pileSize = Math.min(CardsManager.getBattleDeckSize(), 24);
+    const pileSize = Math.min(BattleManager.getBattleDeckSize(), 24);
     for (let card = 0; card < pileSize; card += 1) {
       if (card < totalCards) {
         allDrawPileCards[card].classList.remove('is--hidden');
@@ -310,8 +309,8 @@ export default {
   },
 
   spawnBattleDeck: function (surprised) {
-    const sparedItems = CardsManager.generateBattleDeck();
-    const battleDeck = CardsManager.getBattleDeck();
+    const sparedItems = BattleManager.generateBattleDeck();
+    const battleDeck = BattleManager.getBattleDeck();
     if (sparedItems > 0) {
       this.showBattleMessage(
         `${GameState.getGameProp('character')} spares ${sparedItems} items`,
@@ -376,8 +375,8 @@ export default {
   },
 
   endBattle: async function () {
-    CardsManager.removeBattleDeck();
-    const cardZedDeck = CardsManager.getOpponentDeck();
+    BattleManager.removeBattleDeck();
+    const cardZedDeck = BattleManager.getOpponentDeck();
     Companion.updateCompanionSlot();
     await this.leaveUIBattleMode();
     cardZedDeck.forEach(function (zedId) {
@@ -395,7 +394,7 @@ export default {
     });
     ActionsOrchestration.endAction(cardZedDeck[0]);
     ActionsOrchestration.goBackFromAction();
-    CardsManager.removeOpponentDeck();
+    BattleManager.removeOpponentDeck();
   },
 
   nextTurn: function () {
@@ -417,7 +416,7 @@ export default {
       document.querySelector('#action-points')?.classList.add('low-energy');
     }
 
-    const battleDeck = CardsManager.getBattleDeck();
+    const battleDeck = BattleManager.getBattleDeck();
 
     // shuffle deck here, this is super important, do not do it later
     // otherwise the drawn cards are not deterministic
@@ -512,7 +511,7 @@ export default {
   },
 
   addCardToPlay: function (itemName) {
-    const card = CardsManager.getBattleDeckCard(itemName);
+    const card = BattleManager.getBattleDeckCard(itemName);
     const modifyDamageMarkup =
       card.modifyDamage > 0 ? '<span class="modify">(+' + card.modifyDamage + ')<span>' : '';
     const durabilityMarkup = this.getDurabilityMarkup(itemName);
@@ -539,18 +538,18 @@ export default {
 
   resolveSingleAttack: function (dragEl, dragTarget) {
     const dragItemName = dragEl.dataset.item;
-    const battleCard = CardsManager.getBattleDeckCard(dragItemName);
+    const battleCard = BattleManager.getBattleDeckCard(dragItemName);
     Props.changePlayerProp('protection', battleCard.protection);
     Props.changePlayerProp('actions', -1);
     this.resolveAttack(dragItemName, dragTarget);
     this.runHitAnimation(dragEl, dragTarget);
-    CardsManager.reduceDurabilityOrRemove(dragItemName);
+    BattleManager.reduceDurabilityOrRemove(dragItemName);
     this.endAttack();
   },
 
   async resolveMultiAttack(dragEl, dragTarget) {
     const zedId = dragTarget.id;
-    const cardZedDeck = CardsManager.getOpponentDeck();
+    const cardZedDeck = BattleManager.getOpponentDeck();
     const targetPositionInDeck = cardZedDeck.indexOf(parseInt(zedId));
     const dragItemName = dragEl.dataset.item;
     const item = Props.isWeapon(dragItemName)
@@ -580,7 +579,7 @@ export default {
       await TimingUtils.wait(150);
     }
 
-    CardsManager.reduceDurabilityOrRemove(dragItemName);
+    BattleManager.reduceDurabilityOrRemove(dragItemName);
     this.endAttack();
   },
 
@@ -608,7 +607,7 @@ export default {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
     const zedCardRef = Cards.getCardById(zedId);
-    const battleCard = CardsManager.getBattleDeckCard(itemName);
+    const battleCard = BattleManager.getBattleDeckCard(itemName);
     this.showBattleStats('+' + battleCard.protection, 'blue');
     zedObject.defense -= battleCard.damage + battleCard.modifyDamage;
     if (zedObject.defense <= 0) {
@@ -622,13 +621,13 @@ export default {
 
   endAttack: function () {
     // check if any items are left
-    if (CardsManager.getBattleDeckSize() === 0) {
+    if (BattleManager.getBattleDeckSize() === 0) {
       this.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
     }
     // refresh inventory slots
     Items.fillInventorySlots();
     // decide next steps
-    if (CardsManager.zedIsDead()) {
+    if (BattleManager.zedIsDead()) {
       window.setTimeout(() => {
         Props.changePlayerProp('energy', -15);
         this.endBattle();
@@ -647,7 +646,7 @@ export default {
       });
     }
     document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
-    if (CardsManager.getBattleDeckSize() <= 0) {
+    if (BattleManager.getBattleDeckSize() <= 0) {
       this.zedAttack();
     } else {
       this.showBattleMessage('Enemies Turn', 800);
@@ -658,8 +657,8 @@ export default {
   },
 
   zedAttack: function () {
-    const delay = CardsManager.getBattleDeckSize() <= 0 ? 400 : 1200;
-    const allAttackingZeds = CardsManager.getOpponentDeck().filter(
+    const delay = BattleManager.getBattleDeckSize() <= 0 ? 400 : 1200;
+    const allAttackingZeds = BattleManager.getOpponentDeck().filter(
       zed => Props.getObject(zed).fighting
     );
 
@@ -681,7 +680,7 @@ export default {
               //remove item from inventory
               Props.addItemToInventory(foodItem.name, -1);
               //remove item from battle deck
-              CardsManager.removeFromBattleDeck(foodItem.name);
+              BattleManager.removeFromBattleDeck(foodItem.name);
               /*battleDeckProps.number = battleDeck.length;*/
               this.renderDrawPile();
               this.showBattleStats(foodItem.name, 'image');
