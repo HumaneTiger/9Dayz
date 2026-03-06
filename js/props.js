@@ -11,7 +11,7 @@ import {
   TutorialManager,
 } from './core/index.js';
 
-import { LocationInstances } from '../../data/index.js';
+import { LocationInstances } from '../data/index.js';
 
 export default {
   init: function () {

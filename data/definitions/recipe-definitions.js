@@ -67,13 +67,13 @@ export default {
       exclusive: true,
       result: 'weapon',
     },
-    fireplace: {
-      items: [['stone'], ['stump'], ['straw-wheet']],
-      exclusive: false,
-      result: 'building',
-    },
     barricades: {
       items: [['rope'], ['stump'], ['sharp-stick']],
+      exclusive: false,
+      result: 'weapon',
+    },
+    fireplace: {
+      items: [['stone'], ['stump'], ['straw-wheet']],
       exclusive: false,
       result: 'building',
     },
