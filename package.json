@@ -1,6 +1,11 @@
 {
+  "scripts": {
+    "build": "node build.js"
+  },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "archiver": "^6.0.0",
+    "rimraf": "^5.0.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",

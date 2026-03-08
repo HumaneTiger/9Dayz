@@ -5,3 +5,4 @@ index.zip
 *.zip
 *.zip
 node_modules/
+dist/
