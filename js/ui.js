@@ -126,6 +126,13 @@ export default {
           ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
       }
     }
+    if (ev.key === 'Escape') {
+      if (window.electronAPI?.isElectron) {
+        if (confirm('Are you sure you want to quit?')) {
+          window.electronAPI.closeApp();
+        }
+      }
+    }
   },
 
   handleMouseWheel: function (ev) {

@@ -83,6 +83,10 @@ export default {
     loader.load(12, 'characters/hero.png');
     loader.load(13, 'ui/day-teaser-left.png');
     loader.load(14, 'ui/day-teaser-right.png');
+    loader.load(15, 'ui/crafting-1.png');
+    loader.load(16, 'ui/crafting-2.png');
+    loader.load(17, 'ui/action-points.png');
+    loader.load(18, 'ui/you.png');
   },
 
   preloadZombies: function () {
