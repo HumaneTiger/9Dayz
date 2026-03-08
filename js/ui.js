@@ -127,10 +127,8 @@ export default {
       }
     }
     if (ev.key === 'Escape') {
-      if (window.electronAPI?.isElectron) {
-        if (confirm('Are you sure you want to quit?')) {
-          window.electronAPI.closeApp();
-        }
+      if (Props.getGameProp('startMode') === -1) {
+        this.toggleInstantQuitConfirmation();
       }
     }
   },
@@ -450,6 +448,43 @@ export default {
     startScreen.querySelector('.screen__win').classList.add('is--hidden');
     startScreen.querySelector('.screen__quit').classList.remove('is--hidden');
     startScreen.style.opacity = 1;
+  },
+
+  toggleInstantQuitConfirmation: async function () {
+    let startScreen = document.getElementById('startscreen');
+    if (window.electronAPI?.isElectron) {
+      startScreen.querySelector('.screen__quit #quit-app').classList.remove('is--hidden');
+    }
+
+    if (startScreen.querySelector('.screen__quit').classList.contains('is--hidden')) {
+      if (!document.getElementById('almanac').classList.contains('out')) {
+        // 1. check for active almanac entry and close it if open
+        Almanac.close(true);
+        return;
+      } else if (document.getElementById('inventory').classList.contains('active')) {
+        // 2. check for open inventory and close it
+        this.closeInventory();
+        return;
+      } else if (document.getElementById('craft').classList.contains('active')) {
+        // 3. check for open crafting and close it
+        this.closeCrafting();
+        return;
+      } else if (!document.getElementById('actions').classList.contains('active')) {
+        // 4. check for hidden UI and bring it back if hidden
+        this.showUI();
+        return;
+      }
+      startScreen.classList.remove('is--hidden');
+      startScreen.style.opacity = 1;
+      startScreen.querySelector('.screen__quit').classList.remove('is--hidden');
+      return;
+    } else {
+      startScreen.querySelector('.screen__quit').classList.add('is--hidden');
+      startScreen.style.opacity = 0;
+      startScreen.classList.add('is--hidden');
+      this.showUI();
+      return;
+    }
   },
 
   handleMapClick: function () {

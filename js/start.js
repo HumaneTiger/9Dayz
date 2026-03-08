@@ -179,6 +179,7 @@ export default {
       'start-tutorial',
       'restart',
       'resume',
+      'quit',
       'card-tutorial-confirm',
     ];
     return classes.find(cls => element.classList.contains(cls));
@@ -242,6 +243,13 @@ export default {
             startscreenContainer.classList.add('is--hidden');
             startscreenContainer.style.opacity = 0;
             Ui.showUI();
+            break;
+          case 'quit':
+            if (window.electronAPI?.isElectron) {
+              window.electronAPI.closeApp();
+            } else {
+              document.location.reload();
+            }
             break;
           case 'card-tutorial-confirm':
             this.prepareGameStart();
@@ -332,6 +340,7 @@ export default {
   },
 
   startGame: async function () {
+    Props.setGameProp('startMode', -1);
     Player.findAndHandleObjects();
     Props.pauseGame(false);
     Audio.playAmbientLoop();
