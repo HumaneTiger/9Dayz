@@ -1,5 +1,6 @@
 import Items from './items.js';
 import Audio from './audio.js';
+import CardsMarkup from './cards-markup.js';
 import { EventManager, EVENTS, RecipesManager, InventoryManager } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -31,9 +32,11 @@ export default {
   },
 
   checkAllCookingModeCards: function () {
+    /* better solution: iterate card deck and find cooking cards, but for now we can just query all cooking cards in the DOM */
     let allCardRefs = document.querySelectorAll('#cards .card.cooking-mode');
     for (let i = 0; i < allCardRefs.length; i += 1) {
       this.checkCookingRecipePrerequisits(allCardRefs[i]);
+      CardsMarkup.updateCardActions(allCardRefs[i].id); // update the 'cook' action number of recipes
     }
   },
 
@@ -81,6 +84,7 @@ export default {
 
   checkForCardClick: function (ev) {
     const target = ev.target;
+    const cardId = target.closest('div.card')?.id;
     const actionButton = target.closest('div.action-button');
     const actionSlotActive = target.closest('div.slot.action.active');
     const cookingContainer = target.closest('.card.cooking-mode');
@@ -98,6 +102,7 @@ export default {
         cookingContainer.classList.remove('full');
         window.setTimeout(() => {
           cookingContainer.classList.remove('cooking-mode');
+          CardsMarkup.updateCardActions(cardId);
         }, 100);
       }
     }

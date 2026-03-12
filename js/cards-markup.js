@@ -7,7 +7,7 @@ import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
-import { CardsManager, CompanionManager, ObjectState } from './core/index.js';
+import { CardsManager, CompanionManager, ObjectState, RecipesManager } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
 
@@ -427,6 +427,16 @@ export default {
             discovered +
             (undiscovered > 0 ? '+?' : '') +
             ')';
+        }
+      }
+      if (action.id === 'cook') {
+        const activeRecipes = RecipesManager.numberOfActiveRecipes();
+        if (activeRecipes > 0) {
+          actionRef.querySelector('span.text').innerHTML =
+            action.label + ' (' + activeRecipes + ')';
+        } else {
+          actionRef.querySelector('.additional-locked').textContent = 'Ingredients missing';
+          actionRef.classList.add('locked');
         }
       }
     });

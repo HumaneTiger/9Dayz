@@ -126,4 +126,25 @@ export default {
     }
     return false;
   },
+
+  numberOfActiveRecipes: function () {
+    const recipes = this.getCookingRecipes();
+    let count = 0;
+
+    for (const recipe in recipes) {
+      const ingredient1 = recipes[recipe][0];
+      const ingredient2 = recipes[recipe][1];
+
+      if (
+        InventoryManager.inventoryKnows(ingredient1) &&
+        InventoryManager.inventoryKnows(ingredient2) &&
+        InventoryManager.inventoryContains(ingredient1) &&
+        InventoryManager.inventoryContains(ingredient2)
+      ) {
+        count++;
+      }
+    }
+
+    return count;
+  },
 };
