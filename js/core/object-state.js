@@ -237,6 +237,20 @@ export default {
   },
 
   /**
+   * Finds all zombies in the 8 surrounding tiles + current tile and returns their ids
+   * @param {number} x
+   * @param {number} y
+   * @returns {number[]}
+   */
+  findAllZedsNearObject: function (x, y) {
+    const allFoundObjectIds = this.findAllObjectsNearby(x, y);
+    const zedsOnly = allFoundObjectIds.filter(
+      singleObject => this.getObject(singleObject).group === 'zombie'
+    );
+    return zedsOnly;
+  },
+
+  /**
    * @param {number} x
    * @param {number} y
    * @returns {number}

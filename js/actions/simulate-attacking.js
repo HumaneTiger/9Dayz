@@ -8,16 +8,13 @@ import { ObjectState } from '../core/index.js';
 
 export default async function simulateAttacking(cardId) {
   const object = Props.getObject(cardId);
-  const allFoundObjectIds = ObjectState.findAllObjectsNearby(object.x, object.y);
+  const zedsOnly = ObjectState.findAllZedsNearObject(object.x, object.y);
 
-  const zedsOnly = allFoundObjectIds.filter(
-    singleObject => Props.getObject(singleObject).group === 'zombie'
-  );
-  Cards.showAllZedsNearby();
+  Cards.showAllZedsNearby(zedsOnly);
   Player.handleFoundObjectIds(zedsOnly);
   Cards.disableActions();
 
   await TimingUtils.wait(800);
   ActionsOrchestration.endAction(cardId);
-  Battle.startBattle();
+  Battle.startBattle(object);
 }

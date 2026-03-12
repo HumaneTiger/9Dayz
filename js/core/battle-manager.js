@@ -11,7 +11,6 @@ import {
   InventoryManager,
   WeaponsManager,
   CompanionManager,
-  CardsManager,
 } from './index.js';
 
 export default {
@@ -234,10 +233,16 @@ export default {
   },
 
   /**
+   * Finds all nearby zeds and adds their ids to the opponent deck
+   * @param {GameObject} object - the object around which to find nearby zeds
    * @returns {OpponentDeck} the updated opponent deck with all nearby zed ids added
    */
-  addAllZedsNearby: function () {
-    const allZedIdsNearby = CardsManager.getAllZedsNearbyIds();
+  addAllZedsNearby: function (object) {
+    if (!object || object.x === undefined || object.y === undefined) {
+      console.warn('Invalid object provided to addAllZedsNearby:', object);
+      return CardsDefinitions.opponentDeck;
+    }
+    const allZedIdsNearby = ObjectState.findAllZedsNearObject(object.x, object.y);
     allZedIdsNearby.forEach(zedId => {
       this.addIdToOpponentDeck(zedId);
     });

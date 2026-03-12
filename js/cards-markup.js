@@ -7,7 +7,7 @@ import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
-import { CardsManager, CompanionManager } from './core/index.js';
+import { CardsManager, CompanionManager, ObjectState } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
 
@@ -405,6 +405,29 @@ export default {
       }
       if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
         actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
+      }
+      if (action.id === 'attack') {
+        const zedsNearby = ObjectState.findAllZedsNearObject(object.x, object.y);
+        if (zedsNearby.length > 1) {
+          let discovered = 0,
+            undiscovered = 0;
+          zedsNearby.forEach(zedId => {
+            const object = Props.getObject(zedId);
+            if (object.discovered) {
+              discovered++;
+            } else {
+              undiscovered++;
+            }
+          });
+          actionRef.classList.add('critical');
+          actionRef.querySelector('span.text').innerHTML =
+            '<span class="material-symbols-outlined alert">release_alert</span> ' +
+            action.label +
+            ' (' +
+            discovered +
+            (undiscovered > 0 ? '+?' : '') +
+            ')';
+        }
       }
     });
   },

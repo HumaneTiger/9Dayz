@@ -22,7 +22,7 @@ export default async function simulateGathering(cardId, time, energy) {
     ActionsUtils.spawnCreaturesIfInfested(cardId);
     await TimingUtils.wait(1200);
     ActionsOrchestration.endAction(cardId);
-    Battle.startBattle(true); // instant attack when place is infested
+    Battle.startBattle(object, true); // instant attack when place is infested
   } else if (allPreviews) {
     /** it's a strange condition, but I think this is what it does:
      * it wants to make sure that the gathering action was never used before

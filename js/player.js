@@ -190,7 +190,7 @@ export default {
       Cards.enableActions();
       if (objectsHere?.some(obj => obj.group === 'zombie' && !obj.dead)) {
         window.setTimeout(() => {
-          Battle.startBattle(true);
+          Battle.startBattle(objectsHere[0], true);
         }, 800);
       }
     }, 0);

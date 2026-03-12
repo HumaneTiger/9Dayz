@@ -136,14 +136,16 @@ export default {
     return document.getElementById(cardId);
   },
 
-  showAllZedsNearby: function () {
+  showAllZedsNearby: function (zedsOnly) {
     CardsManager.getCardDeck().forEach(card => {
-      let object = Props.getObject(card.id);
-      if (object.group === 'zombie' && object.distance < 2.5 && !object.dead) {
-        const cardRef = this.getCardById(card.id);
-        object.active = true;
-        cardRef && cardRef.classList.remove('is--hidden'); // not strictly needed, but because of timeout crazieness
-        cardRef && cardRef.classList.remove('out-of-queue');
+      if (zedsOnly.includes(card.id)) {
+        let object = Props.getObject(card.id);
+        if (object.group === 'zombie' && !object.dead) {
+          const cardRef = this.getCardById(card.id);
+          object.active = true;
+          cardRef && cardRef.classList.remove('is--hidden'); // not strictly needed, but because of timeout crazieness
+          cardRef && cardRef.classList.remove('out-of-queue');
+        }
       }
     });
   },

@@ -182,13 +182,13 @@ export default {
   objectTypeActions: {
     zombie: [
       { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-      { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+      { id: 'attack', label: 'Attack', time: 5, energy: -20 },
       { id: 'search', label: 'Search', time: 20, energy: -5 },
       { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
     ],
     creature: [
       { id: 'lure', label: 'Lure', time: 20, energy: -15 },
-      { id: 'attack', label: 'Attack!', time: 5, energy: -20, critical: true },
+      { id: 'attack', label: 'Attack', time: 5, energy: -20 },
       { id: 'chomp', label: '"Chomp!"', time: 20, energy: 0 },
       { id: 'cut', label: 'Cut', time: 20, energy: -15 },
     ],

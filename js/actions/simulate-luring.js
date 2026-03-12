@@ -25,7 +25,7 @@ export default async function simulateLuring(cardId, time, energy) {
       Map.hideScoutMarker();
 
       if (object.luringSuccessful) {
-        Battle.startBattle(false, cardId);
+        Battle.startBattle(object, false, cardId);
       } else {
         const cardRef = Cards.getCardById(cardId);
         Cards.enableActions();

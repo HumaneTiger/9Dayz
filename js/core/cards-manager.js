@@ -52,28 +52,6 @@ export default {
   },
 
   /**
-   * @returns {number[]} - an array of object ids that are zombies nearby the player
-   */
-  getAllZedsNearbyIds: function () {
-    /** @type {number[]} */
-    let allZedIds = [];
-    CardsDefinitions.cardDeck.forEach(
-      /** @type {Card} */ card => {
-        let object = ObjectState.getObject(card.id);
-        if (
-          object.distance !== null &&
-          object.group === 'zombie' &&
-          object.distance < 2.5 &&
-          !object.dead
-        ) {
-          allZedIds.push(card.id);
-        }
-      }
-    );
-    return allZedIds;
-  },
-
-  /**
    * @param {number[]} objectIds
    */
   addObjectIdsToCardDeck: function (objectIds) {

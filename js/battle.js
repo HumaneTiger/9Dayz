@@ -277,12 +277,12 @@ export default {
     defensiveCardsContainer.insertAdjacentHTML('beforeend', cardMarkup);
   },
 
-  startBattle(surprised, singleZedId) {
+  startBattle(targetEnemyObject, surprised, singleZedId) {
     this.prepareBattle();
     // singleZedId is the result of successful luring
     let cardZedDeck = singleZedId
       ? BattleManager.addIdToOpponentDeck(singleZedId)
-      : BattleManager.addAllZedsNearby();
+      : BattleManager.addAllZedsNearby(targetEnemyObject);
     if (cardZedDeck.length > 0) {
       this.spawnZedDeck(cardZedDeck);
       this.enterUIBattleMode();
