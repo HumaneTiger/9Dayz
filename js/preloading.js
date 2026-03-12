@@ -94,11 +94,12 @@ export default {
     loader.load(1, 'zombie-1.png');
     loader.load(2, 'zombie-2.png');
     loader.load(3, 'zombie-3.png');
-    loader.load(4, 'scratch.png');
-    loader.load(5, 'rat.png');
-    loader.load(6, 'bee.png');
-    loader.load(7, 'undead.png');
-    loader.load(8, 'dead.png');
+    loader.load(4, 'zombie-4.png');
+    loader.load(5, 'scratch.png');
+    loader.load(6, 'rat.png');
+    loader.load(7, 'bee.png');
+    loader.load(8, 'undead.png');
+    loader.load(9, 'dead.png');
   },
 
   preloadTutorial: function () {

@@ -296,7 +296,7 @@ Where:
 - **cards-manager.js**: Core manager providing:
   - Deck access: `getCardDeck()`, `getOpponentDeck()`
   - Card operations: `addCardToCardDeck()`, `removeOpponentDeck()`, `cleanupCardDeck()`
-  - Queries: `getAllZedsNearbyIds()`, `zedIsDead()` (checks if all opponent zombies are dead)
+  - Queries: `zedIsDead()` (checks if all opponent zombies are dead)
   - Card properties: `updateCardDeckProperties()` - calculates distances from player
   - Full @ts-check with proper type imports
 - **cards.js**: UI layer managing card display and interaction

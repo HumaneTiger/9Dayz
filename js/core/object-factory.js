@@ -327,7 +327,7 @@ export default {
       const currentZedCounter = ObjectState.getZedCounter();
       const name = 'zombie-' + currentZedCounter;
 
-      ObjectState.setZedCounter((currentZedCounter % 3) + 1); // Cycle through 1, 2, 3
+      ObjectState.setZedCounter((currentZedCounter % 4) + 1); // Cycle through 1, 2, 3, 4
 
       const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
       ObjectState.setObject(
