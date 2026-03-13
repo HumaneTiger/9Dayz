@@ -1,6 +1,12 @@
 import Props from './props.js';
 import { ItemUtils, RecipeDefinitions } from '../data/index.js';
-import { EventManager, EVENTS, CharacterManager, AlmanacManager } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  CharacterManager,
+  AlmanacManager,
+  WeaponsManager,
+} from './core/index.js';
 
 const almanacContainer = document.getElementById('almanac');
 const markupSection = almanacContainer.querySelector('div.markup');
@@ -163,7 +169,9 @@ export default {
   },
 
   renderItemPageContent: function (item) {
-    const itemProps = Props.calcItemProps(item);
+    const itemProps = Props.isWeapon(item)
+      ? WeaponsManager.getWeaponProps(item)
+      : Props.calcItemProps(item);
     // update motive image for both types
     const imgSubPath = !Props.isWeapon(item) ? 'items' : 'weapons';
     const imgExtension = !Props.isWeapon(item) ? 'PNG' : 'png';
@@ -207,8 +215,16 @@ export default {
           statsParagraph.innerHTML = propsText;
           statsParagraph.classList.remove('is--hidden');
         }
-        if (itemProps.damage !== undefined && itemProps.protection !== undefined) {
-          let battleText = `In Battles <span class="keyword" data-item="${item}">${ItemUtils.extractItemName(item)}</span> deals <span class="keyword" data-content="battle">${itemProps.damage} Damage</span> and offers <span class="keyword" data-content="battle">${itemProps.protection} Protection</span>.`;
+        if (
+          (itemProps.damage !== undefined || itemProps.attack !== undefined) &&
+          (itemProps.protection !== undefined || itemProps.defense !== undefined)
+        ) {
+          let battleText = `In Battles 
+            <span class="keyword" data-item="${item}">${ItemUtils.extractItemName(item)}</span>
+            deals
+            <span class="keyword" data-content="battle">${itemProps.damage || itemProps.attack} Damage</span>
+            and offers
+            <span class="keyword" data-content="battle">${itemProps.protection || itemProps.defense} Protection</span>.`;
           battlesParagraph.innerHTML = battleText;
           battlesParagraph.classList.remove('is--hidden');
         }
