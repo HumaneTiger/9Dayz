@@ -187,24 +187,51 @@ ul#properties li.time {
 #craft .inner.craft-2 {
   background: url(../img/ui/crafting-2.png) 0 0 no-repeat;
 }
-#craft .button-next {
-  position: absolute;
-  cursor: pointer;
-  width: 50px;
-  height: 50px;
-  background: url(../img/ui/back-button.png) 0 0 no-repeat;
-  transform: scaleX(-1);
-  right: 40px;
-  top: 45%;
-}
+#craft .button-next,
 #craft .button-prev {
   position: absolute;
   cursor: pointer;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   background: url(../img/ui/back-button.png) 0 0 no-repeat;
-  left: 10px;
+  background-size: contain;
   top: 45%;
+  transition: scale 0.1s ease-out;
+
+  &:hover {
+    scale: 1.1;
+  }
+
+  .amount {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: 64%;
+    color: rgba(91, 155, 213, 1);
+    box-shadow: 0 1px 3px rgba(53, 35, 26, 0.5);
+    background-color: rgb(255, 254, 251);
+    font-size: 25px;
+    line-height: 1.5;
+    text-align: center;
+    border-radius: 50%;
+  }
+}
+
+#craft .button-next {
+  transform: scaleX(-1);
+  right: 40px;
+
+  .amount {
+    right: 60%;
+    transform: scaleX(-1);
+  }
+}
+#craft .button-prev {
+  left: 10px;
+
+  .amount {
+    left: 60%;
+  }
 }
 #craft.active,
 #inventory.active {
