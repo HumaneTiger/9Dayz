@@ -438,8 +438,19 @@ export default {
           actionRef.querySelector('.additional-locked').textContent = 'Ingredients missing';
           actionRef.classList.add('locked');
         }
+        if (activeRecipes !== action.amount) {
+          action.amount = activeRecipes;
+          this.cookingChangeFeedback(cardRef);
+        }
       }
     });
+  },
+
+  cookingChangeFeedback: async function (cardRef) {
+    cardRef.classList.add('indicate-change');
+    await TimingUtils.waitForTransition(cardRef);
+    await TimingUtils.wait(100);
+    cardRef.classList.remove('indicate-change');
   },
 
   removeCard: async function (cardId) {

@@ -272,6 +272,11 @@ body:not(.is--paused) .card:not(.fight):hover {
   transform: scale(0.8);
   z-index: 201;
 }
+.card.indicate-change {
+  transform: scale(0.75);
+  filter: brightness(105%);
+}
+
 .card.fight.attacking {
   transform: scale(0.9);
 }

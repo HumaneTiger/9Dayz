@@ -1,7 +1,14 @@
 import Items from './items.js';
 import Audio from './audio.js';
 import CardsMarkup from './cards-markup.js';
-import { EventManager, EVENTS, RecipesManager, InventoryManager } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  RecipesManager,
+  InventoryManager,
+  CardsManager,
+  ObjectState,
+} from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
 //const cookingRecipes = RecipeDefinitions.cookingRecipes;
@@ -32,12 +39,20 @@ export default {
   },
 
   checkAllCookingModeCards: function () {
-    /* better solution: iterate card deck and find cooking cards, but for now we can just query all cooking cards in the DOM */
-    let allCardRefs = document.querySelectorAll('#cards .card.cooking-mode');
-    for (let i = 0; i < allCardRefs.length; i += 1) {
-      this.checkCookingRecipePrerequisits(allCardRefs[i]);
-      CardsMarkup.updateCardActions(allCardRefs[i].id); // update the 'cook' action number of recipes
-    }
+    const allFireplaceCards = CardsManager.getCardDeck().filter(card => {
+      let object = ObjectState.getObject(card.id);
+      return object.name === 'fireplace';
+    });
+    allFireplaceCards.forEach(card => {
+      const cardRef = document.getElementById(card.id);
+      if (cardRef) {
+        if (cardRef.classList.contains('cooking-mode')) {
+          this.checkCookingRecipePrerequisits(cardRef);
+        } else {
+          CardsMarkup.updateCardActions(card.id); // update the 'cook' action number of recipes
+        }
+      }
+    });
   },
 
   checkCookingRecipePrerequisits: function (cardRef) {
