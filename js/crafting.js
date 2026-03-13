@@ -113,11 +113,10 @@ export default {
   },
 
   checkCraftingPrerequisits: function () {
-    let craftingOptionsTotal = 0;
-
     for (const recipe in craftingRecipes) {
       const itemRecipe = craftingRecipes[recipe];
-      let prerequisitsFulfilled = true;
+
+      /* give feedback for each required item */
       for (const recipeItem in itemRecipe.items) {
         prerequisiteCondition: if (itemRecipe.items[recipeItem].length === 1) {
           if (Items.inventoryContains(itemRecipe.items[recipeItem][0])) {
@@ -132,7 +131,6 @@ export default {
               .forEach(el => {
                 el.classList.remove('is--hidden');
               });
-            prerequisitsFulfilled = false;
           }
         } else {
           for (const orItem in itemRecipe.items[recipeItem]) {
@@ -150,9 +148,11 @@ export default {
               break prerequisiteCondition;
             }
           }
-          prerequisitsFulfilled = false;
         }
       }
+
+      /* set crafting button state */
+      const prerequisitsFulfilled = RecipesManager.isCraftingPrerequisitsFulfilled(recipe);
       if (prerequisitsFulfilled) {
         if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
           craftContainer
@@ -162,7 +162,7 @@ export default {
             .querySelector('.button-craft[data-item="' + recipe + '"]')
             ?.classList.add('only1');
         } else {
-          // small hack needed here
+          // TODO: small hack needed here
           if (recipe === 'rope') {
             if (Items.inventoryItemAmount('straw-wheet') === 1) {
               craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
@@ -180,13 +180,11 @@ export default {
               craftContainer
                 .querySelector('.button-craft[data-item="' + recipe + '"]')
                 ?.classList.add('active');
-              craftingOptionsTotal += 1;
             }
           } else {
             craftContainer
               .querySelector('.button-craft[data-item="' + recipe + '"]')
               ?.classList.add('active');
-            craftingOptionsTotal += 1;
           }
         }
       } else {
@@ -196,6 +194,15 @@ export default {
       }
     }
 
+    const craftingOptionsPage1 = RecipesManager.numberOfActiveCraftingRecipes(1);
+    const craftingOptionsPage2 = RecipesManager.numberOfActiveCraftingRecipes(2);
+
+    /* update crafting info next to page navigation buttons */
+    craftContainer.querySelector('.button-next .amount').textContent = craftingOptionsPage2;
+    craftContainer.querySelector('.button-prev .amount').textContent = craftingOptionsPage1;
+
+    /* update total crafting info */
+    const craftingOptionsTotal = craftingOptionsPage1 + craftingOptionsPage2;
     if (craftingOptionsTotal !== craftingOptions.total) {
       craftingOptions.total = craftingOptionsTotal;
       this.craftingChangeFeedback();

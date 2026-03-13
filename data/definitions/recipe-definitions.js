@@ -11,7 +11,9 @@
  * @property {string[][]} items - List of ingredients needed, including alternatives (e.g. [['fail', 'hacksaw'], ['stump']])
  * @property {boolean} exclusive - Whether ingredients are consumed or reusable
  * @property {string} result - Result type (weapon, building, inventory)
+ * @property {number} page - page number for pagination
  * @property {number} [amount] - Optional: quantity of result items created
+ 
  * @export
  */
 
@@ -51,52 +53,62 @@ export default {
       items: [['fail', 'hacksaw'], ['stump']],
       exclusive: true,
       result: 'weapon',
+      page: 1,
     },
     'improvised-axe': {
       items: [['tape'], ['branch'], ['stone']],
       exclusive: true,
       result: 'weapon',
+      page: 1,
     },
     'improvised-whip': {
       items: [['rope'], ['branch']],
       exclusive: true,
       result: 'weapon',
+      page: 2,
     },
     'fishing-rod': {
       items: [['rope'], ['branch'], ['bone-hook']],
       exclusive: true,
       result: 'weapon',
+      page: 2,
     },
     barricades: {
       items: [['rope'], ['stump'], ['sharp-stick']],
       exclusive: false,
       result: 'weapon',
+      page: 2,
     },
     fireplace: {
       items: [['stone'], ['stump'], ['straw-wheet']],
       exclusive: false,
       result: 'building',
+      page: 1,
     },
     tape: {
       items: [['cloth'], ['glue']],
       exclusive: false,
       amount: 2,
       result: 'inventory',
+      page: 1,
     },
     'sharp-stick': {
       items: [['branch'], ['knife']],
       exclusive: false,
       result: 'inventory',
+      page: 1,
     },
     'bone-hook': {
       items: [['bones'], ['knife']],
       exclusive: false,
       result: 'inventory',
+      page: 2,
     },
     rope: {
       items: [['straw-wheet'], ['straw-wheet']],
       exclusive: false,
       result: 'inventory',
+      page: 2,
     },
   },
 };

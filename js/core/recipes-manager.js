@@ -127,7 +127,7 @@ export default {
     return false;
   },
 
-  numberOfActiveRecipes: function () {
+  numberOfActiveCookingRecipes: function () {
     const recipes = this.getCookingRecipes();
     let count = 0;
 
@@ -141,6 +141,66 @@ export default {
         InventoryManager.inventoryContains(ingredient1) &&
         InventoryManager.inventoryContains(ingredient2)
       ) {
+        count++;
+      }
+    }
+
+    return count;
+  },
+
+  /**
+   *
+   * @param {string} recipeName
+   * @returns {boolean}
+   */
+  isCraftingPrerequisitsFulfilled: function (recipeName) {
+    const recipe = craftingRecipes[recipeName];
+    if (!recipe) {
+      return false;
+    }
+
+    for (const ingredientGroup of recipe.items) {
+      let groupFulfilled = false;
+      for (const ingredient of ingredientGroup) {
+        if (InventoryManager.inventoryContains(ingredient)) {
+          groupFulfilled = true;
+          break;
+        }
+      }
+      if (!groupFulfilled) {
+        return false;
+      }
+    }
+
+    return true;
+  },
+
+  /**
+   *
+   * @param {number} page
+   * @returns {string[]}
+   */
+  getCraftingRecipesForPage: function (page) {
+    const recipes = this.getCraftingRecipes();
+    const recipeList = [];
+    for (const recipe in recipes) {
+      if (recipes[recipe].page === page) {
+        recipeList.push(recipe);
+      }
+    }
+    return recipeList;
+  },
+
+  /**
+   *
+   * @param {number} page
+   * @returns {number}
+   */
+  numberOfActiveCraftingRecipes: function (page) {
+    let count = 0;
+    const recipeList = this.getCraftingRecipesForPage(page);
+    for (const recipeName of recipeList) {
+      if (this.isCraftingPrerequisitsFulfilled(recipeName)) {
         count++;
       }
     }
