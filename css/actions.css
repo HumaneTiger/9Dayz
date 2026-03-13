@@ -158,7 +158,7 @@ ul.actions .action-button span.additional {
   top: 33%;
   width: 100%;
   font-family: 'Kalam';
-  color: rgba(137, 110, 102, 1);
+  color: rgb(112, 91, 84);
   font-size: 42px;
   text-align: center;
   text-transform: capitalize;
@@ -184,19 +184,19 @@ ul.actions .action-button span.additional {
       0 0 5px #fff,
       0 0 8px #fff,
       0 0 12px #fffefb,
-      0 0 20px #dff,
-      0 0 25px #dff,
-      0 0 30px #dff;
+      0 0 20px #fed,
+      0 0 25px #fed,
+      0 0 30px #fed;
   }
   to {
     text-shadow:
       0 0 6px #fff,
-      0 0 15px #fff,
+      0 0 10px #fff,
+      0 0 20px #fff,
       0 0 30px #fff,
       0 0 40px #fff,
-      0 0 50px #fff,
-      0 0 60px #dff,
-      0 0 70px #dff,
-      0 0 80px #dff;
+      0 0 50px #fed,
+      0 0 60px #fed,
+      0 0 70px #fed;
   }
 }
