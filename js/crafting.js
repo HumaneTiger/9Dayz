@@ -3,7 +3,7 @@ import Items from './items.js';
 import Player from './player.js';
 import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
-import { RecipesManager } from './core/index.js';
+import { RecipesManager, AlmanacManager } from './core/index.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
@@ -81,6 +81,7 @@ export default {
           const here = Player.getPlayerPosition();
           if (itemRecipe.result === 'weapon') {
             Props.setupWeapon(here.x, here.y, item);
+            AlmanacManager.makeContentKnown(item);
           } else if (itemRecipe.result === 'building') {
             Props.setupBuilding(here.x, here.y, new Array(item));
           }
