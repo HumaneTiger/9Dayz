@@ -274,7 +274,7 @@ body:not(.is--paused) .card:not(.fight):hover {
 }
 .card.indicate-change {
   transform: scale(0.75);
-  filter: brightness(105%);
+  filter: brightness(101%);
 }
 
 .card.fight.attacking {
