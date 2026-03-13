@@ -430,7 +430,7 @@ export default {
         }
       }
       if (action.id === 'cook') {
-        const activeRecipes = RecipesManager.numberOfActiveRecipes();
+        const activeRecipes = RecipesManager.numberOfActiveCookingRecipes();
         if (activeRecipes > 0) {
           actionRef.querySelector('span.text').innerHTML =
             action.label + ' (' + activeRecipes + ')';
