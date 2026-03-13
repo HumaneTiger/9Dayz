@@ -150,6 +150,46 @@ export default {
 
   /**
    *
+   * @param {string[]} ingredientGroup
+   * @param {Record<string, number>} [neededAmounts ]
+   * @returns {boolean}
+   */
+  isIngredientGroupAvailable: function (ingredientGroup, neededAmounts) {
+    for (const ingredient of ingredientGroup) {
+      if (
+        InventoryManager.inventoryContains(
+          ingredient,
+          neededAmounts ? neededAmounts[ingredient] : undefined
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  /**
+   * @param {string} recipeName
+   * @return {Record<string, number>}
+   */
+  getNeededIngredientAmounts: function (recipeName) {
+    const recipe = craftingRecipes[recipeName];
+    if (!recipe) {
+      return {};
+    }
+
+    /** @type {Record<string, number>} */
+    const neededAmounts = {};
+    for (const ingredientGroup of recipe.items) {
+      for (const ingredient of ingredientGroup) {
+        neededAmounts[ingredient] = (neededAmounts[ingredient] || 0) + 1;
+      }
+    }
+    return neededAmounts;
+  },
+
+  /**
+   *
    * @param {string} recipeName
    * @returns {boolean}
    */
@@ -159,13 +199,13 @@ export default {
       return false;
     }
 
+    const neededAmounts = this.getNeededIngredientAmounts(recipeName);
+
     for (const ingredientGroup of recipe.items) {
       let groupFulfilled = false;
-      for (const ingredient of ingredientGroup) {
-        if (InventoryManager.inventoryContains(ingredient)) {
-          groupFulfilled = true;
-          break;
-        }
+      if (this.isIngredientGroupAvailable(ingredientGroup, neededAmounts)) {
+        groupFulfilled = true;
+        continue;
       }
       if (!groupFulfilled) {
         return false;

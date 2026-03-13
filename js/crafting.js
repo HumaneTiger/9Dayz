@@ -118,35 +118,34 @@ export default {
 
       /* give feedback for each required item */
       for (const recipeItem in itemRecipe.items) {
-        prerequisiteCondition: if (itemRecipe.items[recipeItem].length === 1) {
-          if (Items.inventoryContains(itemRecipe.items[recipeItem][0])) {
+        const neededAmounts = RecipesManager.getNeededIngredientAmounts(recipe);
+        const isOneAvailable = RecipesManager.isIngredientGroupAvailable(
+          itemRecipe.items[recipeItem]
+        );
+        const isAllAvailable = RecipesManager.isIngredientGroupAvailable(
+          itemRecipe.items[recipeItem],
+          neededAmounts
+        );
+        const firstIngredient = itemRecipe.items[recipeItem][0];
+
+        craftContainer.querySelectorAll('.nope.' + firstIngredient).forEach(el => {
+          if (isOneAvailable) {
+            el.classList.add('is--hidden');
+          } else {
+            el.classList.remove('is--hidden');
+          }
+        });
+
+        /* currently only rope needs two of the same */
+        if (neededAmounts[firstIngredient] > 1) {
+          if (isAllAvailable) {
             craftContainer
-              .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
-              .forEach(el => {
-                el.classList.add('is--hidden');
-              });
+              .querySelector('.nope.' + firstIngredient + '.additional')
+              ?.classList.add('is--hidden');
           } else {
             craftContainer
-              .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
-              .forEach(el => {
-                el.classList.remove('is--hidden');
-              });
-          }
-        } else {
-          for (const orItem in itemRecipe.items[recipeItem]) {
-            craftContainer
-              .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
-              .forEach(el => {
-                el.classList.remove('is--hidden');
-              });
-            if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
-              craftContainer
-                .querySelectorAll('.nope.' + itemRecipe.items[recipeItem][0])
-                .forEach(el => {
-                  el.classList.add('is--hidden');
-                });
-              break prerequisiteCondition;
-            }
+              .querySelector('.nope.' + firstIngredient + '.additional')
+              ?.classList.remove('is--hidden');
           }
         }
       }
@@ -162,30 +161,12 @@ export default {
             .querySelector('.button-craft[data-item="' + recipe + '"]')
             ?.classList.add('only1');
         } else {
-          // TODO: small hack needed here
-          if (recipe === 'rope') {
-            if (Items.inventoryItemAmount('straw-wheet') === 1) {
-              craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
-              craftContainer
-                .querySelector('.nope.straw-wheet.additional')
-                ?.classList.remove('is--hidden');
-              craftContainer
-                .querySelector('.button-craft[data-item="' + recipe + '"]')
-                ?.classList.remove('active');
-            } else {
-              craftContainer.querySelector('.nope.straw-wheet')?.classList.add('is--hidden');
-              craftContainer
-                .querySelector('.nope.straw-wheet.additional')
-                ?.classList.add('is--hidden');
-              craftContainer
-                .querySelector('.button-craft[data-item="' + recipe + '"]')
-                ?.classList.add('active');
-            }
-          } else {
-            craftContainer
-              .querySelector('.button-craft[data-item="' + recipe + '"]')
-              ?.classList.add('active');
-          }
+          craftContainer
+            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            ?.classList.add('active');
+          craftContainer
+            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            ?.classList.remove('only1');
         }
       } else {
         craftContainer

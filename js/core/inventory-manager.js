@@ -182,12 +182,13 @@ export default {
 
   /**
    * @param {string|undefined} itemName - Item name
+   * @param {number} [amount=1] - Required amount (default 1)
    * @returns {boolean}
    */
-  inventoryContains: function (itemName) {
+  inventoryContains: function (itemName, amount = 1) {
     if (itemName === undefined) {
       return false;
-    } else if (inventory.items[itemName]?.amount > 0) {
+    } else if (inventory.items[itemName]?.amount >= amount) {
       return true;
     } else if (inventory.weapons[itemName]?.amount > 0) {
       return true;
