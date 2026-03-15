@@ -37,6 +37,11 @@ import TestPlayer from './test/test-player.js';
       'checkForCardClick',
       Cards.checkForCardClick.bind(Cards)
     );
+    Cards.checkForFilterActionClick = TestRecorder.wrapEventHandler(
+      'Cards',
+      'checkForFilterActionClick',
+      Cards.checkForFilterActionClick.bind(Cards)
+    );
     Items.checkForSlotClick = TestRecorder.wrapEventHandler(
       'Items',
       'checkForSlotClick',

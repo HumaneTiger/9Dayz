@@ -197,6 +197,9 @@ export default {
     if (moduleName === 'Cards' && handlerName === 'checkForCardClick') {
       return this.translateCardsClick(event);
     }
+    if (moduleName === 'Cards' && handlerName === 'checkForFilterActionClick') {
+      return this.translateCardsFilterActionClick(event);
+    }
     if (moduleName === 'Items' && handlerName === 'checkForSlotClick') {
       return this.translateItemsClick(event);
     }
@@ -408,7 +411,26 @@ export default {
   },
 
   /**
-   * Translate Items.checkForSlotClick to command
+   * Translate Cards.checkForFilterActionClick events to commands
+   */
+  translateCardsFilterActionClick: function (event) {
+    const target = event.target;
+    const filterButton = target.closest('div.filter-button');
+    const leftMouseButton = event.button === 0;
+
+    if (filterButton && leftMouseButton) {
+      const filter = filterButton.dataset.filter;
+      return {
+        module: 'Cards',
+        type: 'cards-filter-action',
+        selector: `#cards .filter-button[data-filter="${filter}"]`,
+      };
+    }
+    return null;
+  },
+
+  /**
+   * Translate Items.checkForSlotClick events to commands
    */
 
   translateItemsClick: function (event) {
