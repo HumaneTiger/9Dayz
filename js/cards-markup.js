@@ -10,6 +10,7 @@ import TimingUtils from './utils/timing-utils.js';
 import { CardsManager, CompanionManager, ObjectState, RecipesManager } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
+const CARD_DECK_LIMIT = 10;
 
 let smallTreeCounter = 1,
   bigTreeCounter = 1,
@@ -223,12 +224,13 @@ export default {
 
     // card is already visible at it's source position
     // it just waits a little until it shifts into the deck
-    await TimingUtils.wait(300 + 100 * index);
+    await TimingUtils.wait(200 + 100 * index);
 
     if (object.active === false) {
       // if for some rare reason the object became inactive again, don't move it
       return;
     }
+
     sharedDeckState.activeCardIndex += 1;
 
     if (cardRef.style.top === '600px') {
@@ -241,29 +243,37 @@ export default {
         cardRef.style.transform = '';
         cardRef.style.opacity = 1;
         cardRef.style.left = sharedDeckState.cardLeftPosition + 'px';
-        cardRef.style.zIndex = Z_INDEX_BASE - sharedDeckState.activeCardIndex;
-        delete cardRef.dataset.oldZindex;
       }
+      cardRef.style.zIndex = Z_INDEX_BASE - sharedDeckState.activeCardIndex;
+      delete cardRef.dataset.oldZindex;
     }
 
-    if (sharedDeckState.activeCardIndex < 14) {
+    if (sharedDeckState.activeCardIndex <= CARD_DECK_LIMIT) {
       cardRef.classList.remove('out-of-queue');
-      if (sharedDeckState.activeCardDeckSize < 7) {
+
+      if (sharedDeckState.activeCardDeckSize < 8 || sharedDeckState.filteredCardDeckSize < 8) {
         sharedDeckState.cardLeftPosition += Math.floor(CARD_WIDTH);
-      } else if (sharedDeckState.activeCardDeckSize < 10) {
-        if (sharedDeckState.activeCardIndex < 3) {
-          sharedDeckState.cardLeftPosition += Math.floor(CARD_WIDTH);
-        } else {
-          sharedDeckState.cardLeftPosition += Math.floor(
-            CARD_WIDTH - sharedDeckState.activeCardIndex * 10
-          );
-        }
-      } else {
-        let additionalLeft = Math.floor(CARD_WIDTH - (sharedDeckState.activeCardIndex + 1.5) * 15);
-        if (additionalLeft < 100) {
-          additionalLeft = 100;
-        }
-        sharedDeckState.cardLeftPosition += additionalLeft;
+      } else if (
+        sharedDeckState.activeCardDeckSize === 8 ||
+        sharedDeckState.filteredCardDeckSize === 8
+      ) {
+        sharedDeckState.cardLeftPosition += Math.floor(
+          CARD_WIDTH - sharedDeckState.activeCardIndex * 5
+        );
+      } else if (
+        sharedDeckState.activeCardDeckSize === 9 ||
+        sharedDeckState.filteredCardDeckSize === 9
+      ) {
+        sharedDeckState.cardLeftPosition += Math.floor(
+          CARD_WIDTH - sharedDeckState.activeCardIndex * 11.5
+        );
+      } else if (
+        sharedDeckState.activeCardDeckSize >= 10 ||
+        sharedDeckState.filteredCardDeckSize >= 10
+      ) {
+        sharedDeckState.cardLeftPosition += Math.floor(
+          CARD_WIDTH - sharedDeckState.activeCardIndex * 15
+        );
       }
     } else if (!cardRef.classList.contains('fight')) {
       cardRef.classList.add('out-of-queue');
@@ -490,20 +500,67 @@ export default {
     return activeCardDeckSize;
   },
 
+  isObjectMatchingFilter: function (object) {
+    const filter = CardsManager.getCardDeckFilter();
+
+    if (filter === 'all') {
+      return true;
+    } else if (filter === 'zombies' && object.group === 'zombie') {
+      return true;
+    } else if (
+      filter === 'buildings' &&
+      object.group === 'building' &&
+      object.name !== 'small-tree' &&
+      object.name !== 'big-tree' &&
+      object.name !== 'field'
+    ) {
+      return true;
+    } else if (filter === 'loot' && object.looted === false) {
+      return true;
+    } else if (
+      filter === 'trees' &&
+      object.group === 'building' &&
+      (object.name === 'small-tree' || object.name === 'big-tree' || object.name === 'field')
+    ) {
+      return true;
+    }
+
+    return false;
+  },
+
+  getFilteredCardDeckSize: function (cardDeck) {
+    if (!CardsManager.isCardDeckFilterActive()) {
+      return this.getActiveCardDeckSize(cardDeck);
+    }
+
+    let filteredCardDeckSize = 0;
+
+    for (const card of cardDeck || []) {
+      const object = Props.getObject(card.id);
+      if (!object.removed && object.active && this.isObjectMatchingFilter(object)) {
+        filteredCardDeckSize += 1;
+      }
+    }
+
+    return filteredCardDeckSize;
+  },
+
   updateCardDeckMarkup: function () {
     const cardDeck = CardsManager.getCardDeck();
     if (!cardDeck || cardDeck.length === 0) return;
 
     const sharedDeckState = {
       activeCardDeckSize: this.getActiveCardDeckSize(cardDeck),
+      filteredCardDeckSize: this.getFilteredCardDeckSize(cardDeck),
       activeCardIndex: 0,
       cardLeftPosition: 0,
     };
 
     this.setCardDeckVerticalPosition();
 
-    for (let i = 0; i < cardDeck.length; i++) {
-      const card = cardDeck[i];
+    let index = 0;
+
+    cardDeck.forEach((card, i) => {
       const cardId = card.id;
       const object = Props.getObject(cardId);
 
@@ -511,8 +568,18 @@ export default {
         if (object.active) {
           const cardRef = document.getElementById(cardId);
           cardRef.classList.remove('is--hidden');
+
+          if (CardsManager.isCardDeckFilterActive() && !this.isObjectMatchingFilter(object)) {
+            cardRef.classList.add('out-of-queue');
+            const targetLeft = (parseInt(cardRef.style.left) || 0) - 100;
+            cardRef.style.left = (targetLeft < 0 ? 0 : targetLeft) + 'px';
+            return;
+          }
+
+          index += 1;
+
           // move new cards into place
-          this.moveNewCardIntoPlace(cardId, i, sharedDeckState);
+          this.moveNewCardIntoPlace(cardId, index, sharedDeckState);
           // handle several card states like locked, looted, infested, distance
           this.handleCardStates(cardId);
         }
@@ -529,6 +596,25 @@ export default {
       if (object.removed) {
         this.removeCard(cardId);
       }
+    });
+
+    const filteredOutCardsInfo = cardsContainer.querySelector('.cards-filter-out');
+    if (this.getActiveCardDeckSize(cardDeck) > CARD_DECK_LIMIT) {
+      CardsManager.setCardDeckFilterActive(true);
+      cardsContainer.classList.add('filter-active');
+      Cards.updateCardsFilterButtons();
+    } else {
+      CardsManager.setCardDeckFilterActive(false);
+      CardsManager.setCardDeckFilter('all');
+      cardsContainer.classList.remove('filter-active');
+    }
+
+    if (index > CARD_DECK_LIMIT) {
+      filteredOutCardsInfo.classList.remove('out');
+      filteredOutCardsInfo.textContent = `+${index - CARD_DECK_LIMIT}`;
+    } else {
+      filteredOutCardsInfo.textContent = '0';
+      filteredOutCardsInfo.classList.add('out');
     }
   },
 

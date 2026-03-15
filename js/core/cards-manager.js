@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * @import { Card, CardDeck } from '../../data/definitions/cards-definitions.js'
+ * @import { Card, CardDeck, CardDeckFilter } from '../../data/definitions/cards-definitions.js'
  */
 
 import { CardsDefinitions } from '../../data/index.js';
@@ -74,5 +74,34 @@ export default {
    */
   addCardToCardDeck: function (card) {
     CardsDefinitions.cardDeck.push(card);
+  },
+
+  /**
+   * @returns {boolean}
+   */
+  isCardDeckFilterActive: function () {
+    return CardsDefinitions.cardDeckFilters.active;
+  },
+
+  /**
+   * @param {boolean} active
+   */
+  setCardDeckFilterActive: function (active) {
+    CardsDefinitions.cardDeckFilters.active = active;
+  },
+
+  /**
+   * @param {CardDeckFilter} filter
+   */
+  setCardDeckFilter: function (filter) {
+    const cardDeckFilter = CardsDefinitions.cardDeckFilters;
+    cardDeckFilter.filter = filter;
+  },
+
+  /**
+   * @returns {CardDeckFilter}
+   */
+  getCardDeckFilter: function () {
+    return CardsDefinitions.cardDeckFilters.filter;
   },
 };

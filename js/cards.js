@@ -16,6 +16,7 @@ export default {
   init: function () {
     document.body.addEventListener('mouseover', this.checkForCardHover.bind(this));
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));
+    document.body.addEventListener('mousedown', this.checkForFilterActionClick.bind(this));
     EventManager.on(
       EVENTS.GAME_PROP_CHANGED,
       ({ prop, value }) => {
@@ -60,6 +61,44 @@ export default {
         }
       }
     }
+  },
+
+  checkForFilterActionClick: function (ev) {
+    const target = ev.target;
+    const filterButton = target.closest('div.filter-button');
+    const leftMouseButton = ev.button === 0;
+
+    if (!filterButton) {
+      return;
+    }
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    if (leftMouseButton) {
+      const filter = filterButton.dataset.filter;
+      if (filterButton.classList.contains('active')) {
+        CardsManager.setCardDeckFilter('all');
+      } else {
+        CardsManager.setCardDeckFilter(filter);
+      }
+      this.updateCardsFilterButtons();
+      this.updateCardDeck();
+    }
+  },
+
+  updateCardsFilterButtons: function () {
+    const cardFiltersContainer = document.querySelector('#cards .cards-filter');
+    const filter = CardsManager.getCardDeckFilter();
+    /* get all filter buttons */
+    const filterButtons = cardFiltersContainer.querySelectorAll('.filter-button');
+    /* set/remove active state for all buttons */
+    filterButtons.forEach(button => {
+      if (button.dataset.filter === filter) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
   },
 
   checkForCardHover: function (ev) {

@@ -5,7 +5,9 @@
   transform: translateY(-600px);
   left: -25px; /* use gap caused by the card downscaling */
   z-index: 5;
-  transition: transform 0.8s ease-out;
+  transition:
+    transform 0.8s ease-out,
+    left 0.3s ease-out;
 }
 #cards.active {
   transform: translateY(0);
@@ -19,7 +21,7 @@
   background-color: rgba(77, 60, 72, 0.9);
   position: fixed;
   top: 0;
-  left: -50px;
+  left: -60px;
   right: -50px;
   height: 100%;
   opacity: 0;
@@ -49,7 +51,8 @@
     opacity 0.4s ease-in;
 }
 .card.out-of-queue {
-  display: none;
+  visibility: hidden;
+  pointer-events: none;
 }
 #cards.cards-at-bottom {
   transform: none;
@@ -400,4 +403,77 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   margin: 0;
   padding: 0;
   vertical-align: top;
+}
+
+#cards .cards-filter-out {
+  width: 60px;
+  height: 60px;
+  background: url(../img/ui/filter-out.png) no-repeat center center;
+  background-size: cover;
+  color: rgba(137, 110, 102, 0.8);
+  font-size: 30px;
+  line-height: 2.2em;
+  text-align: center;
+  position: absolute;
+  right: 65px;
+  top: 260px;
+  z-index: 200;
+  opacity: 0.8;
+  transition: transform 0.8s ease-out;
+
+  &.out {
+    transform: translateX(200px);
+  }
+}
+
+#cards .cards-filter {
+  width: 80px;
+  top: 154px;
+  position: absolute;
+  z-index: 201;
+  transform: translateX(-100px);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  .filter-button {
+    cursor: pointer;
+    width: 90px;
+    height: 90px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 95%;
+    border-radius: 50%;
+    opacity: 0.8;
+    transition:
+      transform 0.2s ease-out,
+      opacity 0.2s ease-out;
+  }
+
+  .filter-button:hover,
+  .filter-button.active {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+
+  .filter-button[data-filter='zombies'] {
+    background-image: url(../img/ui/filter-zombies.png);
+  }
+  .filter-button[data-filter='loot'] {
+    background-image: url(../img/ui/filter-loot.png);
+  }
+  .filter-button[data-filter='trees'] {
+    background-image: url(../img/ui/filter-trees.png);
+  }
+  .filter-button[data-filter='buildings'] {
+    background-image: url(../img/ui/filter-buildings.png);
+  }
+}
+
+#cards.filter-active {
+  left: 60px;
+
+  .cards-filter {
+    transform: translateX(-45px);
+  }
 }

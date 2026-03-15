@@ -28,6 +28,10 @@
  * @typedef {Array<DefensiveCard>} DefensiveDeck
  */
 
+/**
+ * @typedef {'zombies' | 'loot' | 'buildings' | 'trees' | 'all'} CardDeckFilter
+ */
+
 export default {
   /** @type {CardDeck} */
   cardDeck: [],
@@ -37,4 +41,9 @@ export default {
   opponentDeck: [],
   /** @type {DefensiveDeck} */
   defensiveDeck: [],
+  /** @type {{active: boolean, filter: CardDeckFilter}} */
+  cardDeckFilters: {
+    active: false,
+    filter: 'all',
+  },
 };

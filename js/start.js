@@ -104,7 +104,7 @@ export default {
         4
       );
       */
-      /*
+
       Props.addItemToInventory('honey', 1);
       Props.addItemToInventory('fruit-1', 1);
       Props.addItemToInventory('mallet', 1);
@@ -117,7 +117,6 @@ export default {
       Props.addItemToInventory('branch', 4);
       Props.addItemToInventory('stone', 4);
       Props.addItemToInventory('straw-wheet', 4);
-      */
     }
     if (inventoryPresets && Object.keys(inventoryPresets).length) {
       for (let item in inventoryPresets) {
