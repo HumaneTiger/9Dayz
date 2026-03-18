@@ -7,6 +7,7 @@ import Almanac from './almanac.js';
 import Items from './items.js';
 import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
+import Tutorial from './tutorial.js';
 
 const viewport = document.getElementById('viewport');
 const mapBorder = document.getElementById('map-border');
@@ -51,6 +52,8 @@ export default {
       }
     });
 
+    this.showQuitAppButtonIfExecutable();
+
     Events.on(
       EVENTS.GAME_PROP_CHANGED,
       ({ prop, value }) => {
@@ -60,6 +63,13 @@ export default {
       },
       { prop: 'timeIsUnity', value: Props.getGameProp('timeIsUnity') }
     );
+  },
+
+  showQuitAppButtonIfExecutable: function () {
+    let startScreen = document.getElementById('startscreen');
+    if (window.electronAPI?.isElectron) {
+      startScreen.querySelector('.screen__quit #quit-app').classList.remove('is--hidden');
+    }
   },
 
   handleTimeChange: function (time) {
@@ -379,6 +389,10 @@ export default {
       if (endTurn) {
         Battle.endTurn();
       }
+      const startTutorial = target.closest('.start-tutorial');
+      if (startTutorial) {
+        Tutorial.triggerBattleTutorial();
+      }
     }
 
     if (mapClick) {
@@ -452,10 +466,6 @@ export default {
 
   toggleInstantQuitConfirmation: async function () {
     let startScreen = document.getElementById('startscreen');
-    if (window.electronAPI?.isElectron) {
-      startScreen.querySelector('.screen__quit #quit-app').classList.remove('is--hidden');
-    }
-
     if (startScreen.querySelector('.screen__quit').classList.contains('is--hidden')) {
       if (!document.getElementById('almanac').classList.contains('out')) {
         // 1. check for active almanac entry and close it if open

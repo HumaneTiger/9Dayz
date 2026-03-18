@@ -187,6 +187,20 @@
   z-index: 1;
   cursor: pointer;
 }
+#battle-cards .start-tutorial {
+  position: absolute;
+  bottom: -155px;
+  right: 50px;
+  z-index: 1;
+  cursor: pointer;
+  transform: scale(0.6);
+  opacity: 0.66;
+}
+#battle-cards .start-tutorial:hover {
+  opacity: 1;
+  transform: scale(0.75);
+}
+
 #battle-cards .item-info {
   color: rgba(255, 254, 251, 1);
   position: absolute;

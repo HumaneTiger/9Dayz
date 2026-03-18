@@ -36,7 +36,7 @@ export default {
   },
 
   handleUserInput: function () {
-    if (Props.getGameProp('tutorial') && Props.getGameProp('tutorialBattle')) {
+    if (Props.getGameProp('tutorialBattle')) {
       this.continueBattleTutorial();
     }
   },
@@ -44,9 +44,10 @@ export default {
   triggerBattleTutorial: function () {
     Props.setGameProp('tutorialBattle', true);
     const mainContainer = document.querySelector('#viewport main');
-    mainContainer.insertAdjacentHTML(
-      'afterend',
-      `
+    if (!document.getElementById('tutorial-battle')) {
+      mainContainer.insertAdjacentHTML(
+        'afterend',
+        `
       <div id="tutorial-battle">
         <img src="./img/tutorial/step-1.png" class="tutorial-step tutorial-step-1 is--active">
         <img src="./img/tutorial/step-2.png" class="tutorial-step tutorial-step-2">
@@ -64,7 +65,8 @@ export default {
         </p>
       </div>
     `
-    );
+      );
+    }
   },
 
   continueBattleTutorial: function () {

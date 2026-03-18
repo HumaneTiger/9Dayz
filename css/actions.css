@@ -79,6 +79,7 @@ ul.actions .action-button span.additional-locked {
   display: none;
 }
 #battle-cards .end-turn,
+#battle-cards .start-tutorial,
 #craft .button-craft,
 #almanac .button,
 #cards .cooking-mode .action-button,
@@ -111,6 +112,7 @@ ul.actions .action-button {
   min-width: 100px;
 }
 #battle-cards .end-turn:hover,
+#battle-cards .start-tutorial:hover,
 #craft .button-craft:hover,
 #almanac .button:hover,
 #cards .cooking-mode:hover,
