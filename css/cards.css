@@ -56,10 +56,18 @@
 }
 #cards.cards-at-bottom {
   transform: none;
-}
-#cards.cards-at-bottom .card {
-  top: initial;
-  bottom: 80px;
+  .card {
+    top: initial;
+    bottom: 80px;
+  }
+  .cards-filter {
+    top: initial;
+    bottom: 190px;
+  }
+  .cards-filter-out {
+    top: initial;
+    bottom: 300px;
+  }
 }
 .card.remove {
   top: -50px;
@@ -414,7 +422,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   font-size: 30px;
   line-height: 2.2em;
   text-align: center;
-  position: absolute;
+  position: fixed;
   right: 65px;
   top: 260px;
   z-index: 200;
@@ -429,7 +437,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
 #cards .cards-filter {
   width: 80px;
   top: 154px;
-  position: absolute;
+  position: fixed;
   z-index: 201;
   transform: translateX(-100px);
   display: flex;
