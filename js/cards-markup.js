@@ -244,8 +244,10 @@ export default {
         cardRef.style.opacity = 1;
         cardRef.style.left = sharedDeckState.cardLeftPosition + 'px';
       }
-      cardRef.style.zIndex = Z_INDEX_BASE - sharedDeckState.activeCardIndex;
-      delete cardRef.dataset.oldZindex;
+      if (!cardRef.matches(':hover')) {
+        cardRef.style.zIndex = Z_INDEX_BASE - sharedDeckState.activeCardIndex;
+        delete cardRef.dataset.oldZindex;
+      }
     }
 
     if (sharedDeckState.activeCardIndex <= CARD_DECK_LIMIT) {
