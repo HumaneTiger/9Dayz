@@ -245,7 +245,9 @@ export default {
   findAllZedsNearObject: function (x, y) {
     const allFoundObjectIds = this.findAllObjectsNearby(x, y);
     const zedsOnly = allFoundObjectIds.filter(
-      singleObject => this.getObject(singleObject).group === 'zombie'
+      singleObject =>
+        this.getObject(singleObject).group === 'zombie' &&
+        !(this.getObject(singleObject).dead ?? false)
     );
     return zedsOnly;
   },
