@@ -4,6 +4,7 @@ import Items from './items.js';
 import Audio from './audio.js';
 import TimingUtils from './utils/timing-utils.js';
 import { TutorialManager, CardsManager } from './core/index.js';
+import { CardsDefinitions } from '../data/index.js';
 
 let battleTutorialStep = 0;
 
@@ -53,6 +54,7 @@ export default {
         <img src="./img/tutorial/step-2.png" class="tutorial-step tutorial-step-2">
         <img src="./img/tutorial/step-3.png" class="tutorial-step tutorial-step-3">
         <img src="./img/tutorial/step-4.png" class="tutorial-step tutorial-step-4">
+        <img src="./img/tutorial/step-4a.png" class="tutorial-step tutorial-step-4a">
         <img src="./img/tutorial/step-5.png" class="tutorial-step tutorial-step-5">
         <img src="./img/tutorial/general-notes.png" class="tutorial-notes-headline">
         <img src="./img/tutorial/note-1.png" class="tutorial-notes tutorial-note-1">
@@ -85,13 +87,18 @@ export default {
         break;
       case 3:
         document.querySelector('.tutorial-step-3').classList.remove('is--active');
-        document.querySelector('.tutorial-step-4').classList.add('is--active');
+        if (CardsDefinitions.opponentDeck.length % 2 === 0) {
+          document.querySelector('.tutorial-step-4a').classList.add('is--active');
+        } else {
+          document.querySelector('.tutorial-step-4').classList.add('is--active');
+        }
         document.querySelector('.hint-continue').classList.remove('to--left');
         Audio.sfx('shuffle-paper');
         document.querySelector('.tutorial-note-3').classList.remove('is--out');
         break;
       case 4:
         document.querySelector('.tutorial-step-4').classList.remove('is--active');
+        document.querySelector('.tutorial-step-4a').classList.remove('is--active');
         document.querySelector('.tutorial-step-5').classList.add('is--active');
         Audio.sfx('shuffle-paper');
         document.querySelector('.tutorial-note-4').classList.remove('is--out');

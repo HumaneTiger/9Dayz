@@ -112,8 +112,9 @@ export default {
     loader.load(6, 'step-2.png');
     loader.load(7, 'step-3.png');
     loader.load(8, 'step-4.png');
-    loader.load(9, 'step-5.png');
-    loader.load(10, 'general-notes.png');
-    loader.load(11, 'letter-blank.png');
+    loader.load(9, 'step-4a.png');
+    loader.load(10, 'step-5.png');
+    loader.load(11, 'general-notes.png');
+    loader.load(12, 'letter-blank.png');
   },
 };
