@@ -257,13 +257,8 @@ export default {
 
   resetInventorySlotHoverEffect: function () {
     inventoryContainer.querySelector('p.item-info').textContent = '';
-    document.querySelector('#properties li.food').classList.remove('transfer');
-    document.querySelector('#properties li.thirst').classList.remove('transfer');
-    document.querySelector('#properties li.energy').classList.remove('transfer');
     document.querySelector('#actions li.craft').classList.remove('transfer');
-    document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
-    document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
-    document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+    Player.resetPreviewProps();
   },
 
   generateInventorySlots: function () {

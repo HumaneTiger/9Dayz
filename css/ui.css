@@ -64,7 +64,6 @@ ul#properties span.meter {
   display: block;
   width: 100%;
   position: relative;
-  overflow: hidden;
   white-space: nowrap;
   transition:
     width 0.1s ease-out,
@@ -74,16 +73,23 @@ ul#properties span.meter em {
   padding: 10px 0 0 10px;
   display: inline-block;
 }
-ul#properties li.low span.meter {
+ul#properties li.low span.meter,
+main ul#properties li.low-preview span.meter {
   box-shadow:
     0 0 6px #fc9f71,
     inset 0 0 0 3px #fc9f71;
 }
-ul#properties li.very-low span.meter {
+ul#properties li.very-low span.meter,
+main ul#properties li.very-low-preview span.meter {
   box-shadow:
     0 0 7px red,
     inset 0 0 0 4px red;
 }
+
+main ul#properties li.default-preview span.meter {
+  box-shadow: 0 1px 3px inset rgba(53, 35, 26, 0.5);
+}
+
 ul#properties li.low:after,
 ul#properties li.very-low:after {
   font-size: 28px;

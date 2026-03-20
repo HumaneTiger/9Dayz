@@ -136,9 +136,8 @@ export default {
         }
         if (hoverButton) {
           const action = hoverButton.dataset?.action;
-          if (action && (action === 'rest' || action === 'sleep')) {
-            this.previewStatsChange(action, cardId);
-          }
+          // preview stats for all actions (mainly for energy changes)
+          this.previewStatsChange(action, cardId);
         } else {
           Player.resetPreviewProps();
         }
@@ -150,6 +149,8 @@ export default {
     const object = Props.getObject(cardId);
     const actionObject = object.actions.find(singleAction => singleAction.id === action);
     if (!actionObject.locked) {
+      /* TODO: use Player.previewProps / resetPreviewProps instead of duplicating the logic here */
+      /* TODO: take also other energy-consuming actions into account */
       let energy = actionObject.energy;
       if (actionObject.id === 'rest') {
         if (Props.getGameProp('timeMode') === 'night') {
@@ -167,6 +168,8 @@ export default {
         Player.previewProps('food', -18);
         Player.previewProps('thirst', -24);
         Player.previewProps('energy', energy);
+      } else if (actionObject.energy !== 0 && actionObject.energy !== undefined) {
+        Player.previewProps('energy', actionObject.energy);
       }
     }
   },

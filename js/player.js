@@ -93,28 +93,39 @@ export default {
       } else if (change < 0) {
         if (previewMeter) {
           previewMeter.style.paddingRight =
-            (playerProps[prop] + change > 9 ? Math.abs(change) : 0) + '%';
+            (playerProps[prop] + change >= 0 ? Math.abs(change) : playerProps[prop]) + '%';
           previewMeter.style.width =
-            (playerProps[prop] + change > 9 ? playerProps[prop] + change : 9) + '%';
+            (playerProps[prop] + change >= 0 ? playerProps[prop] + change : 0) + '%';
         }
       }
       if (playerProps[prop] + change < 10) {
-        previewMeter.parentNode.classList.add('very-low');
+        previewMeter.parentNode.classList.add('very-low-preview');
       } else if (playerProps[prop] + change < 33) {
-        previewMeter.parentNode.classList.add('low');
+        previewMeter.parentNode.classList.add('low-preview');
+      } else {
+        previewMeter.parentNode.classList.add('default-preview');
       }
     }
   },
 
   resetPreviewProps: function () {
-    document.querySelector('#properties li.food').classList.remove('transfer');
-    document.querySelector('#properties li.thirst').classList.remove('transfer');
-    document.querySelector('#properties li.energy').classList.remove('transfer');
-    document.querySelector('#properties li.health').classList.remove('transfer');
+    document
+      .querySelector('#properties li.food')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document
+      .querySelector('#properties li.thirst')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document
+      .querySelector('#properties li.energy')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document
+      .querySelector('#properties li.health')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
     document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
     document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
-    document.querySelector('#properties li.health span.meter').style.paddingRight = '0'; // do not remove, or meter will stick out to the right
+    document.querySelector('#properties li.health span.meter').style.paddingRight = '0';
+    /* make sure to render playerprops again, otherwise the meter will be misaligned for edge cases if (change < 0) */
     Props.changePlayerProp('food', 0);
     Props.changePlayerProp('thirst', 0);
     Props.changePlayerProp('energy', 0);
