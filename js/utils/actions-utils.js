@@ -65,11 +65,19 @@ export default {
   searchForKey: function (object) {
     if (object.locked && object.hasKey) {
       object.hasKey = false;
-      Props.setupBuilding(
-        Player.getPlayerPosition().x,
-        Player.getPlayerPosition().y,
-        new Array('key')
-      );
+      if (object.type === 'car') {
+        Props.setupBuilding(
+          Player.getPlayerPosition().x,
+          Player.getPlayerPosition().y,
+          new Array('car-keys')
+        );
+      } else {
+        Props.setupBuilding(
+          Player.getPlayerPosition().x,
+          Player.getPlayerPosition().y,
+          new Array('key')
+        );
+      }
     }
   },
 

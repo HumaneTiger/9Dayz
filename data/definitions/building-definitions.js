@@ -41,7 +41,7 @@ export default {
     industrial: ['tool-shed', 'garage'],
     water: ['well', 'jetty', 'pump'],
     container: ['crate'],
-    collectable: ['key'],
+    collectable: ['key', 'car-keys'],
     camping: ['seating', 'log-cabine', 'outhouse', 'fireplace'],
     corpse: ['human-corpse-1'],
   },
@@ -277,5 +277,6 @@ export default {
       ],
     },
     key: { locked: 0, spawn: 0, items: [] },
+    'car-keys': { locked: 0, spawn: 0, items: [] },
   },
 };

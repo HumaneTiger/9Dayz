@@ -237,7 +237,7 @@ export default {
     }
 
     // zedNearby
-    if (object.type !== 'signpost' && object.name !== 'key') {
+    if (object.type !== 'signpost' && object.name !== 'key' && object.name !== 'car-keys') {
       const allFoundObjectIds = ObjectState.findAllObjectsNearby(object.x, object.y);
       object.zednearby = allFoundObjectIds.some(function (id) {
         return ObjectState.getObject(id).group === 'zombie' && !ObjectState.getObject(id).dead;
@@ -295,7 +295,9 @@ export default {
           action.locked = true;
         }
       } else if (action.id === 'unlock-door') {
-        if (!InventoryManager.inventoryContains('key')) {
+        if (object.type !== 'car' && !InventoryManager.inventoryContains('key')) {
+          action.locked = true;
+        } else if (object.type === 'car' && !InventoryManager.inventoryContains('car-keys')) {
           action.locked = true;
         }
       } else if (action.id === 'cut') {

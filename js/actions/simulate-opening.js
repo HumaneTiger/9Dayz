@@ -5,14 +5,16 @@ import ActionsUtils from '../utils/actions-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
 
 export default function simulateOpening(cardId, time, energy) {
-  Audio.sfx('unlock', 0, 0.6);
+  Audio.sfx('unlock', 0, 0.9);
 
   ActionsOrchestration.fastForward(
     function (cardId, energy) {
       const object = Props.getObject(cardId);
       object.locked = false;
-      if (Items.inventoryContains('key')) {
+      if (object.type !== 'car' && Items.inventoryContains('key')) {
         Props.addItemToInventory('key', -1);
+      } else if (object.type === 'car' && Items.inventoryContains('car-keys')) {
+        Props.addItemToInventory('car-keys', -1);
       }
       Props.changePlayerProp('energy', energy);
       ActionsOrchestration.endAction(cardId);

@@ -300,7 +300,8 @@ export default {
         object.name === 'fireplace' ||
         object.name === 'barricades' ||
         object.name === 'bee' ||
-        object.name === 'key'
+        object.name === 'key' ||
+        object.name === 'car-keys'
       )
     ) {
       // mega bug: when bees contains no item from the beginning (amount=0), ul.item will be removed and cut/gather/search won't work

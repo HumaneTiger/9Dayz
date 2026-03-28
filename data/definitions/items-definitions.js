@@ -84,6 +84,7 @@ const items = {
   rope: ['craft', 0, 0, 0, 3, 1],
   'bone-hook': ['craft', 0, 0, 0, 2, 2],
   key: ['craft', 0, 0, 0, 1, 1],
+  'car-keys': ['craft', 0, 0, 0, 1, 1],
 };
 
 export default {
