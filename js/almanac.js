@@ -263,6 +263,9 @@ export default {
               craftingText += '.';
             }
           }
+          if (craftingRecipes[recipe].exclusive) {
+            craftingText += ` You can only hold one of these at a time.`;
+          }
           craftingParagraph.innerHTML = craftingText;
           craftingParagraph.classList.remove('is--hidden');
         }
