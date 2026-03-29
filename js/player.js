@@ -149,6 +149,23 @@ export default {
 
   playerDead: function () {
     let startScreen = document.getElementById('startscreen');
+    let reasonDead = document.getElementById('reason-dead');
+    const time = Props.getGameProp('timeIsUnity');
+    if (reasonDead) {
+      if (time.gameDays > 9) {
+        reasonDead.textContent = "You couldn't reach the ship in time.";
+      } else if (Props.getGameProp('battle')) {
+        reasonDead.textContent = 'You were killed in battle.';
+      } else if (this.getProp('food') <= 0) {
+        reasonDead.textContent = 'You starved to death.';
+      } else if (this.getProp('thirst') <= 0) {
+        reasonDead.textContent = 'You died of thirst.';
+      } else if (this.getProp('energy') <= 0) {
+        reasonDead.textContent = 'You died of exhaustion.';
+      } else {
+        reasonDead.textContent = 'You died.';
+      }
+    }
     startScreen.classList.remove('is--hidden');
     startScreen.style.opacity = 0;
     window.setTimeout(() => {
