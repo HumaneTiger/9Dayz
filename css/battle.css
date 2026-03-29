@@ -38,7 +38,7 @@
   top: 0;
   width: 160px;
   height: 219px;
-  left: 200px;
+  left: 172px;
   z-index: 5;
 }
 .scratch {
@@ -402,7 +402,7 @@
   font-size: 48px;
 }
 #action-points.low-energy {
-  bottom: 76px;
+  bottom: 36px;
 }
 
 #action-points-warning {

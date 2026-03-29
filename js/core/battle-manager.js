@@ -13,6 +13,8 @@ import {
   CompanionManager,
 } from './index.js';
 
+const MAX_DRAWPILE_SIZE = 24;
+
 export default {
   /**
    * @returns {BattleDeck}
@@ -22,7 +24,13 @@ export default {
   },
 
   /**
-   *
+   * @returns {number}
+   */
+  getMaxDrawPileSize: function () {
+    return MAX_DRAWPILE_SIZE;
+  },
+
+  /**
    * @param {string} itemName
    * @returns {BattleCard|undefined} the battle card corresponding to the given item name
    */

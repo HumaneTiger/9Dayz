@@ -305,7 +305,10 @@ export default {
       remainingCards !== undefined ? remainingCards : BattleManager.getBattleDeckSize();
     document.getElementById('draw-amount').textContent = totalCards;
 
-    const pileSize = Math.min(BattleManager.getBattleDeckSize(), 24);
+    const pileSize = Math.min(
+      BattleManager.getBattleDeckSize(),
+      BattleManager.getMaxDrawPileSize()
+    );
     for (let card = 0; card < pileSize; card += 1) {
       if (card < totalCards) {
         allDrawPileCards[card].classList.remove('is--hidden');
@@ -313,7 +316,8 @@ export default {
         allDrawPileCards[card].classList.add('is--hidden');
       }
     }
-    document.getElementById('draw-amount').style.left = 200 + Math.min(totalCards, 24) * 4 + 'px';
+    document.getElementById('draw-amount').style.left =
+      172 + Math.min(totalCards, BattleManager.getMaxDrawPileSize()) * 4 + 'px';
     if (totalCards === 0) {
       document.getElementById('draw-amount').classList.add('is--hidden');
     } else {
@@ -358,7 +362,11 @@ export default {
       );
     }
     /* generate draw pile */
-    for (let card = 0; card < Math.min(battleDeck.length, 24); card += 1) {
+    for (
+      let card = 0;
+      card < Math.min(battleDeck.length, BattleManager.getMaxDrawPileSize());
+      card += 1
+    ) {
       battleDrawContainer.insertAdjacentHTML(
         'beforeend',
         '<div class="battle-card-back is--hidden" style="left: ' + card * 4 + 'px"></div>'
