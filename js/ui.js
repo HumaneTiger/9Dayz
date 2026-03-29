@@ -76,10 +76,19 @@ export default {
     const hour = time.todayHours;
     const days = time.gameDays;
     const ticksPerHour = Props.getGameProp('timeConfig').ticksPerHour;
+    const totalHours = time.gameHours - 24; // it starts with 24h ahead :-(
 
     // Update game time UI elements
     document.getElementById('gametime-days').textContent = days;
     document.getElementById('gametime-hours').textContent = time.todayTime;
+    const remainingHours = 9 * 24 - totalHours;
+    const countdownEl = document.getElementById('gametime-countdown');
+    const daysLeft = Math.floor(remainingHours / 24);
+    countdownEl.textContent =
+      daysLeft === 0
+        ? `Only ${remainingHours} hours left`
+        : `${daysLeft} days ${remainingHours % 24} hours left`;
+    countdownEl.classList.toggle('critical', daysLeft === 0);
 
     // Check if it's a new hour (when gameTick is divisible by ticksPerHour)
     if (time.gameTick % ticksPerHour === 0) {
