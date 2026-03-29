@@ -42,7 +42,7 @@ export default {
     water: ['well', 'jetty', 'pump'],
     container: ['crate'],
     collectable: ['key', 'car-keys'],
-    camping: ['seating', 'log-cabine', 'outhouse', 'fireplace'],
+    camping: ['seating', 'log-cabine', 'outhouse', 'fireplace', 'charred-cabine'],
     corpse: ['human-corpse-1'],
   },
 
@@ -238,7 +238,7 @@ export default {
     },
     seating: { locked: 0, spawn: 1, items: ['drink-1', 'drink-2', 'snack-1', 'snack-2'] },
     'log-cabine': {
-      locked: 1.4,
+      locked: 0,
       spawn: 2,
       items: [
         'stump',
@@ -250,6 +250,11 @@ export default {
         'snack-1',
         'snack-2',
       ],
+    },
+    'charred-cabine': {
+      locked: 0,
+      spawn: 1,
+      items: ['stump', 'branch', 'stone'],
     },
     cottage: {
       locked: 2,

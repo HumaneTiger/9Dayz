@@ -207,10 +207,10 @@ export default {
 
   buildingActions: {
     house: [
-      { id: 'break-door', label: 'break door', time: 10, energy: -15, requiresLocked: true },
-      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
+      { id: 'break-door', label: 'break door', time: 5, energy: -10, requiresLocked: true },
+      { id: 'unlock-door', label: 'unlock door', time: 5, energy: -5, requiresLocked: true },
       { id: 'search', label: 'search', time: 20, energy: -10, needsUnlock: true },
-      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'scout-area', label: 'scout area', time: 30, energy: -10 },
       {
         id: 'rest',
         label: 'rest',
@@ -245,10 +245,10 @@ export default {
       },
     ],
     car: [
-      { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
-      { id: 'smash-window', label: 'smash window', time: 20, requiresLocked: true },
+      { id: 'unlock-door', label: 'unlock door', time: 5, energy: -5, requiresLocked: true },
+      { id: 'smash-window', label: 'smash window', time: 10, energy: -10, requiresLocked: true },
       { id: 'search', label: 'search', time: 20, energy: -5, needsUnlock: true },
-      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'scout-area', label: 'scout area', time: 30, energy: -5 },
       {
         id: 'rest',
         label: 'rest',
@@ -295,7 +295,7 @@ export default {
       { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
       { id: 'break-door', label: 'break door', time: 10, energy: -15, requiresLocked: true },
       { id: 'search', label: 'search', time: 20, energy: -10, needsUnlock: true },
-      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'scout-area', label: 'scout area', time: 30, energy: -10 },
       { id: 'rest', label: 'rest', time: 60, energy: 30, needsUnlock: true },
     ],
     signpost: [{ id: 'read', label: 'read', time: 1 }],
@@ -311,13 +311,13 @@ export default {
       { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
       { id: 'break-door', label: 'break door', time: 30, energy: -20, requiresLocked: true },
       { id: 'search', label: 'search', time: 20, energy: -10, needsUnlock: true },
-      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'scout-area', label: 'scout area', time: 30, energy: -10 },
     ],
     industrial: [
       { id: 'unlock-door', label: 'unlock door', time: 10, energy: -5, requiresLocked: true },
       { id: 'break-door', label: 'break door', time: 30, energy: -20, requiresLocked: true },
       { id: 'search', label: 'search', time: 20, energy: -15, needsUnlock: true },
-      { id: 'scout-area', label: 'scout area', time: 30 },
+      { id: 'scout-area', label: 'scout area', time: 30, energy: -10 },
     ],
     water: [
       { id: 'gather', label: 'gather', time: 15, energy: -5 },
@@ -355,6 +355,7 @@ export default {
         time: 60,
         energy: 20,
         needsUnlock: true,
+        excludeBuildings: ['charred-cabine'],
       },
       // Fireplace-specific actions
       {
@@ -362,7 +363,7 @@ export default {
         label: 'cook',
         time: 30,
         excludeCharacters: ['craftsmaniac', 'cashmeister'],
-        excludeBuildings: ['log-cabine', 'outhouse', 'seating'],
+        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'charred-cabine'],
       },
       {
         id: 'sleep',
@@ -370,7 +371,7 @@ export default {
         time: 120,
         energy: 60,
         forCharactersOnly: ['treehugger'],
-        excludeBuildings: ['log-cabine', 'outhouse', 'seating'],
+        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'charred-cabine'],
       },
     ],
     corpse: [{ id: 'search', label: 'search', time: 15, energy: -5, needsUnlock: true }],
