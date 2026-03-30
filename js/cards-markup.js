@@ -372,7 +372,11 @@ export default {
           actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
         } else if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
           actionRef.querySelector('.additional-locked').textContent = 'Infested';
-        } else if (action.id === 'cut-down' || action.id === 'break-door') {
+        } else if (
+          action.id === 'cut-down' ||
+          action.id === 'break-door' ||
+          action.id === 'break-lock'
+        ) {
           actionRef.querySelector('.additional-locked').textContent = 'Axe needed';
         } else if (action.id === 'unlock-door') {
           actionRef.querySelector('.additional-locked').textContent = 'Key needed';
