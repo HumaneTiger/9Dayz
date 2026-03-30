@@ -104,17 +104,20 @@ export default {
 
   preloadTutorial: function () {
     const loader = new ImagePreloader('./img/tutorial/');
-    loader.load(1, 'note-1.png');
-    loader.load(2, 'note-2.png');
-    loader.load(3, 'note-3.png');
-    loader.load(4, 'note-4.png');
-    loader.load(5, 'step-1.png');
-    loader.load(6, 'step-2.png');
-    loader.load(7, 'step-3.png');
-    loader.load(8, 'step-4.png');
-    loader.load(9, 'step-4a.png');
-    loader.load(10, 'step-5.png');
-    loader.load(11, 'general-notes.png');
-    loader.load(12, 'letter-blank.png');
+    loader.load(1, 'intro-step-1.png');
+    loader.load(2, 'intro-step-2.png');
+    loader.load(3, 'intro-step-3.png');
+    loader.load(4, 'note-1.png');
+    loader.load(5, 'note-2.png');
+    loader.load(6, 'note-3.png');
+    loader.load(7, 'note-4.png');
+    loader.load(8, 'step-1.png');
+    loader.load(9, 'step-2.png');
+    loader.load(10, 'step-3.png');
+    loader.load(11, 'step-4.png');
+    loader.load(12, 'step-4a.png');
+    loader.load(13, 'step-5.png');
+    loader.load(14, 'general-notes.png');
+    loader.load(15, 'letter-blank.png');
   },
 };
