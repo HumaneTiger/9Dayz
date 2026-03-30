@@ -244,11 +244,12 @@ export default {
         'stump',
         'straw-wheet',
         'branch',
-        'cloth',
+        'rope',
         'drink-3',
         'drink-4',
         'snack-1',
         'snack-2',
+        'bone-hook',
       ],
     },
     'charred-cabine': {
