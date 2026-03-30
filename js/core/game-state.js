@@ -78,6 +78,7 @@ var game = {
   tutorial: false,
   battle: false,
   tutorialBattle: false,
+  tutorialIntro: false,
   gamePaused: true,
   local:
     location.href.startsWith('http://127.0.0.1') || location.href.startsWith('http://localhost'),

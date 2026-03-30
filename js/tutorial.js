@@ -6,7 +6,8 @@ import TimingUtils from './utils/timing-utils.js';
 import { TutorialManager, CardsManager } from './core/index.js';
 import { CardsDefinitions } from '../data/index.js';
 
-let battleTutorialStep = 0;
+let battleTutorialStep = 0,
+  introTutorialStep = 0;
 
 export default {
   init: function () {
@@ -37,8 +38,61 @@ export default {
   },
 
   handleUserInput: function () {
-    if (Props.getGameProp('tutorialBattle')) {
+    if (Props.getGameProp('tutorialIntro')) {
+      this.continueIntroTutorial();
+    } else if (Props.getGameProp('tutorialBattle')) {
       this.continueBattleTutorial();
+    }
+  },
+
+  triggerIntroTutorial: async function () {
+    const mainContainer = document.querySelector('#viewport main');
+    if (!document.getElementById('tutorial-intro')) {
+      mainContainer.insertAdjacentHTML(
+        'afterend',
+        `
+      <div id="tutorial-intro">
+        <img src="./img/tutorial/intro-step-1.png" class="tutorial-step intro-tutorial-step-1 fading">
+        <img src="./img/tutorial/intro-step-2.png" class="tutorial-step intro-tutorial-step-2">
+        <img src="./img/tutorial/intro-step-3.png" class="tutorial-step intro-tutorial-step-3">
+        <p class="screen__paragraph align--center text--smedium hint-continue to--center pulsate is--hidden">
+          <span class="current-step">1/3</span>
+          Press any key to continue...
+        </p>
+      </div>
+    `
+      );
+    }
+    await TimingUtils.wait(1500);
+    Props.setGameProp('tutorialIntro', true);
+    document.querySelector('.intro-tutorial-step-1').classList.add('is--active');
+    document.querySelector('.hint-continue').classList.remove('is--hidden');
+  },
+
+  continueIntroTutorial: function () {
+    introTutorialStep++;
+    console.log(introTutorialStep);
+    switch (introTutorialStep) {
+      case 1:
+        document.querySelector('.intro-tutorial-step-1').classList.remove('is--active');
+        document.querySelector('.intro-tutorial-step-2').classList.add('is--active');
+        document.querySelector('.hint-continue span').textContent = '2/3';
+        document.querySelector('.hint-continue').classList.remove('to--center');
+        break;
+      case 2:
+        document.querySelector('.intro-tutorial-step-2').classList.remove('is--active');
+        document.querySelector('.intro-tutorial-step-3').classList.add('is--active');
+        document.querySelector('.hint-continue span').textContent = '3/3';
+        document.querySelector('.hint-continue').classList.add('to--center');
+        break;
+      default:
+        Props.setGameProp('tutorialIntro', false);
+        introTutorialStep = 0;
+        document.querySelector('.intro-tutorial-step-3').classList.remove('is--active');
+        TimingUtils.wait(500);
+        document.getElementById('tutorial-intro').remove();
+        Props.pauseGame(false);
+        break;
     }
   },
 

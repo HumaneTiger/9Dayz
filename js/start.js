@@ -337,6 +337,8 @@ export default {
     Props.setGameProp('tutorial', true);
     this.initProps();
     this.startGame();
+    Props.pauseGame(true);
+    Tutorial.triggerIntroTutorial();
   },
 
   startGame: async function () {
