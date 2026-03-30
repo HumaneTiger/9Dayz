@@ -275,6 +275,10 @@ export default {
     }
   },
 
+  createAmountContent: function (amount) {
+    return amount === Infinity ? 'Ꝏ' : amount;
+  },
+
   fillItemSlot: function (itemSlots, amount, crafting, itemProps) {
     if (!itemSlots || itemSlots.length === 0) {
       return;
@@ -286,7 +290,7 @@ export default {
         if ((itemProps?.food > 0 || itemProps?.name === 'bones') && amount > 0) {
           itemSlot.classList.remove('inactive');
           itemSlot.classList.add('active');
-          itemSlot.querySelector('.amount').textContent = amount;
+          itemSlot.querySelector('.amount').textContent = this.createAmountContent(amount);
         } else {
           itemSlot.classList.remove('active');
           itemSlot.classList.add('inactive');
@@ -299,7 +303,7 @@ export default {
           itemSlot.classList.remove('active');
           itemSlot.classList.add('inactive');
         }
-        itemSlot.querySelector('.amount').textContent = amount;
+        itemSlot.querySelector('.amount').textContent = this.createAmountContent(amount);
       } else {
         itemSlot.querySelector('.amount').textContent = '';
         itemSlot.classList.remove('active');

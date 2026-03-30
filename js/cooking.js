@@ -57,26 +57,32 @@ export default {
 
   checkCookingRecipePrerequisits: function (cardRef) {
     const cookingRecipes = RecipesManager.getCookingRecipes();
+    const persistentIngredients = RecipesManager.getPersistentIngredients();
     for (const recipe in cookingRecipes) {
       const recipeRow = cardRef.querySelector(`ul.cooking li[data-recipe="${recipe}"]`);
       if (!recipeRow) {
         continue;
       }
-      if (InventoryManager.inventoryKnows(cookingRecipes[recipe][0])) {
+      const ingredient1 = cookingRecipes[recipe][0];
+      const ingredient2 = cookingRecipes[recipe][1];
+      if (InventoryManager.inventoryKnows(ingredient1)) {
+        const amount = persistentIngredients.includes(ingredient1)
+          ? Infinity
+          : InventoryManager.inventoryItemAmount(ingredient1) || 0;
         Items.fillItemSlot(
           recipeRow.querySelectorAll('.slot.item-' + cookingRecipes[recipe][0]),
-          InventoryManager.inventoryItemAmount(cookingRecipes[recipe][0]) || 0
+          amount
         );
       }
-      if (InventoryManager.inventoryKnows(cookingRecipes[recipe][1])) {
-        Items.fillItemSlot(
-          recipeRow.querySelectorAll('.slot.item-' + cookingRecipes[recipe][1]),
-          InventoryManager.inventoryItemAmount(cookingRecipes[recipe][1]) || 0
-        );
+      if (InventoryManager.inventoryKnows(ingredient2)) {
+        const amount = persistentIngredients.includes(ingredient2)
+          ? Infinity
+          : InventoryManager.inventoryItemAmount(ingredient2) || 0;
+        Items.fillItemSlot(recipeRow.querySelectorAll('.slot.item-' + ingredient2), amount);
       }
       if (
-        InventoryManager.inventoryKnows(cookingRecipes[recipe][0]) &&
-        InventoryManager.inventoryKnows(cookingRecipes[recipe][1])
+        InventoryManager.inventoryKnows(ingredient1) &&
+        InventoryManager.inventoryKnows(ingredient2)
       ) {
         const actionSlot = recipeRow.querySelector('.slot.action.item-' + recipe);
         if (!actionSlot) {
@@ -84,8 +90,8 @@ export default {
         }
         actionSlot.classList.remove('unknown');
         if (
-          !InventoryManager.inventoryContains(cookingRecipes[recipe][0]) ||
-          !InventoryManager.inventoryContains(cookingRecipes[recipe][1])
+          !InventoryManager.inventoryContains(ingredient1) ||
+          !InventoryManager.inventoryContains(ingredient2)
         ) {
           actionSlot.classList.remove('active');
           actionSlot.classList.add('inactive');
