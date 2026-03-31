@@ -66,9 +66,9 @@ export default {
   },
 
   showQuitAppButtonIfExecutable: function () {
-    let startScreen = document.getElementById('startscreen');
     if (window.electronAPI?.isElectron) {
-      startScreen.querySelector('.screen__quit #quit-app').classList.remove('is--hidden');
+      document.getElementById('quit-app').classList.remove('is--hidden');
+      document.getElementById('quit-app-start-menu').classList.remove('is--hidden');
     }
   },
 
