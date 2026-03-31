@@ -1,6 +1,7 @@
 import Props from '../props.js';
 import TimingUtils from '../utils/timing-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
+import { AlmanacManager } from '../core/index.js';
 
 export default async function simulateEquipping(cardId) {
   await TimingUtils.wait(800);
@@ -11,6 +12,7 @@ export default async function simulateEquipping(cardId) {
       damage: object.attack,
       protection: object.defense,
     });
+    AlmanacManager.makeContentKnown(object.name);
   }
   ActionsOrchestration.endAction(cardId);
   ActionsOrchestration.goBackFromAction();
