@@ -148,7 +148,7 @@ export default {
   previewStatsChange: function (action, cardId) {
     const object = Props.getObject(cardId);
     const actionObject = object.actions.find(singleAction => singleAction.id === action);
-    if (!actionObject.locked) {
+    if (!actionObject?.locked) {
       /* TODO: use Player.previewProps / resetPreviewProps instead of duplicating the logic here */
       /* TODO: take also other energy-consuming actions into account */
       let energy = actionObject.energy;
