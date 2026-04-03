@@ -41,11 +41,11 @@ export default {
   getTestData: function (testName) {
     const testData = {
       'test-run-1': {
-        description: 'Old Villa raid',
+        description: '==OBSOLETE===',
         source: 'file',
       },
       'test-run-2': {
-        description: 'Very short one',
+        description: 'Start behind trains',
         source: 'file',
       },
       'test-run-3': {
