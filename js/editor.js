@@ -75,7 +75,8 @@ export default {
                 selectedObject === 'baseball-bat' ||
                 selectedObject === 'wrench' ||
                 selectedObject === 'improvised-whip' ||
-                selectedObject === 'fishing-rod'
+                selectedObject === 'fishing-rod' ||
+                selectedObject === 'barricades'
               ) {
                 Props.setupWeapon(squareX, squareY, selectedObject);
               } else if (selectedObject === 'care-package') {

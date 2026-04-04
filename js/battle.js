@@ -21,7 +21,6 @@ import {
 import TimingUtils from './utils/timing-utils.js';
 
 const battlePlayContainer = document.querySelector('#battle-cards .play');
-const defensiveCardsContainer = document.querySelector('#defensive-cards');
 
 export default {
   prepareBattle: function () {
@@ -208,7 +207,7 @@ export default {
     if (!defensiveDeck || defensiveDeck.length === 0) {
       return;
     }
-    defensiveCardsContainer.innerHTML = '';
+    UiBattle.emptyDefensiveCardsContainer();
     for (var i = defensiveDeck.length; i > 0; i -= 1) {
       const defensiveObject = Props.getObject(defensiveDeck[i - 1]);
       if (defensiveObject.durability > 0) {
@@ -222,24 +221,7 @@ export default {
       defensiveObject.name,
       defensiveObject.durability || 0
     );
-    const cardMarkup =
-      '<div style="margin-left: ' +
-      offsetX +
-      'px;" class="battle-card" data-item="' +
-      defensiveObject.name +
-      '"><div class="inner">' +
-      '<img class="item-pic" src="./img/weapons/' +
-      defensiveObject.name.toLowerCase() +
-      '.png">' +
-      '<div class="attack">' +
-      defensiveObject.attack +
-      '</div><div class="shield">' +
-      defensiveObject.defense +
-      '</div>' +
-      durabilityMarkup +
-      '</div></div>';
-
-    defensiveCardsContainer.insertAdjacentHTML('beforeend', cardMarkup);
+    UiBattle.generateDefensiveCard(defensiveObject, durabilityMarkup, offsetX);
   },
 
   startBattle(targetEnemyObject, surprised, singleZedId) {
@@ -689,7 +671,7 @@ export default {
             const attack = zedObject.attack;
             const defensiveCard = BattleManager.getFirstDurableCardFromDefensiveDeck();
             if (defensiveCard) {
-              defensiveCardsContainer.classList.add('heavy-shake');
+              UiBattle.shakeDefensiveCards(true);
               /* we already added the protection effect of that card */
               /* here we apply the cards damage to the zed */
               /* we also check if zed is dead before zeds damage is applied to the player */
@@ -722,7 +704,7 @@ export default {
         () => {
           zedCardRef.classList.add('anim-punch');
           UiBattle.stopHealthMeterShake();
-          defensiveCardsContainer.classList.remove('heavy-shake');
+          UiBattle.shakeDefensiveCards(false);
           if (zedObject.name === 'rat') {
             Audio.sfx('rat-attacks');
           } else if (zedObject.name === 'bee') {

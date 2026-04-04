@@ -324,4 +324,36 @@ export default {
   showDrawPileCards(pileSize) {
     battleDrawContainer.style.width = 160 + pileSize * 4 + 'px';
   },
+
+  shakeDefensiveCards: function (shake) {
+    if (shake) {
+      defensiveCardsContainer.classList.add('heavy-shake');
+    } else {
+      defensiveCardsContainer.classList.remove('heavy-shake');
+    }
+  },
+
+  generateDefensiveCard: function (defensiveObject, durabilityMarkup, offsetX = 0) {
+    const cardMarkup =
+      '<div style="margin-left: ' +
+      offsetX +
+      'px;" class="battle-card" data-item="' +
+      defensiveObject.name +
+      '"><div class="inner">' +
+      '<img class="item-pic" src="./img/weapons/' +
+      defensiveObject.name.toLowerCase() +
+      '.png">' +
+      '<div class="attack">' +
+      defensiveObject.attack +
+      '</div><div class="shield">' +
+      defensiveObject.defense +
+      '</div>' +
+      durabilityMarkup +
+      '</div></div>';
+    defensiveCardsContainer.insertAdjacentHTML('beforeend', cardMarkup);
+  },
+
+  emptyDefensiveCardsContainer: function () {
+    defensiveCardsContainer.innerHTML = '';
+  },
 };
