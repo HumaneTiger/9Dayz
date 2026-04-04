@@ -4,7 +4,6 @@ import Props from './props.js';
 import Player from './player.js';
 import Cards from './cards.js';
 import CardsMarkup from './cards-markup.js';
-import BattleCardsMarkup from './battle-cards-markup.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
@@ -40,28 +39,6 @@ export default {
       // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
-  },
-
-  /* todo: use this one for normal battles as well */
-  playAttackAnim: function (attackerCardRef, targetObjectRef, attackSoundId, reverse) {
-    return new Promise(resolve => {
-      attackerCardRef.classList.add('attacking');
-      const animPunchClassName = reverse ? 'anim-punch-reverse' : 'anim-punch';
-      window.setTimeout(() => {
-        attackerCardRef.classList.add(animPunchClassName);
-        Audio.sfx(attackSoundId);
-        window.setTimeout(() => {
-          targetObjectRef.classList.add('heavy-shake');
-          UiBattle.scratchAnim(targetObjectRef);
-          resolve(); // Attack finished
-        }, 200);
-        window.setTimeout(() => {
-          targetObjectRef.classList.remove('heavy-shake');
-          attackerCardRef.classList.remove(animPunchClassName);
-          attackerCardRef.classList.remove('attacking');
-        }, 500);
-      }, 400);
-    });
   },
 
   startCompanionBattle(singleZedId) {
@@ -124,12 +101,12 @@ export default {
 
   startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion) {
     window.setTimeout(async () => {
-      await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
+      await UiBattle.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
       enemyObject.defense -= companion.damage;
       if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
         enemyRef.querySelector('.health').textContent = enemyObject.defense;
         window.setTimeout(async () => {
-          await this.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
+          await UiBattle.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
           companion.health -= enemyObject.attack;
           if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
             const healthMarkup = CompanionManager.generateHealthMarkup();
@@ -145,13 +122,13 @@ export default {
 
   startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion) {
     window.setTimeout(async () => {
-      await this.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
+      await UiBattle.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
       companion.health -= enemyObject.attack;
       if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
         const healthMarkup = CompanionManager.generateHealthMarkup();
         companionRef.querySelector('.durability').innerHTML = healthMarkup;
         window.setTimeout(async () => {
-          await this.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
+          await UiBattle.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
           enemyObject.defense -= companion.damage;
           if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
             enemyRef.querySelector('.health').textContent = enemyObject.defense;
@@ -345,10 +322,10 @@ export default {
     if (maxItems + weaponsDeck.length > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (let i = 0; i < maxItems; i += 1) {
-        this.spawnBattleCard(itemsDeck[i].name);
+        UiBattle.generateBattleCard(itemsDeck[i].name);
       }
       for (let i = 0; i < weaponsDeck.length; i += 1) {
-        this.spawnBattleCard(weaponsDeck[i].name);
+        UiBattle.generateBattleCard(weaponsDeck[i].name);
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
       UiBattle.renderBattleCardDeck();
@@ -357,35 +334,13 @@ export default {
     }
   },
 
-  spawnBattleCard: function (itemName) {
-    const card = BattleManager.getBattleDeckCard(itemName);
-    const modifyDamageMarkup =
-      card?.modifyDamage && card.modifyDamage > 0
-        ? '<span class="modify">(+' + card.modifyDamage + ')<span>'
-        : '';
-    const durabilityMarkup = BattleCardsMarkup.getDurabilityMarkup(itemName);
-    const pictureMarkup = BattleCardsMarkup.getPictureMarkup(itemName);
-    const lastUseMarkup = BattleCardsMarkup.getLastUseMarkup(itemName);
-
-    UiBattle.generateBattleCard(
-      itemName,
-      card.damage,
-      card.modifyDamage,
-      card.protection,
-      pictureMarkup,
-      lastUseMarkup,
-      modifyDamageMarkup,
-      durabilityMarkup
-    );
-  },
-
   resolveSingleAttack: function (dragEl, dragTarget) {
     const dragItemName = dragEl.dataset.item;
     const battleCard = BattleManager.getBattleDeckCard(dragItemName);
     Props.changePlayerProp('protection', battleCard.protection);
     Props.changePlayerProp('actions', -1);
     this.resolveAttack(dragItemName, dragTarget);
-    this.runHitAnimation(dragEl, dragTarget);
+    UiBattle.runHitAnimation(dragEl, dragTarget);
     BattleManager.reduceDurabilityOrRemove(dragItemName);
     this.endAttack();
   },
@@ -418,32 +373,12 @@ export default {
     for (let index = 0; index < potentialTargets.length; index++) {
       const targetId = potentialTargets[index];
       this.resolveAttack(dragItemName, Cards.getCardById(targetId));
-      this.runHitAnimation(dragEl, Cards.getCardById(targetId));
+      UiBattle.runHitAnimation(dragEl, Cards.getCardById(targetId));
       await TimingUtils.wait(150);
     }
 
     BattleManager.reduceDurabilityOrRemove(dragItemName);
     this.endAttack();
-  },
-
-  runHitAnimation: function (dragEl, zedCardRef) {
-    Audio.sfx('punch');
-    // run "hit" animation
-    UiBattle.scratchAnim(zedCardRef);
-    zedCardRef.classList.add('card-heavy-shake');
-    // resolve item card
-    dragEl.classList.add('resolve');
-
-    // cleanup
-    window.setTimeout(
-      (dragEl, zedCardRef) => {
-        dragEl.remove();
-        zedCardRef.classList.remove('card-heavy-shake');
-      },
-      200,
-      dragEl,
-      zedCardRef
-    );
   },
 
   updateZedCard: function (zedId) {

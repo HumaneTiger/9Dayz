@@ -1,3 +1,4 @@
+import Audio from './audio.js';
 import Battle from './battle.js';
 import Items from './items.js';
 import Tutorial from './tutorial.js';
@@ -173,6 +174,28 @@ export default {
     return dragEl;
   },
 
+  /* todo: use this one for normal battles as well */
+  playAttackAnim: function (attackerCardRef, targetObjectRef, attackSoundId, reverse) {
+    return new Promise(resolve => {
+      attackerCardRef.classList.add('attacking');
+      const animPunchClassName = reverse ? 'anim-punch-reverse' : 'anim-punch';
+      window.setTimeout(() => {
+        attackerCardRef.classList.add(animPunchClassName);
+        Audio.sfx(attackSoundId);
+        window.setTimeout(() => {
+          targetObjectRef.classList.add('heavy-shake');
+          this.scratchAnim(targetObjectRef);
+          resolve(); // Attack finished
+        }, 200);
+        window.setTimeout(() => {
+          targetObjectRef.classList.remove('heavy-shake');
+          attackerCardRef.classList.remove(animPunchClassName);
+          attackerCardRef.classList.remove('attacking');
+        }, 500);
+      }, 400);
+    });
+  },
+
   scratchAnim: function (targetObjectRef) {
     var rect = targetObjectRef.getBoundingClientRect();
     scratch.style.left = `${rect.left}px`;
@@ -181,6 +204,26 @@ export default {
     window.setTimeout(() => {
       scratch.classList.remove('anim-scratch');
     }, 250);
+  },
+
+  runHitAnimation: function (dragEl, zedCardRef) {
+    Audio.sfx('punch');
+    // run "hit" animation
+    this.scratchAnim(zedCardRef);
+    zedCardRef.classList.add('card-heavy-shake');
+    // resolve item card
+    dragEl.classList.add('resolve');
+
+    // cleanup
+    window.setTimeout(
+      (dragEl, zedCardRef) => {
+        dragEl.remove();
+        zedCardRef.classList.remove('card-heavy-shake');
+      },
+      200,
+      dragEl,
+      zedCardRef
+    );
   },
 
   enterUIBattleMode(defaultBattle) {
@@ -343,28 +386,29 @@ export default {
     }
   },
 
-  generateBattleCard: function (
-    name,
-    damage,
-    modifyDamage,
-    protection,
-    pictureMarkup,
-    lastUseMarkup,
-    modifyDamageMarkup,
-    durabilityMarkup
-  ) {
+  generateBattleCard: function (itemName) {
+    const card = BattleManager.getBattleDeckCard(itemName);
+    const modifyDamageMarkup =
+      card?.modifyDamage && card.modifyDamage > 0
+        ? '<span class="modify">(+' + card.modifyDamage + ')<span>'
+        : '';
+
+    const durabilityMarkup = BattleCardsMarkup.getDurabilityMarkup(itemName);
+    const pictureMarkup = BattleCardsMarkup.getPictureMarkup(itemName);
+    const lastUseMarkup = BattleCardsMarkup.getLastUseMarkup(itemName);
+
     battlePlayContainer.insertAdjacentHTML(
       'beforeend',
       '<div class="battle-card inactive" data-item="' +
-        name +
+        itemName +
         '"><div class="inner">' +
         pictureMarkup +
         lastUseMarkup +
         '<div class="attack">' +
-        (damage + modifyDamage) +
+        (card.damage + card.modifyDamage) +
         modifyDamageMarkup +
         '</div><div class="shield">' +
-        protection +
+        card.protection +
         '</div>' +
         durabilityMarkup +
         '</div></div>'
