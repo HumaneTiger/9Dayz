@@ -25,8 +25,6 @@ const battlePlayContainer = document.querySelector('#battle-cards .play');
 const battleCompanionContainer = document.querySelector('#companion-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
 const battleHealthMeter = document.querySelector('#properties li.health');
-const scratch = document.querySelector('.scratch');
-
 let allDrawPileCards = [];
 
 export default {
@@ -60,7 +58,7 @@ export default {
         Audio.sfx(attackSoundId);
         window.setTimeout(() => {
           targetObjectRef.classList.add('heavy-shake');
-          this.scratchAnim(targetObjectRef);
+          UiBattle.scratchAnim(targetObjectRef);
           resolve(); // Attack finished
         }, 200);
         window.setTimeout(() => {
@@ -70,16 +68,6 @@ export default {
         }, 500);
       }, 400);
     });
-  },
-
-  scratchAnim: function (targetObjectRef) {
-    var rect = targetObjectRef.getBoundingClientRect();
-    scratch.style.left = `${rect.left}px`;
-    scratch.style.top = `${rect.top + 180}px`;
-    scratch.classList.add('anim-scratch');
-    window.setTimeout(() => {
-      scratch.classList.remove('anim-scratch');
-    }, 250);
   },
 
   startCompanionBattle(singleZedId) {
@@ -618,7 +606,7 @@ export default {
   runHitAnimation: function (dragEl, zedCardRef) {
     Audio.sfx('punch');
     // run "hit" animation
-    this.scratchAnim(zedCardRef);
+    UiBattle.scratchAnim(zedCardRef);
     zedCardRef.classList.add('card-heavy-shake');
     // resolve item card
     dragEl.classList.add('resolve');

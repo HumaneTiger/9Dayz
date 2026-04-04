@@ -8,6 +8,7 @@ const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
 const battleCompanionContainer = document.querySelector('#companion-cards');
 const battleHealthMeter = document.querySelector('#properties li.health');
+const scratch = document.querySelector('.scratch');
 
 let newPosX = 0,
   newPosY = 0,
@@ -167,6 +168,16 @@ export default {
 
   getDragElement: function () {
     return dragEl;
+  },
+
+  scratchAnim: function (targetObjectRef) {
+    var rect = targetObjectRef.getBoundingClientRect();
+    scratch.style.left = `${rect.left}px`;
+    scratch.style.top = `${rect.top + 180}px`;
+    scratch.classList.add('anim-scratch');
+    window.setTimeout(() => {
+      scratch.classList.remove('anim-scratch');
+    }, 250);
   },
 
   enterUIBattleMode() {
