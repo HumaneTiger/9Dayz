@@ -16,6 +16,7 @@ export const EVENTS = {
   WEAPON_CHANGED: 'weapon:changed',
   PLAYER_MOVE_TO: 'player:moveTo',
   PLAYER_UPDATE: 'player:update',
+  GAME_OVER: 'game:over',
 };
 
 /**

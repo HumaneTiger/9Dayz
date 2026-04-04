@@ -1,6 +1,5 @@
 import Props from './props.js';
 import Audio from './audio.js';
-import Player from './player.js';
 import Companion from './companion.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
@@ -443,7 +442,7 @@ export default {
 
   dailyTasks: function (days) {
     if (days > 9) {
-      Player.playerDead();
+      EventManager.emit(EVENTS.GAME_OVER);
     }
   },
 

@@ -42,42 +42,11 @@ export default {
     if (this.getProp('health') <= 0) {
       // 50:50 chance
       if (!secondWind || Math.random() >= 0.5) {
-        this.playerDead();
+        EventManager.emit(EVENTS.GAME_OVER);
         return true;
       }
     }
     return false;
-  },
-
-  playerDead: function () {
-    let startScreen = document.getElementById('startscreen');
-    let reasonDead = document.getElementById('reason-dead');
-    const time = Props.getGameProp('timeIsUnity');
-    if (reasonDead) {
-      if (time.gameDays > 9) {
-        reasonDead.textContent = "You couldn't reach the ship in time.";
-      } else if (Props.getGameProp('battle')) {
-        reasonDead.textContent = 'You were killed in battle.';
-      } else if (this.getProp('food') <= 0) {
-        reasonDead.textContent = 'You starved to death.';
-      } else if (this.getProp('thirst') <= 0) {
-        reasonDead.textContent = 'You died of thirst.';
-      } else if (this.getProp('energy') <= 0) {
-        reasonDead.textContent = 'You died of exhaustion.';
-      } else {
-        reasonDead.textContent = 'You died.';
-      }
-    }
-    startScreen.classList.remove('is--hidden');
-    startScreen.style.opacity = 0;
-    window.setTimeout(() => {
-      startScreen.querySelector('.screen__1').classList.add('is--hidden');
-      startScreen.querySelector('.screen__2').classList.add('is--hidden');
-      startScreen.querySelector('.screen__3').classList.add('is--hidden');
-      startScreen.querySelector('.screen__win').classList.add('is--hidden');
-      startScreen.querySelector('.screen__dead').classList.remove('is--hidden');
-      startScreen.style.opacity = 1;
-    }, 100);
   },
 
   checkForWin: function () {

@@ -12,6 +12,7 @@ import { default as Cooking } from './cooking.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 import Preloading from './preloading.js';
+import { EventManager, EVENTS, PlayerManager } from './core/index.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -29,6 +30,11 @@ export default {
       document.getElementById('start-option-new').classList.remove('is--hidden');
       document.getElementById('start-option-continue').classList.add('is--hidden');
     }
+    // Register event listeners
+    EventManager.on(EVENTS.GAME_OVER, () => {
+      this.switchToGameOverScreen();
+    });
+
     // start game immediately in local dev mode
     /*
     if (Props.getGameProp('local')) {
@@ -380,5 +386,37 @@ export default {
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
     document.getElementById('tutorial-beginning').classList.remove('is--hidden');
+  },
+
+  switchToGameOverScreen: function () {
+    let startScreen = document.getElementById('startscreen');
+    let reasonDead = document.getElementById('reason-dead');
+    const time = Props.getGameProp('timeIsUnity');
+    const playerProps = PlayerManager.getPlayerProps();
+    if (reasonDead) {
+      if (time.gameDays > 9) {
+        reasonDead.textContent = "You couldn't reach the ship in time.";
+      } else if (Props.getGameProp('battle')) {
+        reasonDead.textContent = 'You were killed in battle.';
+      } else if (playerProps.food <= 0) {
+        reasonDead.textContent = 'You starved to death.';
+      } else if (playerProps.thirst <= 0) {
+        reasonDead.textContent = 'You died of thirst.';
+      } else if (playerProps.energy <= 0) {
+        reasonDead.textContent = 'You died of exhaustion.';
+      } else {
+        reasonDead.textContent = 'You died.';
+      }
+    }
+    startScreen.classList.remove('is--hidden');
+    startScreen.style.opacity = 0;
+    window.setTimeout(() => {
+      startScreen.querySelector('.screen__1').classList.add('is--hidden');
+      startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__3').classList.add('is--hidden');
+      startScreen.querySelector('.screen__win').classList.add('is--hidden');
+      startScreen.querySelector('.screen__dead').classList.remove('is--hidden');
+      startScreen.style.opacity = 1;
+    }, 100);
   },
 };
