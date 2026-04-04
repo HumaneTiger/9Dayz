@@ -4,6 +4,7 @@ import Props from './props.js';
 import Player from './player.js';
 import Cards from './cards.js';
 import CardsMarkup from './cards-markup.js';
+import BattleCardsMarkup from './battle-cards-markup.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
@@ -215,7 +216,7 @@ export default {
   },
 
   addDefensiveCard: function (defensiveObject, offsetX = 0) {
-    const durabilityMarkup = this.createDurabilityMarkup(
+    const durabilityMarkup = BattleCardsMarkup.createDurabilityMarkup(
       defensiveObject.name,
       defensiveObject.durability || 0
     );
@@ -378,74 +379,15 @@ export default {
     }
   },
 
-  // todo: move to cards-markup.js
-  createDurabilityMarkup: function (weaponName, durability) {
-    const weaponDefiniton = Props.getWeaponDefinition(weaponName);
-    const maxDurabilityChars = '◈'.repeat(weaponDefiniton.durability);
-    return (
-      '<span class="durability">' +
-      maxDurabilityChars.substring(0, durability) +
-      '<u>' +
-      maxDurabilityChars.substring(0, maxDurabilityChars.length - durability) +
-      '</u>' +
-      '</span>'
-    );
-  },
-
-  // todo: move to cards-markup.js
-  getDurabilityMarkup: function (itemName) {
-    if (Props.isWeapon(itemName)) {
-      const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
-      if (inventoryWeapon.durability && inventoryWeapon.durability > 0) {
-        return this.createDurabilityMarkup(itemName, inventoryWeapon.durability);
-      }
-    }
-    if (CompanionManager.isCompanion(itemName)) {
-      const healthMarkup = CompanionManager.generateHealthMarkup();
-      return '<span class="durability">' + healthMarkup + '</span>';
-    }
-    return '';
-  },
-
-  // todo: move to cards-markup.js
-  getPictureMarkup: function (itemName) {
-    if (Props.isWeapon(itemName)) {
-      return '<img class="item-pic" src="./img/weapons/' + itemName + '.png">';
-    }
-    if (CompanionManager.isCompanion(itemName)) {
-      return '<img class="item-pic" src="./img/animals/' + itemName + '-portrait.png">';
-    }
-    return '<img class="item-pic" src="./img/items/' + itemName + '.PNG">';
-  },
-
-  // todo: move to cards-markup.js
-  getLastUseMarkup: function (itemName) {
-    if (Props.isWeapon(itemName)) {
-      /* get weapon from inventory as it contains the actual durability */
-      const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
-      return inventoryWeapon.durability === 1
-        ? '<img class="last-use" src="./img/weapons/last-use.png">'
-        : '';
-    }
-    if (CompanionManager.isCompanion(itemName)) {
-      const companion = CompanionManager.getCompanionFromInventory();
-      return companion.health <= 3
-        ? '<img class="last-use" src="./img/animals/almost-dead.png">'
-        : '';
-    }
-    return '';
-  },
-
-  // todo: move to cards-markup.js
   spawnBattleCard: function (itemName) {
     const card = BattleManager.getBattleDeckCard(itemName);
     const modifyDamageMarkup =
       card?.modifyDamage && card.modifyDamage > 0
         ? '<span class="modify">(+' + card.modifyDamage + ')<span>'
         : '';
-    const durabilityMarkup = this.getDurabilityMarkup(itemName);
-    const pictureMarkup = this.getPictureMarkup(itemName);
-    const lastUseMarkup = this.getLastUseMarkup(itemName);
+    const durabilityMarkup = BattleCardsMarkup.getDurabilityMarkup(itemName);
+    const pictureMarkup = BattleCardsMarkup.getPictureMarkup(itemName);
+    const lastUseMarkup = BattleCardsMarkup.getLastUseMarkup(itemName);
 
     UiBattle.generateBattleCard(
       itemName,
