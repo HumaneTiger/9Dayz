@@ -9,8 +9,6 @@ import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
 import Tutorial from './tutorial.js';
 
-const viewport = document.getElementById('viewport');
-const mapBorder = document.getElementById('map-border');
 const mapHigh = document.querySelector('.map-high img');
 const morningLight = document.querySelectorAll('.morning-light');
 const eveningLight = document.querySelectorAll('.evening-light');
@@ -30,19 +28,15 @@ let newPosX = 0,
 let dragMode = false;
 let dragEl = null;
 let topIndex = 1;
-let zoom = 1;
-let maxZoom = 1.9;
 
 export default {
   init: function () {
-    window.addEventListener('resize', this.resizeViewport.bind(this));
     document.body.addEventListener('mousedown', this.handleClick.bind(this));
     document.body.addEventListener('mouseover', this.mouseOver);
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
     document.body.addEventListener('keydown', this.handleKeydown.bind(this));
-    document.body.addEventListener('wheel', this.handleMouseWheel.bind(this));
 
     document.addEventListener('uiDragTestEvent', this.handleUiTestDragEvent.bind(this));
 
@@ -150,31 +144,6 @@ export default {
         this.toggleInstantQuitConfirmation();
       }
     }
-  },
-
-  handleMouseWheel: function (ev) {
-    const target = ev.target;
-    const cardsContainer = target.closest('#cards');
-    if (cardsContainer) return; // do not zoom when mouse is over cards container
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.zoomMap(ev.deltaY);
-  },
-
-  zoomMap: function (deltaY, limitZoom) {
-    if (limitZoom) {
-      if (zoom > limitZoom) zoom = limitZoom;
-      maxZoom = limitZoom;
-    } else if (deltaY > 0) {
-      zoom > 1 ? (zoom -= 0.1) : false;
-    } else if (zoom < maxZoom) {
-      zoom += 0.1;
-    }
-    viewport.querySelector('#maximap .inner').style.transform = 'scale(' + zoom + ')';
-  },
-
-  resetZoom: function () {
-    maxZoom = 1.9;
   },
 
   mouseOver: function (ev) {
@@ -529,51 +498,6 @@ export default {
     document.getElementById('character').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.getElementById('cards').classList.add('active');
-  },
-
-  showMapBorder: function () {
-    mapBorder.classList.add('in-front');
-  },
-
-  resizeViewport: function () {
-    const viewWidth = window.innerWidth,
-      viewHeight = window.innerHeight;
-
-    if (viewWidth / viewHeight < 1.73) {
-      Props.setGameProp('scaleFactor', viewWidth / 2135);
-      Props.setGameProp('viewMode', 'vertical');
-      mapBorder.style.transform =
-        'scale3d(' +
-        Props.getGameProp('scaleFactor') * 1.173 +
-        ',' +
-        Props.getGameProp('scaleFactor') * 1.173 +
-        ', 1) translate3d(-5%, -50% , 0)';
-    } else {
-      Props.setGameProp('scaleFactor', viewHeight / 1200);
-      Props.setGameProp('viewMode', 'horizontal');
-      mapBorder.removeAttribute('style');
-    }
-    mapBorder.classList.remove('horizontal', 'vertical');
-    mapBorder.classList.add(Props.getGameProp('viewMode'));
-    viewport.style.transform =
-      'scale3d(' +
-      Props.getGameProp('scaleFactor') +
-      ',' +
-      Props.getGameProp('scaleFactor') +
-      ', 1) translate3d(-50%, -50% , 0)';
-    this.handleFullscreenChange();
-  },
-
-  handleFullscreenChange: function () {
-    if (document.fullscreenElement) {
-      document.querySelector('#actions .fullscreen .fullscreen--on').classList.add('is--hidden');
-      document
-        .querySelector('#actions .fullscreen .fullscreen--off')
-        .classList.remove('is--hidden');
-    } else {
-      document.querySelector('#actions .fullscreen .fullscreen--on').classList.remove('is--hidden');
-      document.querySelector('#actions .fullscreen .fullscreen--off').classList.add('is--hidden');
-    }
   },
 
   hourlyTasks: function (hour) {

@@ -5,6 +5,7 @@ import { default as Items } from './items.js';
 import { default as Crafting } from './crafting.js';
 import { default as Tutorial } from './tutorial.js';
 import { default as Ui } from './ui.js';
+import Viewport from './viewport.js';
 import { default as Checkpoint } from './checkpoint.js';
 import { default as Weapons } from './weapons.js';
 import { default as Cooking } from './cooking.js';
@@ -346,7 +347,7 @@ export default {
     Player.findAndHandleObjects();
     Props.pauseGame(false);
     Audio.playAmbientLoop();
-    Ui.showMapBorder();
+    Viewport.showMapBorder();
     Ui.showUI();
     await this.fadeIntoGame();
     Ui.showNewDay(0, true);

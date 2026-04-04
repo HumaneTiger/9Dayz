@@ -1,5 +1,6 @@
 import Start from './start.js';
 import Ui from './ui.js';
+import Viewport from './viewport.js';
 import Editor from './editor.js';
 import Props from './props.js';
 import Map from './map.js';
@@ -86,7 +87,7 @@ import TestPlayer from './test/test-player.js';
   Weapons.init();
   Almanac.init();
   Tutorial.init();
-  Ui.resizeViewport();
+  Viewport.init();
   initiateMainGameLoop();
   Preloading.init();
 

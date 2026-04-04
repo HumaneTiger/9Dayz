@@ -10,6 +10,7 @@ import Cards from './cards.js';
 import Map from './map.js';
 import Battle from './battle.js';
 import Ui from './ui.js';
+import Viewport from './viewport.js';
 
 const allPaths = Props.getAllPaths();
 const playerProps = Props.getPlayerProps();
@@ -263,9 +264,9 @@ export default {
       player.style.top = '885px';
     }
     if (y < 16) {
-      Ui.zoomMap(0, 1.1);
+      Viewport.zoomMap(0, 1.1);
     } else {
-      Ui.resetZoom();
+      Viewport.resetZoom();
     }
     if (playerPosition.y >= 20 && playerPosition.y <= 40) {
       Map.moveMapYTo(y);
