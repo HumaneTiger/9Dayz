@@ -21,7 +21,6 @@ import {
 import TimingUtils from './utils/timing-utils.js';
 
 const battlePlayContainer = document.querySelector('#battle-cards .play');
-const battleCompanionContainer = document.querySelector('#companion-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
 
 export default {
@@ -74,7 +73,7 @@ export default {
     this.prepareBattle();
     const cardZedDeck = BattleManager.addIdToOpponentDeck(singleZedId);
     this.spawnZedDeck(cardZedDeck);
-    this.enterBattleMode();
+    this.enterBattleMode(false);
     // start auto battle after short delay
     window.setTimeout(() => {
       this.spawnCompanionDeck();
@@ -167,10 +166,10 @@ export default {
     }, 500);
   },
 
-  enterBattleMode() {
+  enterBattleMode(defaultBattle = true) {
     Weapons.updateWeaponState();
     Player.resetPreviewProps();
-    UiBattle.enterUIBattleMode();
+    UiBattle.enterUIBattleMode(defaultBattle);
   },
 
   spawnZedDeck(cardZedDeck) {
@@ -299,26 +298,7 @@ export default {
     const companion = CompanionManager.getCompanionFromInventory();
     battlePlayContainer.innerHTML = '';
     const healthMarkup = CompanionManager.generateHealthMarkup();
-
-    battleCompanionContainer.insertAdjacentHTML(
-      'beforeend',
-      '<div class="battle-card" data-item="' +
-        companion.name +
-        '"><div class="inner">' +
-        '<img class="item-pic" src="./img/animals/' +
-        companion.name.toLowerCase() +
-        '.png">' +
-        '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
-        '<div class="attack">' +
-        companion.damage +
-        '</div>' +
-        '<span class="durability">' +
-        healthMarkup +
-        '</span>' +
-        '</div></div>'
-    );
-
-    battleCompanionContainer.classList.remove('is--hidden');
+    UiBattle.generateCompanionCard(companion.name, companion.damage, healthMarkup);
   },
 
   spawnBattleDeck: function (surprised) {

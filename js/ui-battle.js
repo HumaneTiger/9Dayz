@@ -180,7 +180,7 @@ export default {
     }, 250);
   },
 
-  enterUIBattleMode() {
+  enterUIBattleMode(defaultBattle) {
     // Prepare UI for battle
     document.getElementById('inventory').classList.remove('active');
     document.getElementById('craft').classList.remove('active');
@@ -200,7 +200,7 @@ export default {
       document.getElementById('actions').classList.remove('active');
       document.querySelector('#cards .cards-blocker').classList.add('active');
       defensiveCardsContainer.classList.add('in-battle');
-      battleHealthMeter.classList.add('in-battle');
+      if (defaultBattle) battleHealthMeter.classList.add('in-battle');
     }, 600);
   },
 
@@ -283,6 +283,28 @@ export default {
     });
 
     return targetCandidateFound;
+  },
+
+  generateCompanionCard: function (name, damage, healthMarkup) {
+    battleCompanionContainer.insertAdjacentHTML(
+      'beforeend',
+      '<div class="battle-card" data-item="' +
+        name +
+        '"><div class="inner">' +
+        '<img class="item-pic" src="./img/animals/' +
+        name.toLowerCase() +
+        '.png">' +
+        '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
+        '<div class="attack">' +
+        damage +
+        '</div>' +
+        '<span class="durability">' +
+        healthMarkup +
+        '</span>' +
+        '</div></div>'
+    );
+
+    battleCompanionContainer.classList.remove('is--hidden');
   },
 
   generateDrawPile: function (pileSize) {
