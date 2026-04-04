@@ -1,4 +1,4 @@
-import Props from './props.js';
+import { GameState } from './core/index.js';
 
 const viewport = document.getElementById('viewport');
 const mapBorder = document.getElementById('map-border');
@@ -38,26 +38,26 @@ export default {
       viewHeight = window.innerHeight;
 
     if (viewWidth / viewHeight < 1.73) {
-      Props.setGameProp('scaleFactor', viewWidth / 2135);
-      Props.setGameProp('viewMode', 'vertical');
+      GameState.setGameProp('scaleFactor', viewWidth / 2135);
+      GameState.setGameProp('viewMode', 'vertical');
       mapBorder.style.transform =
         'scale3d(' +
-        Props.getGameProp('scaleFactor') * 1.173 +
+        GameState.getGameProp('scaleFactor') * 1.173 +
         ',' +
-        Props.getGameProp('scaleFactor') * 1.173 +
+        GameState.getGameProp('scaleFactor') * 1.173 +
         ', 1) translate3d(-5%, -50% , 0)';
     } else {
-      Props.setGameProp('scaleFactor', viewHeight / 1200);
-      Props.setGameProp('viewMode', 'horizontal');
+      GameState.setGameProp('scaleFactor', viewHeight / 1200);
+      GameState.setGameProp('viewMode', 'horizontal');
       mapBorder.removeAttribute('style');
     }
     mapBorder.classList.remove('horizontal', 'vertical');
-    mapBorder.classList.add(Props.getGameProp('viewMode'));
+    mapBorder.classList.add(GameState.getGameProp('viewMode'));
     viewport.style.transform =
       'scale3d(' +
-      Props.getGameProp('scaleFactor') +
+      GameState.getGameProp('scaleFactor') +
       ',' +
-      Props.getGameProp('scaleFactor') +
+      GameState.getGameProp('scaleFactor') +
       ', 1) translate3d(-50%, -50% , 0)';
     this.handleFullscreenChange();
   },

@@ -1,5 +1,4 @@
-import Props from './props.js';
-import { EventManager, EVENTS, CharacterManager } from './core/index.js';
+import { GameState, EventManager, EVENTS, CharacterManager } from './core/index.js';
 
 const characterContainer = document.getElementById('character');
 
@@ -18,7 +17,7 @@ export default {
           this.updateCharacterName(value);
         }
       },
-      { prop: 'character', value: Props.getGameProp('character') }
+      { prop: 'character', value: GameState.getGameProp('character') }
     );
   },
 

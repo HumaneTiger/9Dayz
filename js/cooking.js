@@ -11,8 +11,6 @@ import {
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
-//const cookingRecipes = RecipeDefinitions.cookingRecipes;
-
 export default {
   init: function () {
     document.body.addEventListener('mousedown', this.checkForCardClick.bind(this));

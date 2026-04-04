@@ -1,4 +1,4 @@
-import Props from './props.js';
+import { ObjectFactory, InventoryManager, WeaponsManager } from './core/index.js';
 
 class ImagePreloader {
   constructor(pathPrefix) {
@@ -30,7 +30,7 @@ export default {
   },
 
   preloadBuildings: function () {
-    const buildingProps = Props.getBuildingProps();
+    const buildingProps = ObjectFactory.getBuildingProps();
     const loader = new ImagePreloader('./img/buildings/');
 
     for (const prop in buildingProps) {
@@ -52,7 +52,7 @@ export default {
   },
 
   preloadItems: function () {
-    const items = Props.getAllItems();
+    const items = InventoryManager.getAllItems();
     const loader = new ImagePreloader('./img/');
     for (const prop in items) {
       loader.load(prop, 'items/' + prop + '.PNG');
@@ -60,7 +60,7 @@ export default {
   },
 
   preloadWeapons: function () {
-    const weapons = Props.getAllWeapons();
+    const weapons = WeaponsManager.getAllWeapons();
     const loader = new ImagePreloader('./img/');
     for (const prop in weapons) {
       loader.load(prop, 'weapons/' + prop + '.png');

@@ -1,9 +1,8 @@
-import Props from './props.js';
 import { WeaponsManager, CompanionManager } from './core/index.js';
 
 export default {
   createDurabilityMarkup: function (weaponName, durability) {
-    const weaponDefiniton = Props.getWeaponDefinition(weaponName);
+    const weaponDefiniton = WeaponsManager.getWeaponDefinition(weaponName);
     const maxDurabilityChars = '◈'.repeat(weaponDefiniton.durability);
     return (
       '<span class="durability">' +
@@ -16,7 +15,7 @@ export default {
   },
 
   getDurabilityMarkup: function (itemName) {
-    if (Props.isWeapon(itemName)) {
+    if (WeaponsManager.isWeapon(itemName)) {
       const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
       if (inventoryWeapon.durability && inventoryWeapon.durability > 0) {
         return this.createDurabilityMarkup(itemName, inventoryWeapon.durability);
@@ -30,7 +29,7 @@ export default {
   },
 
   getPictureMarkup: function (itemName) {
-    if (Props.isWeapon(itemName)) {
+    if (WeaponsManager.isWeapon(itemName)) {
       return '<img class="item-pic" src="./img/weapons/' + itemName + '.png">';
     }
     if (CompanionManager.isCompanion(itemName)) {
@@ -40,7 +39,7 @@ export default {
   },
 
   getLastUseMarkup: function (itemName) {
-    if (Props.isWeapon(itemName)) {
+    if (WeaponsManager.isWeapon(itemName)) {
       /* get weapon from inventory as it contains the actual durability */
       const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
       return inventoryWeapon.durability === 1
