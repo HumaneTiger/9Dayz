@@ -1,5 +1,4 @@
 import Props from './props.js';
-import Player from './player.js';
 import Ui from './ui.js';
 import Cards from './cards.js';
 import Companion from './companion.js';
@@ -153,19 +152,19 @@ export default {
           document.querySelector('#actions li.craft').classList.add('transfer');
         }
       } else {
-        Player.resetPreviewProps();
+        Ui.resetPreviewProps();
         if (hoverSlot.classList.contains('active') && !Props.getGameProp('feedingCompanion')) {
           if (itemProps.food > 0 && this.inventoryContains(item)) {
             document.querySelector('#properties li.food').classList.add('transfer');
-            Player.previewProps('food', itemProps.food);
+            Ui.previewProps('food', itemProps.food);
           }
           if (itemProps.drink > 0 && this.inventoryContains(item)) {
             document.querySelector('#properties li.thirst').classList.add('transfer');
-            Player.previewProps('thirst', itemProps.drink);
+            Ui.previewProps('thirst', itemProps.drink);
           }
           if (itemProps.energy > 0 && this.inventoryContains(item)) {
             document.querySelector('#properties li.energy').classList.add('transfer');
-            Player.previewProps('energy', itemProps.energy);
+            Ui.previewProps('energy', itemProps.energy);
           }
         }
       }
@@ -258,7 +257,7 @@ export default {
   resetInventorySlotHoverEffect: function () {
     inventoryContainer.querySelector('p.item-info').textContent = '';
     document.querySelector('#actions li.craft').classList.remove('transfer');
-    Player.resetPreviewProps();
+    Ui.resetPreviewProps();
   },
 
   generateInventorySlots: function () {

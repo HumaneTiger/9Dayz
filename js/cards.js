@@ -1,6 +1,5 @@
 import Audio from './audio.js';
 import Props from './props.js';
-import Player from './player.js';
 import Map from './map.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
@@ -139,7 +138,7 @@ export default {
           // preview stats for all actions (mainly for energy changes)
           this.previewStatsChange(action, cardId);
         } else {
-          Player.resetPreviewProps();
+          Ui.resetPreviewProps();
         }
       }
     }
@@ -149,27 +148,26 @@ export default {
     const object = Props.getObject(cardId);
     const actionObject = object.actions.find(singleAction => singleAction.id === action);
     if (!actionObject?.locked) {
-      /* TODO: use Player.previewProps / resetPreviewProps instead of duplicating the logic here */
-      /* TODO: take also other energy-consuming actions into account */
       let energy = actionObject.energy;
       if (actionObject.id === 'rest') {
         if (Props.getGameProp('timeMode') === 'night') {
           energy += 5;
         }
-        Player.previewProps('health', Math.floor(energy / 2));
-        Player.previewProps('food', -10);
-        Player.previewProps('thirst', -14);
-        Player.previewProps('energy', energy);
+        Ui.previewProps('health', Math.floor(energy / 2));
+        Ui.previewProps('food', -10);
+        Ui.previewProps('thirst', -14);
+        Ui.previewProps('energy', energy);
       } else if (actionObject.id === 'sleep') {
         if (Props.getGameProp('timeMode') === 'night') {
           energy += 20;
         }
-        Player.previewProps('health', Math.floor(energy / 2));
-        Player.previewProps('food', -18);
-        Player.previewProps('thirst', -24);
-        Player.previewProps('energy', energy);
+        Ui.previewProps('health', Math.floor(energy / 2));
+        Ui.previewProps('food', -18);
+        Ui.previewProps('thirst', -24);
+        Ui.previewProps('energy', energy);
       } else if (actionObject.energy !== 0 && actionObject.energy !== undefined) {
-        Player.previewProps('energy', actionObject.energy);
+        /* take also other energy-consuming actions into account */
+        Ui.previewProps('energy', actionObject.energy);
       }
     }
   },

@@ -10,6 +10,7 @@ import Companion from './companion.js';
 import Weapons from './weapons.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
+import Ui from './ui.js';
 import {
   WeaponsManager,
   CompanionManager,
@@ -147,7 +148,7 @@ export default {
 
   enterBattleMode(defaultBattle = true) {
     Weapons.updateWeaponState();
-    Player.resetPreviewProps();
+    Ui.resetPreviewProps();
     UiBattle.enterUIBattleMode(defaultBattle);
   },
 

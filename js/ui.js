@@ -4,7 +4,7 @@ import Player from './player.js';
 import Companion from './companion.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
-import Events, { EVENTS } from './core/event-manager.js';
+import { EventManager, EVENTS, PlayerManager } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const mapHigh = document.querySelector('.map-high img');
@@ -29,7 +29,12 @@ export default {
 
     this.showQuitAppButtonIfExecutable();
 
-    Events.on(
+    // Register event listeners
+    EventManager.on(EVENTS.PLAYER_PROP_CHANGED, ({ prop, change, oldValue, newValue }) => {
+      this.updatePropUI({ prop, change, oldValue, newValue });
+    });
+
+    EventManager.on(
       EVENTS.GAME_PROP_CHANGED,
       ({ prop, value }) => {
         if (prop === 'timeIsUnity') {
@@ -317,6 +322,102 @@ export default {
     document.getElementById('character').classList.add('active');
     document.getElementById('actions').classList.add('active');
     document.getElementById('cards').classList.add('active');
+  },
+
+  previewProps: function (prop, change) {
+    const playerProps = PlayerManager.getPlayerProps();
+    const previewMeter = document.querySelector(
+      '#properties li.' + prop + ' span.meter:not(.preview)'
+    );
+    if (previewMeter) {
+      if (change > 0) {
+        playerProps[prop] + change > 100 ? (change = 100 - playerProps[prop]) : null;
+        previewMeter.style.paddingRight = change + '%';
+      } else if (change < 0) {
+        if (previewMeter) {
+          previewMeter.style.paddingRight =
+            (playerProps[prop] + change >= 0 ? Math.abs(change) : playerProps[prop]) + '%';
+          previewMeter.style.width =
+            (playerProps[prop] + change >= 0 ? playerProps[prop] + change : 0) + '%';
+        }
+      }
+      if (playerProps[prop] + change < 10) {
+        previewMeter.parentNode.classList.add('very-low-preview');
+      } else if (playerProps[prop] + change < 33) {
+        previewMeter.parentNode.classList.add('low-preview');
+      } else {
+        previewMeter.parentNode.classList.add('default-preview');
+      }
+    }
+  },
+
+  resetPreviewProps: function () {
+    document
+      .querySelector('#properties li.food')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document
+      .querySelector('#properties li.thirst')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document
+      .querySelector('#properties li.energy')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document
+      .querySelector('#properties li.health')
+      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+    document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
+    document.querySelector('#properties li.health span.meter').style.paddingRight = '0';
+    /* make sure to render playerprops again, otherwise the meter will be misaligned for edge cases if (change < 0) */
+    Props.changePlayerProp('food', 0);
+    Props.changePlayerProp('thirst', 0);
+    Props.changePlayerProp('energy', 0);
+    Props.changePlayerProp('health', 0);
+  },
+
+  /**
+   * Update UI in response to player property changes (event handler)
+   * All UI updates for property changes happen here
+   */
+  updatePropUI: function ({ prop, change, newValue }) {
+    // Update numeric value
+    const propMeterValue = document.getElementById(`${prop}-meter`);
+    if (propMeterValue) {
+      propMeterValue.textContent = newValue;
+    }
+    // Update property meter
+    const propMeter = document.querySelector(`#properties li.${prop} span.meter:not(.preview)`);
+    if (propMeter) {
+      propMeter.style.width = newValue > 9 ? newValue + '%' : '9%';
+      propMeter.parentNode.classList.remove('low');
+      propMeter.parentNode.classList.remove('very-low');
+
+      if (newValue < 10) {
+        propMeter.parentNode.classList.add('very-low');
+      } else if (newValue < 33) {
+        propMeter.parentNode.classList.add('low');
+      }
+
+      if (prop === 'health' && change < 0) {
+        document.querySelector('#properties li.health').classList.add('heavy-shake');
+        window.setTimeout(() => {
+          document.querySelector('#properties li.health').classList.remove('heavy-shake');
+        }, 200);
+      }
+    }
+
+    // Update damage overlay for health changes
+    if (prop === 'health') {
+      this.updateDamageOverlay(newValue);
+    }
+  },
+
+  updateDamageOverlay: function (health) {
+    if (health < 33) {
+      document.getElementById('damage-cover').style.opacity = (100 - health * 3.3) / 100;
+    } else {
+      document.getElementById('damage-cover').style.opacity = 0;
+    }
   },
 
   hourlyTasks: function (hour) {
