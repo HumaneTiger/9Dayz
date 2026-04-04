@@ -4,6 +4,10 @@ import Tutorial from './tutorial.js';
 
 const battleCardsContainer = document.getElementById('battle-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
+const battleDrawContainer = document.querySelector('#battle-cards .draw');
+const battlePlayContainer = document.querySelector('#battle-cards .play');
+const battleCompanionContainer = document.querySelector('#companion-cards');
+const battleHealthMeter = document.querySelector('#properties li.health');
 
 let newPosX = 0,
   newPosY = 0,
@@ -186,6 +190,30 @@ export default {
       document.querySelector('#cards .cards-blocker').classList.add('active');
       defensiveCardsContainer.classList.add('in-battle');
     }, 600);
+  },
+
+  leaveUIBattleMode() {
+    // Clear battle UI
+    document.getElementById('battle-cards').classList.add('is--hidden');
+    battleCompanionContainer.classList.add('is--hidden');
+    defensiveCardsContainer.innerHTML = '';
+    defensiveCardsContainer.classList.remove('in-battle');
+    defensiveCardsContainer.classList.add('is--hidden');
+
+    battleDrawContainer.innerHTML = '';
+    battlePlayContainer.innerHTML = '';
+    battleCompanionContainer.innerHTML = '';
+
+    document.getElementById('draw-amount').style.left = '0';
+    battleDrawContainer.style.width = '';
+
+    // Show UI
+    battleHealthMeter.classList.remove('in-battle');
+    document.getElementById('properties').classList.add('active');
+    document.getElementById('actions').classList.add('active');
+    document.getElementById('character').classList.add('active');
+    document.getElementById('cards').classList.remove('battle-mode');
+    document.querySelector('#cards .cards-blocker').classList.remove('active');
   },
 
   showBattleMessage: function (message, delay) {

@@ -369,41 +369,16 @@ export default {
     }
   },
 
-  leaveUIBattleMode() {
-    return new Promise(resolve => {
-      // Hide Battle UI
-      document.getElementById('battle-cards').classList.add('is--hidden');
-      battleCompanionContainer.classList.add('is--hidden');
-      defensiveCardsContainer.innerHTML = '';
-      defensiveCardsContainer.classList.remove('in-battle');
-      defensiveCardsContainer.classList.add('is--hidden');
-
-      battleDrawContainer.innerHTML = '';
-      battlePlayContainer.innerHTML = '';
-      battleCompanionContainer.innerHTML = '';
-
-      document.getElementById('draw-amount').style.left = '0';
-      battleDrawContainer.style.width = '';
-
-      // Show UI
-      battleHealthMeter.classList.remove('in-battle');
-      document.getElementById('properties').classList.add('active');
-      document.getElementById('actions').classList.add('active');
-      document.getElementById('character').classList.add('active');
-      document.getElementById('cards').classList.remove('battle-mode');
-      document.querySelector('#cards .cards-blocker').classList.remove('active');
-
-      window.setTimeout(() => {
-        document.querySelector('#cards .cards-blocker').classList.add('is--hidden');
-        Props.setGameProp('battle', false);
-        Crafting.checkCraftingPrerequisits();
-        Player.updatePlayer();
-        Weapons.updateWeaponState();
-        Player.lockMovement(false);
-        Props.pauseGame(false);
-        resolve();
-      }, 100);
-    });
+  async leaveBattleMode() {
+    UiBattle.leaveUIBattleMode();
+    await TimingUtils.wait(100);
+    document.querySelector('#cards .cards-blocker').classList.add('is--hidden');
+    Props.setGameProp('battle', false);
+    Crafting.checkCraftingPrerequisits();
+    Player.updatePlayer();
+    Weapons.updateWeaponState();
+    Player.lockMovement(false);
+    Props.pauseGame(false);
   },
 
   endBattle: async function () {
@@ -411,7 +386,7 @@ export default {
     const cardZedDeck = BattleManager.getOpponentDeck();
     const defensiveDeck = BattleManager.getDefensiveDeck();
     Companion.updateCompanionSlot();
-    await this.leaveUIBattleMode();
+    await this.leaveBattleMode();
     cardZedDeck.forEach(function (zedId) {
       let zedCardRef = Cards.getCardById(zedId);
       const zedObject = Props.getObject(zedId);
