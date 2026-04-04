@@ -693,7 +693,7 @@ export default {
               UiBattle.showBattleStats(-1 * attack, 'blue');
             }
             Props.changePlayerProp('protection', -1 * attack);
-            UiBattle.startHealthMeterShake();
+            UiBattle.shakeHealthMeter(true);
           }
         },
         delay / 3 + index * delay
@@ -703,7 +703,7 @@ export default {
       window.setTimeout(
         () => {
           zedCardRef.classList.add('anim-punch');
-          UiBattle.stopHealthMeterShake();
+          UiBattle.shakeHealthMeter(false);
           UiBattle.shakeDefensiveCards(false);
           if (zedObject.name === 'rat') {
             Audio.sfx('rat-attacks');

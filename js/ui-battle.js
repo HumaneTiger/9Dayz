@@ -228,12 +228,12 @@ export default {
     document.querySelector('#cards .cards-blocker').classList.remove('active');
   },
 
-  startHealthMeterShake: function () {
-    battleHealthMeter.classList.add('heavy-shake');
-  },
-
-  stopHealthMeterShake: function () {
-    battleHealthMeter.classList.remove('heavy-shake');
+  shakeHealthMeter: function (shake) {
+    if (shake) {
+      battleHealthMeter.classList.add('heavy-shake');
+    } else {
+      battleHealthMeter.classList.remove('heavy-shake');
+    }
   },
 
   showBattleMessage: function (message, delay) {
