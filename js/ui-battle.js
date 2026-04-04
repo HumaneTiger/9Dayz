@@ -4,7 +4,7 @@ import Items from './items.js';
 import Tutorial from './tutorial.js';
 import Props from './props.js';
 import BattleCardsMarkup from './battle-cards-markup.js';
-import { BattleManager } from './core/index.js';
+import { BattleManager, CompanionManager } from './core/index.js';
 
 const battleCardsContainer = document.getElementById('battle-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
@@ -194,6 +194,19 @@ export default {
         }, 500);
       }, 400);
     });
+  },
+
+  playZedAttackAnim: function (zedCardRef, zedName) {
+    zedCardRef.classList.add('anim-punch');
+    this.shakeHealthMeter(false);
+    this.shakeDefensiveCards(false);
+    if (zedName === 'rat') {
+      Audio.sfx('rat-attacks');
+    } else if (zedName === 'bee') {
+      Audio.sfx('bee-attacks');
+    } else {
+      Audio.sfx('zed-attacks');
+    }
   },
 
   scratchAnim: function (targetObjectRef) {
@@ -415,18 +428,20 @@ export default {
     );
   },
 
-  generateCompanionCard: function (name, damage, healthMarkup) {
+  generateCompanionCard: function () {
+    const companion = CompanionManager.getCompanionFromInventory();
+    const healthMarkup = CompanionManager.generateHealthMarkup();
     battleCompanionContainer.insertAdjacentHTML(
       'beforeend',
       '<div class="battle-card" data-item="' +
-        name +
+        companion.name +
         '"><div class="inner">' +
         '<img class="item-pic" src="./img/animals/' +
-        name.toLowerCase() +
+        companion.name.toLowerCase() +
         '.png">' +
         '<div class="dead"><img src="./img/zombies/dead.png"></div>' +
         '<div class="attack">' +
-        damage +
+        companion.damage +
         '</div>' +
         '<span class="durability">' +
         healthMarkup +
@@ -503,6 +518,11 @@ export default {
         this.generateDefensiveCard(defensiveObject, (i - 1) * 15);
       }
     }
+  },
+
+  spawnCompanionDeck: function () {
+    this.emptyBattlePlayContainer();
+    this.generateCompanionCard();
   },
 
   emptyBattlePlayContainer: function () {

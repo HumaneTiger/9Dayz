@@ -1,4 +1,3 @@
-import Audio from './audio.js';
 import UiBattle from './ui-battle.js';
 import Props from './props.js';
 import Player from './player.js';
@@ -51,7 +50,7 @@ export default {
     this.enterBattleMode(false);
     // start auto battle after short delay
     window.setTimeout(() => {
-      this.spawnCompanionDeck();
+      UiBattle.spawnCompanionDeck();
       const enemyObject = Props.getObject(singleZedId);
       const companion = CompanionManager.getCompanionFromInventory();
       if (enemyObject.name === 'rat' || enemyObject.name === 'bee') {
@@ -199,13 +198,6 @@ export default {
       Props.setGameProp('firstFight', true);
       Tutorial.triggerBattleTutorial();
     }
-  },
-
-  spawnCompanionDeck: function () {
-    const companion = CompanionManager.getCompanionFromInventory();
-    UiBattle.emptyBattlePlayContainer();
-    const healthMarkup = CompanionManager.generateHealthMarkup();
-    UiBattle.generateCompanionCard(companion.name, companion.damage, healthMarkup);
   },
 
   spawnBattleDeck: function (surprised) {
@@ -504,16 +496,7 @@ export default {
       // single zed attacks
       window.setTimeout(
         () => {
-          zedCardRef.classList.add('anim-punch');
-          UiBattle.shakeHealthMeter(false);
-          UiBattle.shakeDefensiveCards(false);
-          if (zedObject.name === 'rat') {
-            Audio.sfx('rat-attacks');
-          } else if (zedObject.name === 'bee') {
-            Audio.sfx('bee-attacks');
-          } else {
-            Audio.sfx('zed-attacks');
-          }
+          UiBattle.playZedAttackAnim(zedCardRef, zedObject.name);
         },
         delay / 4 + index * delay
       );
