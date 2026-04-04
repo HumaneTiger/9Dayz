@@ -12,6 +12,7 @@ import {
   InventoryManager,
   CharacterManager,
   CompanionManager,
+  CardsManager,
   GameState,
 } from './core/index.js';
 
@@ -88,7 +89,7 @@ export default {
         if (itemProps.energy > 0) {
           Props.changePlayerProp('energy', itemProps.energy);
           // with enough new energy, certain actions become unlocked
-          Cards.calculateCardDeckProperties();
+          CardsManager.calculateCardDeckProperties();
           Cards.updateCardDeck();
         }
         /* not so ugly cross-browser solution forcing an update of the hover-state, forecast stats visualization */

@@ -4,7 +4,7 @@
  */
 
 import { CardsDefinitions } from '../../data/index.js';
-import { GameState, ObjectState } from './index.js';
+import { ActionsManager, GameState, ObjectState } from './index.js';
 
 export default {
   /**
@@ -34,6 +34,13 @@ export default {
         }
       }
     );
+  },
+
+  calculateCardDeckProperties: function () {
+    this.updateCardDeckProperties();
+    this.getCardDeck().forEach(card => {
+      ActionsManager.updateActionsForObject(card.id);
+    });
   },
 
   cleanupCardDeck: function () {

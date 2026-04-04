@@ -6,7 +6,7 @@ import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import ActionsUtils from './utils/actions-utils.js';
-import { EventManager, EVENTS, CardsManager, ActionsManager, ObjectState } from './core/index.js';
+import { EventManager, EVENTS, CardsManager, ObjectState } from './core/index.js';
 
 //var cardDeck = [];
 var lastHoverTarget;
@@ -220,16 +220,9 @@ export default {
     }
   },
 
-  calculateCardDeckProperties: function () {
-    CardsManager.updateCardDeckProperties();
-    CardsManager.getCardDeck().forEach(card => {
-      ActionsManager.updateActionsForObject(card.id);
-    });
-  },
-
   renderCardDeck: function () {
     this.addSpecialEventCards();
-    this.calculateCardDeckProperties();
+    CardsManager.calculateCardDeckProperties();
     let cardDeck = CardsManager.getCardDeck();
     cardDeck.sort(this.compare);
 
