@@ -1,5 +1,6 @@
 import Start from './start.js';
 import Ui from './ui.js';
+import Battle from './battle.js';
 import UiBattle from './ui-battle.js';
 import Viewport from './viewport.js';
 import Editor from './editor.js';
@@ -88,6 +89,7 @@ import TestPlayer from './test/test-player.js';
 
   Start.init();
   Ui.init();
+  Battle.init();
   UiBattle.init();
   Editor.init();
   Map.init();

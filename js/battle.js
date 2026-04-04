@@ -20,6 +20,11 @@ import {
 import TimingUtils from './utils/timing-utils.js';
 
 export default {
+  init: function () {
+    // Inject Battle into UiBattle to avoid circular dependency
+    UiBattle.setBattleController(this);
+  },
+
   prepareBattle: function () {
     Props.setGameProp('battle', true);
     Props.pauseGame(true);

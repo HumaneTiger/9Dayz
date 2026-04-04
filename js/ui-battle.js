@@ -1,5 +1,4 @@
 import Audio from './audio.js';
-import Battle from './battle.js';
 import Items from './items.js';
 import Tutorial from './tutorial.js';
 import Props from './props.js';
@@ -25,6 +24,8 @@ let dragEl = null;
 let topIndex = 1;
 
 export default {
+  battleController: null,
+
   init: function () {
     document.body.addEventListener('mouseover', this.mouseOver);
     document.body.addEventListener('pointerdown', this.mouseDown);
@@ -32,6 +33,10 @@ export default {
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
     battleCardsContainer.addEventListener('mousedown', this.handleBattleCardsClick);
     document.addEventListener('uiDragTestEvent', this.handleUiTestDragEvent.bind(this));
+  },
+
+  setBattleController: function (battle) {
+    this.battleController = battle;
   },
 
   handleBattleCardsClick: function (ev) {
@@ -43,7 +48,7 @@ export default {
       return;
     }
     if (target.closest('.end-turn')) {
-      Battle.endTurn();
+      this.battleController.endTurn();
     } else if (target.closest('.start-tutorial')) {
       Tutorial.triggerBattleTutorial();
     }
@@ -159,9 +164,9 @@ export default {
       if (dragTarget.classList.contains('zombie') && !dragEl.classList.contains('resolve')) {
         const itemName = dragEl.dataset.item;
         if (itemName === 'improvised-whip') {
-          await Battle.resolveMultiAttack(dragEl, dragTarget);
+          await this.battleController.resolveMultiAttack(dragEl, dragTarget);
         } else {
-          Battle.resolveSingleAttack(dragEl, dragTarget);
+          this.battleController.resolveSingleAttack(dragEl, dragTarget);
         }
       }
     } else if (dragEl?.id === 'almanac') {
