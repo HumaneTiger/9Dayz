@@ -1,5 +1,15 @@
+/**
+ * @typedef {Object} ZombieInstance
+ * @property {number} x - X coordinate for zombie spawn
+ * @property {number} y - Y coordinate for zombie spawn
+ * @property {number} amount - Number of zombies to spawn
+ * @property {number} [horde] - Horde identifier (optional)
+ * @export
+ */
+
+/** @type {Record<string, Array<ZombieInstance>>} */
 export default {
-  zombies: [
+  start: [
     { x: 31, y: 36, amount: 1 },
     { x: 30, y: 35, amount: 1 },
     { x: 30, y: 34, amount: 1 },

@@ -16,13 +16,6 @@ for (var i = 0; i < uncoverMatrix.length; i += 1) {
   uncoverMatrix[i] = new Array(30);
 }
 
-const mapPosition = {
-  refX: 12,
-  refY: 33,
-  x: 0,
-  y: -311,
-};
-
 export default {
   init: function () {
     MapManager.setupAllPaths();
@@ -126,16 +119,17 @@ export default {
   },
 
   moveMapXTo: function (x) {
-    mapPosition.x = x * 44.4;
+    MapManager.setPositionX(x * 44.4);
     this.updateMapPosition();
   },
 
   moveMapYTo: function (y) {
-    mapPosition.y = (mapPosition.refY - y) * 44.4;
+    MapManager.setPositionY((MapManager.getMapPosition().refY - y) * 44.4);
     this.updateMapPosition();
   },
 
   updateMapPosition() {
+    const mapPosition = MapManager.getMapPosition();
     map.style.transform = `translate3d(${mapPosition.x}px, ${mapPosition.y}px, 0)`;
   },
 

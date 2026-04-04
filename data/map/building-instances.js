@@ -1,5 +1,15 @@
+/**
+ * @typedef {Object} BuildingInstance
+ * @property {number} x - X coordinate for building spawn
+ * @property {number} y - Y coordinate for building spawn
+ * @property {Array<string>} buildings - Array of building types
+ * @property {boolean} [infested] - Whether the building is infested (optional)
+ * @export
+ */
+
+/** @type {Record<string, Array<BuildingInstance>>} */
 export default {
-  buildings: [
+  start: [
     { x: 17, y: 25, buildings: ['gas-station'] },
     { x: 36, y: 16, buildings: ['gas-station'] },
     { x: 9, y: 9, buildings: ['gas-station'] },

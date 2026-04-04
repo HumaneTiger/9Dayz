@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @import { GameMap } from '../../data/definitions/map-definitions.js'
+ * @import { GameMap, MapPosition } from '../../data/definitions/map-definitions.js'
  */
 
 import { BuildingInstances, ZombieInstances, PathInstances, PathUtils } from '../../data/index.js';
@@ -13,13 +13,28 @@ import ObjectFactory from './object-factory.js';
  * Also modifies object properties based on the selected character's definition.
  */
 export default {
+  /** @type {GameMap} */
+  currentMap: MapDefinitions['start'],
+  /** @type {string} */
+  currentMapKey: 'start',
+
+  /**
+   * Sets the current map based on the provided map key.
+   * @param {string} key - The key of the map to set as current.
+   */
+  setCurrentMap: function (key) {
+    this.currentMap = MapDefinitions[key];
+    this.currentMapKey = key;
+  },
+
   /**
    * Initializes the map with buildings
    * @returns {void}
    */
   setupAllBuildings: function () {
     // Setup all regular buildings from imported JSON
-    BuildingInstances.buildings.forEach(entry => {
+    // todo: provide building instances for current map (dynamic map loading)
+    BuildingInstances[this.currentMapKey].forEach(entry => {
       ObjectFactory.setupBuilding(entry.x, entry.y, entry.buildings, entry.infested);
     });
   },
@@ -30,7 +45,8 @@ export default {
    */
   setupAllZeds: function () {
     // Setup all zombies from imported JSON
-    ZombieInstances.zombies.forEach(entry => {
+    // todo: provide zombie instances for current map (dynamic map loading)
+    ZombieInstances[this.currentMapKey].forEach(entry => {
       ObjectFactory.setZedAt(entry.x, entry.y, entry.amount);
     });
   },
@@ -41,30 +57,61 @@ export default {
    */
   setupAllPaths: function () {
     // Setup all paths from imported JSON
-    PathInstances.paths.vertical.forEach(path => {
-      PathUtils.setupPathVer(path.x, path.y1, path.y2);
+    // todo: provide path instances for current map (dynamic map loading)
+    PathInstances[this.currentMapKey].vertical.forEach(path => {
+      PathUtils.setupPathVer(this.getMapKey(), path.x, path.y1, path.y2);
     });
-    PathInstances.paths.horizontal.forEach(path => {
-      PathUtils.setupPathHor(path.x1, path.x2, path.y);
+    PathInstances[this.currentMapKey].horizontal.forEach(path => {
+      PathUtils.setupPathHor(this.getMapKey(), path.x1, path.x2, path.y);
     });
-    PathInstances.paths.diagonalDown.forEach(path => {
-      PathUtils.setupPathDiaDown(path.x1, path.x2, path.y);
+    PathInstances[this.currentMapKey].diagonalDown.forEach(path => {
+      PathUtils.setupPathDiaDown(this.getMapKey(), path.x1, path.x2, path.y);
     });
-    PathInstances.paths.diagonalUp.forEach(path => {
-      PathUtils.setupPathDiaUp(path.x1, path.x2, path.y);
+    PathInstances[this.currentMapKey].diagonalUp.forEach(path => {
+      PathUtils.setupPathDiaUp(this.getMapKey(), path.x1, path.x2, path.y);
     });
-    PathInstances.paths.single.forEach(path => {
-      PathUtils.setupPath(path.x, path.y);
+    PathInstances[this.currentMapKey].single.forEach(path => {
+      PathUtils.setupPath(this.getMapKey(), path.x, path.y);
     });
-    PathInstances.paths.remove.forEach(path => {
-      PathUtils.removePath(path.x, path.y);
+    PathInstances[this.currentMapKey].remove.forEach(path => {
+      PathUtils.removePath(this.getMapKey(), path.x, path.y);
     });
+  },
+
+  /**
+   * @returns {string} - the key of the current map
+   */
+  getMapKey: function () {
+    return this.currentMapKey;
   },
 
   /**
    * @returns {GameMap['paths']} - the 2D array representing the map's paths
    */
   getAllPaths: function () {
-    return MapDefinitions.paths;
+    return this.currentMap.paths;
+  },
+
+  /**
+   * @returns {MapPosition} - the current position of the map
+   */
+  getMapPosition: function () {
+    return this.currentMap.mapPosition;
+  },
+
+  /**
+   *
+   * @param {number} x - The new X coordinate for the map
+   */
+  setPositionX: function (x) {
+    this.currentMap.mapPosition.x = x;
+  },
+
+  /**
+   *
+   * @param {number} y - The new Y coordinate for the map
+   */
+  setPositionY: function (y) {
+    this.currentMap.mapPosition.y = y;
   },
 };
