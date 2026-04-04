@@ -1,6 +1,8 @@
 import Battle from './battle.js';
 import Items from './items.js';
 import Tutorial from './tutorial.js';
+import Props from './props.js';
+import BattleCardsMarkup from './battle-cards-markup.js';
 import { BattleManager } from './core/index.js';
 
 const battleCardsContainer = document.getElementById('battle-cards');
@@ -417,7 +419,11 @@ export default {
     }
   },
 
-  generateDefensiveCard: function (defensiveObject, durabilityMarkup, offsetX = 0) {
+  generateDefensiveCard: function (defensiveObject, offsetX = 0) {
+    const durabilityMarkup = BattleCardsMarkup.createDurabilityMarkup(
+      defensiveObject.name,
+      defensiveObject.durability || 0
+    );
     const cardMarkup =
       '<div style="margin-left: ' +
       offsetX +
@@ -439,6 +445,20 @@ export default {
 
   emptyDefensiveCardsContainer: function () {
     defensiveCardsContainer.innerHTML = '';
+  },
+
+  updateDefensiveCardsContainer: function () {
+    const defensiveDeck = BattleManager.getDefensiveDeck();
+    if (!defensiveDeck || defensiveDeck.length === 0) {
+      return;
+    }
+    this.emptyDefensiveCardsContainer();
+    for (var i = defensiveDeck.length; i > 0; i -= 1) {
+      const defensiveObject = Props.getObject(defensiveDeck[i - 1]);
+      if (defensiveObject.durability > 0) {
+        this.generateDefensiveCard(defensiveObject, (i - 1) * 15);
+      }
+    }
   },
 
   emptyBattlePlayContainer: function () {

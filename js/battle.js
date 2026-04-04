@@ -198,29 +198,7 @@ export default {
     if (barricadesOnly.length > 0) {
       BattleManager.includeBarricadesInBattle(barricadesOnly);
     }
-    this.updateDefensiveCardsContainer();
-  },
-
-  updateDefensiveCardsContainer: function () {
-    const defensiveDeck = BattleManager.getDefensiveDeck();
-    if (!defensiveDeck || defensiveDeck.length === 0) {
-      return;
-    }
-    UiBattle.emptyDefensiveCardsContainer();
-    for (var i = defensiveDeck.length; i > 0; i -= 1) {
-      const defensiveObject = Props.getObject(defensiveDeck[i - 1]);
-      if (defensiveObject.durability > 0) {
-        this.addDefensiveCard(defensiveObject, (i - 1) * 15);
-      }
-    }
-  },
-
-  addDefensiveCard: function (defensiveObject, offsetX = 0) {
-    const durabilityMarkup = BattleCardsMarkup.createDurabilityMarkup(
-      defensiveObject.name,
-      defensiveObject.durability || 0
-    );
-    UiBattle.generateDefensiveCard(defensiveObject, durabilityMarkup, offsetX);
+    UiBattle.updateDefensiveCardsContainer();
   },
 
   startBattle(targetEnemyObject, surprised, singleZedId) {
@@ -571,7 +549,7 @@ export default {
               if (defensiveCard.durability <= 0) {
                 UiBattle.showBattleMessage('Your ' + defensiveCard.name + ' broke!', 2000);
               }
-              this.updateDefensiveCardsContainer();
+              UiBattle.updateDefensiveCardsContainer();
             }
             /* zed is dealing damage to player even if it died from defensive card */
             const dmg = Player.getProp('protection') - attack;
