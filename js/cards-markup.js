@@ -7,7 +7,13 @@ import { default as Cooking } from './cooking.js';
 import { default as Character } from './character.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
-import { CardsManager, CompanionManager, ObjectState, RecipesManager } from './core/index.js';
+import {
+  CardsManager,
+  CompanionManager,
+  ObjectState,
+  RecipesManager,
+  PlayerManager,
+} from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
 const CARD_DECK_LIMIT = 10;
@@ -365,7 +371,7 @@ export default {
       if (action.locked) {
         if (!object.inreach) {
           actionRef.querySelector('.additional-locked').textContent = 'Too far away';
-        } else if (action.energy && Player.getProp('energy') + action.energy < 0) {
+        } else if (action.energy && PlayerManager.getProp('energy') + action.energy < 0) {
           actionRef.querySelector('.additional-locked').textContent =
             Math.abs(action.energy) + ' energy needed';
         } else if (object.zednearby) {

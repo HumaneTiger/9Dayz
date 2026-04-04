@@ -3,7 +3,7 @@ import Player from './player.js';
 import Items from './items.js';
 import Audio from './audio.js';
 import TimingUtils from './utils/timing-utils.js';
-import { TutorialManager, CardsManager } from './core/index.js';
+import { TutorialManager, CardsManager, PlayerManager } from './core/index.js';
 import { CardsDefinitions } from '../data/index.js';
 
 let battleTutorialStep = 0,
@@ -238,7 +238,7 @@ export default {
         specialEventObjectIds.push(objectId);
       }
 
-      if (Player.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
+      if (PlayerManager.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
         Props.setGameProp('firstLowEnergy', true);
         let objectId = this.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);

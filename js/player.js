@@ -1,12 +1,12 @@
 import {
   EventManager,
   EVENTS,
+  GameState,
   PlayerManager,
   ObjectState,
   CharacterManager,
   MapManager,
 } from './core/index.js';
-import Props from './props.js';
 import Cards from './cards.js';
 import Map from './map.js';
 import Battle from './battle.js';
@@ -14,8 +14,7 @@ import Ui from './ui.js';
 import Viewport from './viewport.js';
 
 const allPaths = MapManager.getAllPaths();
-const playerProps = Props.getPlayerProps();
-const playerPosition = Props.getGameProp('playerPosition');
+const playerPosition = GameState.getGameProp('playerPosition');
 
 let player = document.getElementById('player');
 
@@ -27,20 +26,20 @@ export default {
     EventManager.on(EVENTS.PLAYER_UPDATE, ({ noPenalty }) => {
       this.updatePlayer(noPenalty);
     });
-    Props.changePlayerProp('health', 0); // trigger initial UI update
-    Props.changePlayerProp('food', 0);
-    Props.changePlayerProp('thirst', 0);
-    Props.changePlayerProp('energy', 0);
+    PlayerManager.changePlayerProp('health', 0); // trigger initial UI update
+    PlayerManager.changePlayerProp('food', 0);
+    PlayerManager.changePlayerProp('thirst', 0);
+    PlayerManager.changePlayerProp('energy', 0);
     this.initPlayer();
     this.initMovement();
   },
 
   checkForDamage: function () {
-    this.updateDamageOverlay(this.getProp('health'));
+    this.updateDamageOverlay(PlayerManager.getProp('health'));
   },
 
   checkForDeath: function (secondWind) {
-    if (this.getProp('health') <= 0) {
+    if (PlayerManager.getProp('health') <= 0) {
       // 50:50 chance
       if (!secondWind || Math.random() >= 0.5) {
         EventManager.emit(EVENTS.GAME_OVER);
@@ -48,20 +47,6 @@ export default {
       }
     }
     return false;
-  },
-
-  checkForWin: function () {
-    let startScreen = document.getElementById('startscreen');
-    startScreen.classList.remove('is--hidden');
-    startScreen.style.opacity = 0;
-    window.setTimeout(() => {
-      startScreen.querySelector('.screen__1').classList.add('is--hidden');
-      startScreen.querySelector('.screen__2').classList.add('is--hidden');
-      startScreen.querySelector('.screen__3').classList.add('is--hidden');
-      startScreen.querySelector('.screen__dead').classList.add('is--hidden');
-      startScreen.querySelector('.screen__win').classList.remove('is--hidden');
-      startScreen.style.opacity = 1;
-    }, 300);
   },
 
   initPlayer: function () {
@@ -85,7 +70,7 @@ export default {
     this.movePlayerTo(playerPosition.x, playerPosition.y);
 
     window.setTimeout(() => {
-      const objectsHere = Props.getObjectsAt(playerPosition.x, playerPosition.y);
+      const objectsHere = ObjectState.getObjectsAt(playerPosition.x, playerPosition.y);
       this.findAndHandleObjects();
       Cards.enableActions();
       if (objectsHere?.some(obj => obj.group === 'zombie' && !obj.dead)) {
@@ -96,16 +81,16 @@ export default {
     }, 0);
 
     if (!noPenalty) {
-      Props.changePlayerProp('energy', -1);
-      Props.changePlayerProp('thirst', -2);
-      Props.changePlayerProp('food', -1);
+      PlayerManager.changePlayerProp('energy', -1);
+      PlayerManager.changePlayerProp('thirst', -2);
+      PlayerManager.changePlayerProp('food', -1);
     }
 
     CharacterManager.applyHighCalorieConsumptionChanges();
 
-    if (this.getProp('food') <= 0) Props.changePlayerProp('health', -5);
-    if (this.getProp('thirst') <= 0) Props.changePlayerProp('health', -5);
-    if (this.getProp('energy') <= 0) Props.changePlayerProp('energy', -5);
+    if (PlayerManager.getProp('food') <= 0) PlayerManager.changePlayerProp('health', -5);
+    if (PlayerManager.getProp('thirst') <= 0) PlayerManager.changePlayerProp('health', -5);
+    if (PlayerManager.getProp('energy') <= 0) PlayerManager.changePlayerProp('energy', -5);
 
     this.checkForDeath(true);
   },
@@ -165,9 +150,9 @@ export default {
       posYBefore = playerPosition.y;
 
     if (
-      !Props.getGameProp('isWalking') &&
-      !Props.getGameProp('isMoveLocked') &&
-      !Props.getGameProp('gamePaused')
+      !GameState.getGameProp('isWalking') &&
+      !GameState.getGameProp('isMoveLocked') &&
+      !GameState.getGameProp('gamePaused')
     ) {
       if (ev.key && (ev.key.toLowerCase() === 'w' || ev.key === 'ArrowUp')) {
         ev.preventDefault();
@@ -248,9 +233,9 @@ export default {
       }
       if (posXBefore !== playerPosition.x || posYBefore !== playerPosition.y) {
         this.updatePlayer();
-        Props.setGameProp('isWalking', true);
+        GameState.setGameProp('isWalking', true);
         window.setTimeout(function () {
-          Props.setGameProp('isWalking', false);
+          GameState.setGameProp('isWalking', false);
         }, 1000);
       }
     }
@@ -294,10 +279,6 @@ export default {
       x: player.style.left,
       y: player.style.top,
     };
-  },
-
-  getProp: function (prop) {
-    return playerProps[prop];
   },
 
   handleFoundObjectIds: function (allFoundObjectIds) {

@@ -419,4 +419,18 @@ export default {
       startScreen.style.opacity = 1;
     }, 100);
   },
+
+  switchToWinScreen: function () {
+    let startScreen = document.getElementById('startscreen');
+    startScreen.classList.remove('is--hidden');
+    startScreen.style.opacity = 0;
+    window.setTimeout(() => {
+      startScreen.querySelector('.screen__1').classList.add('is--hidden');
+      startScreen.querySelector('.screen__2').classList.add('is--hidden');
+      startScreen.querySelector('.screen__3').classList.add('is--hidden');
+      startScreen.querySelector('.screen__dead').classList.add('is--hidden');
+      startScreen.querySelector('.screen__win').classList.remove('is--hidden');
+      startScreen.style.opacity = 1;
+    }, 300);
+  },
 };

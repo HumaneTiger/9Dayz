@@ -17,6 +17,7 @@ import {
   ObjectState,
   GameState,
   BattleManager,
+  PlayerManager,
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -273,11 +274,11 @@ export default {
     document.querySelector('#action-points-warning .low')?.classList.add('is--hidden');
     document.querySelector('#action-points')?.classList.remove('low-energy');
     // AP buffs when energy is low
-    if (Player.getProp('energy') < 10) {
+    if (PlayerManager.getProp('energy') < 10) {
       Props.changePlayerProp('actions', -2);
       document.querySelector('#action-points-warning .very-low')?.classList.remove('is--hidden');
       document.querySelector('#action-points')?.classList.add('low-energy');
-    } else if (Player.getProp('energy') < 33) {
+    } else if (PlayerManager.getProp('energy') < 33) {
       Props.changePlayerProp('actions', -1);
       document.querySelector('#action-points-warning .low')?.classList.remove('is--hidden');
       document.querySelector('#action-points')?.classList.add('low-energy');
@@ -391,7 +392,7 @@ export default {
     // refresh inventory slots
     Items.fillInventorySlots();
     // decide next steps
-    if (!this.checkForAllZedsDefeated() && Player.getProp('actions') === 0) {
+    if (!this.checkForAllZedsDefeated() && PlayerManager.getProp('actions') === 0) {
       this.endTurn();
     }
   },
@@ -468,7 +469,7 @@ export default {
               UiBattle.updateDefensiveCardsContainer();
             }
             /* zed is dealing damage to player even if it died from defensive card */
-            const dmg = Player.getProp('protection') - attack;
+            const dmg = PlayerManager.getProp('protection') - attack;
             if (dmg < 0) {
               Props.changePlayerProp('health', dmg);
               UiBattle.showBattleStats(dmg, 'red');
