@@ -351,27 +351,14 @@ export default {
   },
 
   resetPreviewProps: function () {
-    document
-      .querySelector('#properties li.food')
-      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
-    document
-      .querySelector('#properties li.thirst')
-      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
-    document
-      .querySelector('#properties li.energy')
-      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
-    document
-      .querySelector('#properties li.health')
-      .classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
-    document.querySelector('#properties li.food span.meter').style.paddingRight = '0';
-    document.querySelector('#properties li.thirst span.meter').style.paddingRight = '0';
-    document.querySelector('#properties li.energy span.meter').style.paddingRight = '0';
-    document.querySelector('#properties li.health span.meter').style.paddingRight = '0';
-    /* make sure to render playerprops again, otherwise the meter will be misaligned for edge cases if (change < 0) */
-    Props.changePlayerProp('food', 0);
-    Props.changePlayerProp('thirst', 0);
-    Props.changePlayerProp('energy', 0);
-    Props.changePlayerProp('health', 0);
+    const properties = ['food', 'thirst', 'energy', 'health'];
+    properties.forEach(prop => {
+      const li = document.querySelector(`#properties li.${prop}`);
+      li.classList.remove('transfer', 'low-preview', 'very-low-preview', 'default-preview');
+      li.querySelector('span.meter').style.paddingRight = '0';
+      /* make sure to render playerprops again, otherwise the meter will be misaligned for edge cases if (change < 0) */
+      Props.changePlayerProp(prop, 0);
+    });
   },
 
   /**
