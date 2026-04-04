@@ -89,7 +89,7 @@ export default {
     this.prepareBattle();
     const cardZedDeck = BattleManager.addIdToOpponentDeck(singleZedId);
     this.spawnZedDeck(cardZedDeck);
-    this.enterUIBattleMode();
+    this.enterBattleMode();
     // start auto battle after short delay
     window.setTimeout(() => {
       this.spawnCompanionDeck();
@@ -182,6 +182,12 @@ export default {
     }, 500);
   },
 
+  enterBattleMode() {
+    Weapons.updateWeaponState();
+    Player.resetPreviewProps();
+    UiBattle.enterUIBattleMode();
+  },
+
   spawnZedDeck(cardZedDeck) {
     if (!cardZedDeck || cardZedDeck.length === 0) {
       return;
@@ -198,32 +204,6 @@ export default {
       zedCardRef.style.zIndex = null;
       zedCardRef.style.left = 2135 / 2 - (cardZedDeck.length * spaceX) / 2 + index * spaceX + 'px';
     });
-  },
-
-  enterUIBattleMode() {
-    // Prepare UI for battle
-    document.getElementById('inventory').classList.remove('active');
-    document.getElementById('craft').classList.remove('active');
-    document.getElementById('character').classList.remove('active');
-    Weapons.updateWeaponState();
-    document.getElementById('cards').classList.add('battle-mode');
-    document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
-    defensiveCardsContainer.classList.remove('heavy-shake');
-    defensiveCardsContainer.classList.remove('is--hidden');
-
-    Player.resetPreviewProps();
-
-    // Time further changes to allow CSS transitions
-    window.setTimeout(() => {
-      document.querySelector('#cards .cards-blocker').classList.add('active');
-    }, 100);
-
-    window.setTimeout(() => {
-      document.getElementById('properties').classList.remove('active');
-      document.getElementById('actions').classList.remove('active');
-      document.querySelector('#cards .cards-blocker').classList.add('active');
-      defensiveCardsContainer.classList.add('in-battle');
-    }, 600);
   },
 
   includeDefensiveObjects: function () {
@@ -286,7 +266,7 @@ export default {
       : BattleManager.addAllZedsNearby(targetEnemyObject);
     if (cardZedDeck.length > 0) {
       this.spawnZedDeck(cardZedDeck);
-      this.enterUIBattleMode();
+      this.enterBattleMode();
       this.includeDefensiveObjects();
       window.setTimeout(() => {
         this.spawnBattleDeck(surprised);

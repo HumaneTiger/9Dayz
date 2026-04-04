@@ -3,6 +3,7 @@ import Items from './items.js';
 import Tutorial from './tutorial.js';
 
 const battleCardsContainer = document.getElementById('battle-cards');
+const defensiveCardsContainer = document.querySelector('#defensive-cards');
 
 let newPosX = 0,
   newPosY = 0,
@@ -162,6 +163,29 @@ export default {
 
   getDragElement: function () {
     return dragEl;
+  },
+
+  enterUIBattleMode() {
+    // Prepare UI for battle
+    document.getElementById('inventory').classList.remove('active');
+    document.getElementById('craft').classList.remove('active');
+    document.getElementById('character').classList.remove('active');
+    document.getElementById('cards').classList.add('battle-mode');
+    document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
+    defensiveCardsContainer.classList.remove('heavy-shake');
+    defensiveCardsContainer.classList.remove('is--hidden');
+
+    // Time further changes to allow CSS transitions
+    window.setTimeout(() => {
+      document.querySelector('#cards .cards-blocker').classList.add('active');
+    }, 100);
+
+    window.setTimeout(() => {
+      document.getElementById('properties').classList.remove('active');
+      document.getElementById('actions').classList.remove('active');
+      document.querySelector('#cards .cards-blocker').classList.add('active');
+      defensiveCardsContainer.classList.add('in-battle');
+    }, 600);
   },
 
   showBattleMessage: function (message, delay) {
