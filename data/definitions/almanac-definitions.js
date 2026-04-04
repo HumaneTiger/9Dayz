@@ -4,9 +4,11 @@
  * AlmanacDefinitions contains all the static data for the Almanac content, such as which content is known and the markup for each content page.
  */
 
-/** @typedef {{motive: string, markup: string|undefined}} AlmanacContentPage */
+/** @typedef {{motive: string, markup: string}} AlmanacContentPage */
 /** @typedef {string[]} knownContent */
 /** @typedef {{knownContent: knownContent, contentPages: Record<string, AlmanacContentPage>}} AlmanacDefinitions */
+
+import { default as CharacterDefinitions } from './character-definitions.js';
 
 /** @type {AlmanacDefinitions} */
 export default {
@@ -108,23 +110,23 @@ export default {
     },
     everyman: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="everyman"]')?.innerHTML,
+      markup: CharacterDefinitions.everyman.descriptionMarkup,
     },
     treehugger: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="treehugger"]')?.innerHTML,
+      markup: CharacterDefinitions.treehugger.descriptionMarkup,
     },
     snackivore: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="snackivore"]')?.innerHTML,
+      markup: CharacterDefinitions.snackivore.descriptionMarkup,
     },
     craftsmaniac: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="craftsmaniac"]')?.innerHTML,
+      markup: CharacterDefinitions.craftsmaniac.descriptionMarkup,
     },
     furbuddy: {
       motive: './img/characters/hero.png',
-      markup: document.querySelector('div[data-character="furbuddy"]')?.innerHTML,
+      markup: CharacterDefinitions.furbuddy.descriptionMarkup,
     },
   },
 };
