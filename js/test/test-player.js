@@ -183,6 +183,8 @@ export default {
     isPlaying = false;
     deferredMovement = null; // Clear any deferred movement
 
+    document.querySelector('button.stop-playback').textContent = `⏹ Stop`;
+
     // Stop test tick counter
     if (testTickInterval) {
       clearInterval(testTickInterval);
@@ -198,8 +200,12 @@ export default {
 
     if (currentCommandIndex >= commandQueue.length) {
       this.log(`Playback completed.`, 'success', true);
+      document.getElementById('map-fog').style.borderLeft = '25px #00ff00 solid';
+      document.querySelector('#card-console').classList.remove('out');
     } else {
       this.log(`Stopped at command ${currentCommandIndex}/${commandQueue.length}`, 'warning', true);
+      document.getElementById('map-fog').style.borderLeft = '25px #ff0000 solid';
+      document.querySelector('#card-console').classList.remove('out');
     }
   },
 
@@ -252,9 +258,9 @@ export default {
       if (commandQueue[currentCommandIndex - 1]?.type !== command.type) {
         let logExtension =
           commandQueue[currentCommandIndex + 1]?.type === command.type ? ' (+)' : '';
-        this.log(
-          `Executing command ${currentCommandIndex + 1}/${commandQueue.length}: ${command.type}${logExtension}`
-        );
+        document.querySelector('button.stop-playback').textContent =
+          `⏹ Stop (${currentCommandIndex + 1}/${commandQueue.length})`;
+        this.log(`Executing at tick ${command.tick}: ${command.type}${logExtension}`);
       }
 
       try {

@@ -189,8 +189,14 @@ export default {
     if (moduleName === 'Start' && handlerName === 'handleClick') {
       return this.translateStartClick(event);
     }
-    if (moduleName === 'Ui' && handlerName === 'handleClick') {
+    if (
+      moduleName === 'Ui' &&
+      (handlerName === 'handleClick' || handlerName === 'handleBattleCardsClick')
+    ) {
       return this.translateUiClick(event);
+    }
+    if (moduleName === 'UiBattle' && handlerName === 'handleBattleCardsClick') {
+      return this.translateUiBattleClick(event);
     }
     if (moduleName === 'Ui' && handlerName === 'mouseUp') {
       return this.translateUiMouseUp(event);
@@ -292,7 +298,6 @@ export default {
   translateUiClick: function (event) {
     const target = event.target;
     const clickAction = target.closest('#actions');
-    const clickBattleCards = target.closest('#battle-cards');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = event.button === 0;
 
@@ -311,6 +316,26 @@ export default {
       }
     }
 
+    // handle map
+    if (mapClick && leftMouseButton) {
+      return {
+        module: 'Ui',
+        type: 'ui-map-click',
+        selector: '#maximap',
+      };
+    }
+
+    return null;
+  },
+
+  /**
+   * Translate UiBattle.handleBattleCardsClick events to commands
+   */
+  translateUiBattleClick: function (event) {
+    const target = event.target;
+    const clickBattleCards = target.closest('#battle-cards');
+    const leftMouseButton = event.button === 0;
+
     // Handle battle buttons
     if (clickBattleCards && leftMouseButton) {
       const endTurnButton = target.closest('.end-turn');
@@ -323,15 +348,6 @@ export default {
           selector: `#battle-cards .end-turn`,
         };
       }
-    }
-
-    // handle map
-    if (mapClick && leftMouseButton) {
-      return {
-        module: 'Ui',
-        type: 'ui-map-click',
-        selector: '#maximap',
-      };
     }
 
     return null;
