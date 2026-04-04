@@ -1,5 +1,6 @@
 import Start from './start.js';
 import Ui from './ui.js';
+import UiBattle from './ui-battle.js';
 import Viewport from './viewport.js';
 import Editor from './editor.js';
 import Props from './props.js';
@@ -32,7 +33,11 @@ import TestPlayer from './test/test-player.js';
       Start.handleClick.bind(Start)
     );
     Ui.handleClick = TestRecorder.wrapEventHandler('Ui', 'handleClick', Ui.handleClick.bind(Ui));
-    Ui.mouseUp = TestRecorder.wrapEventHandler('Ui', 'mouseUp', Ui.mouseUp.bind(Ui));
+    UiBattle.mouseUp = TestRecorder.wrapEventHandler(
+      'Ui',
+      'mouseUp',
+      UiBattle.mouseUp.bind(UiBattle)
+    );
     Cards.checkForCardClick = TestRecorder.wrapEventHandler(
       'Cards',
       'checkForCardClick',
@@ -77,6 +82,7 @@ import TestPlayer from './test/test-player.js';
 
   Start.init();
   Ui.init();
+  UiBattle.init();
   Editor.init();
   Map.init();
   Cards.init();

@@ -3,6 +3,7 @@ import Props from '../props.js';
 import Checkpoint from '../checkpoint.js';
 import Start from '../start.js';
 import Ui from '../ui.js';
+import UiBattle from '../ui-battle.js';
 import Weapons from '../weapons.js';
 
 let isRecording = false;
@@ -340,12 +341,12 @@ export default {
    * Translate Ui.mouseUp events to commands
    */
   translateUiMouseUp: function (event) {
-    let dragTarget = Ui.getDragTarget(event);
+    let dragTarget = UiBattle.getDragTarget(event);
 
     // Handle mouse release after dragging a card onto a zombie
     if (dragTarget) {
       if (dragTarget.classList.contains('zombie')) {
-        const dragElement = Ui.getDragElement();
+        const dragElement = UiBattle.getDragElement();
         if (dragElement && dragElement.dataset.item) {
           return {
             module: 'Ui',
