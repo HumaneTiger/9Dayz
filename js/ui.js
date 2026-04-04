@@ -1,5 +1,4 @@
 import Props from './props.js';
-import UiBattle from './ui-battle.js';
 import Audio from './audio.js';
 import Player from './player.js';
 import Companion from './companion.js';
@@ -137,7 +136,6 @@ export default {
   handleClick: function (ev) {
     const target = ev.target;
     const clickAction = target.closest('#actions');
-    const clickBattleCards = target.closest('#battle-cards');
     const mapClick = target.closest('#maximap');
     const leftMouseButton = ev.button === 0 || !ev.button; // 2nd part also takes keyboard shortcuts into account
 
@@ -192,8 +190,6 @@ export default {
           }
         }
       }
-    } else if (clickBattleCards && leftMouseButton && Props.getGameProp('battle')) {
-      UiBattle.handleBattleCardsClick(ev, target);
     }
 
     if (mapClick) {

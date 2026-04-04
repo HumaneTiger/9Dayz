@@ -188,7 +188,15 @@ export default {
       this.enterBattleMode();
       this.includeDefensiveObjects();
       window.setTimeout(() => {
-        this.spawnBattleDeck(surprised);
+        const sparedItems = BattleManager.generateBattleDeck();
+        const battleDeck = BattleManager.getBattleDeck();
+        UiBattle.spawnBattleDeck(
+          surprised,
+          battleDeck,
+          sparedItems,
+          () => this.zedAttack(),
+          () => this.nextTurn()
+        );
       }, 600);
     } else {
       this.endBattle();
@@ -197,31 +205,6 @@ export default {
     if (!Props.getGameProp('firstFight') && Props.getGameProp('tutorial')) {
       Props.setGameProp('firstFight', true);
       Tutorial.triggerBattleTutorial();
-    }
-  },
-
-  spawnBattleDeck: function (surprised) {
-    const sparedItems = BattleManager.generateBattleDeck();
-    const battleDeck = BattleManager.getBattleDeck();
-    if (sparedItems > 0) {
-      UiBattle.showBattleMessage(
-        `${GameState.getGameProp('character')} spares ${sparedItems} items`,
-        2000
-      );
-    }
-    UiBattle.generateDrawPile(Math.min(battleDeck.length, BattleManager.getMaxDrawPileSize()));
-
-    /* render draw pile */
-    UiBattle.renderDrawPile();
-    if (surprised) {
-      document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
-      document.getElementById('battle-cards').classList.remove('is--hidden');
-      UiBattle.showBattleMessage('Oh no! You walked into them!', 2000);
-      window.setTimeout(() => {
-        this.zedAttack();
-      }, 600);
-    } else {
-      this.nextTurn();
     }
   },
 

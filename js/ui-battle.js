@@ -4,7 +4,7 @@ import Items from './items.js';
 import Tutorial from './tutorial.js';
 import Props from './props.js';
 import BattleCardsMarkup from './battle-cards-markup.js';
-import { BattleManager, CompanionManager } from './core/index.js';
+import { BattleManager, CompanionManager, GameState } from './core/index.js';
 
 const battleCardsContainer = document.getElementById('battle-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
@@ -30,23 +30,29 @@ export default {
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
+    battleCardsContainer.addEventListener('mousedown', this.handleBattleCardsClick);
     document.addEventListener('uiDragTestEvent', this.handleUiTestDragEvent.bind(this));
   },
 
-  handleBattleCardsClick: function (ev, target) {
+  handleBattleCardsClick: function (ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    const endTurn = target.closest('.end-turn');
-    if (endTurn) {
-      Battle.endTurn();
+    const leftMouseButton = ev.button === 0;
+    const target = ev.target;
+    if (!(leftMouseButton && target && Props.getGameProp('battle'))) {
+      return;
     }
-    const startTutorial = target.closest('.start-tutorial');
-    if (startTutorial) {
+    if (target.closest('.end-turn')) {
+      Battle.endTurn();
+    } else if (target.closest('.start-tutorial')) {
       Tutorial.triggerBattleTutorial();
     }
   },
 
   mouseOver: function (ev) {
+    if (!Props.getGameProp('battle')) {
+      return;
+    }
     const target = ev.target;
     const battleCard = target.closest ? target.closest('div.battle-card') : null,
       item = battleCard?.dataset.item;
@@ -64,73 +70,76 @@ export default {
     let target = ev.target;
     const leftMouseButton = ev.button === 0;
 
-    if (target && leftMouseButton) {
-      if (dragMode === false && target.closest('div.battle-card')) {
-        dragMode = true;
+    if (!(leftMouseButton && target && Props.getGameProp('battle'))) {
+      return;
+    }
 
-        dragEl = target.closest('div.battle-card');
+    if (dragMode === false && target.closest('div.battle-card')) {
+      dragMode = true;
 
-        dragEl.style.zIndex = topIndex++;
-        dragEl.classList.add('grabbed');
+      dragEl = target.closest('div.battle-card');
 
-        startPosX = dragEl.clientX;
-        startPosY = dragEl.clientY;
+      dragEl.style.zIndex = topIndex++;
+      dragEl.classList.add('grabbed');
 
-        initialStyleLeft = dragEl.style.left;
-        initialStyleTop = dragEl.style.top;
-      }
+      startPosX = dragEl.clientX;
+      startPosY = dragEl.clientY;
 
-      // TODO: move almanac drag handling to almanac.js
-      if (dragMode === false && target.closest('#almanac') && target.classList.contains('title')) {
-        dragMode = true;
+      initialStyleLeft = dragEl.style.left;
+      initialStyleTop = dragEl.style.top;
+    }
 
-        dragEl = target.closest('#almanac');
-        dragEl.classList.add('grabbed');
+    // TODO: move almanac drag handling to almanac.js
+    if (dragMode === false && target.closest('#almanac') && target.classList.contains('title')) {
+      dragMode = true;
 
-        startPosX = dragEl.clientX;
-        startPosY = dragEl.clientY;
+      dragEl = target.closest('#almanac');
+      dragEl.classList.add('grabbed');
 
-        initialStyleLeft = dragEl.style.left;
-        initialStyleTop = dragEl.style.top;
-      }
+      startPosX = dragEl.clientX;
+      startPosY = dragEl.clientY;
+
+      initialStyleLeft = dragEl.style.left;
+      initialStyleTop = dragEl.style.top;
     }
   },
 
   mouseMove: function (e) {
     e.preventDefault;
     e.stopPropagation();
+    if (!(dragMode && Props.getGameProp('battle'))) {
+      return;
+    }
+    let scale = window.innerHeight / 1200;
+    // calculate the new position
+    newPosX = (startPosX - e.clientX) / scale;
+    newPosY = (startPosY - e.clientY) / scale;
 
-    if (dragMode) {
-      let scale = window.innerHeight / 1200;
-      // calculate the new position
-      newPosX = (startPosX - e.clientX) / scale;
-      newPosY = (startPosY - e.clientY) / scale;
+    // with each move we also want to update the start X and Y
+    startPosX = e.clientX;
+    startPosY = e.clientY;
 
-      // with each move we also want to update the start X and Y
-      startPosX = e.clientX;
-      startPosY = e.clientY;
-
-      if (dragEl) {
-        // set the element's new position:
-        dragEl.style.top = dragEl.offsetTop - newPosY + 'px';
-        dragEl.style.left = dragEl.offsetLeft - newPosX + 'px';
-        let dragTarget = this.getDragTarget(e);
-        if (dragTarget) {
-          dragTarget.classList.add('active');
-        }
-        // remove item info when card is dragged
-        battleCardsContainer.querySelector('p.item-info').innerHTML = '';
+    if (dragEl) {
+      // set the element's new position:
+      dragEl.style.top = dragEl.offsetTop - newPosY + 'px';
+      dragEl.style.left = dragEl.offsetLeft - newPosX + 'px';
+      let dragTarget = this.getDragTarget(e);
+      if (dragTarget) {
+        dragTarget.classList.add('active');
       }
+      // remove item info when card is dragged
+      battleCardsContainer.querySelector('p.item-info').innerHTML = '';
     }
   },
 
   mouseUp: function (e) {
-    if (dragMode) {
-      let dragTarget = this.getDragTarget(e);
-      this.resolveMouseUp(dragTarget, dragEl);
-      dragMode = false;
-      dragEl = null;
+    if (!(dragMode && Props.getGameProp('battle'))) {
+      return;
     }
+    let dragTarget = this.getDragTarget(e);
+    this.resolveMouseUp(dragTarget, dragEl);
+    dragMode = false;
+    dragEl = null;
   },
 
   handleUiTestDragEvent: function (e) {
@@ -523,6 +532,29 @@ export default {
   spawnCompanionDeck: function () {
     this.emptyBattlePlayContainer();
     this.generateCompanionCard();
+  },
+
+  spawnBattleDeck: function (surprised, battleDeck, sparedItems, onSurprised, onNormal) {
+    if (sparedItems > 0) {
+      this.showBattleMessage(
+        `${GameState.getGameProp('character')} spares ${sparedItems} items`,
+        2000
+      );
+    }
+    this.generateDrawPile(Math.min(battleDeck.length, BattleManager.getMaxDrawPileSize()));
+
+    /* render draw pile */
+    this.renderDrawPile();
+    if (surprised) {
+      document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
+      document.getElementById('battle-cards').classList.remove('is--hidden');
+      this.showBattleMessage('Oh no! You walked into them!', 2000);
+      window.setTimeout(() => {
+        onSurprised();
+      }, 600);
+    } else {
+      onNormal();
+    }
   },
 
   emptyBattlePlayContainer: function () {

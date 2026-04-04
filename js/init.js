@@ -33,6 +33,12 @@ import TestPlayer from './test/test-player.js';
       Start.handleClick.bind(Start)
     );
     Ui.handleClick = TestRecorder.wrapEventHandler('Ui', 'handleClick', Ui.handleClick.bind(Ui));
+    /* todo: implement this */
+    UiBattle.handleBattleCardsClick = TestRecorder.wrapEventHandler(
+      'UiBattle',
+      'handleBattleCardsClick',
+      UiBattle.handleBattleCardsClick.bind(UiBattle)
+    );
     UiBattle.mouseUp = TestRecorder.wrapEventHandler(
       'Ui',
       'mouseUp',
