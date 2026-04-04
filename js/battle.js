@@ -20,12 +20,9 @@ import {
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
-const battleDrawContainer = document.querySelector('#battle-cards .draw');
 const battlePlayContainer = document.querySelector('#battle-cards .play');
 const battleCompanionContainer = document.querySelector('#companion-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
-const battleHealthMeter = document.querySelector('#properties li.health');
-let allDrawPileCards = [];
 
 export default {
   prepareBattle: function () {
@@ -278,6 +275,9 @@ export default {
       BattleManager.getBattleDeckSize(),
       BattleManager.getMaxDrawPileSize()
     );
+
+    const allDrawPileCards = UiBattle.getAllDrawPileCards();
+
     for (let card = 0; card < pileSize; card += 1) {
       if (card < totalCards) {
         allDrawPileCards[card].classList.remove('is--hidden');
@@ -292,7 +292,7 @@ export default {
     } else {
       document.getElementById('draw-amount').classList.remove('is--hidden');
     }
-    battleDrawContainer.style.width = 160 + pileSize * 4 + 'px';
+    UiBattle.showDrawPileCards(pileSize);
   },
 
   spawnCompanionDeck: function () {
@@ -330,21 +330,10 @@ export default {
         2000
       );
     }
-    /* generate draw pile */
-    for (
-      let card = 0;
-      card < Math.min(battleDeck.length, BattleManager.getMaxDrawPileSize());
-      card += 1
-    ) {
-      battleDrawContainer.insertAdjacentHTML(
-        'beforeend',
-        '<div class="battle-card-back is--hidden" style="left: ' + card * 4 + 'px"></div>'
-      );
-    }
-    allDrawPileCards = battleDrawContainer.querySelectorAll('.battle-card-back');
+    UiBattle.generateDrawPile(Math.min(battleDeck.length, BattleManager.getMaxDrawPileSize()));
+
     /* render draw pile */
     this.renderDrawPile();
-    battleHealthMeter.classList.add('in-battle');
     if (surprised) {
       document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
       document.getElementById('battle-cards').classList.remove('is--hidden');
@@ -742,7 +731,7 @@ export default {
               UiBattle.showBattleStats(-1 * attack, 'blue');
             }
             Props.changePlayerProp('protection', -1 * attack);
-            battleHealthMeter.classList.add('heavy-shake');
+            UiBattle.startHealthMeterShake();
           }
         },
         delay / 3 + index * delay
@@ -752,7 +741,7 @@ export default {
       window.setTimeout(
         () => {
           zedCardRef.classList.add('anim-punch');
-          battleHealthMeter.classList.remove('heavy-shake');
+          UiBattle.stopHealthMeterShake();
           defensiveCardsContainer.classList.remove('heavy-shake');
           if (zedObject.name === 'rat') {
             Audio.sfx('rat-attacks');

@@ -200,6 +200,7 @@ export default {
       document.getElementById('actions').classList.remove('active');
       document.querySelector('#cards .cards-blocker').classList.add('active');
       defensiveCardsContainer.classList.add('in-battle');
+      battleHealthMeter.classList.add('in-battle');
     }, 600);
   },
 
@@ -225,6 +226,14 @@ export default {
     document.getElementById('character').classList.add('active');
     document.getElementById('cards').classList.remove('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('active');
+  },
+
+  startHealthMeterShake: function () {
+    battleHealthMeter.classList.add('heavy-shake');
+  },
+
+  stopHealthMeterShake: function () {
+    battleHealthMeter.classList.remove('heavy-shake');
   },
 
   showBattleMessage: function (message, delay) {
@@ -274,5 +283,23 @@ export default {
     });
 
     return targetCandidateFound;
+  },
+
+  generateDrawPile: function (pileSize) {
+    /* generate draw pile */
+    for (let card = 0; card < pileSize; card += 1) {
+      battleDrawContainer.insertAdjacentHTML(
+        'beforeend',
+        '<div class="battle-card-back is--hidden" style="left: ' + card * 4 + 'px"></div>'
+      );
+    }
+  },
+
+  getAllDrawPileCards() {
+    return battleDrawContainer.querySelectorAll('.battle-card-back');
+  },
+
+  showDrawPileCards(pileSize) {
+    battleDrawContainer.style.width = 160 + pileSize * 4 + 'px';
   },
 };
