@@ -1,6 +1,7 @@
 import Battle from './battle.js';
 import Items from './items.js';
 import Tutorial from './tutorial.js';
+import { BattleManager } from './core/index.js';
 
 const battleCardsContainer = document.getElementById('battle-cards');
 const defensiveCardsContainer = document.querySelector('#defensive-cards');
@@ -285,6 +286,89 @@ export default {
     return targetCandidateFound;
   },
 
+  renderDrawPile: function (remainingCards) {
+    const totalCards =
+      remainingCards !== undefined ? remainingCards : BattleManager.getBattleDeckSize();
+    document.getElementById('draw-amount').textContent = totalCards;
+
+    const pileSize = Math.min(
+      BattleManager.getBattleDeckSize(),
+      BattleManager.getMaxDrawPileSize()
+    );
+
+    const allDrawPileCards = this.getAllDrawPileCards();
+
+    for (let card = 0; card < pileSize; card += 1) {
+      if (card < totalCards) {
+        allDrawPileCards[card].classList.remove('is--hidden');
+      } else {
+        allDrawPileCards[card].classList.add('is--hidden');
+      }
+    }
+    document.getElementById('draw-amount').style.left =
+      172 + Math.min(totalCards, BattleManager.getMaxDrawPileSize()) * 4 + 'px';
+    if (totalCards === 0) {
+      document.getElementById('draw-amount').classList.add('is--hidden');
+    } else {
+      document.getElementById('draw-amount').classList.remove('is--hidden');
+    }
+    this.showDrawPileCards(pileSize);
+  },
+
+  renderBattleCardDeck: function () {
+    for (let i = 0; i < battlePlayContainer.children.length; i += 1) {
+      window.setTimeout(
+        (index, child, totalCards) => {
+          child.style.left = index * 170 + 'px';
+          child.classList.remove('inactive');
+          child.dataset.index = index;
+          this.renderDrawPile(totalCards + index);
+        },
+        500 + i * 300,
+        battlePlayContainer.children.length - i - 1,
+        battlePlayContainer.children[i],
+        BattleManager.getBattleDeckSize() - battlePlayContainer.children.length
+      );
+    }
+  },
+
+  setAllBattleCardsInactive: function () {
+    const allBattleCards = battlePlayContainer.querySelectorAll('.battle-card');
+    if (allBattleCards) {
+      allBattleCards.forEach(battleCard => {
+        battleCard.classList.add('inactive');
+      });
+    }
+  },
+
+  generateBattleCard: function (
+    name,
+    damage,
+    modifyDamage,
+    protection,
+    pictureMarkup,
+    lastUseMarkup,
+    modifyDamageMarkup,
+    durabilityMarkup
+  ) {
+    battlePlayContainer.insertAdjacentHTML(
+      'beforeend',
+      '<div class="battle-card inactive" data-item="' +
+        name +
+        '"><div class="inner">' +
+        pictureMarkup +
+        lastUseMarkup +
+        '<div class="attack">' +
+        (damage + modifyDamage) +
+        modifyDamageMarkup +
+        '</div><div class="shield">' +
+        protection +
+        '</div>' +
+        durabilityMarkup +
+        '</div></div>'
+    );
+  },
+
   generateCompanionCard: function (name, damage, healthMarkup) {
     battleCompanionContainer.insertAdjacentHTML(
       'beforeend',
@@ -355,5 +439,9 @@ export default {
 
   emptyDefensiveCardsContainer: function () {
     defensiveCardsContainer.innerHTML = '';
+  },
+
+  emptyBattlePlayContainer: function () {
+    battlePlayContainer.innerHTML = '';
   },
 };

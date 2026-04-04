@@ -20,8 +20,6 @@ import {
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
-const battlePlayContainer = document.querySelector('#battle-cards .play');
-
 export default {
   prepareBattle: function () {
     Props.setGameProp('battle', true);
@@ -247,38 +245,9 @@ export default {
     }
   },
 
-  renderDrawPile: function (remainingCards) {
-    const totalCards =
-      remainingCards !== undefined ? remainingCards : BattleManager.getBattleDeckSize();
-    document.getElementById('draw-amount').textContent = totalCards;
-
-    const pileSize = Math.min(
-      BattleManager.getBattleDeckSize(),
-      BattleManager.getMaxDrawPileSize()
-    );
-
-    const allDrawPileCards = UiBattle.getAllDrawPileCards();
-
-    for (let card = 0; card < pileSize; card += 1) {
-      if (card < totalCards) {
-        allDrawPileCards[card].classList.remove('is--hidden');
-      } else {
-        allDrawPileCards[card].classList.add('is--hidden');
-      }
-    }
-    document.getElementById('draw-amount').style.left =
-      172 + Math.min(totalCards, BattleManager.getMaxDrawPileSize()) * 4 + 'px';
-    if (totalCards === 0) {
-      document.getElementById('draw-amount').classList.add('is--hidden');
-    } else {
-      document.getElementById('draw-amount').classList.remove('is--hidden');
-    }
-    UiBattle.showDrawPileCards(pileSize);
-  },
-
   spawnCompanionDeck: function () {
     const companion = CompanionManager.getCompanionFromInventory();
-    battlePlayContainer.innerHTML = '';
+    UiBattle.emptyBattlePlayContainer();
     const healthMarkup = CompanionManager.generateHealthMarkup();
     UiBattle.generateCompanionCard(companion.name, companion.damage, healthMarkup);
   },
@@ -295,7 +264,7 @@ export default {
     UiBattle.generateDrawPile(Math.min(battleDeck.length, BattleManager.getMaxDrawPileSize()));
 
     /* render draw pile */
-    this.renderDrawPile();
+    UiBattle.renderDrawPile();
     if (surprised) {
       document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
       document.getElementById('battle-cards').classList.remove('is--hidden');
@@ -391,37 +360,25 @@ export default {
     let itemsDeck = battleDeck.filter(
       item => !Props.isWeapon(item.name) && !CompanionManager.isCompanion(item.name)
     );
-    battlePlayContainer.innerHTML = '';
+    UiBattle.emptyBattlePlayContainer();
     let maxItems = 5 - weaponsDeck.length;
     if (itemsDeck.length < maxItems) maxItems = itemsDeck.length;
     if (maxItems + weaponsDeck.length > 0) {
       document.querySelector('#battle-cards .end-turn').classList.remove('is--hidden');
       for (let i = 0; i < maxItems; i += 1) {
-        this.addCardToPlay(itemsDeck[i].name);
+        this.spawnBattleCard(itemsDeck[i].name);
       }
       for (let i = 0; i < weaponsDeck.length; i += 1) {
-        this.addCardToPlay(weaponsDeck[i].name);
+        this.spawnBattleCard(weaponsDeck[i].name);
       }
       document.getElementById('battle-cards').classList.remove('is--hidden');
-      for (let i = 0; i < battlePlayContainer.children.length; i += 1) {
-        window.setTimeout(
-          (index, child, totalCards) => {
-            child.style.left = index * 170 + 'px';
-            child.classList.remove('inactive');
-            child.dataset.index = index;
-            this.renderDrawPile(totalCards + index);
-          },
-          500 + i * 300,
-          battlePlayContainer.children.length - i - 1,
-          battlePlayContainer.children[i],
-          battleDeck.length - battlePlayContainer.children.length
-        );
-      }
+      UiBattle.renderBattleCardDeck();
     } else {
       this.endTurn();
     }
   },
 
+  // todo: move to cards-markup.js
   createDurabilityMarkup: function (weaponName, durability) {
     const weaponDefiniton = Props.getWeaponDefinition(weaponName);
     const maxDurabilityChars = '◈'.repeat(weaponDefiniton.durability);
@@ -435,6 +392,7 @@ export default {
     );
   },
 
+  // todo: move to cards-markup.js
   getDurabilityMarkup: function (itemName) {
     if (Props.isWeapon(itemName)) {
       const inventoryWeapon = WeaponsManager.getWeaponFromInventory(itemName);
@@ -449,6 +407,7 @@ export default {
     return '';
   },
 
+  // todo: move to cards-markup.js
   getPictureMarkup: function (itemName) {
     if (Props.isWeapon(itemName)) {
       return '<img class="item-pic" src="./img/weapons/' + itemName + '.png">';
@@ -459,6 +418,7 @@ export default {
     return '<img class="item-pic" src="./img/items/' + itemName + '.PNG">';
   },
 
+  // todo: move to cards-markup.js
   getLastUseMarkup: function (itemName) {
     if (Props.isWeapon(itemName)) {
       /* get weapon from inventory as it contains the actual durability */
@@ -476,7 +436,8 @@ export default {
     return '';
   },
 
-  getCardMarkup: function (itemName) {
+  // todo: move to cards-markup.js
+  spawnBattleCard: function (itemName) {
     const card = BattleManager.getBattleDeckCard(itemName);
     const modifyDamageMarkup =
       card?.modifyDamage && card.modifyDamage > 0
@@ -486,25 +447,16 @@ export default {
     const pictureMarkup = this.getPictureMarkup(itemName);
     const lastUseMarkup = this.getLastUseMarkup(itemName);
 
-    return (
-      '<div class="battle-card inactive" data-item="' +
-      card.name +
-      '"><div class="inner">' +
-      pictureMarkup +
-      lastUseMarkup +
-      '<div class="attack">' +
-      (card.damage + card.modifyDamage) +
-      modifyDamageMarkup +
-      '</div><div class="shield">' +
-      card.protection +
-      '</div>' +
-      durabilityMarkup +
-      '</div></div>'
+    UiBattle.generateBattleCard(
+      itemName,
+      card.damage,
+      card.modifyDamage,
+      card.protection,
+      pictureMarkup,
+      lastUseMarkup,
+      modifyDamageMarkup,
+      durabilityMarkup
     );
-  },
-
-  addCardToPlay: function (itemName) {
-    battlePlayContainer.insertAdjacentHTML('beforeend', this.getCardMarkup(itemName));
   },
 
   resolveSingleAttack: function (dragEl, dragTarget) {
@@ -620,13 +572,8 @@ export default {
   },
 
   endTurn: function () {
-    const allBattleCards = battlePlayContainer.querySelectorAll('.battle-card');
-    this.renderDrawPile();
-    if (allBattleCards) {
-      allBattleCards.forEach(battleCard => {
-        battleCard.classList.add('inactive');
-      });
-    }
+    UiBattle.renderDrawPile();
+    UiBattle.setAllBattleCardsInactive();
     document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
     if (BattleManager.getBattleDeckSize() <= 0) {
       this.zedAttack();
@@ -663,7 +610,7 @@ export default {
               Props.addItemToInventory(foodItem.name, -1);
               //remove item from battle deck
               BattleManager.removeFromBattleDeck(foodItem.name);
-              this.renderDrawPile();
+              UiBattle.renderDrawPile();
               UiBattle.showBattleStats(foodItem.name, 'image');
             }
           }
