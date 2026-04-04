@@ -10,6 +10,7 @@ const characterContainer = document.getElementById('character');
 export default {
   init: function () {
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
+    this.addCharacterDescriptionMarkup();
     EventManager.on(
       EVENTS.GAME_PROP_CHANGED,
       ({ prop, value }) => {
@@ -31,5 +32,17 @@ export default {
 
   numberFilledSlots: function () {
     return CharacterManager.getNumberFilledSlots();
+  },
+
+  addCharacterDescriptionMarkup: function () {
+    const allCharacters = CharacterManager.getAllCharacterDefinitions();
+    Object.keys(allCharacters).forEach(characterKey => {
+      const characterDescriptionContainer = document.querySelector(
+        `.screen__2a div[data-character="${characterKey}"]`
+      );
+      if (characterDescriptionContainer) {
+        characterDescriptionContainer.innerHTML = allCharacters[characterKey].descriptionMarkup;
+      }
+    });
   },
 };

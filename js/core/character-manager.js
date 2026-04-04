@@ -1,8 +1,20 @@
 // @ts-check
+
+/**
+ * @import { CharacterDefinition } from '../../data/definitions/character-definitions.js'
+ */
+
 import { CharacterDefinitions } from '../../data/index.js';
 import { CompanionManager, GameState, PlayerManager } from './index.js';
 
 export default {
+  /**
+   * @returns {Record<string, CharacterDefinition>}
+   */
+  getAllCharacterDefinitions: function () {
+    return CharacterDefinitions;
+  },
+
   /**
    * @param {string} character
    * @returns {Record<string, number>}
