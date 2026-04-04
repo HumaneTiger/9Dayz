@@ -7,8 +7,6 @@ import {
   InventoryManager,
   WeaponsManager,
   ObjectFactory,
-  MapManager,
-  TutorialManager,
 } from './core/index.js';
 
 import { LocationInstances } from '../data/index.js';
@@ -16,7 +14,6 @@ import { LocationInstances } from '../data/index.js';
 export default {
   init: function () {
     GameState.init();
-    MapManager.setupAllPaths();
   },
 
   /* === GameState delegations === */
@@ -157,20 +154,8 @@ export default {
     ObjectState.setZedCounter(value);
   },
 
-  getAllPaths: function () {
-    return MapManager.getAllPaths();
-  },
-
   getAllTargetLocations: function () {
     return LocationInstances.targetLocations;
-  },
-
-  setupAllBuildings: function () {
-    MapManager.setupAllBuildings();
-  },
-
-  setupAllZeds: function () {
-    MapManager.setupAllZeds();
   },
 
   createCreaturesList: function (creatureType, x, y) {
@@ -231,14 +216,6 @@ export default {
 
   setupWeapon: function (x, y, weaponName, forceStats) {
     ObjectFactory.setupWeapon(x, y, weaponName, forceStats);
-  },
-
-  setupAllPaths: function () {
-    MapManager.setupAllPaths();
-  },
-
-  setupTutorialMap: function () {
-    TutorialManager.setupTutorialMap();
   },
 
   getAllItems: function () {

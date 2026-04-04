@@ -5,7 +5,7 @@ import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
 import AlmanacManager from './core/almanac-manager.js';
-import { CompanionManager } from './core/index.js';
+import { CompanionManager, MapManager } from './core/index.js';
 
 export default {
   /**
@@ -152,8 +152,8 @@ export default {
 
       if (Props.getGameProp('local') && Props.getGameProp('cheatMode')) {
         // Regenerate buildings for infinite loot cheat
-        Props.setupAllBuildings();
-        Props.setupAllZeds();
+        MapManager.setupAllBuildings();
+        MapManager.setupAllZeds();
       } else {
         // Normal behavior: restore saved state
         Props.setAllObjects(objects);
@@ -163,8 +163,8 @@ export default {
       }
     } else {
       // Fallback for old save files: regenerate fresh (loses state)
-      Props.setupAllBuildings();
-      Props.setupAllZeds();
+      MapManager.setupAllBuildings();
+      MapManager.setupAllZeds();
     }
     // Game seed
     if (checkpoint.gameSeed) {

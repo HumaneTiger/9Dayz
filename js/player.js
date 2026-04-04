@@ -4,6 +4,7 @@ import {
   PlayerManager,
   ObjectState,
   CharacterManager,
+  MapManager,
 } from './core/index.js';
 import Props from './props.js';
 import Cards from './cards.js';
@@ -12,7 +13,7 @@ import Battle from './battle.js';
 import Ui from './ui.js';
 import Viewport from './viewport.js';
 
-const allPaths = Props.getAllPaths();
+const allPaths = MapManager.getAllPaths();
 const playerProps = Props.getPlayerProps();
 const playerPosition = Props.getGameProp('playerPosition');
 

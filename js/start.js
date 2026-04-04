@@ -12,7 +12,7 @@ import { default as Cooking } from './cooking.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 import Preloading from './preloading.js';
-import { EventManager, EVENTS, PlayerManager } from './core/index.js';
+import { EventManager, EVENTS, PlayerManager, MapManager, TutorialManager } from './core/index.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -140,10 +140,10 @@ export default {
     Crafting.checkCraftingPrerequisits();
 
     // generate all buildings and zeds
-    Props.setupAllBuildings();
-    Props.setupAllZeds();
+    MapManager.setupAllBuildings();
+    MapManager.setupAllZeds();
     if (Props.getGameProp('tutorial')) {
-      Props.setupTutorialMap();
+      TutorialManager.setupTutorialMap();
     }
     Tutorial.setupAllEvents();
 

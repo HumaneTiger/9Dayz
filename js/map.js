@@ -1,4 +1,5 @@
 import Props from './props.js';
+import { MapManager } from './core/index.js';
 
 const buidingsContainer = document.querySelector('.map .map-buildings');
 const highlightsContainer = document.querySelector('.map .map-highlights');
@@ -23,7 +24,9 @@ const mapPosition = {
 };
 
 export default {
-  init: function () {},
+  init: function () {
+    MapManager.setupAllPaths();
+  },
 
   showScoutMarkerFor: function (cardId) {
     const object = Props.getObject(cardId);
