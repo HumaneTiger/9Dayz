@@ -164,6 +164,31 @@ export default {
     return dragEl;
   },
 
+  showBattleMessage: function (message, delay) {
+    document.querySelector('#battle-message').innerHTML = message;
+    document.querySelector('#battle-message').classList.add('active');
+    window.setTimeout(() => {
+      document.querySelector('#battle-message').classList.remove('active');
+    }, delay);
+  },
+
+  showBattleStats: function (stat, type) {
+    const battleStats = document.querySelector('#battle-stats span.' + type);
+    if (type === 'image') {
+      battleStats.innerHTML = '<img width="60" height="auto" src="./img/items/' + stat + '.PNG">';
+    } else {
+      battleStats.innerHTML = stat;
+    }
+    battleStats.classList.add('active');
+    window.setTimeout(
+      battleStats => {
+        battleStats.classList.remove('active');
+      },
+      500,
+      battleStats
+    );
+  },
+
   getDragTarget: function (e) {
     let targetCandidateFound;
     let mouseX = e.clientX;

@@ -1,4 +1,5 @@
 import Audio from './audio.js';
+import UiBattle from './ui-battle.js';
 import Props from './props.js';
 import Player from './player.js';
 import Cards from './cards.js';
@@ -356,7 +357,7 @@ export default {
     const sparedItems = BattleManager.generateBattleDeck();
     const battleDeck = BattleManager.getBattleDeck();
     if (sparedItems > 0) {
-      this.showBattleMessage(
+      UiBattle.showBattleMessage(
         `${GameState.getGameProp('character')} spares ${sparedItems} items`,
         2000
       );
@@ -379,7 +380,7 @@ export default {
     if (surprised) {
       document.querySelector('#battle-cards .end-turn').classList.add('is--hidden');
       document.getElementById('battle-cards').classList.remove('is--hidden');
-      this.showBattleMessage('Oh no! You walked into them!', 2000);
+      UiBattle.showBattleMessage('Oh no! You walked into them!', 2000);
       window.setTimeout(() => {
         this.zedAttack();
       }, 600);
@@ -695,7 +696,7 @@ export default {
     const zedId = dragTarget.id;
     const zedObject = Props.getObject(zedId);
     const battleCard = BattleManager.getBattleDeckCard(itemName);
-    this.showBattleStats('+' + battleCard.protection, 'blue');
+    UiBattle.showBattleStats('+' + battleCard.protection, 'blue');
     zedObject.defense -= battleCard.damage + battleCard.modifyDamage;
     this.updateZedCard(zedId);
   },
@@ -703,7 +704,7 @@ export default {
   endAttack: function () {
     // check if any items are left
     if (BattleManager.getBattleDeckSize() === 0) {
-      this.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
+      UiBattle.showBattleMessage('No items left.<br>End turn to seal your fate...', 2000);
     }
     // refresh inventory slots
     Items.fillInventorySlots();
@@ -736,7 +737,7 @@ export default {
     if (BattleManager.getBattleDeckSize() <= 0) {
       this.zedAttack();
     } else {
-      this.showBattleMessage('Enemies Turn', 800);
+      UiBattle.showBattleMessage('Enemies Turn', 800);
       window.setTimeout(() => {
         this.zedAttack();
       }, 400);
@@ -769,7 +770,7 @@ export default {
               //remove item from battle deck
               BattleManager.removeFromBattleDeck(foodItem.name);
               this.renderDrawPile();
-              this.showBattleStats(foodItem.name, 'image');
+              UiBattle.showBattleStats(foodItem.name, 'image');
             }
           }
           if (!ratAteFood) {
@@ -785,7 +786,7 @@ export default {
               /* reduce durability or defensive card itself */
               defensiveCard.durability -= 1;
               if (defensiveCard.durability <= 0) {
-                this.showBattleMessage('Your ' + defensiveCard.name + ' broke!', 2000);
+                UiBattle.showBattleMessage('Your ' + defensiveCard.name + ' broke!', 2000);
               }
               this.updateDefensiveCardsContainer();
             }
@@ -793,9 +794,9 @@ export default {
             const dmg = Player.getProp('protection') - attack;
             if (dmg < 0) {
               Props.changePlayerProp('health', dmg);
-              this.showBattleStats(dmg, 'red');
+              UiBattle.showBattleStats(dmg, 'red');
             } else {
-              this.showBattleStats(-1 * attack, 'blue');
+              UiBattle.showBattleStats(-1 * attack, 'blue');
             }
             Props.changePlayerProp('protection', -1 * attack);
             battleHealthMeter.classList.add('heavy-shake');
@@ -836,30 +837,5 @@ export default {
       },
       delay / 4 + allAttackingZeds.length * delay
     );
-  },
-
-  showBattleStats: function (stat, type) {
-    const battleStats = document.querySelector('#battle-stats span.' + type);
-    if (type === 'image') {
-      battleStats.innerHTML = '<img width="60" height="auto" src="./img/items/' + stat + '.PNG">';
-    } else {
-      battleStats.innerHTML = stat;
-    }
-    battleStats.classList.add('active');
-    window.setTimeout(
-      battleStats => {
-        battleStats.classList.remove('active');
-      },
-      500,
-      battleStats
-    );
-  },
-
-  showBattleMessage: function (message, delay) {
-    document.querySelector('#battle-message').innerHTML = message;
-    document.querySelector('#battle-message').classList.add('active');
-    window.setTimeout(() => {
-      document.querySelector('#battle-message').classList.remove('active');
-    }, delay);
   },
 };
