@@ -1,5 +1,5 @@
 import Props from './props.js';
-import { MapManager } from './core/index.js';
+import { ObjectState, MapManager } from './core/index.js';
 
 const buidingsContainer = document.querySelector('.map .map-buildings');
 const highlightsContainer = document.querySelector('.map .map-highlights');
@@ -90,30 +90,42 @@ export default {
     highlightsContainer.querySelector(`.danger-area.area-${objectId}`)?.remove();
   },
 
-  highlightObject: function (objectId) {
+  highlightObject: function (objectId, highlight = true) {
     const object = Props.getObject(objectId);
     const objectIcon = document.querySelector(`#maximap .icon-${objectId}`);
     if (objectIcon) {
-      objectIcon.classList.add('highlight');
-    } else if (object.group === 'event') {
-      // this needs a proper register mechanic: each event card registeres one or many iconIds it is connected to
-      if (object.title === 'Waking Up') {
-        document.getElementById('player').classList.add('highlight');
-        document.getElementById('player-hint').classList.remove('is--hidden');
+      if (highlight) {
+        objectIcon.classList.add('highlight');
+      } else {
+        objectIcon.classList.remove('highlight');
       }
-    }
-  },
-
-  noHighlightObject: function (objectId) {
-    const object = Props.getObject(objectId);
-    const objectIcon = document.querySelector(`#maximap .icon-${objectId}`);
-    if (objectIcon) {
-      objectIcon.classList.remove('highlight');
     } else if (object.group === 'event') {
-      // this needs a proper register mechanic: each event card registeres one or many iconIds it is connected to
-      if (object.title === 'Waking Up') {
-        document.getElementById('player').classList.remove('highlight');
-        document.getElementById('player-hint').classList.add('is--hidden');
+      if (object.highlightObjects) {
+        const nearbyObjectIds = ObjectState.findAllObjectsNearby(object.x, object.y);
+        nearbyObjectIds.forEach(nearbyObjectId => {
+          const nearbyObject = Props.getObject(nearbyObjectId);
+          if (
+            (nearbyObject.group === 'building' && nearbyObject.type === object.highlightObjects) ||
+            nearbyObject.group === object.highlightObjects
+          ) {
+            const nearbyObjectIcon = document.querySelector(`#maximap .icon-${nearbyObjectId}`);
+            if (nearbyObjectIcon) {
+              if (highlight) {
+                nearbyObjectIcon.classList.add('highlight');
+              } else {
+                nearbyObjectIcon.classList.remove('highlight');
+              }
+            }
+          }
+        });
+      } else if (object.title === 'Waking Up') {
+        if (highlight) {
+          document.getElementById('player').classList.add('highlight');
+          document.getElementById('player-hint').classList.remove('is--hidden');
+        } else {
+          document.getElementById('player').classList.remove('highlight');
+          document.getElementById('player-hint').classList.add('is--hidden');
+        }
       }
     }
   },

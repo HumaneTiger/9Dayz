@@ -92,6 +92,7 @@
  * @property {number} [x]
  * @property {number} [y]
  * @property {boolean} [zednearby]
+ * @property {string} [highlightObjects]
  * @export
  */
 
@@ -151,6 +152,7 @@ export default {
       maxHealth: undefined,
       disabled: false,
       removed: false,
+      highlightObjects: undefined,
       ...overrides,
     };
   },

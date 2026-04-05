@@ -353,9 +353,10 @@ export default {
    * @param {number} y
    * @param {string} title
    * @param {string} text
+   * @param {string} [highlightObjects]
    * @returns {number}
    */
-  setEventAt: function (x, y, title, text) {
+  setEventAt: function (x, y, title, text, highlightObjects) {
     const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
     ObjectState.setObject(
       currentObjectsIdCounter,
@@ -369,6 +370,7 @@ export default {
         actions: ActionsManager.getActionsForGameObject('event', 'event'),
         items: [],
         discovered: false,
+        highlightObjects: highlightObjects || undefined,
       })
     );
 

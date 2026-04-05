@@ -52,7 +52,8 @@ export default {
       firstUserInteraction: Props.getGameProp('firstUserInteraction'),
       firstFight: Props.getGameProp('firstFight'),
       firstInfestation: Props.getGameProp('firstInfestation'),
-      firstLocked: Props.getGameProp('firstLocked'),
+      firstBuildingLocked: Props.getGameProp('firstBuildingLocked'),
+      firstCarLocked: Props.getGameProp('firstCarLocked'),
       firstSearch: Props.getGameProp('firstSearch'),
       firstZedNearby: Props.getGameProp('firstZedNearby'),
       firstRatFight: Props.getGameProp('firstRatFight'),
@@ -198,8 +199,10 @@ export default {
     if (checkpoint.firstFight !== undefined) Props.setGameProp('firstFight', checkpoint.firstFight);
     if (checkpoint.firstInfestation !== undefined)
       Props.setGameProp('firstInfestation', checkpoint.firstInfestation);
-    if (checkpoint.firstLocked !== undefined)
-      Props.setGameProp('firstLocked', checkpoint.firstLocked);
+    if (checkpoint.firstBuildingLocked !== undefined)
+      Props.setGameProp('firstBuildingLocked', checkpoint.firstBuildingLocked);
+    if (checkpoint.firstCarLocked !== undefined)
+      Props.setGameProp('firstCarLocked', checkpoint.firstCarLocked);
     if (checkpoint.firstSearch !== undefined)
       Props.setGameProp('firstSearch', checkpoint.firstSearch);
     if (checkpoint.firstZedNearby !== undefined)

@@ -194,8 +194,8 @@ export default {
     ObjectFactory.setZedAt(x, y, amount, forceAttack, forceDefense);
   },
 
-  setEventAt: function (x, y, title, text) {
-    return ObjectFactory.setEventAt(x, y, title, text);
+  setEventAt: function (x, y, title, text, highlightObjects) {
+    return ObjectFactory.setEventAt(x, y, title, text, highlightObjects);
   },
 
   spawnCreaturesAt: function (x, y, creaturesList) {

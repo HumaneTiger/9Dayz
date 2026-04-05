@@ -21,7 +21,13 @@ export default {
       if (Props.getGameProp('tutorial') || events[event].showAlways) {
         const x = parseInt(event.split('-')[0]);
         const y = parseInt(event.split('-')[1]);
-        Props.setEventAt(x, y, events[event].title, events[event].text);
+        Props.setEventAt(
+          x,
+          y,
+          events[event].title,
+          events[event].text,
+          events[event].highlightObjects
+        );
       }
     }
   },
@@ -32,7 +38,8 @@ export default {
       x,
       y,
       specialEvents[event].title,
-      specialEvents[event].text
+      specialEvents[event].text,
+      specialEvents[event].highlightObjects
     );
     return currentObjectsIdCounter;
   },
@@ -71,7 +78,6 @@ export default {
 
   continueIntroTutorial: function () {
     introTutorialStep++;
-    console.log(introTutorialStep);
     switch (introTutorialStep) {
       case 1:
         document.querySelector('.intro-tutorial-step-1').classList.remove('is--active');
@@ -187,19 +193,19 @@ export default {
           let objectId = this.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
           specialEventObjectIds.push(objectId);
         }
-        if (object.locked && !Props.getGameProp('firstLocked')) {
-          Props.setGameProp('firstLocked', true);
-          if (object.type === 'car') {
-            let objectId = this.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
-            specialEventObjectIds.push(objectId);
-          } else {
-            let objectId = this.setupSpecialEvent(
-              'locked-building',
-              playerPosition.x,
-              playerPosition.y
-            );
-            specialEventObjectIds.push(objectId);
-          }
+        if (object.locked && object.type !== 'car' && !Props.getGameProp('firstBuildingLocked')) {
+          Props.setGameProp('firstBuildingLocked', true);
+          let objectId = this.setupSpecialEvent(
+            'locked-building',
+            playerPosition.x,
+            playerPosition.y
+          );
+          specialEventObjectIds.push(objectId);
+        }
+        if (object.locked && object.type === 'car' && !Props.getGameProp('firstCarLocked')) {
+          Props.setGameProp('firstCarLocked', true);
+          let objectId = this.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
+          specialEventObjectIds.push(objectId);
         }
         /*if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
           Props.setGameProp('firstZedNearby', true);

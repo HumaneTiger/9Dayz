@@ -114,7 +114,7 @@ export default {
             cardRef.style.zIndex = cardRef.dataset.oldZindex;
           }
           delete cardRef.dataset.oldZindex;
-          Map.noHighlightObject(lastHoverTarget);
+          Map.highlightObject(lastHoverTarget, false);
           lastHoverTarget = undefined;
         }
       }

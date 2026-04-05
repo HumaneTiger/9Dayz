@@ -5,6 +5,7 @@
  * @property {string} title
  * @property {string} text
  * @property {boolean} [showAlways]
+ * @property {string} [highlightObjects]
  * @export
  */
 
@@ -12,6 +13,7 @@
  * @typedef {Object} SpecialEvent
  * @property {string} title
  * @property {string} text
+ * @property {string} [highlightObjects]
  * @export
  */
 
@@ -31,6 +33,7 @@ export default {
     '18-43': {
       title: 'Gather',
       text: 'There are some trees growing here. You should look around them for useful things and pick everything up. Watch your stats - hunger and thirst are a constant threat in this broken world.',
+      highlightObjects: 'tree',
     },
     '13-41': {
       title: 'Almanac',
@@ -39,18 +42,22 @@ export default {
     '18-40': {
       title: 'Zombies!',
       text: 'The road in front of you is blocked. Two unfortunates "survived" this accident, and now walk around as undead. They are really dangerous – better head on and deal with them later.',
+      highlightObjects: 'zombie',
     },
     '18-42-a': {
       title: 'Zombie 101',
       text: 'Try to lure Zeds towards you. Attacking them will cause others in the area join the fight. When you walk right into them, they  will attack you first.',
+      highlightObjects: 'zombie',
     },
     '18-42-b': {
       title: 'Be prepared',
       text: 'Any weapon is better than no weapon. Check your inventory. Sharp sticks, tools or stones are good – true weapons are better. Check item properties in the Almanac.',
+      highlightObjects: 'weapon',
     },
     '10-44': {
       title: 'A companion!',
       text: '<img src="./img/animals/doggy-portrait.png"><br>A small dog is bravely facing one of these monsters! He looks like he could be a little down.',
+      highlightObjects: 'animal',
     },
     '30-7': {
       title: 'You found it!',
@@ -61,6 +68,7 @@ export default {
       title: 'The Horde!',
       text: 'You see a huge horde of Zombies slowly shambling across the street. At this speed it will take days before they are gone. You better turn around and search for an alternative route!',
       showAlways: true,
+      highlightObjects: 'zombie',
     },
   },
 
@@ -68,18 +76,22 @@ export default {
     infestation: {
       title: 'Infestation',
       text: 'The building is infested by giant rats! Scout the place before searching to avoid an immediate confrontation.<br><img src="./img/card/status-infested.png">',
+      highlightObjects: 'house',
     },
     'locked-building': {
       title: 'Locked',
       text: 'The content of the crate should make your tutorial run easier, but it is locked. Equip the axe to break it.<br><img src="./img/card/status-locked.png">',
+      highlightObjects: 'container',
     },
     'locked-car': {
       title: 'Locked Car',
-      text: 'The owners of the car left it locked. You need to smash the windows with an axe or stone to get in.<br><img src="./img/card/status-locked.png">',
+      text: 'The owners of the car left it locked. You need to smash the windows with an axe or stone to get in.<br>You might also find the keys with some luck.<img src="./img/card/status-locked.png">',
+      highlightObjects: 'car',
     },
     'hostiles-nearby': {
       title: 'Hostiles nearby',
       text: 'You won\'t be able to enter many place until you\'ve taken care of all hostiles nearby.<br><img src="./img/card/status-zombies.png">',
+      highlightObjects: 'zombie',
     },
     crafting: {
       title: 'Crafting',
@@ -88,14 +100,17 @@ export default {
     corpse: {
       title: 'Blessing in disguise',
       text: 'Not all were rising back from the dead.<br>When chaos broke out, those few who were lucky enough not to have been infected before dying, just stayed dead.',
+      highlightObjects: 'corpse',
     },
     'rat-fight': {
       title: 'Taking a bite',
       text: 'When a rat attacks, it will steal food from your inventory to improve its defense. When there is no food left, it will attack you instead.',
+      highlightObjects: 'creature',
     },
     'dead-animal': {
       title: 'Bon Appétit',
       text: 'Dead animals give some good meal, when being cutted into pieces and roasted over a fireplace. Just get over the disgust.<br><img src="./img/items/meat.PNG">',
+      highlightObjects: 'creature',
     },
     'low-energy': {
       title: 'Worn-out',
