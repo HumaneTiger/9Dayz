@@ -25,7 +25,7 @@ export default {
       For the first time in their life this lucky one isn't part of the mainstreamers, who are walking undead in the streets now.
     </p>
     <p>
-      This is also the character you play in the Tutorial. Ideal for your first runs to get more familiar with the world of 9 Dayz.
+      This is also the character you play in the Tutorial. Ideal for your first runs to get more familiar with this desolated world.
     </p>
     <p class="nerf">
       No recognizable weaknesses

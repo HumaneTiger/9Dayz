@@ -17,11 +17,14 @@
 }
 #startscreen p.screen__logo {
   text-align: center;
-  margin-bottom: -0.4em;
+  height: 96px;
 }
 #startscreen p.screen__logo img {
-  width: 300px;
+  width: 450px;
   height: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 #startscreen p.screen__paragraph {
   color: #fffefb;
@@ -37,7 +40,7 @@
 #startscreen .screen__quit,
 #startscreen .screen__win,
 #startscreen .screen__dead {
-  width: 700px;
+  width: 726px;
   position: absolute;
   top: 48%;
   left: 50%;
@@ -220,10 +223,14 @@
   }
 }
 #startscreen .screen__2 p.screen__logo {
-  margin-bottom: 3em;
+  height: 90px;
+}
+#startscreen .screen__2a p.screen__logo {
+  height: 54px;
 }
 #startscreen .screen__2a p.screen__logo img {
-  width: 230px;
+  width: 362px;
+  margin-left: -4px;
 }
 #startscreen .screen__menu p.screen__button {
   margin: 1.4em 0;
