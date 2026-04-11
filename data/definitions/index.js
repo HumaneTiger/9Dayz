@@ -9,5 +9,6 @@ export { default as ItemsDefinitions } from './items-definitions.js';
 export { default as MapDefinitions } from './map-definitions.js';
 export { default as PlayerDefinitions } from './player-definitions.js';
 export { default as RecipeDefinitions } from './recipe-definitions.js';
+export { default as ShipDefinitions } from './ship-definitions.js';
 export { default as TutorialDefinitions } from './tutorial-definitions.js';
 export { default as WeaponsDefinitions } from './weapons-definitions.js';

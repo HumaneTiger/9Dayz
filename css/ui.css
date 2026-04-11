@@ -24,7 +24,7 @@
   transition: opacity 4000ms linear;
 }
 
-ul#properties {
+ul.properties {
   position: absolute;
   top: 0;
   left: 0;
@@ -38,41 +38,44 @@ ul#properties {
   z-index: 50;
   transform: translateY(-100px);
   transition: transform 0.6s ease-out;
+
+  &.active {
+    transform: translateY(0);
+  }
+
+  li {
+    background-color: rgba(255, 254, 251, 1);
+    box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);
+    color: rgba(0, 0, 0, 0.6);
+    position: relative;
+    padding: 10px 15px 10px 65px;
+    font-size: 38px;
+    line-height: 1em;
+    border-radius: 8px;
+    width: 20%;
+    background-position: 10px center;
+    background-size: 48px;
+    background-repeat: no-repeat;
+    transition: transform 0.1s ease-out;
+  }
+  span.meter {
+    box-shadow: 0 1px 3px inset rgba(53, 35, 26, 0.5);
+    border-radius: 6px;
+    box-sizing: content-box;
+    display: block;
+    width: 100%;
+    position: relative;
+    white-space: nowrap;
+    transition:
+      width 0.1s ease-out,
+      padding 0.1s ease-out;
+  }
+  span.meter em {
+    padding: 10px 0 0 10px;
+    display: inline-block;
+  }
 }
-ul#properties.active {
-  transform: translateY(0);
-}
-ul#properties li {
-  background-color: rgba(255, 254, 251, 1);
-  box-shadow: 0 2px 5px rgba(53, 35, 26, 0.5);
-  color: rgba(0, 0, 0, 0.6);
-  position: relative;
-  padding: 10px 15px 10px 65px;
-  font-size: 38px;
-  line-height: 1em;
-  border-radius: 8px;
-  width: 20%;
-  background-position: 10px center;
-  background-size: 48px;
-  background-repeat: no-repeat;
-  transition: transform 0.1s ease-out;
-}
-ul#properties span.meter {
-  box-shadow: 0 1px 3px inset rgba(53, 35, 26, 0.5);
-  border-radius: 6px;
-  box-sizing: content-box;
-  display: block;
-  width: 100%;
-  position: relative;
-  white-space: nowrap;
-  transition:
-    width 0.1s ease-out,
-    padding 0.1s ease-out;
-}
-ul#properties span.meter em {
-  padding: 10px 0 0 10px;
-  display: inline-block;
-}
+
 ul#properties li.low span.meter,
 main ul#properties li.low-preview span.meter {
   box-shadow:
@@ -122,50 +125,50 @@ ul#properties li.energy.very-low:after {
   font-size: 48px;
   display: none;
 }
-ul#properties li.health {
-  background-image: url(../img/icons/health.png);
-  width: 30%;
+
+ul.properties {
+  li.health {
+    background-image: url(../img/icons/health.png);
+    width: 30%;
+  }
+  li.health span.meter {
+    background: linear-gradient(#dcfada, #9bf295);
+  }
+  li.food {
+    background-image: url(../img/icons/food.png);
+  }
+  li.food span.meter {
+    background: linear-gradient(#f7d4c0, #ec9f71), linear-gradient(#ffe6d8, #f7d4c0);
+    background-clip: content-box, padding-box;
+  }
+
+  li.thirst {
+    background-image: url(../img/icons/water-2.png);
+  }
+  li.thirst span.meter {
+    background: linear-gradient(#a2daf4, #82c8e8), linear-gradient(#ccefff, #a2daf4);
+    background-clip: content-box, padding-box;
+  }
+
+  li.energy {
+    background-image: url(../img/icons/energy.png);
+    width: 30%;
+  }
+  li.energy span.meter {
+    background: linear-gradient(#fff1c6, #ffeb90), linear-gradient(#fff9e4, #fff1c6);
+    background-clip: content-box, padding-box;
+  }
 }
-ul#properties li.health span.meter {
-  background: linear-gradient(#dcfada, #9bf295);
-}
+
 ul#properties li.health.in-battle {
   position: absolute;
   left: 50%;
   margin-left: -322px;
   top: 722px;
-}
-ul#properties li.health.in-battle #protection-meter {
-  display: block;
-}
-ul#properties li.food {
-  background-image: url(../img/icons/food.png);
-}
-ul#properties li.food span.meter {
-  background: linear-gradient(#f7d4c0, #ec9f71), linear-gradient(#ffe6d8, #f7d4c0);
-  background-clip: content-box, padding-box;
-}
 
-ul#properties li.thirst {
-  background-image: url(../img/icons/water-2.png);
-}
-ul#properties li.thirst span.meter {
-  background: linear-gradient(#a2daf4, #82c8e8), linear-gradient(#ccefff, #a2daf4);
-  background-clip: content-box, padding-box;
-}
-
-ul#properties li.energy {
-  background-image: url(../img/icons/energy.png);
-  width: 30%;
-}
-ul#properties li.energy span.meter {
-  background: linear-gradient(#fff1c6, #ffeb90), linear-gradient(#fff9e4, #fff1c6);
-  background-clip: content-box, padding-box;
-}
-
-ul#properties li.time {
-  background-image: url(../img/icons/time.png);
-  width: 10%;
+  #protection-meter {
+    display: block;
+  }
 }
 
 #craft,

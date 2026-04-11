@@ -59,7 +59,7 @@ export default {
       { x1: 28, x2: 32, y: 32 },
       { x1: 27, x2: 34, y: 6 },
       { x1: 26, x2: 27, y: 20 },
-      { x1: 30, x2: 32, y: 7 },
+      //{ x1: 30, x2: 32, y: 7 }, old docks path
     ],
     // Diagonal up paths
     diagonalUp: [
@@ -69,6 +69,7 @@ export default {
     // Fill gaps - single points
     single: [
       { x: 31, y: 9 },
+      { x: 31, y: 8 },
       { x: 8, y: 33 },
       { x: 29, y: 31 },
       { x: 12, y: 42 },

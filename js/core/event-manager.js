@@ -17,6 +17,8 @@ export const EVENTS = {
   PLAYER_MOVE_TO: 'player:moveTo',
   PLAYER_UPDATE: 'player:update',
   GAME_OVER: 'game:over',
+  PLAYER_BOARDED_SHIP: 'player:boardedShip',
+  PLAYER_LEFT_SHIP: 'player:leftShip',
 };
 
 /**
@@ -35,7 +37,7 @@ class EventBus {
    * Register an event listener
    * @param {string} event - The event to listen to
    * @param {(data: PropChangeEvent) => void} callback - Function to call when event is emitted
-   * @param {*} immediateData - Optional: If provided, callback is called immediately with this data
+   * @param {*} [immediateData] - Optional: If provided, callback is called immediately with this data
    *                            Useful for syncing initial state without duplicating handler logic
    */
   on(event, callback, immediateData) {

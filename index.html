@@ -23,6 +23,7 @@
       <link rel="stylesheet" href="css/character.css">
       <link rel="stylesheet" href="css/tutorial.css">
       <link rel="stylesheet" href="css/almanac.css">
+      <link rel="stylesheet" href="css/ship.css">
 
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
@@ -321,7 +322,7 @@
       <main>
         <div id="square-marker" class="is--hidden"></div>
         <div class="night-ui-cover"></div>
-        <ul id="properties" class="active">
+        <ul id="properties" class="properties active">
           <li class="health"><span class="meter"><em id="health-meter">100</em>/100</span><span id="protection-meter">0</span></li>
           <li class="food"><span class="meter"><em id="food-meter">100</em>/100</span></li>
           <li class="thirst"><span class="meter"><em id="thirst-meter">100</em>/100</span></li>
@@ -465,6 +466,12 @@
             <div class="evening-light"></div>
             <div id="player"></div><div id="player-hint" class="is--hidden"></div>
             <div class="map">
+            <div id="ship-overlay" class="is--visible">
+              <ul id="ship-properties" class="properties active">
+                <li class="fuel"><span class="meter"><em id="thirst-meter">100</em>/100</span></li>
+                <li class="time"><span class="meter"><em id="energy-meter">100</em>/100</span></li>
+              </ul>
+            </div>
               <div class="map-quadrant"></div>
               <div class="map-buildings">
                 <div class="horde-warning-1"></div>

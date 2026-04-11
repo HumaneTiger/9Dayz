@@ -118,7 +118,6 @@ export default {
     object.actions?.forEach(action => {
       let additionInfo = '';
       let label = action.label;
-
       if (action.time || action.energy) {
         additionInfo = '<span class="additional">';
         if (action.time) {

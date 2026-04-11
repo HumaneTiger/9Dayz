@@ -167,7 +167,11 @@ export default {
     return baseActions
       .filter(action => {
         // Skip if excluded for this building name
-        if (action.excludeBuildings && action.excludeBuildings.includes(buildingName)) {
+        if (action.excludeObjects && action.excludeObjects.includes(buildingName)) {
+          return false;
+        }
+
+        if (action.includeObjects && !action.includeObjects.includes(buildingName)) {
           return false;
         }
 

@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @import { GameMap, MapPosition } from '../../data/definitions/map-definitions.js'
+ * @import { GameMap, MapCoordinate, MapPosition } from '../../data/definitions/map-definitions.js'
  */
 
 import { BuildingInstances, ZombieInstances, PathInstances, PathUtils } from '../../data/index.js';
@@ -78,6 +78,28 @@ export default {
     });
   },
 
+  setupShipPaths: function () {
+    // todo: make this dynamic for other maps (based only on add and remove)
+    PathUtils.setupPath(this.getMapKey(), 30, 6);
+    PathUtils.setupPathHor(this.getMapKey(), 30, 33, 7);
+    PathUtils.setupPathHor(this.getMapKey(), 30, 33, 5);
+    PathUtils.removePath(this.getMapKey(), 29, 8);
+  },
+
+  removeShipPaths: function () {
+    // todo: make this dynamic for other maps (based only on add and remove)
+    PathUtils.removePath(this.getMapKey(), 30, 6);
+    PathUtils.removePath(this.getMapKey(), 30, 7);
+    PathUtils.removePath(this.getMapKey(), 31, 7);
+    PathUtils.removePath(this.getMapKey(), 32, 7);
+    PathUtils.removePath(this.getMapKey(), 33, 7);
+    PathUtils.removePath(this.getMapKey(), 30, 5);
+    PathUtils.removePath(this.getMapKey(), 31, 5);
+    PathUtils.removePath(this.getMapKey(), 32, 5);
+    PathUtils.removePath(this.getMapKey(), 33, 5);
+    PathUtils.setupPath(this.getMapKey(), 29, 8);
+  },
+
   /**
    * @returns {string} - the key of the current map
    */
@@ -97,6 +119,13 @@ export default {
    */
   getMapPosition: function () {
     return this.currentMap.mapPosition;
+  },
+
+  /**
+   * @returns {MapCoordinate} - the current position of the map
+   */
+  getShipHotSpot: function () {
+    return this.currentMap.shipHotSpot;
   },
 
   /**

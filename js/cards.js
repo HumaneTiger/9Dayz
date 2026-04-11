@@ -6,7 +6,7 @@ import Ui from './ui.js';
 import CardsMarkup from './cards-markup.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import ActionsUtils from './utils/actions-utils.js';
-import { EventManager, EVENTS, CardsManager, ObjectState } from './core/index.js';
+import { EventManager, EVENTS, CardsManager, GameState, ObjectState } from './core/index.js';
 
 //var cardDeck = [];
 var lastHoverTarget;
@@ -23,13 +23,13 @@ export default {
           this.handleTimeChange(value);
         }
       },
-      { prop: 'timeIsUnity', value: Props.getGameProp('timeIsUnity') }
+      { prop: 'timeIsUnity', value: GameState.getGameProp('timeIsUnity') }
     );
   },
 
   handleTimeChange: function (time) {
     const hour = time.todayHours;
-    const ticksPerHour = Props.getGameProp('timeConfig').ticksPerHour;
+    const ticksPerHour = GameState.getGameProp('timeConfig').ticksPerHour;
     // Only execute on new hour (when gameTick is divisible by ticksPerHour)
     if (time.gameTick % ticksPerHour === 0 && (hour === 21 || hour === 5)) {
       this.switchDayNight();
@@ -43,7 +43,7 @@ export default {
     const itemContainer = target.closest('li.item:not(.is--hidden)');
     const leftMouseButton = ev.button === 0;
 
-    if (cardId && !Props.getGameProp('gamePaused')) {
+    if (cardId && !GameState.getGameProp('gamePaused')) {
       const object = Props.getObject(cardId);
 
       ev.preventDefault();
@@ -106,11 +106,11 @@ export default {
     const cardId = target.closest ? target.closest('div.card')?.id : null;
     const hoverButton = target.closest ? target.closest('div.action-button') : null;
 
-    if (!Props.getGameProp('gamePaused')) {
+    if (!GameState.getGameProp('gamePaused')) {
       if (!cardId || cardId !== lastHoverTarget) {
         const cardRef = this.getCardById(lastHoverTarget);
         if (cardRef) {
-          if (!Props.getGameProp('battle')) {
+          if (!GameState.getGameProp('battle')) {
             cardRef.style.zIndex = cardRef.dataset.oldZindex;
           }
           delete cardRef.dataset.oldZindex;
@@ -122,7 +122,7 @@ export default {
         if (lastHoverTarget !== cardId) {
           lastHoverTarget = cardId;
           const cardRef = this.getCardById(cardId);
-          if (!Props.getGameProp('battle')) {
+          if (!GameState.getGameProp('battle')) {
             cardRef.dataset.oldZindex = cardRef.style.zIndex;
             cardRef.style.zIndex = 200;
           }
@@ -150,7 +150,7 @@ export default {
     if (!actionObject?.locked) {
       let energy = actionObject.energy;
       if (actionObject.id === 'rest') {
-        if (Props.getGameProp('timeMode') === 'night') {
+        if (GameState.getGameProp('timeMode') === 'night') {
           energy += 5;
         }
         Ui.previewProps('health', Math.floor(energy / 2));
@@ -158,7 +158,7 @@ export default {
         Ui.previewProps('thirst', -14);
         Ui.previewProps('energy', energy);
       } else if (actionObject.id === 'sleep') {
-        if (Props.getGameProp('timeMode') === 'night') {
+        if (GameState.getGameProp('timeMode') === 'night') {
           energy += 20;
         }
         Ui.previewProps('health', Math.floor(energy / 2));
@@ -263,7 +263,7 @@ export default {
 
   addSpecialEventCards: function () {
     /* candidates for event bus */
-    if (Props.getGameProp('tutorial')) {
+    if (GameState.getGameProp('tutorial')) {
       const specialEventObjectIds = Tutorial.checkForSpecialEvents();
       specialEventObjectIds?.forEach(objectId => {
         let object = ObjectState.getObject(objectId);
@@ -285,7 +285,7 @@ export default {
       const cardRef = document.getElementById(card.id);
       if (cardRef && !object.removed) {
         if (object.active) {
-          if (Props.getGameProp('timeMode') === 'day') {
+          if (GameState.getGameProp('timeMode') === 'day') {
             cardRef.classList.remove('night');
             cardRef.classList.add('day');
           } else {

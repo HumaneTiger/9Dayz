@@ -1,0 +1,54 @@
+#ship-overlay {
+  position: absolute;
+  top: -516px;
+  left: 1119px;
+  width: 560px;
+  height: 414px;
+  background: url(../img/ui/ship-overlay.png) no-repeat;
+  background-size: 100% auto;
+  background-position: top left;
+  filter: drop-shadow(0 2px 2px rgba(53, 35, 26, 0.5));
+  z-index: 91;
+  opacity: 0;
+  transform: translateY(-30px);
+  transition:
+    opacity 1s ease-out,
+    transform 1s ease-out;
+
+  &.is--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #ship-properties {
+    position: absolute;
+    top: 37px;
+    width: 140%;
+    margin: 0 30px;
+    transform: scale(0.65);
+    left: 0;
+    transform-origin: 0 0;
+
+    li {
+      width: 50%;
+    }
+
+    li.fuel {
+      background-image: url(../img/icons/fuel.png);
+      width: 50%;
+    }
+    li.fuel span.meter {
+      background: linear-gradient(#ffaaaa, #ff8080), linear-gradient(#ffc4c4, #ffaaaa);
+      background-clip: content-box, padding-box;
+    }
+
+    li.time {
+      background-image: url(../img/icons/time.png);
+      width: 50%;
+    }
+    li.time span.meter {
+      background: linear-gradient(#a2ecf4, #82d7e8), linear-gradient(#abf7ff, #a2ecf4);
+      background-clip: content-box, padding-box;
+    }
+  }
+}

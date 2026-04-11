@@ -10,7 +10,6 @@
  * @property {boolean} [locked]
  * @property {boolean} [needsUnlock] - Whether action requires building to be unlocked
  * @property {boolean} [requiresLocked] - Whether action requires building to be locked
- * @property {string[]} [excludeBuildings] - Building names where this action doesn't apply
  * @property {string[]} [excludeCharacters] - Character types that cannot perform this action
  * @property {string[]} [forCharactersOnly] - If set, only these characters can perform this action
  * @property {string[]} [excludeObjects] - Object names where this action doesn't apply
@@ -273,14 +272,14 @@ export default {
     tree: [
       { id: 'gather', label: 'gather', time: 15, energy: -5 },
       { id: 'scout-area', label: 'scout area', time: 30 },
-      { id: 'cut-down', label: 'cut down', time: 25, energy: -25, excludeBuildings: ['big-tree'] },
+      { id: 'cut-down', label: 'cut down', time: 25, energy: -25, excludeObjects: ['big-tree'] },
       {
         id: 'rest',
         label: 'rest',
         time: 60,
         energy: 15,
         excludeCharacters: ['treehugger'],
-        excludeBuildings: ['small-tree'],
+        excludeObjects: ['small-tree'],
       },
       {
         id: 'rest',
@@ -288,7 +287,7 @@ export default {
         time: 60,
         energy: 20,
         forCharactersOnly: ['treehugger'],
-        excludeBuildings: ['small-tree'],
+        excludeObjects: ['small-tree'],
       },
     ],
     church: [
@@ -320,14 +319,27 @@ export default {
       { id: 'scout-area', label: 'scout area', time: 30, energy: -10 },
     ],
     water: [
-      { id: 'gather', label: 'gather', time: 15, energy: -5 },
+      { id: 'gather', label: 'gather', time: 15, energy: -5, excludeObjects: ['rain-collector'] },
       {
         id: 'drink',
         label: 'drink',
         time: 10,
         excludeCharacters: ['snackivore'],
       },
-      { id: 'fish', label: 'fish', time: 30, energy: -5, excludeBuildings: ['pump', 'well'] },
+      {
+        id: 'fish',
+        label: 'fish',
+        time: 30,
+        energy: -5,
+        excludeObjects: ['pump', 'well', 'rain-collector'],
+      },
+      {
+        id: 'bottle',
+        label: 'bottle water',
+        time: 30,
+        energy: -15,
+        includeObjects: ['rain-collector'],
+      },
     ],
     camping: [
       // break-door, search, scout-area, rest for cabin
@@ -338,7 +350,7 @@ export default {
         label: 'break door',
         time: 10,
         energy: -15,
-        excludeBuildings: ['fireplace', 'seating', 'outhouse'],
+        excludeObjects: ['fireplace', 'seating', 'outhouse', 'plant-pot'],
         requiresLocked: true,
       },
       {
@@ -347,7 +359,7 @@ export default {
         time: 20,
         energy: -10,
         needsUnlock: true,
-        excludeBuildings: ['fireplace'],
+        excludeObjects: ['fireplace', 'plant-pot'],
       },
       {
         id: 'rest',
@@ -355,7 +367,7 @@ export default {
         time: 60,
         energy: 20,
         needsUnlock: true,
-        excludeBuildings: ['charred-cabine'],
+        excludeObjects: ['charred-cabine', 'plant-pot'],
       },
       // Fireplace-specific actions
       {
@@ -363,7 +375,7 @@ export default {
         label: 'cook',
         time: 30,
         excludeCharacters: ['craftsmaniac', 'cashmeister'],
-        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'charred-cabine'],
+        excludeObjects: ['log-cabine', 'outhouse', 'seating', 'charred-cabine', 'plant-pot'],
       },
       {
         id: 'sleep',
@@ -371,7 +383,7 @@ export default {
         time: 120,
         energy: 60,
         forCharactersOnly: ['treehugger'],
-        excludeBuildings: ['log-cabine', 'outhouse', 'seating', 'charred-cabine'],
+        excludeObjects: ['log-cabine', 'outhouse', 'seating', 'charred-cabine', 'plant-pot'],
       },
     ],
     corpse: [{ id: 'search', label: 'search', time: 15, energy: -5, needsUnlock: true }],
@@ -379,6 +391,34 @@ export default {
       { id: 'break-lock', label: 'break lock', time: 30, energy: -20, requiresLocked: true },
       { id: 'search', label: 'search', time: 15, energy: -5, needsUnlock: true },
     ],
-    collectable: [{ id: 'collect', label: 'collect', time: 0 }],
+    collectable: [
+      {
+        id: 'collect',
+        label: 'collect',
+        time: 0,
+        excludeObjects: ['tomato-plant', 'pepper-plant', 'pumpkin-plant', 'plant-pot'],
+      },
+      {
+        id: 'gather',
+        label: 'gather',
+        time: 15,
+        energy: -10,
+        includeObjects: ['tomato-plant', 'pepper-plant', 'pumpkin-plant'],
+      },
+      {
+        id: 'plant-tomato',
+        label: 'plant tomato',
+        time: 60,
+        energy: -15,
+        includeObjects: ['plant-pot'],
+      },
+      {
+        id: 'plant-pepper',
+        label: 'plant pepper',
+        time: 60,
+        energy: -15,
+        includeObjects: ['plant-pot'],
+      },
+    ],
   },
 };

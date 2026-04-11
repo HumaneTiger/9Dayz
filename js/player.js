@@ -68,7 +68,15 @@ export default {
   updatePlayer: function (noPenalty) {
     Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
-
+    // check if player enters or leaves the boat
+    const shipHotSpot = MapManager.getShipHotSpot();
+    if (playerPosition.x === shipHotSpot.x && playerPosition.y === shipHotSpot.y) {
+      if (!GameState.getGameProp('onBoard')) {
+        EventManager.emit(EVENTS.PLAYER_BOARDED_SHIP);
+      } else {
+        EventManager.emit(EVENTS.PLAYER_LEFT_SHIP);
+      }
+    }
     window.setTimeout(() => {
       const objectsHere = ObjectState.getObjectsAt(playerPosition.x, playerPosition.y);
       this.findAndHandleObjects();

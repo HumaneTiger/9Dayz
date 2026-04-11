@@ -15,6 +15,15 @@
 #player.highlight {
   transform: scale(2);
 }
+#player.onboard {
+  transition:
+    left 1s linear,
+    top 1s linear,
+    transform 1s ease-out,
+    opacity 1s ease-out;
+  transform: scale(2.6) translatey(-2px);
+  opacity: 1;
+}
 #player-hint {
   position: fixed;
   margin-top: -120px;

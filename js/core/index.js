@@ -15,3 +15,4 @@ export { default as MapManager } from './map-manager.js';
 export { default as RecipesManager } from './recipes-manager.js';
 export { default as TutorialManager } from './tutorial-manager.js';
 export { default as EventManager, EVENTS } from './event-manager.js';
+export { default as ShipManager } from './ship-manager.js';

@@ -59,16 +59,21 @@ export default {
       text: '<img src="./img/animals/doggy-portrait.png"><br>A small dog is bravely facing one of these monsters! He looks like he could be a little down.',
       highlightObjects: 'animal',
     },
-    '30-7': {
-      title: 'You found it!',
-      text: 'After all the hardships you made it to the ship in time! You take your beloved in your arms and together you look over the devastated land while the ship is heading towards a hopefully safe future.',
-      showAlways: true,
-    },
     '18-29': {
       title: 'The Horde!',
       text: 'You see a huge horde of Zombies slowly shambling across the street. At this speed it will take days before they are gone. You better turn around and search for an alternative route!',
       showAlways: true,
       highlightObjects: 'zombie',
+    },
+    '30-8': {
+      title: 'Ahoi!',
+      text: "After all the hardships you made it to the ship in time! You're standing on the dock and see your friend, the Captain, leaning over the railing waving at you.",
+      showAlways: true,
+    },
+    '31-6': {
+      title: 'The Captain',
+      text: '<img src="./img/characters/captain.png" style="width: 100%; margin-top: -50px;">',
+      showAlways: true,
     },
   },
 
