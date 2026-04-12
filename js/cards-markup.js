@@ -10,9 +10,11 @@ import TimingUtils from './utils/timing-utils.js';
 import {
   CardsManager,
   CompanionManager,
+  MapManager,
+  NpcManager,
+  PlayerManager,
   ObjectState,
   RecipesManager,
-  PlayerManager,
 } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
@@ -70,6 +72,11 @@ export default {
       `<img class="motive" src="./img/animals/${object.name === 'fish' ? object.name + '-' + Math.floor(Math.random() * 3 + 1) : object.name}.png">` +
       `<div class="banner"><img src="./img/icons/animals/animal.png"></div>` +
       `<div class="dead"><img src="./img/zombies/dead.png"></div>`;
+
+    let cardMarkupNpc =
+      `<h2>${object.title}</h2>` +
+      `<p class="activity glow is--hidden"></p>` +
+      `<img class="motive" src="./img/characters/${object.name}.png">`;
 
     let cardMarkupEvent = `<h2>${object.title}</h2>` + `<p class="text">${object.text}</p>`;
 
@@ -134,11 +141,13 @@ export default {
         }
         additionInfo += '</span>';
       }
+      if (action.id === 'sail') {
+        additionInfo = '<span class="additional">End of Demo</span>';
+      }
       if (action.id === 'rest' || action.id === 'sleep') {
         label =
           '<span class="material-symbols-outlined nightmode at-night">dark_mode</span> ' + label;
       }
-
       actionList +=
         '<li class="' +
         action.id +
@@ -178,6 +187,9 @@ export default {
         break;
       case 'animal':
         cardMarkup += cardMarkupAnimal;
+        break;
+      case 'npc':
+        cardMarkup += cardMarkupNpc;
         break;
     }
 
@@ -423,7 +435,7 @@ export default {
           '<span class="material-symbols-outlined alert">release_alert</span> ' + action.label;
       } else {
         actionRef.classList.remove('critical');
-        actionRef.querySelector('span.text').innerHTML = action.label;
+        actionRef.querySelector('span.text .alert')?.remove();
       }
       if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
         actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
@@ -463,6 +475,19 @@ export default {
         if (activeRecipes !== action.amount) {
           action.amount = activeRecipes;
           this.cookingChangeFeedback(cardRef);
+        }
+      }
+      if (action.id === 'talk') {
+        const numberOfDialogs = NpcManager.getNpcDialogEventIds(
+          object.name,
+          MapManager.currentMapKey
+        ).length;
+        if (numberOfDialogs > 0) {
+          actionRef.querySelector('span.text').innerHTML = action.label + ` (${numberOfDialogs})`;
+        } else {
+          actionRef.querySelector('span.text').textContent = action.label;
+          actionRef.querySelector('.additional-locked').textContent = 'Nothing for now';
+          actionRef.classList.add('locked');
         }
       }
     });

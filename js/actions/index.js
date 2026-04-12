@@ -18,6 +18,7 @@ import fishing from './fishing.js';
 import gotIt from './gotit.js';
 import chomping from './chomping.js';
 import reading from './reading.js';
+import talking from './talking.js';
 
 export default {
   simulateGathering,
@@ -39,5 +40,6 @@ export default {
   fishing,
   chomping,
   reading,
+  talking,
   gotIt,
 };

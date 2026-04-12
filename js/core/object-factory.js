@@ -460,6 +460,28 @@ export default {
   },
 
   /**
+   * @param {string} name
+   * @param {number} x
+   * @param {number} y
+   * @returns {void}
+   */
+  spawnNpc: function (name, x, y) {
+    if (!name || !x || !y) return;
+    const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
+    ObjectState.setObject(
+      currentObjectsIdCounter,
+      ObjectState.createGameObject({
+        x: x,
+        y: y,
+        name: name,
+        title: name.replace('-', ' '),
+        group: 'npc',
+        actions: name ? ActionsManager.getActionsForGameObject('npc', name) : [],
+      })
+    );
+  },
+
+  /**
    * @param {number} x
    * @param {number} y
    * @param {string} companionName

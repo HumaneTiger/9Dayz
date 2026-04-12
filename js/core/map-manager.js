@@ -52,6 +52,16 @@ export default {
   },
 
   /**
+   * Initializes the map with NPCs
+   * @returns {void}
+   */
+  setupAllNpc: function () {
+    // Setup all NPCs
+    // for now this is only the captain
+    ObjectFactory.spawnNpc('the-captain', 32, 6);
+  },
+
+  /**
    * Initializes the map with paths
    * @returns {void}
    */

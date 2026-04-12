@@ -17,7 +17,7 @@
  */
 
 /**
- * @typedef {'building' | 'animal' | 'zombie' | 'event' | 'weapon'} ObjectGroup
+ * @typedef {'building' | 'animal' | 'zombie' | 'event' | 'weapon' | 'npc'} ObjectGroup
  * @export
  */
 

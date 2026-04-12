@@ -142,10 +142,11 @@ export default {
     // generate all buildings and zeds
     MapManager.setupAllBuildings();
     MapManager.setupAllZeds();
+    MapManager.setupAllNpc();
     if (Props.getGameProp('tutorial')) {
       TutorialManager.setupTutorialMap();
     }
-    Tutorial.setupAllEvents();
+    TutorialManager.setupAllEvents();
 
     Player.setPlayerPosition(
       Props.getGameProp('playerPosition').x,

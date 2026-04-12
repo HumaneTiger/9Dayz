@@ -3,7 +3,7 @@ import Items from './items.js';
 import Player from './player.js';
 import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
-import { RecipesManager, AlmanacManager } from './core/index.js';
+import { RecipesManager, AlmanacManager, GameState } from './core/index.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
@@ -191,7 +191,11 @@ export default {
   },
 
   craftingChangeFeedback: async function () {
-    document.getElementById('crafting-total').textContent = craftingOptions.total;
+    if (GameState.getGameProp('onBoard')) {
+      document.getElementById('crafting-total').textContent = craftingOptions.total + `+?`;
+    } else {
+      document.getElementById('crafting-total').textContent = craftingOptions.total;
+    }
     document.querySelector('#actions .craft').classList.add('transfer');
     await TimingUtils.waitForTransition(document.querySelector('#actions .craft'));
     await TimingUtils.wait(100);

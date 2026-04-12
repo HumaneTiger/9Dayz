@@ -175,6 +175,12 @@ export default {
       delay: 0,
       label: 'Dog attacks',
     },
+    talk: {
+      method: 'talking',
+      oneTime: false,
+      delay: 1000,
+      label: 'talking',
+    },
   },
 
   /* === Object type default actions === */
@@ -202,6 +208,12 @@ export default {
       { id: 'rest', label: 'Rest', time: 60, energy: 20, includeObjects: ['barricades'] },
     ],
     event: [{ id: 'got-it', label: 'Got it!' }],
+    npc: [
+      { id: 'talk', label: 'Talk', time: 10, energy: 0 },
+      { id: 'fuel', label: 'Exchange Fuel', time: 15, energy: 0 },
+      { id: 'waiting-time', label: 'Exchange Food', time: 15, energy: 0 },
+      { id: 'sail', label: "Let's Sail!", critical: true },
+    ],
   },
 
   buildingActions: {

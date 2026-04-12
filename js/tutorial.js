@@ -15,35 +15,6 @@ export default {
     document.body.addEventListener('mousedown', this.handleUserInput.bind(this));
   },
 
-  setupAllEvents: function () {
-    const events = TutorialManager.getTutorialEvents();
-    for (var event in events) {
-      if (Props.getGameProp('tutorial') || events[event].showAlways) {
-        const x = parseInt(event.split('-')[0]);
-        const y = parseInt(event.split('-')[1]);
-        Props.setEventAt(
-          x,
-          y,
-          events[event].title,
-          events[event].text,
-          events[event].highlightObjects
-        );
-      }
-    }
-  },
-
-  setupSpecialEvent: function (event, x, y) {
-    const specialEvents = TutorialManager.getSpecialEvents();
-    const currentObjectsIdCounter = Props.setEventAt(
-      x,
-      y,
-      specialEvents[event].title,
-      specialEvents[event].text,
-      specialEvents[event].highlightObjects
-    );
-    return currentObjectsIdCounter;
-  },
-
   handleUserInput: function () {
     if (Props.getGameProp('tutorialIntro')) {
       this.continueIntroTutorial();
@@ -185,17 +156,25 @@ export default {
 
         if (object.infested && !Props.getGameProp('firstInfestation')) {
           Props.setGameProp('firstInfestation', true);
-          let objectId = this.setupSpecialEvent('infestation', playerPosition.x, playerPosition.y);
+          let objectId = TutorialManager.setupSpecialEvent(
+            'infestation',
+            playerPosition.x,
+            playerPosition.y
+          );
           specialEventObjectIds.push(objectId);
         }
         if (object.type === 'corpse' && !Props.getGameProp('firstCorpse')) {
           Props.setGameProp('firstCorpse', true);
-          let objectId = this.setupSpecialEvent('corpse', playerPosition.x, playerPosition.y);
+          let objectId = TutorialManager.setupSpecialEvent(
+            'corpse',
+            playerPosition.x,
+            playerPosition.y
+          );
           specialEventObjectIds.push(objectId);
         }
         if (object.locked && object.type !== 'car' && !Props.getGameProp('firstBuildingLocked')) {
           Props.setGameProp('firstBuildingLocked', true);
-          let objectId = this.setupSpecialEvent(
+          let objectId = TutorialManager.setupSpecialEvent(
             'locked-building',
             playerPosition.x,
             playerPosition.y
@@ -204,12 +183,16 @@ export default {
         }
         if (object.locked && object.type === 'car' && !Props.getGameProp('firstCarLocked')) {
           Props.setGameProp('firstCarLocked', true);
-          let objectId = this.setupSpecialEvent('locked-car', playerPosition.x, playerPosition.y);
+          let objectId = TutorialManager.setupSpecialEvent(
+            'locked-car',
+            playerPosition.x,
+            playerPosition.y
+          );
           specialEventObjectIds.push(objectId);
         }
         /*if (object.zednearby && !Props.getGameProp('firstZedNearby')) {
           Props.setGameProp('firstZedNearby', true);
-          let objectId = this.setupSpecialEvent(
+          let objectId = TutorialManager.setupSpecialEvent(
             'hostiles-nearby',
             playerPosition.x,
             playerPosition.y
@@ -222,12 +205,20 @@ export default {
           !Props.getGameProp('firstDeadAnimal')
         ) {
           Props.setGameProp('firstDeadAnimal', true);
-          let objectId = this.setupSpecialEvent('dead-animal', playerPosition.x, playerPosition.y);
+          let objectId = TutorialManager.setupSpecialEvent(
+            'dead-animal',
+            playerPosition.x,
+            playerPosition.y
+          );
           specialEventObjectIds.push(objectId);
         }
         if (!object.dead && object.type === 'rat' && !Props.getGameProp('firstRatFight')) {
           Props.setGameProp('firstRatFight', true);
-          let objectId = this.setupSpecialEvent('rat-fight', playerPosition.x, playerPosition.y);
+          let objectId = TutorialManager.setupSpecialEvent(
+            'rat-fight',
+            playerPosition.x,
+            playerPosition.y
+          );
           specialEventObjectIds.push(objectId);
         }
       });
@@ -240,19 +231,27 @@ export default {
         Items.inventoryContains('stone')
       ) {
         Props.setGameProp('firstAxeCraft', true);
-        let objectId = this.setupSpecialEvent('crafting', playerPosition.x, playerPosition.y);
+        let objectId = TutorialManager.setupSpecialEvent(
+          'crafting',
+          playerPosition.x,
+          playerPosition.y
+        );
         specialEventObjectIds.push(objectId);
       }
 
       if (PlayerManager.getProp('energy') < 33 && !Props.getGameProp('firstLowEnergy')) {
         Props.setGameProp('firstLowEnergy', true);
-        let objectId = this.setupSpecialEvent('low-energy', playerPosition.x, playerPosition.y);
+        let objectId = TutorialManager.setupSpecialEvent(
+          'low-energy',
+          playerPosition.x,
+          playerPosition.y
+        );
         specialEventObjectIds.push(objectId);
       }
       /*
       if (document.getElementById('inventory').classList.contains('active') && Props.getGameProp('firstInventoryOpen') === false) {
         Props.setGameProp('firstInventoryOpen', true);
-        let objectId = this.setupSpecialEvent('almanac', playerPosition.x, playerPosition.y);
+        let objectId = TutorialManager.setupSpecialEvent('almanac', playerPosition.x, playerPosition.y);
         specialEventObjectIds.push(objectId);
       }*/
     }

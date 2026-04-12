@@ -8,7 +8,7 @@
   background-size: 100% auto;
   background-position: top left;
   filter: drop-shadow(0 2px 2px rgba(53, 35, 26, 0.5));
-  z-index: 91;
+  z-index: 90;
   opacity: 0;
   transform: translateY(-30px);
   transition:

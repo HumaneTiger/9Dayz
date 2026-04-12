@@ -70,11 +70,6 @@ export default {
       text: "After all the hardships you made it to the ship in time! You're standing on the dock and see your friend, the Captain, leaning over the railing waving at you.",
       showAlways: true,
     },
-    '31-6': {
-      title: 'The Captain',
-      text: '<img src="./img/characters/captain.png" style="width: 100%; margin-top: -50px;">',
-      showAlways: true,
-    },
   },
 
   specialEvents: {
@@ -120,6 +115,14 @@ export default {
     'low-energy': {
       title: 'Worn-out',
       text: 'Your energy is low.<br>Most actions consume a certain amount of Energy. Make sure to eat high-quality food and find a place to rest or sleep. Low energy gives penalties in battles.',
+    },
+    'meeting-again': {
+      title: 'Captain',
+      text: '"Nice to see you in one piece! Rough out there, but we made it. This rusty bucket is ready to sail us down the river. Just needs a bit of fuel and we can get out of here."',
+    },
+    'another-town': {
+      title: 'Captain',
+      text: '"There is another town to the West, you just have to get off the boat and follow the road. Or we can set sails right away and leave this place, it\'s up to you my friend."',
     },
   },
 };

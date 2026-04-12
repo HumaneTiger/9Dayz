@@ -48,4 +48,40 @@ export default {
     });
     ObjectFactory.setZedAt(18, 42, 1, 3, 2); // weak zed for tutorial
   },
+
+  setupAllEvents: function () {
+    const events = this.getTutorialEvents();
+    for (var event in events) {
+      if (Props.getGameProp('tutorial') || events[event].showAlways) {
+        const x = parseInt(event.split('-')[0]);
+        const y = parseInt(event.split('-')[1]);
+        Props.setEventAt(
+          x,
+          y,
+          events[event].title,
+          events[event].text,
+          events[event].highlightObjects
+        );
+      }
+    }
+  },
+
+  /**
+   *
+   * @param {string} eventId
+   * @param {number} x
+   * @param {number} y
+   * @returns {number}
+   */
+  setupSpecialEvent: function (eventId, x, y) {
+    const specialEvents = this.getSpecialEvents();
+    const currentObjectsIdCounter = Props.setEventAt(
+      x,
+      y,
+      specialEvents[eventId].title,
+      specialEvents[eventId].text,
+      specialEvents[eventId].highlightObjects
+    );
+    return currentObjectsIdCounter;
+  },
 };

@@ -266,13 +266,18 @@ export default {
     if (GameState.getGameProp('tutorial')) {
       const specialEventObjectIds = Tutorial.checkForSpecialEvents();
       specialEventObjectIds?.forEach(objectId => {
-        let object = ObjectState.getObject(objectId);
-        if (!object.discovered && !object.removed) {
-          CardsManager.addCardToCardDeck({
-            id: objectId,
-            distance: -1,
-          });
-        }
+        this.addSingleSpecialEventCard(objectId);
+      });
+    }
+  },
+
+  addSingleSpecialEventCard: function (objectId) {
+    let object = ObjectState.getObject(objectId);
+    console.log('adding special event card for object', object);
+    if (!object.discovered && !object.removed) {
+      CardsManager.addCardToCardDeck({
+        id: objectId,
+        distance: -1,
       });
     }
   },

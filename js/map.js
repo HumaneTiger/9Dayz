@@ -72,6 +72,11 @@ export default {
               `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}.png'></span>`
             );
           }
+        } else if (group === 'npc') {
+          buidingsContainer.insertAdjacentHTML(
+            'beforeend',
+            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/npc/${group}.png'></span>`
+          );
         }
       } else {
         if (group === 'zombie' && object.dead && !object.removed) {
