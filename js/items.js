@@ -14,6 +14,7 @@ import {
   CompanionManager,
   CardsManager,
   GameState,
+  ShipManager,
 } from './core/index.js';
 
 const items = Props.getAllItems();
@@ -79,7 +80,7 @@ export default {
       const item = hoverSlot.dataset.item;
       const itemProps = Props.calcItemProps(item);
 
-      if (!Props.getGameProp('feedingCompanion')) {
+      if (!Props.getGameProp('inventoryAlternativeUse')) {
         if (itemProps.food > 0) {
           Props.changePlayerProp('food', itemProps.food);
         }
@@ -110,8 +111,15 @@ export default {
           }
         }
       } else {
-        Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
-        Companion.feedCompanion(item, itemProps.food);
+        if (Props.getGameProp('feedingCompanion')) {
+          Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
+          Companion.feedCompanion(item, itemProps.food);
+        } else if (Props.getGameProp('waitingTime')) {
+          ShipManager.addWaitingTime(ShipManager.calcFoodToWaitingTimeRatio(item));
+        } else if (Props.getGameProp('fuelingShip')) {
+          ShipManager.addFuel(ShipManager.calcItemToShipFuelRatio(item));
+        }
+        // for all cases, remove the item from inventory
         Props.addItemToInventory(item, -1);
         if (!this.inventoryContains(item)) {
           this.resetInventorySlotHoverEffect();
@@ -124,7 +132,7 @@ export default {
       hoverSlot.classList.contains('active') &&
       hoverSlot.classList.contains('craft') &&
       hoverSlot.classList.contains('already') &&
-      !Props.getGameProp('feedingCompanion')
+      !Props.getGameProp('inventoryAlternativeUse')
     ) {
       Audio.sfx('click');
       Ui.toggleCrafting();
@@ -154,18 +162,32 @@ export default {
         }
       } else {
         Ui.resetPreviewProps();
-        if (hoverSlot.classList.contains('active') && !Props.getGameProp('feedingCompanion')) {
-          if (itemProps.food > 0 && this.inventoryContains(item)) {
-            document.querySelector('#properties li.food').classList.add('transfer');
-            Ui.previewProps('food', itemProps.food);
-          }
-          if (itemProps.drink > 0 && this.inventoryContains(item)) {
-            document.querySelector('#properties li.thirst').classList.add('transfer');
-            Ui.previewProps('thirst', itemProps.drink);
-          }
-          if (itemProps.energy > 0 && this.inventoryContains(item)) {
-            document.querySelector('#properties li.energy').classList.add('transfer');
-            Ui.previewProps('energy', itemProps.energy);
+        if (hoverSlot.classList.contains('active')) {
+          if (!Props.getGameProp('inventoryAlternativeUse')) {
+            if (itemProps.food > 0 && this.inventoryContains(item)) {
+              document.querySelector('#properties li.food').classList.add('transfer');
+              Ui.previewProps('food', itemProps.food);
+            }
+            if (itemProps.drink > 0 && this.inventoryContains(item)) {
+              document.querySelector('#properties li.thirst').classList.add('transfer');
+              Ui.previewProps('thirst', itemProps.drink);
+            }
+            if (itemProps.energy > 0 && this.inventoryContains(item)) {
+              document.querySelector('#properties li.energy').classList.add('transfer');
+              Ui.previewProps('energy', itemProps.energy);
+            }
+          } else {
+            if (Props.getGameProp('feedingCompanion')) {
+              // TODO: highlight the companion card (same effect as on card hover)
+            } else if (Props.getGameProp('waitingTime')) {
+              // TODO: central function for calc the ratio
+              document.querySelector('#ship-properties li.time').classList.add('transfer');
+              Ui.previewShipProps('time', ShipManager.calcFoodToWaitingTimeRatio(itemProps));
+            } else if (Props.getGameProp('fuelingShip')) {
+              // TODO: central function for calc the ratio
+              document.querySelector('#ship-properties li.fuel').classList.add('transfer');
+              Ui.previewShipProps('fuel', ShipManager.calcItemToShipFuelRatio(itemProps));
+            }
           }
         }
       }
@@ -198,7 +220,7 @@ export default {
       ? `<span class="name">Feeding ${ItemUtils.extractItemName(itemName)} gives</span>`
       : `<span class="name">${ItemUtils.extractItemName(itemName)}</span>`;
 
-    if (!Props.getGameProp('feedingCompanion')) {
+    if (!Props.getGameProp('inventoryAlternativeUse')) {
       if (itemMods !== undefined && itemMods[0] !== 0) {
         itemFood += `<small>(${itemMods[0] > 0 ? '+' + itemMods[0] : itemMods[0]})</small>`;
       }
@@ -240,11 +262,28 @@ export default {
         itemInfoMarkup = `${GameState.getGameProp('character')} won't eat ${ItemUtils.extractItemName(itemName)}.`;
       }
     } else {
-      if (Companion.getCompanionFoodValue(itemName) === -1) {
-        itemInfoMarkup = `Not suitable for feeding`;
-      } else {
-        itemInfoMarkup += `<span class="food">${Companion.getCompanionFoodValue(itemName)}
+      console.log(Props.getGameProp('fuelingShip'));
+      if (Props.getGameProp('feedingCompanion')) {
+        if (Companion.getCompanionFoodValue(itemName) === -1) {
+          itemInfoMarkup = `Not suitable for feeding`;
+        } else {
+          itemInfoMarkup += `<span class="food">${Companion.getCompanionFoodValue(itemName)}
               <span class="material-symbols-outlined">favorite</span></span>`;
+        }
+      } else if (Props.getGameProp('waitingTime')) {
+        const foodToWaitingTimeRatio = ShipManager.calcFoodToWaitingTimeRatio(item);
+        if (!foodToWaitingTimeRatio) {
+          itemInfoMarkup = `No effect on waiting time`;
+        } else {
+          itemInfoMarkup += `<span class="waiting-time">${Math.round(foodToWaitingTimeRatio)}h<span class="material-symbols-outlined">timer</span></span>`;
+        }
+      } else if (Props.getGameProp('fuelingShip')) {
+        const itemToShipFuelRatio = ShipManager.calcItemToShipFuelRatio(item);
+        if (!itemToShipFuelRatio) {
+          itemInfoMarkup = `No effect on fueling the ship`;
+        } else {
+          itemInfoMarkup += `<span class="fuel">${itemToShipFuelRatio}<span class="material-symbols-outlined">local_gas_station</span></span>`;
+        }
       }
     }
 
@@ -288,6 +327,24 @@ export default {
       itemSlot.classList.remove('unknown');
       if (Props.getGameProp('feedingCompanion')) {
         if ((itemProps?.food > 0 || itemProps?.name === 'bones') && amount > 0) {
+          itemSlot.classList.remove('inactive');
+          itemSlot.classList.add('active');
+          itemSlot.querySelector('.amount').textContent = this.createAmountContent(amount);
+        } else {
+          itemSlot.classList.remove('active');
+          itemSlot.classList.add('inactive');
+        }
+      } else if (Props.getGameProp('waitingTime')) {
+        if ((itemProps?.food > 0 || itemProps?.drink > 0 || itemProps?.energy > 0) && amount > 0) {
+          itemSlot.classList.remove('inactive');
+          itemSlot.classList.add('active');
+          itemSlot.querySelector('.amount').textContent = this.createAmountContent(amount);
+        } else {
+          itemSlot.classList.remove('active');
+          itemSlot.classList.add('inactive');
+        }
+      } else if (Props.getGameProp('fuelingShip')) {
+        if ((itemProps?.name === 'spanner' || itemProps?.name === 'fuel') && amount > 0) {
           itemSlot.classList.remove('inactive');
           itemSlot.classList.add('active');
           itemSlot.querySelector('.amount').textContent = this.createAmountContent(amount);

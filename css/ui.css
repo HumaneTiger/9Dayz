@@ -57,6 +57,11 @@ ul.properties {
     background-size: 48px;
     background-repeat: no-repeat;
     transition: transform 0.1s ease-out;
+
+    &.transfer {
+      transform: scale(1.04);
+      opacity: 1;
+    }
   }
   span.meter {
     box-shadow: 0 1px 3px inset rgba(53, 35, 26, 0.5);
@@ -534,11 +539,6 @@ ul#actions li {
 ul#actions li.transfer,
 ul#actions li:hover {
   transform: scale(1.05);
-  opacity: 1;
-}
-
-ul#properties li.transfer {
-  transform: scale(1.04);
   opacity: 1;
 }
 

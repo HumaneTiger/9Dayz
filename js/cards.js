@@ -273,7 +273,6 @@ export default {
 
   addSingleSpecialEventCard: function (objectId) {
     let object = ObjectState.getObject(objectId);
-    console.log('adding special event card for object', object);
     if (!object.discovered && !object.removed) {
       CardsManager.addCardToCardDeck({
         id: objectId,

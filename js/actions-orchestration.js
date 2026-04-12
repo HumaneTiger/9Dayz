@@ -52,6 +52,10 @@ export default {
     await TimingUtils.wait(delay);
 
     const simulateFunction = ActionSimulations[simulationMethod];
+    if (!simulateFunction) {
+      console.warn(`No simulation function found for method ${simulationMethod}`);
+      return;
+    }
     simulateFunction.call(null, cardId, cardTime, cardEnergy);
   },
 

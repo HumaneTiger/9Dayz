@@ -3,7 +3,7 @@ import Audio from './audio.js';
 import Companion from './companion.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
-import { EventManager, EVENTS, PlayerManager } from './core/index.js';
+import { EventManager, EVENTS, PlayerManager, ShipManager } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const mapHigh = document.querySelector('.map-high img');
@@ -226,6 +226,17 @@ export default {
       document.getElementById('inventory').classList.remove('feeding-companion');
       Companion.toggleCompanionFeedingState(false);
       Props.setGameProp('feedingCompanion', false);
+      Props.setGameProp('inventoryAlternativeUse', false);
+      Items.fillInventorySlots();
+    } else if (Props.getGameProp('fuelingShip')) {
+      document.getElementById('inventory').classList.remove('fueling-ship');
+      Props.setGameProp('fuelingShip', false);
+      Props.setGameProp('inventoryAlternativeUse', false);
+      Items.fillInventorySlots();
+    } else if (Props.getGameProp('waitingTime')) {
+      document.getElementById('inventory').classList.remove('waiting-time');
+      Props.setGameProp('waitingTime', false);
+      Props.setGameProp('inventoryAlternativeUse', false);
       Items.fillInventorySlots();
     }
   },
@@ -236,9 +247,28 @@ export default {
 
   showFeedingInventory: function () {
     Props.setGameProp('feedingCompanion', true);
+    Props.setGameProp('inventoryAlternativeUse', true);
     Items.fillInventorySlots();
     this.openInventory();
     document.getElementById('inventory').classList.add('feeding-companion');
+  },
+
+  showFuelingShipInventory: function () {
+    this.closeInventory();
+    Props.setGameProp('fuelingShip', true);
+    Props.setGameProp('inventoryAlternativeUse', true);
+    Items.fillInventorySlots();
+    this.openInventory();
+    document.getElementById('inventory').classList.add('fueling-ship');
+  },
+
+  showWaitingTimeInventory: function () {
+    this.closeInventory();
+    Props.setGameProp('waitingTime', true);
+    Props.setGameProp('inventoryAlternativeUse', true);
+    Items.fillInventorySlots();
+    this.openInventory();
+    document.getElementById('inventory').classList.add('waiting-time');
   },
 
   toggleCrafting: function (forceOpen) {
@@ -350,6 +380,20 @@ export default {
     }
   },
 
+  previewShipProps: function (prop, change) {
+    const previewMeter = document.querySelector(
+      '#ship-properties li.' + prop + ' span.meter:not(.preview)'
+    );
+    const meterScale = prop === 'time' ? 2.5 : 1; // max waiting time is 250h, fuel is 100%
+    const shipProps = ShipManager.getShipProps();
+    if (change > 0) {
+      (shipProps[prop] + change) / meterScale > 100
+        ? (change = 100 * meterScale - shipProps[prop])
+        : null;
+      previewMeter.style.paddingRight = change / meterScale + '%';
+    }
+  },
+
   resetPreviewProps: function () {
     const properties = ['food', 'thirst', 'energy', 'health'];
     properties.forEach(prop => {
@@ -358,6 +402,12 @@ export default {
       li.querySelector('span.meter').style.paddingRight = '0';
       /* make sure to render playerprops again, otherwise the meter will be misaligned for edge cases if (change < 0) */
       Props.changePlayerProp(prop, 0);
+    });
+    const shipProperties = ['fuel', 'time'];
+    shipProperties.forEach(prop => {
+      const li = document.querySelector(`#ship-properties li.${prop}`);
+      li.classList.remove('transfer');
+      li.querySelector('span.meter').style.paddingRight = '0';
     });
   },
 

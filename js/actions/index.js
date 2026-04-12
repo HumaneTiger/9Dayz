@@ -1,3 +1,5 @@
+import exchangingFuel from './exchanging-fuel.js';
+import exchangingFood from './exchanging-food.js';
 import simulateGathering from './simulate-gathering.js';
 import simulatePetting from './simulate-petting.js';
 import simulateScaring from './simulate-scaring.js';
@@ -21,6 +23,8 @@ import reading from './reading.js';
 import talking from './talking.js';
 
 export default {
+  exchangingFuel,
+  exchangingFood,
   simulateGathering,
   simulatePetting,
   simulateScaring,

@@ -181,6 +181,24 @@ export default {
       delay: 1000,
       label: 'talking',
     },
+    fuel: {
+      method: 'exchangingFuel',
+      oneTime: false,
+      delay: 1000,
+      label: 'exchanging fuel',
+    },
+    'waiting-time': {
+      method: 'exchangingFood',
+      oneTime: false,
+      delay: 1000,
+      label: 'exchanging food',
+    },
+    sail: {
+      method: 'sailing',
+      oneTime: true,
+      delay: 1000,
+      label: 'opening map',
+    },
   },
 
   /* === Object type default actions === */
@@ -210,8 +228,8 @@ export default {
     event: [{ id: 'got-it', label: 'Got it!' }],
     npc: [
       { id: 'talk', label: 'Talk', time: 10, energy: 0 },
-      { id: 'fuel', label: 'Exchange Fuel', time: 15, energy: 0 },
       { id: 'waiting-time', label: 'Exchange Food', time: 15, energy: 0 },
+      { id: 'fuel', label: 'Exchange Fuel', time: 15, energy: 0 },
       { id: 'sail', label: "Let's Sail!", critical: true },
     ],
   },
