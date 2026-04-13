@@ -11,6 +11,7 @@
 export const EVENTS = {
   PLAYER_PROP_CHANGED: 'player:propChanged',
   GAME_PROP_CHANGED: 'game:propChanged',
+  SHIP_PROP_CHANGED: 'ship:propChanged',
   INVENTORY_CHANGED: 'inventory:changed',
   FIRST_ITEM_ADDED: 'inventory:firstItemAdded',
   WEAPON_CHANGED: 'weapon:changed',

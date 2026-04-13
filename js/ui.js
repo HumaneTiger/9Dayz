@@ -42,6 +42,10 @@ export default {
       },
       { prop: 'timeIsUnity', value: Props.getGameProp('timeIsUnity') }
     );
+
+    EventManager.on(EVENTS.SHIP_PROP_CHANGED, ({ prop, newValue }) => {
+      this.updateShipPropUI({ prop, newValue });
+    });
   },
 
   showQuitAppButtonIfExecutable: function () {
@@ -440,6 +444,34 @@ export default {
           document.querySelector('#properties li.health').classList.remove('heavy-shake');
         }, 200);
       }
+    }
+
+    // Update damage overlay for health changes
+    if (prop === 'health') {
+      this.updateDamageOverlay(newValue);
+    }
+  },
+
+  convertInDaysAndHours: function (totalHours) {
+    const days = Math.floor(totalHours / 24);
+    const hours = Math.ceil(totalHours % 24);
+    return days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
+  },
+
+  updateShipPropUI: function ({ prop, newValue }) {
+    // Update numeric value
+    const meterScale = prop === 'time' ? 2.5 : 1; // max waiting time is 250h, fuel is 100%
+    const propMeterValue = document.getElementById(`${prop}-meter`);
+    if (propMeterValue) {
+      propMeterValue.textContent =
+        prop === 'time' ? this.convertInDaysAndHours(newValue) : newValue;
+    }
+    // Update property meter
+    const propMeter = document.querySelector(
+      `#ship-properties li.${prop} span.meter:not(.preview)`
+    );
+    if (propMeter) {
+      propMeter.style.width = newValue / meterScale + '%';
     }
 
     // Update damage overlay for health changes

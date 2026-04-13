@@ -20,6 +20,7 @@ import fishing from './fishing.js';
 import gotIt from './gotit.js';
 import chomping from './chomping.js';
 import reading from './reading.js';
+import sailing from './sailing.js';
 import talking from './talking.js';
 
 export default {
@@ -44,6 +45,7 @@ export default {
   fishing,
   chomping,
   reading,
+  sailing,
   talking,
   gotIt,
 };

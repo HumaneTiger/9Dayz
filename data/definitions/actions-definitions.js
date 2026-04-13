@@ -197,7 +197,7 @@ export default {
       method: 'sailing',
       oneTime: true,
       delay: 1000,
-      label: 'opening map',
+      label: 'ending demo',
     },
   },
 

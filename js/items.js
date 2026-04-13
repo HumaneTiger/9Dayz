@@ -115,9 +115,9 @@ export default {
           Audio.sfx('eat-' + Math.floor(Math.random() * 2 + 1), 0, 0.7);
           Companion.feedCompanion(item, itemProps.food);
         } else if (Props.getGameProp('waitingTime')) {
-          ShipManager.addWaitingTime(ShipManager.calcFoodToWaitingTimeRatio(item));
+          ShipManager.addWaitingTime(ShipManager.calcFoodToWaitingTimeRatio(itemProps));
         } else if (Props.getGameProp('fuelingShip')) {
-          ShipManager.addFuel(ShipManager.calcItemToShipFuelRatio(item));
+          ShipManager.addFuel(ShipManager.calcItemToShipFuelRatio(itemProps));
         }
         // for all cases, remove the item from inventory
         Props.addItemToInventory(item, -1);
@@ -262,7 +262,6 @@ export default {
         itemInfoMarkup = `${GameState.getGameProp('character')} won't eat ${ItemUtils.extractItemName(itemName)}.`;
       }
     } else {
-      console.log(Props.getGameProp('fuelingShip'));
       if (Props.getGameProp('feedingCompanion')) {
         if (Companion.getCompanionFoodValue(itemName) === -1) {
           itemInfoMarkup = `Not suitable for feeding`;

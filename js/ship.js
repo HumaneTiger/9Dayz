@@ -1,6 +1,6 @@
 // @ts-check
 import TimingUtils from './utils/timing-utils.js';
-import { GameState, EventManager, EVENTS, MapManager } from './core/index.js';
+import { GameState, EventManager, EVENTS, MapManager, ShipManager } from './core/index.js';
 
 const playerContainer = document.getElementById('player');
 const shipOverlay = document.getElementById('ship-overlay');
@@ -13,6 +13,8 @@ export default {
     EventManager.on(EVENTS.PLAYER_LEFT_SHIP, () => {
       this.leaveShip();
     });
+    ShipManager.addFuel(0); // trigger initial UI update
+    ShipManager.addWaitingTime(0);
   },
 
   boardShip: async function () {

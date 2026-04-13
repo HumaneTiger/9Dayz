@@ -320,7 +320,8 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   background-image: url(../img/card/border-weapon.png);
 }
 
-.card.event .inner {
+.card.event .inner,
+.card.npc .inner {
   background-image: url(../img/card/border-weapon.png);
 }
 

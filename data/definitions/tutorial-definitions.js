@@ -122,7 +122,7 @@ export default {
     },
     'another-town': {
       title: 'Captain',
-      text: '"There is another town to the West, you just have to get off the boat and follow the road. Or we can set sails right away and leave this place, it\'s up to you my friend."',
+      text: '"There is a small town to the West, you just have to get off the boat and follow the road. Or we can set sails right away and leave this place, it\'s up to you my friend."',
     },
   },
 };

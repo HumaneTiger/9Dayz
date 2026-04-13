@@ -1,6 +1,7 @@
 // @ts-check
 
 import shipDefinitions from '../../data/definitions/ship-definitions.js';
+import { EventManager, EVENTS } from './index.js';
 
 export default {
   getShipProps: function () {
@@ -45,6 +46,11 @@ export default {
     if (shipDefinitions.fuel > 100) {
       shipDefinitions.fuel = 100;
     }
+    // EVENT: Notify UI that ship property changed
+    EventManager.emit(EVENTS.SHIP_PROP_CHANGED, {
+      prop: 'fuel',
+      newValue: shipDefinitions.fuel,
+    });
   },
 
   /**
@@ -56,5 +62,10 @@ export default {
     if (shipDefinitions.time > 250) {
       shipDefinitions.time = 250;
     }
+    // EVENT: Notify UI that ship property changed
+    EventManager.emit(EVENTS.SHIP_PROP_CHANGED, {
+      prop: 'time',
+      newValue: shipDefinitions.time,
+    });
   },
 };
