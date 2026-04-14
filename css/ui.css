@@ -621,6 +621,11 @@ ul#actions li.mixed {
     text-align: center;
     background-color: rgb(255, 254, 251);
 
+    em.is--paused {
+      line-height: 1;
+      vertical-align: top;
+    }
+
     &.critical {
       color: #dc6452;
       font-weight: 400;

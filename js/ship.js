@@ -28,6 +28,7 @@ export default {
     await TimingUtils.wait(100);
     shipOverlay.classList.add('is--visible');
     playerContainer.classList.add('onboard');
+    document.querySelector('#gametime-countdown em.is--paused')?.classList.remove('is--hidden');
   },
 
   leaveShip: async function () {
@@ -41,5 +42,6 @@ export default {
     EventManager.emit(EVENTS.PLAYER_MOVE_TO, { x: playerPosition.x, y: playerPosition.y });
     await TimingUtils.wait(1000);
     shipOverlay.classList.add('is--hidden');
+    document.querySelector('#gametime-countdown em.is--paused')?.classList.add('is--hidden');
   },
 };

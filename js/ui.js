@@ -59,15 +59,15 @@ export default {
     const hour = time.todayHours;
     const days = time.gameDays;
     const ticksPerHour = Props.getGameProp('timeConfig').ticksPerHour;
-    const totalHours = time.gameHours - 24; // it starts with 24h ahead :-(
 
     // Update game time UI elements
     document.getElementById('gametime-days').textContent = days;
     document.getElementById('gametime-hours').textContent = time.todayTime;
     const remainingHours = ShipManager.getShipProps().time;
     const countdownEl = document.getElementById('gametime-countdown');
+    const countdownValueEl = document.querySelector('#gametime-countdown em.value');
     const daysLeft = Math.floor(remainingHours / 24);
-    countdownEl.textContent =
+    countdownValueEl.textContent =
       daysLeft === 0
         ? `Only ${TimingUtils.formatDaysAndHours(remainingHours)} left`
         : `${TimingUtils.formatDaysAndHours(remainingHours)} left`;
@@ -503,7 +503,7 @@ export default {
     }
   },
 
-  dailyTasks: function (days) {},
+  dailyTasks: function () {},
 
   showNewDay: async function (hour, force) {
     const time = Props.getGameProp('timeIsUnity');

@@ -131,7 +131,9 @@ function triggerGameTick() {
     if (newGameHours % 24 === 0) {
       updates.gameDays = time.gameDays + 1;
     }
-    ShipManager.addWaitingTime(-1);
+    if (!Props.getGameProp('onBoard')) {
+      ShipManager.addWaitingTime(-1);
+    }
   }
 
   // Calculate derived time values

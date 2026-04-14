@@ -55,7 +55,7 @@ class EventBus {
 
   /**
    * @param {string} event
-   * @param {any} data
+   * @param {any} [data] - Optional data to pass to event listeners
    * @returns {void}
    */
   emit(event, data) {
