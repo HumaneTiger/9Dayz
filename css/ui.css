@@ -189,7 +189,8 @@ ul#properties li.health.in-battle {
   transition: transform 0.3s ease-in-out;
 }
 #craft .inner.craft-1,
-#craft .inner.craft-2 {
+#craft .inner.craft-2,
+#craft .inner.craft-3 {
   position: absolute;
   left: 3%;
   width: 97%;
@@ -200,6 +201,9 @@ ul#properties li.health.in-battle {
 }
 #craft .inner.craft-2 {
   background: url(../img/ui/crafting-2.png) 0 0 no-repeat;
+}
+#craft .inner.craft-3 {
+  background: url(../img/ui/crafting-3.png) 0 0 no-repeat;
 }
 #craft .button-next,
 #craft .button-prev {
@@ -326,6 +330,14 @@ ul#properties li.health.in-battle {
 .button-craft[data-item='bone-hook'] {
   left: 595px;
   top: 395px;
+}
+.button-craft[data-item='rain-collector'] {
+  left: 216px;
+  top: 148px;
+}
+.button-craft[data-item='plant-pot'] {
+  left: 574px;
+  top: 350px;
 }
 
 #inventory .inner {

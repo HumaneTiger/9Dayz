@@ -94,13 +94,11 @@ export default {
         }
       }
     } else if (navButton && leftMouseButton) {
-      if (navButton.classList.contains('button-next')) {
-        craftContainer.querySelector('.inner.craft-1').classList.add('is--hidden');
-        craftContainer.querySelector('.inner.craft-2').classList.remove('is--hidden');
-      } else if (navButton.classList.contains('button-prev')) {
-        craftContainer.querySelector('.inner.craft-1').classList.remove('is--hidden');
-        craftContainer.querySelector('.inner.craft-2').classList.add('is--hidden');
-      }
+      const panel = navButton.dataset.panel;
+      craftContainer.querySelector('.inner.craft-1').classList.add('is--hidden');
+      craftContainer.querySelector('.inner.craft-2').classList.add('is--hidden');
+      craftContainer.querySelector('.inner.craft-3').classList.add('is--hidden');
+      craftContainer.querySelector('.inner.' + panel).classList.remove('is--hidden');
     }
   },
 

@@ -117,3 +117,23 @@
   left: 700px;
   top: 280px;
 }
+.stump.c-rain-collector {
+  left: 80px;
+  top: 102px;
+}
+.saw.c-rain-collector {
+  left: 127px;
+  top: 196px;
+}
+.stump.c-plant-pot {
+  left: 461px;
+  top: 303px;
+}
+.hammer.c-plant-pot {
+  left: 427px;
+  top: 400px;
+}
+.nails.c-plant-pot {
+  left: 505px;
+  top: 425px;
+}
