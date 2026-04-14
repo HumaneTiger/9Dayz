@@ -1,6 +1,7 @@
 import Start from './start.js';
 import Ui from './ui.js';
 import Battle from './battle.js';
+import { ShipManager } from './core/index.js';
 import UiBattle from './ui-battle.js';
 import Viewport from './viewport.js';
 import Editor from './editor.js';
@@ -130,6 +131,7 @@ function triggerGameTick() {
     if (newGameHours % 24 === 0) {
       updates.gameDays = time.gameDays + 1;
     }
+    ShipManager.addWaitingTime(-1);
   }
 
   // Calculate derived time values

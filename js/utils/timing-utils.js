@@ -41,4 +41,17 @@ export default {
       }, fallbackMs);
     });
   },
+
+  /**
+   * Converts a total number of hours into a human-readable "X days Y hours" string.
+   * @param {number} totalHours
+   * @returns {string}
+   */
+  formatDaysAndHours: function (totalHours) {
+    const days = Math.floor(totalHours / 24);
+    const hours = Math.ceil(totalHours % 24);
+    if (days > 0 && hours > 0) return `${days} days ${hours} hours`;
+    if (days > 0) return `${days} days`;
+    return `${hours} hours`;
+  },
 };

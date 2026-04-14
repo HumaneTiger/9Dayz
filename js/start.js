@@ -12,7 +12,14 @@ import { default as Cooking } from './cooking.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 import Preloading from './preloading.js';
-import { EventManager, EVENTS, PlayerManager, MapManager, TutorialManager } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  PlayerManager,
+  MapManager,
+  TutorialManager,
+  ShipManager,
+} from './core/index.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
 const startscreenContainer = document.getElementById('startscreen');
@@ -395,7 +402,7 @@ export default {
     const time = Props.getGameProp('timeIsUnity');
     const playerProps = PlayerManager.getPlayerProps();
     if (reasonDead) {
-      if (time.gameDays > 9) {
+      if (ShipManager.getShipProps().time <= 0) {
         reasonDead.textContent = "You couldn't reach the ship in time.";
       } else if (Props.getGameProp('battle')) {
         reasonDead.textContent = 'You were killed in battle.';

@@ -62,6 +62,10 @@ export default {
     if (shipDefinitions.time > 250) {
       shipDefinitions.time = 250;
     }
+    if (shipDefinitions.time <= 0) {
+      shipDefinitions.time = 0;
+      EventManager.emit(EVENTS.GAME_OVER);
+    }
     // EVENT: Notify UI that ship property changed
     EventManager.emit(EVENTS.SHIP_PROP_CHANGED, {
       prop: 'time',

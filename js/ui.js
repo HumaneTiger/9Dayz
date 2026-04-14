@@ -64,13 +64,13 @@ export default {
     // Update game time UI elements
     document.getElementById('gametime-days').textContent = days;
     document.getElementById('gametime-hours').textContent = time.todayTime;
-    const remainingHours = 9 * 24 - totalHours;
+    const remainingHours = ShipManager.getShipProps().time;
     const countdownEl = document.getElementById('gametime-countdown');
     const daysLeft = Math.floor(remainingHours / 24);
     countdownEl.textContent =
       daysLeft === 0
-        ? `Only ${remainingHours} hours left`
-        : `${daysLeft} days ${remainingHours % 24} hours left`;
+        ? `Only ${TimingUtils.formatDaysAndHours(remainingHours)} left`
+        : `${TimingUtils.formatDaysAndHours(remainingHours)} left`;
     countdownEl.classList.toggle('critical', daysLeft === 0);
 
     // Check if it's a new hour (when gameTick is divisible by ticksPerHour)
@@ -452,19 +452,13 @@ export default {
     }
   },
 
-  convertInDaysAndHours: function (totalHours) {
-    const days = Math.floor(totalHours / 24);
-    const hours = Math.ceil(totalHours % 24);
-    return days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
-  },
-
   updateShipPropUI: function ({ prop, newValue }) {
     // Update numeric value
     const meterScale = prop === 'time' ? 2.5 : 1; // max waiting time is 250h, fuel is 100%
     const propMeterValue = document.getElementById(`${prop}-meter`);
     if (propMeterValue) {
       propMeterValue.textContent =
-        prop === 'time' ? this.convertInDaysAndHours(newValue) : newValue;
+        prop === 'time' ? TimingUtils.formatDaysAndHours(newValue) : newValue;
     }
     // Update property meter
     const propMeter = document.querySelector(
@@ -509,11 +503,7 @@ export default {
     }
   },
 
-  dailyTasks: function (days) {
-    if (days > 9) {
-      EventManager.emit(EVENTS.GAME_OVER);
-    }
-  },
+  dailyTasks: function (days) {},
 
   showNewDay: async function (hour, force) {
     const time = Props.getGameProp('timeIsUnity');
