@@ -5,7 +5,7 @@ import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
 import AlmanacManager from './core/almanac-manager.js';
-import { CompanionManager, MapManager } from './core/index.js';
+import { CompanionManager, MapManager, ShipManager } from './core/index.js';
 
 export default {
   /**
@@ -71,6 +71,10 @@ export default {
       // ===== MAP =====
       // TODO: Explored areas and discovered locations
       map: null,
+
+      // ===== SHIP =====
+      shipTime: ShipManager.getShipProps().time,
+      shipFuel: ShipManager.getShipProps().fuel,
 
       // ===== MISC =====
       // Other game state information
@@ -221,6 +225,14 @@ export default {
       Props.setGameProp('firstInventoryOpen', checkpoint.firstInventoryOpen);
     if (checkpoint.firstCompanion !== undefined)
       Props.setGameProp('firstCompanion', checkpoint.firstCompanion);
+
+    // ===== SHIP =====
+    if (checkpoint.shipTime !== undefined) {
+      ShipManager.addWaitingTime(checkpoint.shipTime - ShipManager.getShipProps().time);
+    }
+    if (checkpoint.shipFuel !== undefined) {
+      ShipManager.addFuel(checkpoint.shipFuel - ShipManager.getShipProps().fuel);
+    }
 
     // ===== ALMANAC =====
     // TODO: Restore discovered recipes/crafting options
