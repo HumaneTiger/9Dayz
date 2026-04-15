@@ -332,12 +332,16 @@ ul#properties li.health.in-battle {
   top: 395px;
 }
 .button-craft[data-item='rain-collector'] {
-  left: 216px;
+  left: 234px;
   top: 148px;
 }
 .button-craft[data-item='plant-pot'] {
-  left: 574px;
-  top: 350px;
+  left: 589px;
+  top: 364px;
+}
+.button-craft[data-item='hammock'] {
+  left: 479px;
+  top: 199px;
 }
 
 #inventory .inner {

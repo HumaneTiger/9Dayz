@@ -106,6 +106,8 @@ export default {
     if (Props.getGameProp('local')) {
       //Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       //Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
+      Props.addItemToInventory('hammer', 1);
+      Props.addItemToInventory('saw', 1);
       /*
       ObjectFactory.setupWeapon(
         Props.getGameProp('playerPosition').x,
@@ -399,7 +401,6 @@ export default {
   switchToGameOverScreen: function () {
     let startScreen = document.getElementById('startscreen');
     let reasonDead = document.getElementById('reason-dead');
-    const time = Props.getGameProp('timeIsUnity');
     const playerProps = PlayerManager.getPlayerProps();
     if (reasonDead) {
       if (ShipManager.getShipProps().time <= 0) {

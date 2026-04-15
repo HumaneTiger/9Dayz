@@ -83,6 +83,7 @@ export default {
                 Props.beginInventoryBatch();
                 Props.addItemToInventory('tomato', 1);
                 Props.addItemToInventory('carrot', 1);
+                Props.addItemToInventory('fuel', 2);
                 Props.addItemToInventory('pepper', 1);
                 Props.addItemToInventory('tape', 1);
                 Props.addItemToInventory('drink-2', 2);

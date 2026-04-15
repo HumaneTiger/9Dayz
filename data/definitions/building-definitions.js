@@ -200,19 +200,7 @@ export default {
     'gas-station': {
       locked: 2,
       spawn: 3,
-      items: [
-        'fruit-bread',
-        'bread-2',
-        'wine',
-        'snack-1',
-        'snack-2',
-        'energy-pills',
-        'knife',
-        'tape',
-        'drink-2',
-        'drink-1',
-        'exodus',
-      ],
+      items: ['fuel', 'fuel', 'fuel'],
     },
     'tool-shed': {
       locked: 2,
