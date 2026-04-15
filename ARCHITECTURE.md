@@ -18,6 +18,7 @@
 | 12  | **EVENT BUS**                           |     ✅     |      -       |     -      | event-manager.js provides central event registry (PLAYER_PROP_CHANGED, GAME_PROP_CHANGED, INVENTORY_CHANGED, etc.) for decoupling state changes from UI updates; no events should chain                                                                                                                                                                                                                                                 |
 | 13  | **ACTIONS SYSTEM**                      |     ✅     |      ✅      |     ✅     | Fully refactored: actions-definitions.js (action metadata + object type actions), actions-manager.js (unified API with getActionsForGameObjectType + getActionsForBuildingType), actions-orchestration.js (UI logic). All 20 simulation functions call ActionsOrchestration directly as singletons (no scope threading). Building actions now declarative with filtering properties. Unified GameAction type across all action sources. |
 | 14  | **UTILITY LAYERS**                      |     ✅     |      -       |     -      | @ts-check enabled on all definition files; utils still need @ts-check: building-utils.js, item-utils.js, path-utils.js, and instance files (building-instances.js, zombie-instances.js, path-instances.js, location-instances.js)                                                                                                                                                                                                       |
+| 15  | **UI SYSTEM**                           |     ⚠️     |      ❌      |     ✅     | ui-manager.js owns UI state (inventory mode, screen sequence, pause, timeMode) without DOM access — currently scattered as raw flags in game-state.js across ui.js/start.js/items.js; ui-definitions.js for magic constants + SCREEN_MODES/INVENTORY_MODES enums; ship meter scale/max belong in ship-definitions.js |
 
 **Legend:** ✅ Complete | ⚠️ Partial/Needs Work | ❌ Missing
 
@@ -357,6 +358,88 @@ Where:
 - Removed character modifier mutations from map-initializer
 - **Complete scope threading removal**: All 20 simulation functions refactored to call ActionsOrchestration methods directly (no parameter passing through layers)
 - Type system unified and safer
+
+---
+
+## 15. UI SYSTEM
+
+| Layer      | File                | Status |
+| ---------- | ------------------- | ------ |
+| Definition | `ui-definitions.js` | ⚠️     |
+| Core       | `ui-manager.js`     | ❌     |
+| Logic      | `ui.js`             | ✅     |
+
+**Current State:** DOM manipulation stays in `ui.js` — that's correct. But the UI *does* have non-DOM state: inventory mode, screen sequence, pause, day/night mode. This state is currently scattered as raw boolean flags in `game-state.js` and queried directly by `ui.js`, `start.js`, `items.js`, and `checkpoint.js` via `Props.getGameProp`. A `ui-manager.js` has a clear role here: own and transition that UI state without ever touching the DOM.
+
+---
+
+### Candidates for `ui-manager.js` (state only, no DOM)
+
+**Inventory mode** — four separate boolean flags currently in `game-state.js`, read raw across multiple files:
+
+| Flag | Read by |
+|---|---|
+| `inventoryAlternativeUse` | `ui.js`, `items.js` |
+| `feedingCompanion` | `ui.js`, `items.js` (×5) |
+| `fuelingShip` | `ui.js`, `items.js` |
+| `waitingTime` | `ui.js`, `items.js` |
+
+`ui-manager.js` replaces these with a typed `getInventoryMode()` / `setInventoryMode(mode)` where `mode` is `INVENTORY_MODES` enum.
+
+**Screen sequence** — `startMode` (magic numbers `1`, `2`, `-1`) is set in `start.js` and read across `ui.js`, `start.js`, `test-recorder.js`. `ui-manager.js` exposes `getScreenMode()` / `setScreenMode()` with a proper `SCREEN_MODES` enum and `start.js` delegates transitions through it.
+
+**Other state:**
+- `gamePaused` → `isPaused()` / `setPaused()`
+- `timeMode` → `getTimeMode()` / `setTimeMode()`
+
+---
+
+### Candidates for `ui-definitions.js` (constants only, no DOM, no logic)
+
+- `ACTION_TYPES` — `['inventory', 'craft', 'mixed', 'settings', 'map', 'quit', 'fullscreen']`
+- `UI_HOURS` — `NIGHT_START: 21`, `DAY_START: 5`, `NEW_DAY_HOUR: 7`, morning/evening/night/dawn ranges, `FULL_NIGHT: 23`
+- `UI_THRESHOLDS` — `DAMAGE_OVERLAY: 33`, `VERY_LOW: 10`, `LOW: 33`
+- `DAY_TEASER_DURATION` — `2500` ms
+- `SCREEN_MODES` — `{ TITLE: 1, MENU: 2, INGAME: -1 }` (replaces magic numbers for `startMode`)
+- `INVENTORY_MODES` — `{ NORMAL: 'normal', FEEDING: 'feeding', FUELING: 'fueling', WAITING: 'waiting' }`
+
+---
+
+### Ship-related UI functions belong in `ship.js`
+
+`ship.js` is already a DOM-touching logic layer (`boardShip`/`leaveShip` manipulate `shipOverlay` and `playerContainer`). Two methods currently in `ui.js` are ship-specific and should move there:
+
+| Method | Currently in | Notes |
+|---|---|---|
+| `updateShipPropUI({ prop, newValue })` | `ui.js` | Subscribe to `SHIP_PROP_CHANGED` inside `ship.js` `init` instead of `ui.js` `init` |
+| `previewShipProps(prop, change)` | `ui.js` | Called from `items.js` on hover; `ship.js` is the natural owner |
+
+`showFuelingShipInventory` stays in `ui.js` — it coordinates `openInventory()` and `Items.fillInventorySlots()` across two modules.
+
+---
+
+### Ship meter scale belongs in `ship-definitions.js`
+
+The divisor `2.5` and cap `250` used in `updateShipPropUI`/`previewShipProps` are ship-domain knowledge — add them to `ship-definitions.js`.
+
+---
+
+### Proposed split
+
+```
+ui-definitions.js   ← NEW  (ACTION_TYPES, UI_HOURS, UI_THRESHOLDS,
+                             DAY_TEASER_DURATION, SCREEN_MODES, INVENTORY_MODES)
+ui-manager.js       ← NEW  (getInventoryMode/setInventoryMode,
+                             getScreenMode/setScreenMode,
+                             isPaused/setPaused, getTimeMode/setTimeMode)
+ui.js               ← KEEP (all DOM logic; reads state via UiManager instead of
+                             Props.getGameProp for UI flags; ship-specific methods
+                             removed)
+ship.js             ← ADD  (updateShipPropUI, previewShipProps)
+ship-definitions.js ← ADD  (meterScale: 2.5, timeMax: 250)
+```
+
+`start.js`, `items.js`, and `checkpoint.js` replace raw `Props.getGameProp('feedingCompanion')` etc. with `UiManager.getInventoryMode()`.
 
 ---
 
