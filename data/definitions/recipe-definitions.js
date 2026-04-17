@@ -23,7 +23,7 @@
  */
 
 export default {
-  persistentIngredients: ['knife', 'sharp-stick', 'mallet'],
+  persistentIngredients: ['knife', 'sharp-stick', 'mallet', 'hammer', 'saw'],
 
   ingredientVariants: {
     water: ['drink-1', 'drink-2'],
@@ -109,6 +109,24 @@ export default {
       exclusive: false,
       result: 'inventory',
       page: 2,
+    },
+    'plant-pot': {
+      items: [['stump'], ['stump'], ['hammer'], ['nails']],
+      exclusive: false,
+      result: 'building',
+      page: 3,
+    },
+    'rain-collector': {
+      items: [['stump'], ['stump'], ['stump'], ['saw']],
+      exclusive: false,
+      result: 'building',
+      page: 3,
+    },
+    hammock: {
+      items: [['rope'], ['rope'], ['cloth'], ['cloth'], ['cloth']],
+      exclusive: true,
+      result: 'building',
+      page: 3,
     },
   },
 };

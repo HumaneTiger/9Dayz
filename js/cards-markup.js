@@ -51,7 +51,7 @@ export default {
       `<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested ${buildingName === 'beehive' ? 'bees' : ''}"></div></div>` +
       `<h2>${object.title}</h2>` +
       `<p class="activity glow is--hidden"></p>` +
-      `<img class="motive" src="./img/buildings/${buildingName}.png">` +
+      `<img class="motive" src="./img/buildings/${buildingName}.png" ${buildingName === 'hammock' ? 'style="width: 110%; left: -10%; top: 86px;"' : ''}>` +
       `<div class="banner"><img src="./img/icons/buildings/${object.type}.png"></div>` +
       `<div class="dead"><img src="./img/ui/preview.png"></div>`;
 

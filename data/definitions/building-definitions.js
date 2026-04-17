@@ -42,12 +42,12 @@ export default {
     water: ['well', 'jetty', 'pump', 'rain-collector'],
     container: ['crate'],
     collectable: ['key', 'car-keys', 'tomato-plant', 'pepper-plant', 'pumpkin-plant', 'plant-pot'],
-    camping: ['seating', 'log-cabine', 'outhouse', 'fireplace', 'charred-cabine'],
+    camping: ['seating', 'log-cabine', 'outhouse', 'fireplace', 'charred-cabine', 'hammock'],
     corpse: ['human-corpse-1'],
   },
 
   buildingProps: {
-    barn: { locked: 1.2, spawn: 2, items: ['claw', 'straw-wheet', 'pumpkin', 'nails'] },
+    barn: { locked: 1.2, spawn: 2, items: ['shovel', 'straw-wheet', 'pumpkin', 'nails'] },
     'big-tree': {
       locked: 0,
       spawn: 3,
@@ -277,5 +277,6 @@ export default {
     'tomato-plant': { locked: 0, spawn: 3, items: ['tomato', 'tomato', 'tomato'] },
     'pepper-plant': { locked: 0, spawn: 3, items: ['pepper', 'pepper', 'pepper'] },
     'pumpkin-plant': { locked: 0, spawn: 1, items: ['pumpkin'] },
+    hammock: { locked: 0, spawn: 0, items: [] },
   },
 };

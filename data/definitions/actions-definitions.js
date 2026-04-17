@@ -364,6 +364,13 @@ export default {
         excludeObjects: ['pump', 'well', 'rain-collector'],
       },
       {
+        id: 'faucet',
+        label: 'install faucet',
+        time: 30,
+        energy: -15,
+        includeObjects: ['rain-collector'],
+      },
+      {
         id: 'bottle',
         label: 'bottle water',
         time: 30,
@@ -445,6 +452,13 @@ export default {
       {
         id: 'plant-pepper',
         label: 'plant pepper',
+        time: 60,
+        energy: -15,
+        includeObjects: ['plant-pot'],
+      },
+      {
+        id: 'plant-pumpkin',
+        label: 'plant pumpkin',
         time: 60,
         energy: -15,
         includeObjects: ['plant-pot'],

@@ -114,9 +114,11 @@ export default {
     for (const recipe in craftingRecipes) {
       const itemRecipe = craftingRecipes[recipe];
 
+      const neededAmounts = RecipesManager.getNeededIngredientAmounts(recipe);
+      const craftContainerPage = craftContainer.querySelector(`.inner.craft-${itemRecipe.page}`);
+
       /* give feedback for each required item */
       for (const recipeItem in itemRecipe.items) {
-        const neededAmounts = RecipesManager.getNeededIngredientAmounts(recipe);
         const isOneAvailable = RecipesManager.isIngredientGroupAvailable(
           itemRecipe.items[recipeItem]
         );
@@ -125,24 +127,31 @@ export default {
           neededAmounts
         );
         const firstIngredient = itemRecipe.items[recipeItem][0];
-
-        craftContainer.querySelectorAll('.nope.' + firstIngredient).forEach(el => {
-          if (isOneAvailable) {
-            el.classList.add('is--hidden');
-          } else {
-            el.classList.remove('is--hidden');
-          }
-        });
+        if (recipe === 'plant-pot') {
+          console.log('checking plant-pot ingredient visibility for ', firstIngredient);
+          console.log('is one available?', isOneAvailable);
+          console.log('is all available?', isAllAvailable);
+          console.log('needed amounts', neededAmounts[firstIngredient]);
+        }
+        craftContainerPage
+          .querySelectorAll(`.nope.${firstIngredient}:not(.additional)`)
+          .forEach(el => {
+            if (isOneAvailable) {
+              el.classList.add('is--hidden');
+            } else {
+              el.classList.remove('is--hidden');
+            }
+          });
 
         /* currently only rope needs two of the same */
         if (neededAmounts[firstIngredient] > 1) {
           if (isAllAvailable) {
-            craftContainer
-              .querySelector('.nope.' + firstIngredient + '.additional')
+            craftContainerPage
+              .querySelector(`.nope.${firstIngredient}.additional.c-${recipe}`)
               ?.classList.add('is--hidden');
           } else {
-            craftContainer
-              .querySelector('.nope.' + firstIngredient + '.additional')
+            craftContainerPage
+              .querySelector(`.nope.${firstIngredient}.additional.c-${recipe}`)
               ?.classList.remove('is--hidden');
           }
         }
@@ -153,35 +162,42 @@ export default {
       if (prerequisitsFulfilled) {
         if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
           craftContainer
-            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.remove('active');
           craftContainer
-            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.add('only1');
         } else {
           craftContainer
-            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.add('active');
           craftContainer
-            .querySelector('.button-craft[data-item="' + recipe + '"]')
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.remove('only1');
         }
       } else {
         craftContainer
-          .querySelector('.button-craft[data-item="' + recipe + '"]')
+          .querySelector(`.button-craft[data-item="${recipe}"]`)
           ?.classList.remove('active');
       }
     }
 
     const craftingOptionsPage1 = RecipesManager.numberOfActiveCraftingRecipes(1);
     const craftingOptionsPage2 = RecipesManager.numberOfActiveCraftingRecipes(2);
+    const craftingOptionsPage3 = RecipesManager.numberOfActiveCraftingRecipes(3);
 
     /* update crafting info next to page navigation buttons */
-    craftContainer.querySelector('.button-next .amount').textContent = craftingOptionsPage2;
-    craftContainer.querySelector('.button-prev .amount').textContent = craftingOptionsPage1;
+    craftContainer.querySelector('.button-next[data-panel="craft-2"] .amount').textContent =
+      craftingOptionsPage2 + craftingOptionsPage3;
+    craftContainer.querySelector('.button-prev[data-panel="craft-1"] .amount').textContent =
+      craftingOptionsPage1;
+    craftContainer.querySelector('.button-next[data-panel="craft-3"] .amount').textContent =
+      craftingOptionsPage3;
+    craftContainer.querySelector('.button-prev[data-panel="craft-2"] .amount').textContent =
+      craftingOptionsPage2 + craftingOptionsPage1;
 
     /* update total crafting info */
-    const craftingOptionsTotal = craftingOptionsPage1 + craftingOptionsPage2;
+    const craftingOptionsTotal = craftingOptionsPage1 + craftingOptionsPage2 + craftingOptionsPage3;
     if (craftingOptionsTotal !== craftingOptions.total) {
       craftingOptions.total = craftingOptionsTotal;
       this.craftingChangeFeedback();

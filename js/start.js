@@ -108,6 +108,13 @@ export default {
       //Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
       Props.addItemToInventory('hammer', 1);
       Props.addItemToInventory('saw', 1);
+      Props.addItemToInventory('straw-wheet', 2);
+      Props.addItemToInventory('stump', 3);
+      Props.addItemToInventory('rope', 1);
+      Props.addItemToInventory('cloth', 3);
+      Props.addItemToInventory('nails', 1);
+      Props.addItemToInventory('faucet', 1);
+      Props.addItemToInventory('shovel', 1);
       /*
       ObjectFactory.setupWeapon(
         Props.getGameProp('playerPosition').x,

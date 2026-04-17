@@ -81,13 +81,16 @@ const items = {
   fuel: ['craft', 0, 0, 0, 4, 3],
   nails: ['craft', 0, 0, 0, 2, 1],
   books: ['craft', 0, 0, 0, 0, 2],
-  claw: ['craft', 0, 0, 0, 4, 2],
+  shovel: ['craft', 0, 0, 0, 4, 2],
+  faucet: ['craft', 0, 0, 0, 4, 2],
   exodus: ['craft', 0, 0, 0, 4, 2],
   mallet: ['craft', 0, 0, 0, 5, 1],
   rope: ['craft', 0, 0, 0, 3, 1],
   'bone-hook': ['craft', 0, 0, 0, 2, 2],
   key: ['craft', 0, 0, 0, 1, 1],
   'car-keys': ['craft', 0, 0, 0, 1, 1],
+  'dummy-1': ['craft', 0, 0, 0, 1, 1],
+  'dummy-2': ['craft', 0, 0, 0, 1, 1],
 };
 
 export default {
