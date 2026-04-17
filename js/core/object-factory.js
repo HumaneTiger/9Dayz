@@ -279,6 +279,7 @@ export default {
           infested: forceInfested || infested,
           enemies: creaturesList,
           preview: props.preview,
+          ready: props.ready,
           additionalGameObjects: additionalGameObjects,
         })
       );

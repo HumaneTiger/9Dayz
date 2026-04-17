@@ -8,8 +8,8 @@ import { default as Character } from './character.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
 import {
+  ActionsManager,
   CardsManager,
-  CompanionManager,
   MapManager,
   NpcManager,
   PlayerManager,
@@ -389,48 +389,18 @@ export default {
           actionRef.querySelector('.additional-locked').textContent = 'Hostiles nearby';
         } else if (object.infested && (action.id === 'rest' || action.id === 'sleep')) {
           actionRef.querySelector('.additional-locked').textContent = 'Infested';
-        } else if (
-          action.id === 'cut-down' ||
-          action.id === 'break-door' ||
-          action.id === 'break-lock'
-        ) {
-          actionRef.querySelector('.additional-locked').textContent = 'Axe needed';
-        } else if (action.id === 'unlock-door') {
-          actionRef.querySelector('.additional-locked').textContent = 'Key needed';
-        } else if (action.id === 'cut') {
-          actionRef.querySelector('.additional-locked').textContent = 'Knife needed';
-        } else if (action.id === 'smash-window') {
-          actionRef.querySelector('.additional-locked').textContent = 'Axe or Stone needed';
-        } else if (action.id === 'fish') {
-          actionRef.querySelector('.additional-locked').textContent = 'Fishing rod needed';
+        } else if (ActionsManager.getActionLabelIfLocked(action.id)) {
+          actionRef.querySelector('.additional-locked').textContent =
+            ActionsManager.getActionLabelIfLocked(action.id);
         } else if (action.id === 'equip') {
           if (Character.numberFilledSlots() >= 2) {
             actionRef.querySelector('.additional-locked').textContent = 'No free space';
           } else {
             actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
           }
-        } else if (action.id === 'plant-tomato') {
-          actionRef.querySelector('.additional-locked').textContent = 'Tomato, shovel, branch';
-        } else if (action.id === 'plant-pepper') {
-          actionRef.querySelector('.additional-locked').textContent = 'Pepper, shovel, branch';
-        } else if (action.id === 'plant-pumpkin') {
-          actionRef.querySelector('.additional-locked').textContent = 'Pumpkin, shovel, straw';
-        } else if (
-          action.id === 'drink' &&
-          (object.name === 'water-barrel' || object.name === 'rain-collector') &&
-          !object.ready
-        ) {
+        } else if (object.ready === false) {
+          /* ready can be explicitly set to false for some objects, so check for false instead of falsy */
           actionRef.querySelector('.additional-locked').textContent = 'Not ready yet';
-        } else if (
-          action.id === 'gather' &&
-          (object.name === 'tomato-plant' ||
-            object.name === 'pepper-plant' ||
-            object.name === 'pumpkin-plant') &&
-          !object.ready
-        ) {
-          actionRef.querySelector('.additional-locked').textContent = 'Not ready yet';
-        } else if (action.id === 'faucet') {
-          actionRef.querySelector('.additional-locked').textContent = 'Faucet needed';
         } else {
           actionRef.querySelector('.additional-locked').textContent = 'Locked';
         }
@@ -458,9 +428,6 @@ export default {
       } else {
         actionRef.classList.remove('critical');
         actionRef.querySelector('span.text .alert')?.remove();
-      }
-      if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
-        actionRef.querySelector('.additional-locked').textContent = 'Doggy needed';
       }
       if (action.id === 'attack') {
         const zedsNearby = ObjectState.findAllZedsNearObject(object.x, object.y);

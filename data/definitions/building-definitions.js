@@ -8,6 +8,7 @@
  * @property {number} [amount]
  * @property {boolean} [preview]
  * @property {string[]} [buildings]
+ * @property {boolean} [ready]
  * @export
  */
 
@@ -272,12 +273,12 @@ export default {
     },
     key: { locked: 0, spawn: 0, items: [] },
     'car-keys': { locked: 0, spawn: 0, items: [] },
-    'water-barrel': { locked: 0, spawn: 0, items: [] },
-    'rain-collector': { locked: 0, spawn: 3, items: ['water', 'water', 'water'] },
+    'water-barrel': { locked: 0, spawn: 0, items: [], ready: false },
+    'rain-collector': { locked: 0, spawn: 3, items: ['water', 'water', 'water'], ready: false },
     'plant-pot': { locked: 0, spawn: 0, items: [] },
-    'tomato-plant': { locked: 0, spawn: 3, items: ['tomato', 'tomato', 'tomato'] },
-    'pepper-plant': { locked: 0, spawn: 3, items: ['pepper', 'pepper', 'pepper'] },
-    'pumpkin-plant': { locked: 0, spawn: 1, items: ['pumpkin'] },
+    'tomato-plant': { locked: 0, spawn: 3, items: ['tomato', 'tomato', 'tomato'], ready: false },
+    'pepper-plant': { locked: 0, spawn: 3, items: ['pepper', 'pepper', 'pepper'], ready: false },
+    'pumpkin-plant': { locked: 0, spawn: 1, items: ['pumpkin'], ready: false },
     hammock: { locked: 0, spawn: 0, items: [] },
   },
 };

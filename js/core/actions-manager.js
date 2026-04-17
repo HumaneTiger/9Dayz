@@ -106,6 +106,15 @@ export default {
     return actionProps?.label;
   },
 
+  /**
+   * @param {string} action - Action ID
+   * @returns {string|undefined} Display label for the action
+   */
+  getActionLabelIfLocked: function (action) {
+    const actionProps = ActionsDefinitions.actionProps[action];
+    return actionProps?.labelIfLocked;
+  },
+
   /* === Object type methods === */
 
   /**
@@ -315,31 +324,29 @@ export default {
       } else if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
         action.locked = true;
       } else if (
-        (action.id === 'plant-tomato' &&
-          (!InventoryManager.inventoryContains('tomato') ||
-            !InventoryManager.inventoryContains('shovel'))) ||
-        !InventoryManager.inventoryContains('branch')
+        action.id === 'plant-tomato' &&
+        (!InventoryManager.inventoryContains('tomato') ||
+          !InventoryManager.inventoryContains('shovel') ||
+          !InventoryManager.inventoryContains('branch'))
       ) {
         action.locked = true;
       } else if (
-        (action.id === 'plant-pumpkin' &&
-          (!InventoryManager.inventoryContains('pumpkin') ||
-            !InventoryManager.inventoryContains('shovel'))) ||
-        !InventoryManager.inventoryContains('straw-wheet')
+        action.id === 'plant-pumpkin' &&
+        (!InventoryManager.inventoryContains('pumpkin') ||
+          !InventoryManager.inventoryContains('shovel') ||
+          !InventoryManager.inventoryContains('straw-wheet'))
       ) {
         action.locked = true;
       } else if (
-        (action.id === 'plant-pepper' &&
-          (!InventoryManager.inventoryContains('pepper') ||
-            !InventoryManager.inventoryContains('shovel'))) ||
-        !InventoryManager.inventoryContains('branch')
+        action.id === 'plant-pepper' &&
+        (!InventoryManager.inventoryContains('pepper') ||
+          !InventoryManager.inventoryContains('shovel') ||
+          !InventoryManager.inventoryContains('branch'))
       ) {
         action.locked = true;
-      } else if (action.id === 'faucet' && !InventoryManager.inventoryContains('faucet')) {
+      } else if (action.id === 'install-faucet' && !InventoryManager.inventoryContains('faucet')) {
         action.locked = true;
-      } else if (action.id === 'bottle' && object.name === 'rain-collector' && !object.ready) {
-        action.locked = true;
-      } else if (action.id === 'gather' && object.name === 'plant-pot' && !object.ready) {
+      } else if (object.ready === false) {
         action.locked = true;
       }
     });

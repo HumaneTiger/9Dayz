@@ -23,6 +23,7 @@
  * @property {boolean} oneTime - Whether action completes in one execution
  * @property {number} delay - Delay in milliseconds before action starts
  * @property {string} label - Display label during action execution
+ * @property {string} [labelIfLocked] - Display label when action is locked
  * @export
  */
 
@@ -48,6 +49,7 @@ export default {
       oneTime: true,
       delay: 0,
       label: 'cutting',
+      labelIfLocked: 'Knife needed',
     },
     pet: {
       method: 'simulatePetting',
@@ -108,30 +110,35 @@ export default {
       oneTime: true,
       delay: 1000,
       label: 'cutting',
+      labelIfLocked: 'Axe needed',
     },
     'smash-window': {
       method: 'simulateSmashing',
       oneTime: true,
       delay: 1000,
       label: 'smashing',
+      labelIfLocked: 'Axe or Stone needed',
     },
     'break-door': {
       method: 'simulateBreaking',
       oneTime: true,
       delay: 500,
       label: 'breaking',
+      labelIfLocked: 'Axe needed',
     },
     'unlock-door': {
       method: 'simulateOpening',
       oneTime: true,
       delay: 1000,
       label: 'opening',
+      labelIfLocked: 'Key needed',
     },
     'break-lock': {
       method: 'simulateBreaking',
       oneTime: true,
       delay: 1000,
       label: 'breaking',
+      labelIfLocked: 'Axe needed',
     },
     attack: {
       method: 'simulateAttacking',
@@ -168,12 +175,14 @@ export default {
       oneTime: false,
       delay: 1000,
       label: 'fishing',
+      labelIfLocked: 'Fishing rod needed',
     },
     chomp: {
       method: 'chomping',
       oneTime: true,
       delay: 0,
       label: 'Dog attacks',
+      labelIfLocked: 'Doggy needed',
     },
     talk: {
       method: 'talking',
@@ -198,6 +207,34 @@ export default {
       oneTime: true,
       delay: 1000,
       label: 'ending demo',
+    },
+    'plant-tomato': {
+      method: 'plantingTomato',
+      oneTime: true,
+      delay: 1000,
+      label: 'planting tomato',
+      labelIfLocked: 'Tomato, shovel, branch',
+    },
+    'plant-pepper': {
+      method: 'plantingPepper',
+      oneTime: true,
+      delay: 1000,
+      label: 'planting pepper',
+      labelIfLocked: 'Pepper, shovel, branch',
+    },
+    'plant-pumpkin': {
+      method: 'plantingPumpkin',
+      oneTime: true,
+      delay: 1000,
+      label: 'planting pumpkin',
+      labelIfLocked: 'Pumpkin, shovel, straw',
+    },
+    'install-faucet': {
+      method: 'installingFaucet',
+      oneTime: true,
+      delay: 1000,
+      label: 'installing faucet',
+      labelIfLocked: 'Faucet needed',
     },
   },
 
@@ -370,7 +407,7 @@ export default {
         excludeObjects: ['pump', 'well', 'rain-collector', 'water-barrel'],
       },
       {
-        id: 'faucet',
+        id: 'install-faucet',
         label: 'install faucet',
         time: 30,
         energy: -15,
