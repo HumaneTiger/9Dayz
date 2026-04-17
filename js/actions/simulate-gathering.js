@@ -69,6 +69,10 @@ export default async function simulateGathering(cardId, time, energy) {
         Props.changePlayerProp('energy', energy);
         // furbuddy takes damage when cutting animals
         CharacterManager.applyActionPenalty('gathering', object.group);
+        if (object?.ready === true) {
+          object.ready = false;
+          // todo: card motive image must be updated
+        }
         if (
           !allItems.some(function (item) {
             return item.amount > 0;

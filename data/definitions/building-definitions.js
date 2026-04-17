@@ -274,7 +274,12 @@ export default {
     key: { locked: 0, spawn: 0, items: [] },
     'car-keys': { locked: 0, spawn: 0, items: [] },
     'water-barrel': { locked: 0, spawn: 0, items: [], ready: false },
-    'rain-collector': { locked: 0, spawn: 3, items: ['water', 'water', 'water'], ready: false },
+    'rain-collector': {
+      locked: 0,
+      spawn: 3,
+      items: ['drink-1', 'drink-1', 'drink-1'],
+      ready: true,
+    },
     'plant-pot': { locked: 0, spawn: 0, items: [] },
     'tomato-plant': { locked: 0, spawn: 3, items: ['tomato', 'tomato', 'tomato'], ready: false },
     'pepper-plant': { locked: 0, spawn: 3, items: ['pepper', 'pepper', 'pepper'], ready: false },

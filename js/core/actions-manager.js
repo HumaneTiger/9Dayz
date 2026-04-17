@@ -299,7 +299,8 @@ export default {
       } else if (
         action.id === 'cut-down' ||
         action.id === 'break-door' ||
-        action.id === 'break-lock'
+        action.id === 'break-lock' ||
+        action.id === 'destroy'
       ) {
         if (
           !InventoryManager.inventoryContains('axe') &&
@@ -346,7 +347,11 @@ export default {
         action.locked = true;
       } else if (action.id === 'install-faucet' && !InventoryManager.inventoryContains('faucet')) {
         action.locked = true;
-      } else if (object.ready === false) {
+      } else if (
+        object.ready === false &&
+        action.id !== 'destroy' &&
+        action.id !== 'install-faucet'
+      ) {
         action.locked = true;
       }
     });

@@ -17,7 +17,7 @@ export default {
   /**
    * @param {string} weaponName
    * @param {number} addAmount
-   * @param {WeaponProps} setWeaponProps
+   * @param {Partial<WeaponProps>} setWeaponProps
    * @returns {void}
    */
   addWeaponToInventory: function (weaponName, addAmount, setWeaponProps) {
@@ -51,7 +51,7 @@ export default {
           this.removeWeaponFromInventory(weaponName);
         }
       }
-    } else if (weaponProps !== undefined) {
+    } else if (weaponProps !== undefined && setDurability !== undefined) {
       // weapon is added first time to inventory
       inventory.weapons[weaponName] = {
         name: weaponName,

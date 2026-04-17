@@ -1,5 +1,10 @@
+import destroying from './destroying.js';
 import exchangingFuel from './exchanging-fuel.js';
 import exchangingFood from './exchanging-food.js';
+import installingFaucet from './install-faucet.js';
+import plantingTomato from './plant-tomato.js';
+import plantingPepper from './plant-pepper.js';
+import plantingPumpkin from './plant-pumpkin.js';
 import simulateGathering from './simulate-gathering.js';
 import simulatePetting from './simulate-petting.js';
 import simulateScaring from './simulate-scaring.js';
@@ -24,8 +29,13 @@ import sailing from './sailing.js';
 import talking from './talking.js';
 
 export default {
+  destroying,
   exchangingFuel,
   exchangingFood,
+  installingFaucet,
+  plantingTomato,
+  plantingPepper,
+  plantingPumpkin,
   simulateGathering,
   simulatePetting,
   simulateScaring,

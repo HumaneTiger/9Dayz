@@ -155,6 +155,14 @@ ul.actions .action-button span.additional {
   display: block;
 }
 
+ul.actions {
+  li.plant-tomato .action-button,
+  li.plant-pepper .action-button,
+  li.plant-pumpkin .action-button {
+    width: 222px;
+  }
+}
+
 .card p.activity {
   position: absolute;
   top: 33%;

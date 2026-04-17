@@ -236,6 +236,19 @@ export default {
       label: 'installing faucet',
       labelIfLocked: 'Faucet needed',
     },
+    bottle: {
+      method: 'simulateGathering',
+      oneTime: true,
+      delay: 0,
+      label: 'bottling water',
+    },
+    destroy: {
+      method: 'destroying',
+      oneTime: true,
+      delay: 1000,
+      label: 'destroying',
+      labelIfLocked: 'Axe needed',
+    },
   },
 
   /* === Object type default actions === */
@@ -505,6 +518,20 @@ export default {
         time: 60,
         energy: -15,
         includeObjects: ['plant-pot'],
+      },
+      {
+        id: 'destroy',
+        label: 'destroy',
+        time: 60,
+        energy: -15,
+        includeObjects: [
+          'plant-pot',
+          'tomato-plant',
+          'pepper-plant',
+          'pumpkin-plant',
+          'rain-collector',
+          'water-barrel',
+        ],
       },
     ],
   },

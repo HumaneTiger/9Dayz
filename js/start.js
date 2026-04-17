@@ -115,6 +115,8 @@ export default {
       Props.addItemToInventory('nails', 1);
       Props.addItemToInventory('faucet', 1);
       Props.addItemToInventory('shovel', 1);
+      Props.addItemToInventory('branch', 1);
+      Props.addItemToInventory('pumpkin', 1);
       /*
       ObjectFactory.setupWeapon(
         Props.getGameProp('playerPosition').x,

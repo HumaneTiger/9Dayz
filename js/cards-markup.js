@@ -43,6 +43,11 @@ export default {
       fieldCounter === 1 ? (fieldCounter = 2) : (fieldCounter = 1);
     }
 
+    const buildingImageSource =
+      object?.ready === true
+        ? `./img/buildings/${buildingName}-ready.png`
+        : `./img/buildings/${buildingName}.png`;
+
     let cardMarkupPre =
       `<div id="${id}" class="card ${object.locked ? 'locked ' : ''} ${object.dead ? 'dead ' : ''} ${object.preview ? 'preview ' : ''} ${object.group}" style="left: ${Math.round(object.x * 44.4 - 120)}px; top: 600px; transform: scale(0.4);">` +
       `<div class="inner">`;
@@ -51,7 +56,7 @@ export default {
       `<div class="status"><div class="status-locked"></div><div class="status-zombies"></div><div class="status-looted"></div><div class="status-infested ${buildingName === 'beehive' ? 'bees' : ''}"></div></div>` +
       `<h2>${object.title}</h2>` +
       `<p class="activity glow is--hidden"></p>` +
-      `<img class="motive" src="./img/buildings/${buildingName}.png" ${buildingName === 'hammock' ? 'style="width: 110%; left: -10%; top: 86px;"' : ''}>` +
+      `<img class="motive" src="${buildingImageSource}" ${buildingName === 'hammock' ? 'style="width: 110%; left: -10%; top: 86px;"' : ''}>` +
       `<div class="banner"><img src="./img/icons/buildings/${object.type}.png"></div>` +
       `<div class="dead"><img src="./img/ui/preview.png"></div>`;
 
@@ -318,7 +323,9 @@ export default {
         object.name === 'barricades' ||
         object.name === 'bee' ||
         object.name === 'key' ||
-        object.name === 'car-keys'
+        object.name === 'car-keys' ||
+        object.name === 'plant-pot' ||
+        object.name === 'water-barrel'
       )
     ) {
       // mega bug: when bees contains no item from the beginning (amount=0), ul.item will be removed and cut/gather/search won't work

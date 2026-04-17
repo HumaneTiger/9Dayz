@@ -171,6 +171,19 @@ export default {
   },
 
   /**
+   * @param {number} x
+   * @param {number} y
+   * @param {string} name
+   * @returns {GameObject|undefined}
+   */
+  getObjectByNameAt: function (x, y, name) {
+    const objectIds = this.getObjectIdsAt(x, y);
+    if (!objectIds) return undefined;
+    const filteredObjectId = objectIds.find(objectId => this.getObject(objectId).name === name);
+    return filteredObjectId !== undefined ? this.getObject(filteredObjectId) : undefined;
+  },
+
+  /**
    * Removes an object ID from the specified coordinates
    * @param {number} x
    * @param {number} y
