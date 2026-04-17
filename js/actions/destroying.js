@@ -12,7 +12,8 @@ import { ObjectState, InventoryManager, WeaponsManager, PlayerManager } from '..
  */
 export default async function destroying(cardId, time, energy) {
   Audio.sfx('chop-wood');
-  Audio.sfx('chop-wood', 800);
+  Audio.sfx('chop-wood', 750);
+  Audio.sfx('chop-wood', 1500);
 
   ActionsOrchestration.fastForward(
     /**
@@ -34,7 +35,7 @@ export default async function destroying(cardId, time, energy) {
     },
     cardId,
     time,
-    800,
+    0,
     energy
   );
 }
