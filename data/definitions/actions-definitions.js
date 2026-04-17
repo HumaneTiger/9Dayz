@@ -433,6 +433,14 @@ export default {
         energy: -15,
         includeObjects: ['rain-collector'],
       },
+      {
+        id: 'destroy',
+        label: 'destroy',
+        time: 60,
+        energy: -15,
+        includeObjects: ['rain-collector', 'water-barrel'],
+        critical: true,
+      },
     ],
     camping: [
       // break-door, search, scout-area, rest for cabin
@@ -524,14 +532,8 @@ export default {
         label: 'destroy',
         time: 60,
         energy: -15,
-        includeObjects: [
-          'plant-pot',
-          'tomato-plant',
-          'pepper-plant',
-          'pumpkin-plant',
-          'rain-collector',
-          'water-barrel',
-        ],
+        includeObjects: ['plant-pot', 'tomato-plant', 'pepper-plant', 'pumpkin-plant'],
+        critical: true,
       },
     ],
   },

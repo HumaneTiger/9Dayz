@@ -1,5 +1,6 @@
 import Props from '../props.js';
 import Cards from '../cards.js';
+import CardsMarkup from '../cards-markup.js';
 import Battle from '../battle.js';
 import TimingUtils from '../utils/timing-utils.js';
 import ActionsUtils from '../utils/actions-utils.js';
@@ -56,7 +57,9 @@ export default async function simulateGathering(cardId, time, energy) {
       allPreviews[i].classList.add('is--hidden');
       if (item.amount > 0) {
         cardRef
-          .querySelector('ul.items li[data-item="' + item.name + '"].is--hidden')
+          .querySelector(
+            'ul.items li[data-item="' + item.name + '"][data-index="' + i + '"].is--hidden'
+          )
           .classList.remove('is--hidden');
       }
       if (i + 1 < allItems.length) {
@@ -71,7 +74,7 @@ export default async function simulateGathering(cardId, time, energy) {
         CharacterManager.applyActionPenalty('gathering', object.group);
         if (object?.ready === true) {
           object.ready = false;
-          // todo: card motive image must be updated
+          CardsMarkup.updateBuildingImageSource(cardId);
         }
         if (
           !allItems.some(function (item) {

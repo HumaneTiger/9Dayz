@@ -37,7 +37,6 @@ export default {
   createLootItemList: function (spawn, allItems, allProbabilities, amount, rng) {
     // fallback to Math.random() if no seeded PRNG is provided
     const rand = rng || Math.random;
-
     const maxAmount = amount || 1;
     let lootItemList = [];
     let probability = allProbabilities[0];

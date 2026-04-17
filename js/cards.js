@@ -54,9 +54,10 @@ export default {
         ActionsOrchestration.goToAndAction(cardId, action);
       } else if (itemContainer) {
         const itemName = itemContainer?.dataset.item;
-        const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
+        const itemIndex = itemContainer?.dataset.index;
+        const itemAmount = object.items[itemIndex]?.amount;
         if (itemAmount && leftMouseButton) {
-          ActionsUtils.grabItem(cardId, itemContainer, itemName);
+          ActionsUtils.grabItem(cardId, itemContainer, itemName, itemIndex);
         }
       }
     }

@@ -57,7 +57,8 @@ export default {
         cardRef.querySelector('ul.items li.preview').remove();
         cardRef.querySelector('ul.items li.item').remove();
         cardRef.querySelector('ul.items').innerHTML =
-          CardsMarkup.generateItemMarkup('tape', 1) + cardRef.querySelector('ul.items').innerHTML;
+          CardsMarkup.generateItemMarkup('tape', 1, 0) +
+          cardRef.querySelector('ul.items').innerHTML;
       }
     }
   },
@@ -104,9 +105,13 @@ export default {
     }
   },
 
-  grabItem: async function (cardId, container, itemName) {
+  grabItem: async function (cardId, container, itemName, itemIndex) {
+    if (itemIndex === undefined) {
+      console.error('itemIndex is undefined for item:', itemName, 'in cardId:', cardId);
+      return;
+    }
     const object = Props.getObject(cardId);
-    const itemAmount = object.items.find(singleItem => singleItem.name === itemName)?.amount;
+    const itemAmount = object.items[itemIndex]?.amount;
     let cardRef = Cards.getCardById(cardId);
     if (Props.isWeapon(itemName)) {
       // spawn card representing the grabbed weapon item
@@ -121,7 +126,7 @@ export default {
     } else {
       Props.addItemToInventory(itemName, itemAmount);
     }
-    object.items.find(singleItem => singleItem.name === itemName).amount = 0;
+    object.items[itemIndex].amount = 0;
     AudioUtils.sfx('pick', 0, 0.1);
     container.classList.add('transfer');
     await TimingUtils.waitForTransition(container);
