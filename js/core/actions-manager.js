@@ -314,6 +314,33 @@ export default {
         }
       } else if (action.id === 'chomp' && !CompanionManager.isCompanionActive()) {
         action.locked = true;
+      } else if (
+        (action.id === 'plant-tomato' &&
+          (!InventoryManager.inventoryContains('tomato') ||
+            !InventoryManager.inventoryContains('shovel'))) ||
+        !InventoryManager.inventoryContains('branch')
+      ) {
+        action.locked = true;
+      } else if (
+        (action.id === 'plant-pumpkin' &&
+          (!InventoryManager.inventoryContains('pumpkin') ||
+            !InventoryManager.inventoryContains('shovel'))) ||
+        !InventoryManager.inventoryContains('straw-wheet')
+      ) {
+        action.locked = true;
+      } else if (
+        (action.id === 'plant-pepper' &&
+          (!InventoryManager.inventoryContains('pepper') ||
+            !InventoryManager.inventoryContains('shovel'))) ||
+        !InventoryManager.inventoryContains('branch')
+      ) {
+        action.locked = true;
+      } else if (action.id === 'faucet' && !InventoryManager.inventoryContains('faucet')) {
+        action.locked = true;
+      } else if (action.id === 'bottle' && object.name === 'rain-collector' && !object.ready) {
+        action.locked = true;
+      } else if (action.id === 'gather' && object.name === 'plant-pot' && !object.ready) {
+        action.locked = true;
       }
     });
 

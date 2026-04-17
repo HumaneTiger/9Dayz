@@ -86,6 +86,7 @@
  * @property {string} [name]
  * @property {boolean} [preview]
  * @property {boolean} removed
+ * @property {boolean} [ready]
  * @property {string} text
  * @property {string} title
  * @property {ObjectType} [type]

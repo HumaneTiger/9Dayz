@@ -349,7 +349,13 @@ export default {
       { id: 'scout-area', label: 'scout area', time: 30, energy: -10 },
     ],
     water: [
-      { id: 'gather', label: 'gather', time: 15, energy: -5, excludeObjects: ['rain-collector'] },
+      {
+        id: 'gather',
+        label: 'gather',
+        time: 15,
+        energy: -5,
+        excludeObjects: ['rain-collector', 'water-barrel'],
+      },
       {
         id: 'drink',
         label: 'drink',
@@ -361,14 +367,14 @@ export default {
         label: 'fish',
         time: 30,
         energy: -5,
-        excludeObjects: ['pump', 'well', 'rain-collector'],
+        excludeObjects: ['pump', 'well', 'rain-collector', 'water-barrel'],
       },
       {
         id: 'faucet',
         label: 'install faucet',
         time: 30,
         energy: -15,
-        includeObjects: ['rain-collector'],
+        includeObjects: ['water-barrel'],
       },
       {
         id: 'bottle',

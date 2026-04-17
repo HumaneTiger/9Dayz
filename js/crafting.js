@@ -127,12 +127,6 @@ export default {
           neededAmounts
         );
         const firstIngredient = itemRecipe.items[recipeItem][0];
-        if (recipe === 'plant-pot') {
-          console.log('checking plant-pot ingredient visibility for ', firstIngredient);
-          console.log('is one available?', isOneAvailable);
-          console.log('is all available?', isAllAvailable);
-          console.log('needed amounts', neededAmounts[firstIngredient]);
-        }
         craftContainerPage
           .querySelectorAll(`.nope.${firstIngredient}:not(.additional)`)
           .forEach(el => {

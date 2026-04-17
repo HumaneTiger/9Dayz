@@ -409,6 +409,28 @@ export default {
           } else {
             actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
           }
+        } else if (action.id === 'plant-tomato') {
+          actionRef.querySelector('.additional-locked').textContent = 'Tomato, shovel, branch';
+        } else if (action.id === 'plant-pepper') {
+          actionRef.querySelector('.additional-locked').textContent = 'Pepper, shovel, branch';
+        } else if (action.id === 'plant-pumpkin') {
+          actionRef.querySelector('.additional-locked').textContent = 'Pumpkin, shovel, straw';
+        } else if (
+          action.id === 'drink' &&
+          (object.name === 'water-barrel' || object.name === 'rain-collector') &&
+          !object.ready
+        ) {
+          actionRef.querySelector('.additional-locked').textContent = 'Not ready yet';
+        } else if (
+          action.id === 'gather' &&
+          (object.name === 'tomato-plant' ||
+            object.name === 'pepper-plant' ||
+            object.name === 'pumpkin-plant') &&
+          !object.ready
+        ) {
+          actionRef.querySelector('.additional-locked').textContent = 'Not ready yet';
+        } else if (action.id === 'faucet') {
+          actionRef.querySelector('.additional-locked').textContent = 'Faucet needed';
         } else {
           actionRef.querySelector('.additional-locked').textContent = 'Locked';
         }

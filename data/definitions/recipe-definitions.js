@@ -116,7 +116,7 @@ export default {
       result: 'building',
       page: 3,
     },
-    'rain-collector': {
+    'water-barrel': {
       items: [['stump'], ['stump'], ['stump'], ['saw']],
       exclusive: false,
       result: 'building',

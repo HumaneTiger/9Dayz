@@ -14,7 +14,7 @@ export default {
     { x: 31, y: 7, buildings: ['plant-pot'] },
     { x: 32, y: 7, buildings: ['pepper-plant'] },
     { x: 33, y: 7, buildings: ['tomato-plant'] },
-    { x: 30, y: 7, buildings: ['rain-collector'] },
+    { x: 30, y: 7, buildings: ['water-barrel'] },
     { x: 32, y: 5, buildings: ['pumpkin-plant'] },
     // END TEST spawn
     { x: 17, y: 25, buildings: ['gas-station'] },
