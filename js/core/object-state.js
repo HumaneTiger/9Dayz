@@ -87,6 +87,8 @@
  * @property {boolean} [preview]
  * @property {boolean} removed
  * @property {boolean} [ready]
+ * @property {boolean} [stationary]
+ * @property {boolean} [onBoardOnly]
  * @property {string} text
  * @property {string} title
  * @property {ObjectType} [type]
@@ -154,6 +156,9 @@ export default {
       disabled: false,
       removed: false,
       highlightObjects: undefined,
+      onBoardOnly: undefined,
+      ready: undefined,
+      stationary: undefined,
       ...overrides,
     };
   },
@@ -181,6 +186,20 @@ export default {
     if (!objectIds) return undefined;
     const filteredObjectId = objectIds.find(objectId => this.getObject(objectId).name === name);
     return filteredObjectId !== undefined ? this.getObject(filteredObjectId) : undefined;
+  },
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @returns {GameObject[]}
+   */
+  getStationaryObjectsAt: function (x, y) {
+    const objectIds = this.getObjectIdsAt(x, y);
+    if (!objectIds) return [];
+    const stationaryObjects = objectIds
+      .map(objectId => this.getObject(objectId))
+      .filter(object => object.stationary);
+    return stationaryObjects;
   },
 
   /**

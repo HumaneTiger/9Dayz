@@ -116,6 +116,7 @@ export default {
       Props.addItemToInventory('faucet', 1);
       Props.addItemToInventory('shovel', 1);
       Props.addItemToInventory('branch', 1);
+      Props.addItemToInventory('tomato', 1);
       Props.addItemToInventory('pumpkin', 1);
       /*
       ObjectFactory.setupWeapon(

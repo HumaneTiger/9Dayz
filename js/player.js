@@ -72,8 +72,10 @@ export default {
     const shipHotSpot = MapManager.getShipHotSpot();
     if (playerPosition.x === shipHotSpot.x && playerPosition.y === shipHotSpot.y) {
       if (!GameState.getGameProp('onBoard')) {
+        GameState.setGameProp('onBoard', true);
         EventManager.emit(EVENTS.PLAYER_BOARDED_SHIP);
       } else {
+        GameState.setGameProp('onBoard', false);
         EventManager.emit(EVENTS.PLAYER_LEFT_SHIP);
       }
     }
@@ -240,7 +242,7 @@ export default {
         }
       }
       if (posXBefore !== playerPosition.x || posYBefore !== playerPosition.y) {
-        this.updatePlayer();
+        EventManager.emit(EVENTS.PLAYER_UPDATE, { noPenalty: false });
         GameState.setGameProp('isWalking', true);
         window.setTimeout(function () {
           GameState.setGameProp('isWalking', false);

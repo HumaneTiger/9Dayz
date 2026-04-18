@@ -9,6 +9,8 @@
  * @property {boolean} [preview]
  * @property {string[]} [buildings]
  * @property {boolean} [ready]
+ * @property {boolean} [stationary]
+ * @property {boolean} [onBoardOnly] - Whether the building can only be build on the ship (e.g. plants, water barrel, hammock)
  * @export
  */
 
@@ -251,8 +253,8 @@ export default {
       spawn: 3,
       items: ['bread-2', 'wine', 'snack-1', 'snack-2', 'knife', 'drink-2', 'drink-5', 'exodus'],
     },
-    fireplace: { locked: 0, spawn: 0, items: [] },
-    crate: { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'] }, // always locked
+    fireplace: { locked: 0, spawn: 0, items: [], stationary: true },
+    crate: { locked: 11, spawn: 1, items: ['axe', 'wrench', 'baseball-bat'], stationary: true }, // always locked
     'human-corpse-1': {
       locked: 0,
       spawn: 3,
@@ -273,20 +275,31 @@ export default {
     },
     key: { locked: 0, spawn: 0, items: [] },
     'car-keys': { locked: 0, spawn: 0, items: [] },
-    'water-barrel': { locked: 0, spawn: 0, items: [], ready: false },
+    'water-barrel': {
+      locked: 0,
+      spawn: 0,
+      items: [],
+      ready: false,
+      stationary: true,
+      onBoardOnly: true,
+    },
     'rain-collector': {
       locked: 0,
       spawn: 3,
       items: ['drink-1', 'drink-1', 'drink-1'],
       ready: true,
+      stationary: true,
+      onBoardOnly: true,
     },
-    'plant-pot': { locked: 0, spawn: 0, items: [] },
+    'plant-pot': { locked: 0, spawn: 0, items: [], stationary: true, onBoardOnly: true },
     'tomato-plant': {
       locked: 0,
       spawn: 3,
       items: ['tomato', 'tomato', 'tomato'],
       amount: 3,
-      ready: true,
+      ready: false,
+      stationary: true,
+      onBoardOnly: true,
     },
     'pepper-plant': {
       locked: 0,
@@ -294,8 +307,18 @@ export default {
       items: ['pepper', 'pepper', 'pepper'],
       amount: 3,
       ready: true,
+      stationary: true,
+      onBoardOnly: true,
     },
-    'pumpkin-plant': { locked: 0, spawn: 2, items: ['pumpkin', 'pumpkin'], amount: 2, ready: true },
-    hammock: { locked: 0, spawn: 0, items: [] },
+    'pumpkin-plant': {
+      locked: 0,
+      spawn: 2,
+      items: ['pumpkin', 'pumpkin'],
+      amount: 2,
+      ready: true,
+      stationary: true,
+      onBoardOnly: true,
+    },
+    hammock: { locked: 0, spawn: 0, items: [], stationary: true, onBoardOnly: true },
   },
 };

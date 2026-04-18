@@ -1,9 +1,16 @@
 import Props from './props.js';
 import Items from './items.js';
 import Player from './player.js';
-import Events, { EVENTS } from './core/event-manager.js';
 import TimingUtils from './utils/timing-utils.js';
-import { RecipesManager, AlmanacManager, GameState } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  RecipesManager,
+  AlmanacManager,
+  GameState,
+  ObjectState,
+} from './core/index.js';
+import { BuildingDefinitions } from '../data/index.js';
 
 const craftingOptions = Props.getCrafting();
 const craftContainer = document.getElementById('craft');
@@ -16,11 +23,23 @@ export default {
     this.checkCraftingPrerequisits();
 
     // EVENT: React to inventory changes
-    Events.on(EVENTS.INVENTORY_CHANGED, () => {
+    EventManager.on(EVENTS.INVENTORY_CHANGED, () => {
       this.checkCraftingPrerequisits();
     });
-    Events.on(EVENTS.WEAPON_CHANGED, () => {
+    EventManager.on(EVENTS.WEAPON_CHANGED, () => {
       this.checkCraftingPrerequisits();
+    });
+    EventManager.on(EVENTS.PLAYER_MOVE_TO, () => {
+      this.checkCraftingPrerequisits();
+    });
+    EventManager.on(EVENTS.PLAYER_UPDATE, () => {
+      this.checkCraftingPrerequisits();
+    });
+    EventManager.on(EVENTS.PLAYER_BOARDED_SHIP, () => {
+      this.craftingChangeFeedback();
+    });
+    EventManager.on(EVENTS.PLAYER_LEFT_SHIP, () => {
+      this.craftingChangeFeedback();
     });
   },
 
@@ -36,6 +55,11 @@ export default {
           'Click to ' + hoverButton.dataset.action + ' (right-click for info)';
       } else if (hoverButton.classList.contains('only1')) {
         craftContainer.querySelector('p.info').textContent = "Can't do - can carry only one";
+      } else if (hoverButton.classList.contains('stationary')) {
+        craftContainer.querySelector('p.info').textContent = "Can't do - place is already taken";
+      } else if (hoverButton.classList.contains('onBoardOnly')) {
+        craftContainer.querySelector('p.info').textContent =
+          "Can't do - can only be crafted on board";
       } else {
         craftContainer.querySelector('p.info').textContent = "Can't do - items missing";
       }
@@ -88,7 +112,7 @@ export default {
           Player.findAndHandleObjects();
           craftContainer.classList.remove('active');
           // make crafted item known in almanac
-          Events.emit(EVENTS.FIRST_ITEM_ADDED, {
+          EventManager.emit(EVENTS.FIRST_ITEM_ADDED, {
             item: item,
           });
         }
@@ -154,7 +178,31 @@ export default {
       /* set crafting button state */
       const prerequisitsFulfilled = RecipesManager.isCraftingPrerequisitsFulfilled(recipe);
       if (prerequisitsFulfilled) {
-        if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
+        const buildingProps = BuildingDefinitions.buildingProps[recipe];
+        const playerPosition = Player.getPlayerPosition();
+        if (
+          buildingProps &&
+          buildingProps.stationary &&
+          ObjectState.getStationaryObjectsAt(playerPosition.x, playerPosition.y).length
+        ) {
+          craftContainer
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
+            ?.classList.remove('active');
+          craftContainer
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
+            ?.classList.add('stationary');
+        } else if (
+          buildingProps &&
+          buildingProps.onBoardOnly &&
+          !GameState.getGameProp('onBoard')
+        ) {
+          craftContainer
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
+            ?.classList.remove('active');
+          craftContainer
+            .querySelector(`.button-craft[data-item="${recipe}"]`)
+            ?.classList.add('onBoardOnly');
+        } else if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
           craftContainer
             .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.remove('active');
@@ -167,7 +215,7 @@ export default {
             ?.classList.add('active');
           craftContainer
             .querySelector(`.button-craft[data-item="${recipe}"]`)
-            ?.classList.remove('only1');
+            ?.classList.remove('only1', 'stationary', 'onBoardOnly');
         }
       } else {
         craftContainer
@@ -192,17 +240,23 @@ export default {
 
     /* update total crafting info */
     const craftingOptionsTotal = craftingOptionsPage1 + craftingOptionsPage2 + craftingOptionsPage3;
-    if (craftingOptionsTotal !== craftingOptions.total) {
+    if (
+      craftingOptionsTotal !== craftingOptions.total ||
+      craftingOptionsPage3 !== craftingOptions.totalShip
+    ) {
       craftingOptions.total = craftingOptionsTotal;
+      craftingOptions.totalShip = craftingOptionsPage3;
       this.craftingChangeFeedback();
     }
   },
 
   craftingChangeFeedback: async function () {
     if (GameState.getGameProp('onBoard')) {
-      document.getElementById('crafting-total').textContent = craftingOptions.total + `+?`;
+      document.getElementById('crafting-total').textContent =
+        craftingOptions.total - craftingOptions.totalShip + `+${craftingOptions.totalShip}`;
     } else {
-      document.getElementById('crafting-total').textContent = craftingOptions.total;
+      document.getElementById('crafting-total').textContent =
+        craftingOptions.total - craftingOptions.totalShip;
     }
     document.querySelector('#actions .craft').classList.add('transfer');
     await TimingUtils.waitForTransition(document.querySelector('#actions .craft'));

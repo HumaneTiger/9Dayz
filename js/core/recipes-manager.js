@@ -3,8 +3,8 @@
  * @import { CookingRecipe, CraftingRecipe, IngredientVariants } from '../../data/definitions/recipe-definitions.js'
  */
 
-import { RecipeDefinitions } from '../../data/index.js';
-import { InventoryManager } from './index.js';
+import { BuildingDefinitions, RecipeDefinitions } from '../../data/index.js';
+import { InventoryManager, GameState, ObjectState } from './index.js';
 
 const cookingRecipes = RecipeDefinitions.cookingRecipes;
 const craftingRecipes = RecipeDefinitions.craftingRecipes;
@@ -240,7 +240,19 @@ export default {
     let count = 0;
     const recipeList = this.getCraftingRecipesForPage(page);
     for (const recipeName of recipeList) {
-      if (this.isCraftingPrerequisitsFulfilled(recipeName)) {
+      const buildingProps = BuildingDefinitions.buildingProps[recipeName];
+      const playerPosition = GameState.getGameProp('playerPosition');
+      const isStationaryPresent =
+        buildingProps &&
+        buildingProps.stationary &&
+        ObjectState.getStationaryObjectsAt(playerPosition.x, playerPosition.y).length;
+      const isOnBoardOnly =
+        buildingProps && buildingProps.onBoardOnly && !GameState.getGameProp('onBoard');
+      if (
+        this.isCraftingPrerequisitsFulfilled(recipeName) &&
+        !isStationaryPresent &&
+        !isOnBoardOnly
+      ) {
         count++;
       }
     }

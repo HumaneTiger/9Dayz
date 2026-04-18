@@ -34,6 +34,7 @@ import RngUtils from '../utils/rng-utils.js';
 /**
  * @typedef {Object} Crafting
  * @property {number} total
+ * @property {number} totalShip
  */
 
 /**
@@ -43,6 +44,7 @@ import RngUtils from '../utils/rng-utils.js';
 /** @type {Crafting} */
 var crafting = {
   total: 0,
+  totalShip: 0,
 };
 
 /** @type {TimeConfig} */

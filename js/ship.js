@@ -19,7 +19,6 @@ export default {
 
   boardShip: async function () {
     if (!playerContainer || !shipOverlay) return;
-    GameState.setGameProp('onBoard', true);
     MapManager.setupShipPaths();
     const playerPosition = GameState.getGameProp('playerPosition');
     shipOverlay.classList.remove('is--hidden');
@@ -33,7 +32,6 @@ export default {
 
   leaveShip: async function () {
     if (!playerContainer || !shipOverlay) return;
-    GameState.setGameProp('onBoard', false);
     MapManager.removeShipPaths();
     shipOverlay.classList.remove('is--visible');
     const playerPosition = GameState.getGameProp('playerPosition');

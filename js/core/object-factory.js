@@ -280,6 +280,8 @@ export default {
           enemies: creaturesList,
           preview: props.preview,
           ready: props.ready,
+          stationary: props.stationary,
+          onBoardOnly: props.onBoardOnly,
           additionalGameObjects: additionalGameObjects,
         })
       );
