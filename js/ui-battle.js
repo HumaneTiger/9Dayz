@@ -101,7 +101,7 @@ export default {
     if (!(dragMode && Props.getGameProp('battle'))) {
       return;
     }
-    let scale = window.innerHeight / 1200;
+    const scale = Props.getGameProp('scaleFactor');
     // calculate the new position
     newPosX = (startPosX - e.clientX) / scale;
     newPosY = (startPosY - e.clientY) / scale;

@@ -25,8 +25,6 @@ let almDragMode = false;
 let almDragEl = null;
 let almStartPosX = 0;
 let almStartPosY = 0;
-let almNewPosX = 0;
-let almNewPosY = 0;
 
 export default {
   init: function () {
@@ -163,14 +161,14 @@ export default {
     if (!almDragMode) {
       return;
     }
-    const scale = window.innerHeight / 1200;
-    almNewPosX = (almStartPosX - ev.clientX) / scale;
-    almNewPosY = (almStartPosY - ev.clientY) / scale;
-    almStartPosX = ev.clientX;
-    almStartPosY = ev.clientY;
     if (almDragEl) {
-      almDragEl.style.top = almDragEl.offsetTop - almNewPosY + 'px';
-      almDragEl.style.left = almDragEl.offsetLeft - almNewPosX + 'px';
+      const scale = Props.getGameProp('scaleFactor');
+      const deltaX = (almStartPosX - ev.clientX) / scale;
+      const deltaY = (almStartPosY - ev.clientY) / scale;
+      almStartPosX = ev.clientX;
+      almStartPosY = ev.clientY;
+      almDragEl.style.left = almDragEl.offsetLeft - deltaX + 'px';
+      almDragEl.style.top = almDragEl.offsetTop - deltaY + 'px';
     }
   },
 
