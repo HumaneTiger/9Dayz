@@ -84,7 +84,7 @@ var game = {
   gamePaused: true,
   local:
     location.href.startsWith('http://127.0.0.1') || location.href.startsWith('http://localhost'),
-  playerPosition: { x: 31, y: 10 }, // { x: 18, y: 44 }
+  playerPosition: { x: 18, y: 44 },
   mapSize: { width: 49, height: 45 },
   inventoryAlternativeUse: false,
   feedingCompanion: false,

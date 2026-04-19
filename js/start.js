@@ -106,18 +106,6 @@ export default {
     if (Props.getGameProp('local')) {
       //Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       //Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
-      Props.addItemToInventory('hammer', 1);
-      Props.addItemToInventory('saw', 1);
-      Props.addItemToInventory('straw-wheet', 2);
-      Props.addItemToInventory('stump', 3);
-      Props.addItemToInventory('rope', 1);
-      Props.addItemToInventory('cloth', 3);
-      Props.addItemToInventory('nails', 1);
-      Props.addItemToInventory('faucet', 1);
-      Props.addItemToInventory('shovel', 1);
-      Props.addItemToInventory('branch', 1);
-      Props.addItemToInventory('tomato', 1);
-      Props.addItemToInventory('pumpkin', 1);
       /*
       ObjectFactory.setupWeapon(
         Props.getGameProp('playerPosition').x,
@@ -172,7 +160,6 @@ export default {
       Props.getGameProp('playerPosition').y
     );
 
-    //Player.setPlayerPosition(18, 37);
     if (Props.getGameProp('character') === 'furbuddy') {
       const playerPosition = Props.getGameProp('playerPosition');
       Props.spawnCompanionAt(playerPosition.x, playerPosition.y, 'doggy');

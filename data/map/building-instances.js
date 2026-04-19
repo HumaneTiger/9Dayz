@@ -10,13 +10,6 @@
 /** @type {Record<string, Array<BuildingInstance>>} */
 export default {
   start: [
-    // TEST spawn
-    { x: 31, y: 7, buildings: ['plant-pot'] },
-    { x: 32, y: 7, buildings: ['pepper-plant'] },
-    { x: 33, y: 7, buildings: ['tomato-plant'] },
-    { x: 30, y: 7, buildings: ['water-barrel'] },
-    { x: 30, y: 6, buildings: ['hammock'] },
-    // END TEST spawn
     { x: 17, y: 25, buildings: ['gas-station'] },
     { x: 36, y: 16, buildings: ['gas-station'] },
     { x: 9, y: 9, buildings: ['gas-station'] },
