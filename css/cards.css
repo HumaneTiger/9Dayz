@@ -479,7 +479,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   }
 }
 
-#cards.filter-active {
+#cards.filter-active:not(.battle-mode) {
   left: 60px;
 
   .cards-filter {
