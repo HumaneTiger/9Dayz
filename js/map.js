@@ -1,5 +1,6 @@
 import Props from './props.js';
 import { ObjectState, MapManager } from './core/index.js';
+import BuildingDefinitions from '../data/definitions/building-definitions.js';
 
 const buidingsContainer = document.querySelector('.map .map-buildings');
 const highlightsContainer = document.querySelector('.map .map-highlights');
@@ -45,37 +46,41 @@ export default {
       const iconTop = Math.round(y * 44.4 + 3);
       const areaTop = Math.round(y * 44.4 + 8);
 
+      console.log(object);
+      const buildingProps = BuildingDefinitions.buildingProps[object.name];
+      const iconType = buildingProps?.onBoardOnly ? 'onboard' : 'onmap';
+
       if (!object.discovered && !object.removed) {
         if (group === 'building') {
           buidingsContainer.insertAdjacentHTML(
             'beforeend',
-            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${object.type}.png'></span>`
+            `<span class='icon icon-${objectId} ${iconType}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${object.type}.png'></span>`
           );
         } else if (group === 'weapon') {
           buidingsContainer.insertAdjacentHTML(
             'beforeend',
-            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/weapons/${group}.png'></span>`
+            `<span class='icon icon-${objectId} ${iconType}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/weapons/${group}.png'></span>`
           );
         } else if (group === 'animal') {
           buidingsContainer.insertAdjacentHTML(
             'beforeend',
-            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/animals/${group}.png'></span>`
+            `<span class='icon icon-${objectId} ${iconType}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/animals/${group}.png'></span>`
           );
         } else if (group === 'zombie') {
           if (!object.dead) {
             highlightsContainer.insertAdjacentHTML(
               'beforeend',
-              `<span class='danger-area area-${objectId}' style='top: ${areaTop}px; left: ${iconLeft}px;'></span>`
+              `<span class='danger-area area-${objectId} ${iconType}' style='top: ${areaTop}px; left: ${iconLeft}px;'></span>`
             );
             buidingsContainer.insertAdjacentHTML(
               'beforeend',
-              `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}.png'></span>`
+              `<span class='icon icon-${objectId} ${iconType}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}.png'></span>`
             );
           }
         } else if (group === 'npc') {
           buidingsContainer.insertAdjacentHTML(
             'beforeend',
-            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/npc/${group}.png'></span>`
+            `<span class='icon icon-${objectId} onboard' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/npc/${group}.png'></span>`
           );
         }
       } else {
@@ -83,7 +88,7 @@ export default {
           this.removeObjectIconById(objectId);
           buidingsContainer.insertAdjacentHTML(
             'beforeend',
-            `<span class='icon icon-${objectId}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}-dead.png'></span>`
+            `<span class='icon icon-${objectId} ${iconType}' style='top: ${iconTop}px; left: ${iconLeft}px;'><img src='./img/icons/buildings/${group}-dead.png'></span>`
           );
         }
       }

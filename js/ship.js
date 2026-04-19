@@ -17,6 +17,25 @@ export default {
     ShipManager.addWaitingTime(0);
   },
 
+  toggleIconVisibility: function (onboard = false) {
+    const icons = document.querySelectorAll('.map .icon');
+    icons.forEach(icon => {
+      if (onboard) {
+        if (icon.classList.contains('onboard')) {
+          icon.classList.remove('is--hidden');
+        } else {
+          icon.classList.add('is--hidden');
+        }
+      } else {
+        if (icon.classList.contains('onboard')) {
+          icon.classList.add('is--hidden');
+        } else {
+          icon.classList.remove('is--hidden');
+        }
+      }
+    });
+  },
+
   boardShip: async function () {
     if (!playerContainer || !shipOverlay) return;
     MapManager.setupShipPaths();
@@ -24,6 +43,7 @@ export default {
     shipOverlay.classList.remove('is--hidden');
     playerPosition.y -= 1;
     EventManager.emit(EVENTS.PLAYER_MOVE_TO, { x: playerPosition.x, y: playerPosition.y });
+    this.toggleIconVisibility(true);
     await TimingUtils.wait(100);
     shipOverlay.classList.add('is--visible');
     playerContainer.classList.add('onboard');
@@ -38,6 +58,7 @@ export default {
     playerContainer.classList.remove('onboard');
     playerPosition.y += 1;
     EventManager.emit(EVENTS.PLAYER_MOVE_TO, { x: playerPosition.x, y: playerPosition.y });
+    this.toggleIconVisibility(false);
     await TimingUtils.wait(1000);
     shipOverlay.classList.add('is--hidden');
     document.querySelector('#gametime-countdown em.is--paused')?.classList.add('is--hidden');
