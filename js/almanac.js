@@ -21,10 +21,20 @@ const cookingRecipes = RecipeDefinitions.cookingRecipes;
 
 let almanacHistory = [];
 
+let almDragMode = false;
+let almDragEl = null;
+let almStartPosX = 0;
+let almStartPosY = 0;
+let almNewPosX = 0;
+let almNewPosY = 0;
+
 export default {
   init: function () {
     almanacContainer.addEventListener('mousedown', this.handleAlmanacAction.bind(this));
     document.body.addEventListener('mousedown', this.handleAlmanacOpenPage.bind(this));
+    almanacContainer.addEventListener('pointerdown', this.handleAlmanacDragStart.bind(this));
+    document.body.addEventListener('pointermove', this.handleAlmanacDragMove.bind(this));
+    document.body.addEventListener('pointerup', this.handleAlmanacDragEnd.bind(this));
     // EVENT: React to first item of a kind being added to inventory to make it known in almanac
     EventManager.on(EVENTS.FIRST_ITEM_ADDED, ({ item }) => {
       AlmanacManager.makeContentKnown(item);
@@ -131,6 +141,47 @@ export default {
       const item = craftingActionButton.dataset.item;
       this.showPage(item, craftingActionButton, craftContainer);
     }
+  },
+
+  handleAlmanacDragStart: function (ev) {
+    const target = ev.target;
+    const leftMouseButton = ev.button === 0;
+    if (!leftMouseButton) {
+      return;
+    }
+    if (!almDragMode && target.classList.contains('title')) {
+      almDragMode = true;
+      almDragEl = almanacContainer;
+      almDragEl.classList.add('grabbed');
+      almStartPosX = ev.clientX;
+      almStartPosY = ev.clientY;
+    }
+  },
+
+  handleAlmanacDragMove: function (ev) {
+    ev.stopPropagation();
+    if (!almDragMode) {
+      return;
+    }
+    const scale = window.innerHeight / 1200;
+    almNewPosX = (almStartPosX - ev.clientX) / scale;
+    almNewPosY = (almStartPosY - ev.clientY) / scale;
+    almStartPosX = ev.clientX;
+    almStartPosY = ev.clientY;
+    if (almDragEl) {
+      almDragEl.style.top = almDragEl.offsetTop - almNewPosY + 'px';
+      almDragEl.style.left = almDragEl.offsetLeft - almNewPosX + 'px';
+    }
+  },
+
+  handleAlmanacDragEnd: function () {
+    if (!almDragMode) {
+      return;
+    }
+    almDragEl.classList.remove('grabbed');
+    almDragEl.classList.add('repos');
+    almDragMode = false;
+    almDragEl = null;
   },
 
   /* handles all action button clicks inside the almanac */

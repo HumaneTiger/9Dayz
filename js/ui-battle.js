@@ -93,20 +93,6 @@ export default {
       initialStyleLeft = dragEl.style.left;
       initialStyleTop = dragEl.style.top;
     }
-
-    // TODO: move almanac drag handling to almanac.js
-    if (dragMode === false && target.closest('#almanac') && target.classList.contains('title')) {
-      dragMode = true;
-
-      dragEl = target.closest('#almanac');
-      dragEl.classList.add('grabbed');
-
-      startPosX = dragEl.clientX;
-      startPosY = dragEl.clientY;
-
-      initialStyleLeft = dragEl.style.left;
-      initialStyleTop = dragEl.style.top;
-    }
   },
 
   mouseMove: function (e) {
@@ -169,10 +155,6 @@ export default {
           this.battleController.resolveSingleAttack(dragEl, dragTarget);
         }
       }
-    } else if (dragEl?.id === 'almanac') {
-      // TODO: move almanac drag release handling to almanac.js
-      dragEl.classList.remove('grabbed');
-      dragEl.classList.add('repos');
     } else if (dragEl) {
       this.resetDraggedElement(dragEl);
     }
