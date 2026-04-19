@@ -3,7 +3,7 @@
 import TimingUtils from '../utils/timing-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
 import Cards from '../cards.js';
-import { ObjectState, ObjectFactory, InventoryManager } from '../core/index.js';
+import { ObjectState, ObjectFactory, InventoryManager, AlmanacManager } from '../core/index.js';
 
 /**
  * @param {number} cardId
@@ -18,6 +18,7 @@ export default async function installingFaucet(cardId) {
   waterBarrelObject.removed = true;
   ObjectFactory.setupBuilding(waterBarrelObject.x, waterBarrelObject.y, ['rain-collector'], false);
   InventoryManager.addItemToInventory('faucet', -1);
+  AlmanacManager.makeContentKnown('rain-collector');
   Cards.renderCardDeck();
   ActionsOrchestration.endAction(cardId);
   ActionsOrchestration.goBackFromAction();

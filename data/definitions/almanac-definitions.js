@@ -128,5 +128,25 @@ export default {
       motive: './img/characters/hero.png',
       markup: CharacterDefinitions.furbuddy.descriptionMarkup,
     },
+    'water-barrel': {
+      motive: './img/almanac/water-barrel.png',
+      markup:
+        '<p>A <span class="keyword" data-content="water-barrel">water barrel</span> provides <span class="keyword" data-item="thirst">water</span> after each ship travel.</p><p>It can be crafted from <span class="keyword" data-item="stump">3 stumps</span> and a <span class="keyword" data-item="saw">saw</span>, on board the ship where it remains in place.</p><p>By adding a <span class="keyword" data-item="faucet">faucet</span> it can be upgraded to a <span class="keyword" data-content="rain-collector">rain collector</span>.</p>',
+    },
+    'rain-collector': {
+      motive: './img/almanac/rain-collector.png',
+      markup:
+        '<p>A <span class="keyword" data-content="rain-collector">rain collector</span> provides <span class="keyword" data-item="thirst">water</span> after each ship travel and allows you to <span class="keyword" data-item="drink-1">bottle water</span>.</p><p>It is an upgraded version of a <span class="keyword" data-content="water-barrel">water barrel</span>, crafted by adding a <span class="keyword" data-item="faucet">faucet</span> to it.</p>',
+    },
+    'plant-pot': {
+      motive: './img/almanac/plant-pot.png',
+      markup:
+        '<p>A <span class="keyword" data-content="plant-pot">plant pot</span> allows you to grow plants on board the ship.</p><p>It can be crafted from <span class="keyword" data-item="stump">2 stumps</span>, a <span class="keyword" data-item="hammer">hammer</span> and <span class="keyword" data-item="nails">nails</span>.</p><p>Once built, you can plant <span class="keyword" data-item="tomato">tomato</span>, <span class="keyword" data-item="pepper">pepper</span> or <span class="keyword" data-item="pumpkin">pumpkin</span> using a <span class="keyword" data-item="shovel">shovel</span> and additional ingredients.</p>',
+    },
+    hammock: {
+      motive: './img/almanac/hammock.png',
+      markup:
+        '<p>A <span class="keyword" data-content="hammock">hammock</span> allows you to rest and sleep on board the ship, restoring <span class="keyword" data-content="energy">energy</span> and <span class="keyword" data-content="health">health</span>.</p><p>It can be crafted from <span class="keyword" data-item="cloth">3 cloths</span> and <span class="keyword" data-item="rope">2 ropes</span>.</p>',
+    },
   },
 };

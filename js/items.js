@@ -180,11 +180,9 @@ export default {
             if (Props.getGameProp('feedingCompanion')) {
               // TODO: highlight the companion card (same effect as on card hover)
             } else if (Props.getGameProp('waitingTime')) {
-              // TODO: central function for calc the ratio
               document.querySelector('#ship-properties li.time').classList.add('transfer');
               Ui.previewShipProps('time', ShipManager.calcFoodToWaitingTimeRatio(itemProps));
             } else if (Props.getGameProp('fuelingShip')) {
-              // TODO: central function for calc the ratio
               document.querySelector('#ship-properties li.fuel').classList.add('transfer');
               Ui.previewShipProps('fuel', ShipManager.calcItemToShipFuelRatio(itemProps));
             }

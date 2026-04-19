@@ -124,7 +124,7 @@ export default {
     },
     hammock: {
       items: [['rope'], ['rope'], ['cloth'], ['cloth'], ['cloth']],
-      exclusive: true,
+      exclusive: false,
       result: 'building',
       page: 3,
     },
