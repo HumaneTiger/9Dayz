@@ -46,7 +46,6 @@ export default {
       const iconTop = Math.round(y * 44.4 + 3);
       const areaTop = Math.round(y * 44.4 + 8);
 
-      console.log(object);
       const buildingProps = BuildingDefinitions.buildingProps[object.name];
       const iconType = buildingProps?.onBoardOnly ? 'onboard' : 'onmap';
 

@@ -208,12 +208,12 @@ export default {
     'tool-shed': {
       locked: 2,
       spawn: 2,
-      items: ['cloth', 'rope', 'fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'tape'],
+      items: ['cloth', 'rope', 'fail', 'hacksaw', 'hammer', 'mallet', 'pincers', 'tape'],
     },
     garage: {
-      locked: 3,
+      locked: 5,
       spawn: 3,
-      items: ['cloth', 'rope', 'fail', 'hacksaw', 'knife', 'mallet', 'pincers', 'tape', 'nails'],
+      items: ['rope', 'tape', 'hammer'],
     },
     well: {
       locked: 0,
@@ -306,7 +306,7 @@ export default {
       spawn: 3,
       items: ['pepper', 'pepper', 'pepper'],
       amount: 3,
-      ready: true,
+      ready: false,
       stationary: true,
       onBoardOnly: true,
     },
@@ -315,7 +315,7 @@ export default {
       spawn: 2,
       items: ['pumpkin', 'pumpkin'],
       amount: 2,
-      ready: true,
+      ready: false,
       stationary: true,
       onBoardOnly: true,
     },

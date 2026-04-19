@@ -1303,12 +1303,6 @@
         "tick": 4741
     },
     {
-        "module": "Cards",
-        "type": "cards-select-action",
-        "selector": "[id=\"210\"] .action-button[data-action=\"attack\"]",
-        "tick": 4814
-    },
-    {
         "module": "Ui",
         "type": "ui-button",
         "action": "inventory",
