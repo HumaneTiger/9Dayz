@@ -330,7 +330,11 @@ export default {
       document.getElementById('character')?.classList.add('touchcontrols');
     }
     if (document.getElementById('fullscreen')?.classList.contains('on')) {
-      if (document.fullscreenEnabled && !Props.getGameProp('testPlayback')) {
+      if (
+        document.fullscreenEnabled &&
+        !window.electronAPI?.isElectron &&
+        !Props.getGameProp('testPlayback')
+      ) {
         document.documentElement.requestFullscreen();
       }
     }

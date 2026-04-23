@@ -89,45 +89,39 @@ export default {
   handleKeydown: function (ev) {
     const actionsPanel = document.getElementById('actions');
     const actionsPanelActive = actionsPanel.classList.contains('active');
+
     if (!Props.getGameProp('battle') && ev.key) {
-      if (ev.key.toLowerCase() === 'i' && actionsPanelActive) {
+      const dispatch = selector =>
         actionsPanel
-          .querySelector('li.inventory')
+          .querySelector(selector)
           ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
-      } else if (ev.key.toLowerCase() === 'c' && actionsPanelActive) {
-        actionsPanel
-          .querySelector('li.craft')
-          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
-      } else if (ev.key.toLowerCase() === 'm') {
-        if (actionsPanelActive) {
-          actionsPanel
-            .querySelector('li.map')
-            ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
-        } else {
-          this.handleMapClick();
-        }
-      } else if (ev.key.toLowerCase() === 'e') {
-        const settingsAction = actionsPanel.querySelector('li.settings');
-        // make sure editor can be opened even if actions panel is hidden
-        if (settingsAction) {
-          settingsAction.dispatchEvent(new Event('mousedown', { bubbles: true }));
-        } else {
-          document.getElementById('card-console').classList.toggle('out');
-        }
-      } else if (ev.key.toLowerCase() === 'q' && actionsPanelActive) {
-        actionsPanel
-          .querySelector('li.quit')
-          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
-      } else if (ev.key.toLowerCase() === 'f' && actionsPanelActive) {
-        actionsPanel
-          .querySelector('li.fullscreen')
-          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
-      } else if ((ev.key.toLowerCase() === 'p' || ev.code === 'Space') && actionsPanelActive) {
-        actionsPanel
-          .querySelector('li.mixed span.pause')
-          ?.dispatchEvent(new Event('mousedown', { bubbles: true }));
+
+      const keyMap = {
+        i: () => actionsPanelActive && dispatch('li.inventory'),
+        c: () => actionsPanelActive && dispatch('li.craft'),
+        m: () => (actionsPanelActive ? dispatch('li.map') : this.handleMapClick()),
+        e: () => {
+          const settingsAction = actionsPanel.querySelector('li.settings');
+          // make sure editor can be opened even if actions panel is hidden
+          if (settingsAction) {
+            settingsAction.dispatchEvent(new Event('mousedown', { bubbles: true }));
+          } else {
+            document.getElementById('card-console').classList.toggle('out');
+          }
+        },
+        q: () => actionsPanelActive && dispatch('li.quit'),
+        f: () => actionsPanelActive && dispatch('li.fullscreen'),
+        p: () => actionsPanelActive && dispatch('li.mixed span.pause'),
+      };
+
+      const key = ev.key.toLowerCase();
+      if (key === ' ' || ev.code === 'Space') {
+        actionsPanelActive && dispatch('li.mixed span.pause');
+      } else {
+        keyMap[key]?.();
       }
     }
+
     if (ev.key === 'Escape') {
       if (Props.getGameProp('startMode') === -1) {
         this.toggleInstantQuitConfirmation();
@@ -187,7 +181,11 @@ export default {
           case 'fullscreen': {
             // enter/exit fullscreen mode
             const fullscreenActive = document.fullscreenElement;
-            if (document.fullscreenEnabled && !Props.getGameProp('testPlayback')) {
+            if (
+              document.fullscreenEnabled &&
+              !window.electronAPI?.isElectron &&
+              !Props.getGameProp('testPlayback')
+            ) {
               if (!fullscreenActive) {
                 document.documentElement.requestFullscreen();
               } else {
