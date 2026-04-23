@@ -473,6 +473,9 @@ export default {
             discovered +
             (undiscovered > 0 ? '+?' : '') +
             ')';
+        } else {
+          actionRef.classList.remove('critical');
+          actionRef.querySelector('span.text').innerHTML = action.label;
         }
       }
       if (action.id === 'cook') {
