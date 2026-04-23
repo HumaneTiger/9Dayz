@@ -1,9 +1,8 @@
 import Props from './props.js';
 import Player from './player.js';
-import Items from './items.js';
 import Audio from './audio.js';
 import TimingUtils from './utils/timing-utils.js';
-import { TutorialManager, CardsManager, PlayerManager } from './core/index.js';
+import { TutorialManager, CardsManager, PlayerManager, InventoryManager } from './core/index.js';
 import { CardsDefinitions } from '../data/index.js';
 
 let battleTutorialStep = 0,
@@ -226,9 +225,9 @@ export default {
       if (
         crafting.total &&
         !Props.getGameProp('firstAxeCraft') &&
-        Items.inventoryContains('tape') &&
-        Items.inventoryContains('branch') &&
-        Items.inventoryContains('stone')
+        InventoryManager.inventoryContains('tape') &&
+        InventoryManager.inventoryContains('branch') &&
+        InventoryManager.inventoryContains('stone')
       ) {
         Props.setGameProp('firstAxeCraft', true);
         let objectId = TutorialManager.setupSpecialEvent(

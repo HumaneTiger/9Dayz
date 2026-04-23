@@ -1,5 +1,4 @@
 import Props from './props.js';
-import Items from './items.js';
 import Player from './player.js';
 import TimingUtils from './utils/timing-utils.js';
 import {
@@ -9,6 +8,7 @@ import {
   AlmanacManager,
   GameState,
   ObjectState,
+  InventoryManager,
 } from './core/index.js';
 import { BuildingDefinitions } from '../data/index.js';
 
@@ -87,7 +87,7 @@ export default {
             }
           } else {
             for (const orItem in itemRecipe.items[recipeItem]) {
-              if (Items.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
+              if (InventoryManager.inventoryContains(itemRecipe.items[recipeItem][orItem])) {
                 // consume first one that is found
                 if (!this.preserveCraftingItem(itemRecipe.items[recipeItem][0])) {
                   Props.addItemToInventory(itemRecipe.items[recipeItem][orItem], -1);
@@ -202,7 +202,7 @@ export default {
           craftContainer
             .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.add('onBoardOnly');
-        } else if (itemRecipe.exclusive && Items.inventoryContains(recipe)) {
+        } else if (itemRecipe.exclusive && InventoryManager.inventoryContains(recipe)) {
           craftContainer
             .querySelector(`.button-craft[data-item="${recipe}"]`)
             ?.classList.remove('active');

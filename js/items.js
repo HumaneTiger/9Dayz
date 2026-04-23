@@ -42,27 +42,6 @@ export default {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 
-  inventoryContains: function (itemName) {
-    return InventoryManager.inventoryContains(itemName);
-  },
-
-  inventoryKnows: function (itemName) {
-    return InventoryManager.inventoryKnows(itemName);
-  },
-
-  inventoryItemAmount: function (itemName) {
-    return InventoryManager.inventoryItemAmount(itemName);
-  },
-
-  getItemByName: function (itemName) {
-    return InventoryManager.getItemByName(itemName);
-  },
-
-  getFirstItemOfType: function (itemType) {
-    /* needed for rat attacks */
-    return InventoryManager.getFirstItemOfType(itemType);
-  },
-
   inventoryChangeFeedback: async function () {
     document.getElementById('inventory-numbers').textContent = inventory.itemNumbers;
     document.querySelector('#actions .inventory').classList.add('transfer');
@@ -106,7 +85,7 @@ export default {
         }
         if (itemProps.food || itemProps.drink || itemProps.energy) {
           Props.addItemToInventory(item, -1);
-          if (!this.inventoryContains(item)) {
+          if (!InventoryManager.inventoryContains(item)) {
             this.resetInventorySlotHoverEffect();
           }
         }
@@ -121,7 +100,7 @@ export default {
         }
         // for all cases, remove the item from inventory
         Props.addItemToInventory(item, -1);
-        if (!this.inventoryContains(item)) {
+        if (!InventoryManager.inventoryContains(item)) {
           this.resetInventorySlotHoverEffect();
         }
       }
@@ -164,15 +143,15 @@ export default {
         Ui.resetPreviewProps();
         if (hoverSlot.classList.contains('active')) {
           if (!Props.getGameProp('inventoryAlternativeUse')) {
-            if (itemProps.food > 0 && this.inventoryContains(item)) {
+            if (itemProps.food > 0 && InventoryManager.inventoryContains(item)) {
               document.querySelector('#properties li.food').classList.add('transfer');
               Ui.previewProps('food', itemProps.food);
             }
-            if (itemProps.drink > 0 && this.inventoryContains(item)) {
+            if (itemProps.drink > 0 && InventoryManager.inventoryContains(item)) {
               document.querySelector('#properties li.thirst').classList.add('transfer');
               Ui.previewProps('thirst', itemProps.drink);
             }
-            if (itemProps.energy > 0 && this.inventoryContains(item)) {
+            if (itemProps.energy > 0 && InventoryManager.inventoryContains(item)) {
               document.querySelector('#properties li.energy').classList.add('transfer');
               Ui.previewProps('energy', itemProps.energy);
             }
@@ -241,16 +220,19 @@ export default {
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }
       } else {
-        if (item.food > 0 && this.inventoryContains(itemName)) {
+        if (item.food > 0 && InventoryManager.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="food">${itemFood}<span class="material-symbols-outlined">lunch_dining</span></span>`;
         }
-        if (item.drink > 0 && this.inventoryContains(itemName)) {
+        if (item.drink > 0 && InventoryManager.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="drink">${itemDrink}<span class="material-symbols-outlined">water_medium</span></span>`;
         }
-        if (item.energy > 0 && this.inventoryContains(itemName)) {
+        if (item.energy > 0 && InventoryManager.inventoryContains(itemName)) {
           itemInfoMarkup += `<span class="energy">${itemEnergy}<span class="material-symbols-outlined">flash_on</span></span>`;
         }
-        if (RecipesManager.isItemPartOfRecipe(itemName) && this.inventoryContains(itemName)) {
+        if (
+          RecipesManager.isItemPartOfRecipe(itemName) &&
+          InventoryManager.inventoryContains(itemName)
+        ) {
           itemInfoMarkup +=
             '<span class="cooking">+<span class="material-symbols-outlined">stockpot</span></span>';
         }

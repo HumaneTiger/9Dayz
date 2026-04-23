@@ -18,6 +18,7 @@ import {
   GameState,
   BattleManager,
   PlayerManager,
+  InventoryManager,
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -448,7 +449,7 @@ export default {
         () => {
           let ratAteFood = false;
           if (zedObject.name === 'rat') {
-            let foodItem = Items.getFirstItemOfType('eat');
+            let foodItem = InventoryManager.getFirstItemOfType('eat');
             if (foodItem !== undefined) {
               ratAteFood = true;
               zedObject.defense += foodItem.protection;

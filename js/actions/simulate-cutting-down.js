@@ -1,6 +1,6 @@
 import Audio from '../audio.js';
 import Props from '../props.js';
-import Items from '../items.js';
+import { InventoryManager } from '../core/index.js';
 import RngUtils from '../utils/rng-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
 
@@ -16,9 +16,9 @@ export default function simulateCuttingDown(cardId, time, energy) {
     function (cardId, energy) {
       ActionsOrchestration.endAction(cardId);
       ActionsOrchestration.goBackFromAction();
-      if (Items.inventoryContains('improvised-axe')) {
+      if (InventoryManager.inventoryContains('improvised-axe')) {
         Props.addWeaponToInventory('improvised-axe', 0, { durability: -1 });
-      } else if (Items.inventoryContains('axe')) {
+      } else if (InventoryManager.inventoryContains('axe')) {
         Props.addWeaponToInventory('axe', 0, { durability: -1 });
       }
       Props.beginInventoryBatch();

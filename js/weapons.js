@@ -1,9 +1,8 @@
 import Props from './props.js';
-import Items from './items.js';
 import Player from './player.js';
 import Audio from './audio.js';
 import Events, { EVENTS } from './core/event-manager.js';
-import { WeaponsManager, CharacterManager } from './core/index.js';
+import { WeaponsManager, CharacterManager, InventoryManager } from './core/index.js';
 
 const weaponSlotsContainer = document.getElementById('character');
 const slot1 = weaponSlotsContainer.querySelector('.slot-1');
@@ -71,7 +70,7 @@ export default {
         const upgradeType = this.getUpgradeType(upgradeButton);
         switch (upgradeType) {
           case 'attack-upgrade':
-            if (Items.inventoryContains(weaponPropsUpgrade.attack.item)) {
+            if (InventoryManager.inventoryContains(weaponPropsUpgrade.attack.item)) {
               weaponInstance.damage += weaponPropsUpgrade.attack.amount;
               Audio.sfx('improve-weapon');
               if (!CharacterManager.shouldPreserveUpgradeResources()) {
@@ -129,7 +128,7 @@ export default {
         attackUpgrade.querySelector('.attack').textContent = `+${weaponPropsUpgrade.attack.amount}`;
         attackUpgrade.classList.remove('is--hidden');
         attackUpgrade.dataset.item = weaponPropsUpgrade.attack.item;
-        if (Items.inventoryContains(weaponPropsUpgrade.attack.item)) {
+        if (InventoryManager.inventoryContains(weaponPropsUpgrade.attack.item)) {
           if (attackUpgrade.classList.contains('nope')) {
             changeFeedback = true;
           }
@@ -146,7 +145,7 @@ export default {
           `+${weaponPropsUpgrade.defense.amount}`;
         defenseUpgrade.classList.remove('is--hidden');
         defenseUpgrade.dataset.item = weaponPropsUpgrade.defense.item;
-        if (Items.inventoryContains(weaponPropsUpgrade.defense.item)) {
+        if (InventoryManager.inventoryContains(weaponPropsUpgrade.defense.item)) {
           if (defenseUpgrade.classList.contains('nope')) {
             changeFeedback = true;
           }
@@ -161,7 +160,7 @@ export default {
       if (durabilityUpgrade && weaponPropsUpgrade.durability) {
         durabilityUpgrade.classList.remove('is--hidden');
         durabilityUpgrade.dataset.item = weaponPropsUpgrade.durability.item;
-        if (Items.inventoryContains(weaponPropsUpgrade.durability.item)) {
+        if (InventoryManager.inventoryContains(weaponPropsUpgrade.durability.item)) {
           if (Props.getWeaponProps(weaponName).durability > weaponInstance.durability) {
             // upgrade possible
             if (durabilityUpgrade.classList.contains('nope')) {

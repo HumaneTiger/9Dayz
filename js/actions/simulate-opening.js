@@ -1,6 +1,6 @@
 import Audio from '../audio.js';
 import Props from '../props.js';
-import Items from '../items.js';
+import { InventoryManager } from '../core/index.js';
 import ActionsUtils from '../utils/actions-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
 
@@ -11,9 +11,9 @@ export default function simulateOpening(cardId, time, energy) {
     function (cardId, energy) {
       const object = Props.getObject(cardId);
       object.locked = false;
-      if (object.type !== 'car' && Items.inventoryContains('key')) {
+      if (object.type !== 'car' && InventoryManager.inventoryContains('key')) {
         Props.addItemToInventory('key', -1);
-      } else if (object.type === 'car' && Items.inventoryContains('car-keys')) {
+      } else if (object.type === 'car' && InventoryManager.inventoryContains('car-keys')) {
         Props.addItemToInventory('car-keys', -1);
       }
       Props.changePlayerProp('energy', energy);
