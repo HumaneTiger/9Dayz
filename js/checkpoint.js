@@ -187,6 +187,14 @@ export default {
     Props.changePlayerProp('thirst', checkpoint.playerStats.thirst);
     Props.changePlayerProp('energy', checkpoint.playerStats.energy);
 
+    // ===== SHIP =====
+    if (checkpoint.shipTime !== undefined) {
+      ShipManager.addWaitingTime(checkpoint.shipTime - ShipManager.getShipProps().time);
+    }
+    if (checkpoint.shipFuel !== undefined) {
+      ShipManager.addFuel(checkpoint.shipFuel - ShipManager.getShipProps().fuel);
+    }
+
     // ===== TIME =====
     // Restore game time and day/night cycle
     Props.updateTimeIsUnity(checkpoint.gameTime);
@@ -225,14 +233,6 @@ export default {
       Props.setGameProp('firstInventoryOpen', checkpoint.firstInventoryOpen);
     if (checkpoint.firstCompanion !== undefined)
       Props.setGameProp('firstCompanion', checkpoint.firstCompanion);
-
-    // ===== SHIP =====
-    if (checkpoint.shipTime !== undefined) {
-      ShipManager.addWaitingTime(checkpoint.shipTime - ShipManager.getShipProps().time);
-    }
-    if (checkpoint.shipFuel !== undefined) {
-      ShipManager.addFuel(checkpoint.shipFuel - ShipManager.getShipProps().fuel);
-    }
 
     // ===== ALMANAC =====
     // TODO: Restore discovered recipes/crafting options
