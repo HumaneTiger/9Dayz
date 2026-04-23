@@ -270,4 +270,16 @@ export default {
   removeOpponentDeck: function () {
     CardsDefinitions.opponentDeck = [];
   },
+
+  /**
+   * Returns the correct attack sound ID for a given enemy object
+   * @param {{ name: string }} enemyObject
+   * @returns {string}
+   */
+  getEnemyAttackSound: function (enemyObject) {
+    console.log(enemyObject);
+    if (enemyObject.name === 'rat') return 'rat-attacks';
+    if (enemyObject.name === 'bee') return 'bee-attacks';
+    return 'zed-attacks';
+  },
 };

@@ -112,7 +112,12 @@ export default {
       if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
         enemyRef.querySelector('.health').textContent = enemyObject.defense;
         window.setTimeout(async () => {
-          await UiBattle.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
+          await UiBattle.playAttackAnim(
+            enemyRef,
+            companionRef,
+            BattleManager.getEnemyAttackSound(enemyObject),
+            false
+          );
           companion.health -= enemyObject.attack;
           if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
             const healthMarkup = CompanionManager.generateHealthMarkup();
@@ -128,7 +133,12 @@ export default {
 
   startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion) {
     window.setTimeout(async () => {
-      await UiBattle.playAttackAnim(enemyRef, companionRef, 'zed-attacks', false);
+      await UiBattle.playAttackAnim(
+        enemyRef,
+        companionRef,
+        BattleManager.getEnemyAttackSound(enemyObject),
+        false
+      );
       companion.health -= enemyObject.attack;
       if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
         const healthMarkup = CompanionManager.generateHealthMarkup();

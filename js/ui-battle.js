@@ -196,13 +196,7 @@ export default {
     zedCardRef.classList.add('anim-punch');
     this.shakeHealthMeter(false);
     this.shakeDefensiveCards(false);
-    if (zedName === 'rat') {
-      Audio.sfx('rat-attacks');
-    } else if (zedName === 'bee') {
-      Audio.sfx('bee-attacks');
-    } else {
-      Audio.sfx('zed-attacks');
-    }
+    Audio.sfx(BattleManager.getEnemyAttackSound({ name: zedName }));
   },
 
   scratchAnim: function (targetObjectRef) {
