@@ -8,6 +8,7 @@ import {
   AlmanacManager,
   GameState,
   ObjectState,
+  ObjectFactory,
   InventoryManager,
 } from './core/index.js';
 import { BuildingDefinitions } from '../data/index.js';
@@ -104,14 +105,13 @@ export default {
           // create a card of sort
           const here = Player.getPlayerPosition();
           if (itemRecipe.result === 'weapon') {
-            // TODO: Props.setupWeapon should return the new object ID to allow passing it directly
-            Props.setupWeapon(here.x, here.y, item);
+            const objectId = ObjectFactory.setupWeapon(here.x, here.y, item);
             AlmanacManager.makeContentKnown(item);
+            EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: [objectId] });
           } else if (itemRecipe.result === 'building') {
-            // TODO: Props.setupBuilding should return the new object ID to allow passing it directly
-            Props.setupBuilding(here.x, here.y, new Array(item));
+            const objectIds = ObjectFactory.setupBuilding(here.x, here.y, new Array(item));
+            EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds });
           }
-          EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: ObjectState.findAllObjectsNearby(here.x, here.y) });
           craftContainer.classList.remove('active');
           // make crafted item known in almanac
           EventManager.emit(EVENTS.FIRST_ITEM_ADDED, {

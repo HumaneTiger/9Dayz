@@ -194,7 +194,7 @@ export default {
    * @param {boolean|LootItem[]} [forceLootItemList=false]
    * @param {boolean|CreatureObject[]} [forceCreaturesList=false]
    * @param {boolean|Array<AdditionalGameObject>} [forceAdditionalGameObjects=false]
-   * @returns {void}
+   * @returns {number[]}
    */
   setupBuilding: function (
     x,
@@ -205,6 +205,8 @@ export default {
     forceCreaturesList = false,
     forceAdditionalGameObjects = false
   ) {
+    /** @type {number[]} */
+    const ids = [];
     buildingNamesArray.forEach(buildingName => {
       const props = buildingProps[buildingName];
       const type = BuildingUtils.getBuildingTypeOf(buildingName);
@@ -253,6 +255,7 @@ export default {
 
       // Assign a stable object ID
       const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
+      ids.push(currentObjectsIdCounter);
 
       // Create building object with everything persisted
       ObjectState.setObject(
@@ -286,6 +289,7 @@ export default {
         })
       );
     });
+    return ids;
   },
 
   /**
@@ -518,7 +522,7 @@ export default {
    * @param {number} y
    * @param {string} weaponName
    * @param {WeaponStats|undefined} [forceStats]
-   * @returns {void}
+   * @returns {number}
    */
   setupWeapon: function (x, y, weaponName, forceStats) {
     const props = WeaponsManager.getWeaponDefinition(weaponName);
@@ -537,6 +541,7 @@ export default {
         durability: forceStats?.durability || props.durability,
       })
     );
+    return currentObjectsIdCounter;
   },
 
   /* === Building Props Data Accessor === */

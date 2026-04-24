@@ -5,7 +5,7 @@ import CardsMarkup from '../cards-markup.js';
 import TimingUtils from './timing-utils.js';
 import AudioUtils from './audio-utils.js';
 import { ActionsDefinitions } from '../../data/definitions/index.js';
-import { ObjectState, EventManager, EVENTS } from '../core/index.js';
+import { ObjectState, ObjectFactory, EventManager, EVENTS } from '../core/index.js';
 
 /* === Simulation and helper functions === */
 
@@ -113,16 +113,15 @@ export default {
     const object = Props.getObject(cardId);
     const itemAmount = object.items[itemIndex]?.amount;
     let cardRef = Cards.getCardById(cardId);
+    let newObjectIds;
     if (Props.isWeapon(itemName)) {
       // spawn card representing the grabbed weapon item
-      Props.setupWeapon(Player.getPlayerPosition().x, Player.getPlayerPosition().y, itemName);
+      const pos = Player.getPlayerPosition();
+      newObjectIds = [ObjectFactory.setupWeapon(pos.x, pos.y, itemName)];
     } else if (itemName === 'crate') {
       // spawn card representing the grabbed crate item
-      Props.setupBuilding(
-        Player.getPlayerPosition().x,
-        Player.getPlayerPosition().y,
-        new Array('crate')
-      );
+      const pos = Player.getPlayerPosition();
+      newObjectIds = ObjectFactory.setupBuilding(pos.x, pos.y, new Array('crate'));
     } else {
       Props.addItemToInventory(itemName, itemAmount);
     }
@@ -132,10 +131,8 @@ export default {
     await TimingUtils.waitForTransition(container);
     if (cardRef) {
       container.classList.add('is--hidden');
-      if (itemName === 'crate' || Props.isWeapon(itemName)) {
-        // TODO: Props.setupWeapon / Props.setupBuilding should return the new object ID to avoid rescanning
-        const pos = Player.getPlayerPosition();
-        EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: ObjectState.findAllObjectsNearby(pos.x, pos.y) });
+      if (newObjectIds) {
+        EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: newObjectIds });
       } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
       if (
         object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
