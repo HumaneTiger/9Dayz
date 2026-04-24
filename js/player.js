@@ -9,7 +9,6 @@ import {
 } from './core/index.js';
 import Cards from './cards.js';
 import Map from './map.js';
-import Battle from './battle.js';
 import Ui from './ui.js';
 import Viewport from './viewport.js';
 
@@ -62,16 +61,8 @@ export default {
     Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
     MapManager.updateBoardingState(playerPosition);
-    window.setTimeout(() => {
-      const objectsHere = ObjectState.getObjectsAt(playerPosition.x, playerPosition.y);
-      this.findAndHandleObjects();
-      Cards.enableActions();
-      if (objectsHere?.some(obj => obj.group === 'zombie' && !obj.dead)) {
-        window.setTimeout(() => {
-          Battle.startBattle(objectsHere[0], true);
-        }, 800);
-      }
-    }, 0);
+    this.findAndHandleObjects();
+    EventManager.emit(EVENTS.PLAYER_ENTERED_TILE, { x: playerPosition.x, y: playerPosition.y });
     CharacterManager.applyMovementAndHealthCosts(noPenalty);
   },
 

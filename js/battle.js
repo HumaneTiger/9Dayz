@@ -19,6 +19,8 @@ import {
   BattleManager,
   PlayerManager,
   InventoryManager,
+  EventManager,
+  EVENTS,
 } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
@@ -26,6 +28,14 @@ export default {
   init: function () {
     // Inject Battle into UiBattle to avoid circular dependency
     UiBattle.setBattleController(this);
+    EventManager.on(EVENTS.PLAYER_ENTERED_TILE, ({ x, y }) => {
+      const objectsHere = ObjectState.getObjectsAt(x, y);
+      if (objectsHere?.some(obj => obj.group === 'zombie' && !obj.dead)) {
+        window.setTimeout(() => {
+          this.startBattle(objectsHere[0], true);
+        }, 800);
+      }
+    });
   },
 
   prepareBattle: function () {

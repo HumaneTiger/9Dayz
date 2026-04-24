@@ -20,6 +20,7 @@ export const EVENTS = {
   GAME_OVER: 'game:over',
   PLAYER_BOARDED_SHIP: 'player:boardedShip',
   PLAYER_LEFT_SHIP: 'player:leftShip',
+  PLAYER_ENTERED_TILE: 'player:enteredTile',
 };
 
 /**

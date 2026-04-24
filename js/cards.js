@@ -25,6 +25,9 @@ export default {
       },
       { prop: 'timeIsUnity', value: GameState.getGameProp('timeIsUnity') }
     );
+    EventManager.on(EVENTS.PLAYER_ENTERED_TILE, () => {
+      this.enableActions();
+    });
   },
 
   handleTimeChange: function (time) {
