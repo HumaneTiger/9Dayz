@@ -1,9 +1,8 @@
 import Props from '../props.js';
-import Player from '../player.js';
 import Map from '../map.js';
 import ActionsUtils from '../utils/actions-utils.js';
 import ActionsOrchestration from '../actions-orchestration.js';
-import { ObjectState } from '../core/index.js';
+import { ObjectState, EventManager, EVENTS } from '../core/index.js';
 
 export default function simulateScouting(cardId, time) {
   Map.showScoutMarkerFor(cardId);
@@ -16,7 +15,7 @@ export default function simulateScouting(cardId, time) {
       ActionsOrchestration.endAction(cardId);
       ActionsOrchestration.goBackFromAction();
       const allFoundObjectIds = ObjectState.findAllObjectsNearby(object.x, object.y);
-      Player.handleFoundObjectIds(allFoundObjectIds);
+      EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: allFoundObjectIds });
       Map.hideScoutMarker();
       ActionsUtils.spawnCreaturesIfInfested(cardId, true);
     },

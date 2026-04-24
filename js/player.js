@@ -61,14 +61,9 @@ export default {
     Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
     MapManager.updateBoardingState(playerPosition);
-    this.findAndHandleObjects();
+    EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y) });
     EventManager.emit(EVENTS.PLAYER_ENTERED_TILE, { x: playerPosition.x, y: playerPosition.y });
     CharacterManager.applyMovementAndHealthCosts(noPenalty);
-  },
-
-  findAndHandleObjects: function () {
-    const allFoundObjectIds = ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y);
-    this.handleFoundObjectIds(allFoundObjectIds);
   },
 
   movePlayerTo: function (x, y) {
@@ -252,8 +247,4 @@ export default {
     };
   },
 
-  handleFoundObjectIds: function (allFoundObjectIds) {
-    Map.showObjectIconsByIds(allFoundObjectIds);
-    Cards.addObjectsByIds(allFoundObjectIds);
-  },
 };

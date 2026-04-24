@@ -15,10 +15,12 @@ import Preloading from './preloading.js';
 import {
   EventManager,
   EVENTS,
+  GameState,
   PlayerManager,
   MapManager,
   TutorialManager,
   ShipManager,
+  ObjectState,
 } from './core/index.js';
 
 const saveCheckpoint = JSON.parse(localStorage.getItem('saveCheckpoint'));
@@ -361,7 +363,10 @@ export default {
 
   startGame: async function () {
     Props.setGameProp('startMode', -1);
-    Player.findAndHandleObjects();
+    const playerPosition = GameState.getGameProp('playerPosition');
+    EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, {
+      objectIds: ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y),
+    });
     Props.pauseGame(false);
     Audio.playAmbientLoop();
     Viewport.showMapBorder();

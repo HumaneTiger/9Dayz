@@ -1,5 +1,5 @@
 import Props from './props.js';
-import { ObjectState, MapManager } from './core/index.js';
+import { ObjectState, MapManager, EventManager, EVENTS } from './core/index.js';
 import BuildingDefinitions from '../data/definitions/building-definitions.js';
 
 const buidingsContainer = document.querySelector('.map .map-buildings');
@@ -20,6 +20,9 @@ for (var i = 0; i < uncoverMatrix.length; i += 1) {
 export default {
   init: function () {
     MapManager.setupAllPaths();
+    EventManager.on(EVENTS.NEW_OBJECTS_ADDED, ({ objectIds }) => {
+      this.showObjectIconsByIds(objectIds);
+    });
   },
 
   showScoutMarkerFor: function (cardId) {

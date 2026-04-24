@@ -25,6 +25,9 @@ export default {
       },
       { prop: 'timeIsUnity', value: GameState.getGameProp('timeIsUnity') }
     );
+    EventManager.on(EVENTS.NEW_OBJECTS_ADDED, ({ objectIds }) => {
+      this.addObjectsByIds(objectIds);
+    });
     EventManager.on(EVENTS.PLAYER_ENTERED_TILE, () => {
       this.enableActions();
     });

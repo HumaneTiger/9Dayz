@@ -21,6 +21,7 @@ export const EVENTS = {
   PLAYER_BOARDED_SHIP: 'player:boardedShip',
   PLAYER_LEFT_SHIP: 'player:leftShip',
   PLAYER_ENTERED_TILE: 'player:enteredTile',
+  NEW_OBJECTS_ADDED: 'objects:added',
 };
 
 /**

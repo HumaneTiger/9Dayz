@@ -5,7 +5,7 @@ import CardsMarkup from '../cards-markup.js';
 import TimingUtils from './timing-utils.js';
 import AudioUtils from './audio-utils.js';
 import { ActionsDefinitions } from '../../data/definitions/index.js';
-import { ObjectState } from '../core/index.js';
+import { ObjectState, EventManager, EVENTS } from '../core/index.js';
 
 /* === Simulation and helper functions === */
 
@@ -100,7 +100,7 @@ export default {
           CardsMarkup.updateCardActions(cardId);
         }
         // update card deck with new creature cards
-        Player.handleFoundObjectIds(hostileObjectIds);
+        EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: hostileObjectIds });
       }
     }
   },
@@ -133,7 +133,9 @@ export default {
     if (cardRef) {
       container.classList.add('is--hidden');
       if (itemName === 'crate' || Props.isWeapon(itemName)) {
-        Player.findAndHandleObjects();
+        // TODO: Props.setupWeapon / Props.setupBuilding should return the new object ID to avoid rescanning
+        const pos = Player.getPlayerPosition();
+        EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: ObjectState.findAllObjectsNearby(pos.x, pos.y) });
       } // this LOC must be placed here, otherwise the "grab slot" for weapons isn't removed correctly
       if (
         object.items.filter(singleItem => singleItem.amount > 0).length === 0 &&
