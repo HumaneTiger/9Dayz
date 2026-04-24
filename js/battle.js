@@ -28,6 +28,7 @@ export default {
   init: function () {
     // Inject Battle into UiBattle to avoid circular dependency
     UiBattle.setBattleController(this);
+    // check if player runs into a zed on the tile they move into
     EventManager.on(EVENTS.PLAYER_ENTERED_TILE, ({ x, y }) => {
       const objectsHere = ObjectState.getObjectsAt(x, y);
       if (objectsHere?.some(obj => obj.group === 'zombie' && !obj.dead)) {
