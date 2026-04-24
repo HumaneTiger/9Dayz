@@ -31,7 +31,7 @@ export default {
     document.body.addEventListener('pointerdown', this.mouseDown);
     document.body.addEventListener('pointermove', this.mouseMove.bind(this));
     document.body.addEventListener('pointerup', this.mouseUp.bind(this));
-    battleCardsContainer.addEventListener('mousedown', this.handleBattleCardsClick);
+    battleCardsContainer.addEventListener('mousedown', this.handleBattleCardsClick.bind(this));
     document.addEventListener('uiDragTestEvent', this.handleUiTestDragEvent.bind(this));
   },
 
