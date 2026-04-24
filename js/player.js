@@ -39,14 +39,7 @@ export default {
   },
 
   checkForDeath: function (secondWind) {
-    if (PlayerManager.getProp('health') <= 0) {
-      // 50:50 chance
-      if (!secondWind || Math.random() >= 0.5) {
-        EventManager.emit(EVENTS.GAME_OVER);
-        return true;
-      }
-    }
-    return false;
+    return PlayerManager.checkForDeath(secondWind);
   },
 
   initPlayer: function () {
@@ -68,17 +61,7 @@ export default {
   updatePlayer: function (noPenalty) {
     Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
-    // check if player enters or leaves the boat
-    const shipHotSpot = MapManager.getShipHotSpot();
-    if (playerPosition.x === shipHotSpot.x && playerPosition.y === shipHotSpot.y) {
-      if (!GameState.getGameProp('onBoard')) {
-        GameState.setGameProp('onBoard', true);
-        EventManager.emit(EVENTS.PLAYER_BOARDED_SHIP);
-      } else {
-        GameState.setGameProp('onBoard', false);
-        EventManager.emit(EVENTS.PLAYER_LEFT_SHIP);
-      }
-    }
+    MapManager.updateBoardingState(playerPosition);
     window.setTimeout(() => {
       const objectsHere = ObjectState.getObjectsAt(playerPosition.x, playerPosition.y);
       this.findAndHandleObjects();
@@ -89,20 +72,7 @@ export default {
         }, 800);
       }
     }, 0);
-
-    if (!noPenalty) {
-      PlayerManager.changePlayerProp('energy', -1);
-      PlayerManager.changePlayerProp('thirst', -2);
-      PlayerManager.changePlayerProp('food', -1);
-    }
-
-    CharacterManager.applyHighCalorieConsumptionChanges();
-
-    if (PlayerManager.getProp('food') <= 0) PlayerManager.changePlayerProp('health', -5);
-    if (PlayerManager.getProp('thirst') <= 0) PlayerManager.changePlayerProp('health', -5);
-    if (PlayerManager.getProp('energy') <= 0) PlayerManager.changePlayerProp('energy', -5);
-
-    this.checkForDeath(true);
+    CharacterManager.applyMovementAndHealthCosts(noPenalty);
   },
 
   findAndHandleObjects: function () {

@@ -502,7 +502,7 @@ export default {
           zedCardRef.classList.remove('attacking');
           zedCardRef.classList.remove('anim-punch');
         });
-        if (!this.checkForAllZedsDefeated() && !Player.checkForDeath(false)) {
+        if (!this.checkForAllZedsDefeated() && !PlayerManager.checkForDeath(false)) {
           this.nextTurn();
         }
       },

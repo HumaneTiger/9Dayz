@@ -7,6 +7,7 @@
 import { BuildingInstances, ZombieInstances, PathInstances, PathUtils } from '../../data/index.js';
 import { MapDefinitions } from '../../data/definitions/index.js';
 import ObjectFactory from './object-factory.js';
+import { GameState, EventManager, EVENTS } from './index.js';
 
 /**
  * Initializes the map by setting up buildings, zombies, and paths based on imported JSON data.
@@ -152,5 +153,22 @@ export default {
    */
   setPositionY: function (y) {
     this.currentMap.mapPosition.y = y;
+  },
+
+  /**
+   * Checks if the player is entering or leaving the ship hotspot and updates onBoard state.
+   * @param {{ x: number, y: number }} position
+   */
+  updateBoardingState: function (position) {
+    const shipHotSpot = this.getShipHotSpot();
+    if (position.x === shipHotSpot.x && position.y === shipHotSpot.y) {
+      if (!GameState.getGameProp('onBoard')) {
+        GameState.setGameProp('onBoard', true);
+        EventManager.emit(EVENTS.PLAYER_BOARDED_SHIP);
+      } else {
+        GameState.setGameProp('onBoard', false);
+        EventManager.emit(EVENTS.PLAYER_LEFT_SHIP);
+      }
+    }
   },
 };

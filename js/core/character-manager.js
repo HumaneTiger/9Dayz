@@ -127,4 +127,22 @@ export default {
     }
     return true;
   },
+
+  /**
+   * Applies movement stat costs and starvation/dehydration health damage.
+   * Includes character-specific calorie modifiers.
+   * @param {boolean} noPenalty - if true, skip stat costs (e.g. first move)
+   */
+  applyMovementAndHealthCosts: function (noPenalty) {
+    if (!noPenalty) {
+      PlayerManager.changePlayerProp('energy', -1);
+      PlayerManager.changePlayerProp('thirst', -2);
+      PlayerManager.changePlayerProp('food', -1);
+    }
+    this.applyHighCalorieConsumptionChanges();
+    if (PlayerManager.getProp('food') <= 0) PlayerManager.changePlayerProp('health', -5);
+    if (PlayerManager.getProp('thirst') <= 0) PlayerManager.changePlayerProp('health', -5);
+    if (PlayerManager.getProp('energy') <= 0) PlayerManager.changePlayerProp('energy', -5);
+    PlayerManager.checkForDeath(true);
+  },
 };

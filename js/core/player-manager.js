@@ -58,4 +58,18 @@ export default {
   lockMovement: function (moveable) {
     GameState.setGameProp('isMoveLocked', moveable);
   },
+
+  /**
+   * @param {boolean} secondWind - if true, 50:50 chance to survive at 0 health
+   * @returns {boolean} - whether the player died
+   */
+  checkForDeath: function (secondWind) {
+    if (playerProps.health <= 0) {
+      if (!secondWind || Math.random() >= 0.5) {
+        EventManager.emit(EVENTS.GAME_OVER);
+        return true;
+      }
+    }
+    return false;
+  },
 };
