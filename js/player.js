@@ -61,7 +61,9 @@ export default {
     Ui.showUI();
     this.movePlayerTo(playerPosition.x, playerPosition.y);
     MapManager.updateBoardingState(playerPosition);
-    EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, { objectIds: ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y) });
+    EventManager.emit(EVENTS.NEW_OBJECTS_ADDED, {
+      objectIds: ObjectState.findAllObjectsNearby(playerPosition.x, playerPosition.y),
+    });
     EventManager.emit(EVENTS.PLAYER_ENTERED_TILE, { x: playerPosition.x, y: playerPosition.y });
     CharacterManager.applyMovementAndHealthCosts(noPenalty);
   },
@@ -246,5 +248,4 @@ export default {
       y: player.style.top,
     };
   },
-
 };
