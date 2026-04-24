@@ -48,7 +48,7 @@ export default {
     }
   },
 
-  startCompanionBattle(singleZedId) {
+  async startCompanionBattle(singleZedId) {
     if (!singleZedId) {
       return;
     }
@@ -57,26 +57,25 @@ export default {
     this.spawnZedDeck(cardZedDeck);
     this.enterBattleMode(false);
     // start auto battle after short delay
-    window.setTimeout(() => {
-      UiBattle.spawnCompanionDeck();
-      const enemyObject = Props.getObject(singleZedId);
-      const companion = CompanionManager.getCompanionFromInventory();
-      if (enemyObject.name === 'rat' || enemyObject.name === 'bee') {
-        this.startAutoBattleEnemyFirst(
-          Cards.getCardById(singleZedId),
-          document.querySelector('#companion-cards .battle-card'),
-          enemyObject,
-          companion
-        );
-      } else {
-        this.startAutoBattleCompanionFirst(
-          Cards.getCardById(singleZedId),
-          document.querySelector('#companion-cards .battle-card'),
-          enemyObject,
-          companion
-        );
-      }
-    }, 600);
+    await TimingUtils.wait(600);
+    UiBattle.spawnCompanionDeck();
+    const enemyObject = Props.getObject(singleZedId);
+    const companion = CompanionManager.getCompanionFromInventory();
+    if (enemyObject.name === 'rat' || enemyObject.name === 'bee') {
+      this.startAutoBattleEnemyFirst(
+        Cards.getCardById(singleZedId),
+        document.querySelector('#companion-cards .battle-card'),
+        enemyObject,
+        companion
+      );
+    } else {
+      this.startAutoBattleCompanionFirst(
+        Cards.getCardById(singleZedId),
+        document.querySelector('#companion-cards .battle-card'),
+        enemyObject,
+        companion
+      );
+    }
   },
 
   resolveAutoBattle: function (enemyRef, companionRef, enemyObject, companion) {
@@ -106,34 +105,13 @@ export default {
     }
   },
 
-  startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion) {
-    window.setTimeout(async () => {
-      await UiBattle.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
-      enemyObject.defense -= companion.damage;
-      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
-        enemyRef.querySelector('.health').textContent = enemyObject.defense;
-        window.setTimeout(async () => {
-          await UiBattle.playAttackAnim(
-            enemyRef,
-            companionRef,
-            BattleManager.getEnemyAttackSound(enemyObject),
-            false
-          );
-          companion.health -= enemyObject.attack;
-          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
-            const healthMarkup = CompanionManager.generateHealthMarkup();
-            companionRef.querySelector('.durability').innerHTML = healthMarkup;
-            window.setTimeout(() => {
-              this.startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion);
-            }, 880);
-          }
-        }, 1800);
-      }
-    }, 500);
-  },
-
-  startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion) {
-    window.setTimeout(async () => {
+  async startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion) {
+    await TimingUtils.wait(500);
+    await UiBattle.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
+    enemyObject.defense -= companion.damage;
+    if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
+      enemyRef.querySelector('.health').textContent = enemyObject.defense;
+      await TimingUtils.wait(1800);
       await UiBattle.playAttackAnim(
         enemyRef,
         companionRef,
@@ -144,18 +122,33 @@ export default {
       if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
         const healthMarkup = CompanionManager.generateHealthMarkup();
         companionRef.querySelector('.durability').innerHTML = healthMarkup;
-        window.setTimeout(async () => {
-          await UiBattle.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
-          enemyObject.defense -= companion.damage;
-          if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
-            enemyRef.querySelector('.health').textContent = enemyObject.defense;
-            window.setTimeout(() => {
-              this.startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion);
-            }, 880);
-          }
-        }, 1800);
+        await TimingUtils.wait(880);
+        this.startAutoBattleCompanionFirst(enemyRef, companionRef, enemyObject, companion);
       }
-    }, 500);
+    }
+  },
+
+  async startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion) {
+    await TimingUtils.wait(500);
+    await UiBattle.playAttackAnim(
+      enemyRef,
+      companionRef,
+      BattleManager.getEnemyAttackSound(enemyObject),
+      false
+    );
+    companion.health -= enemyObject.attack;
+    if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
+      const healthMarkup = CompanionManager.generateHealthMarkup();
+      companionRef.querySelector('.durability').innerHTML = healthMarkup;
+      await TimingUtils.wait(1800);
+      await UiBattle.playAttackAnim(companionRef, enemyRef, 'aggro-bark', true);
+      enemyObject.defense -= companion.damage;
+      if (!this.resolveAutoBattle(enemyRef, companionRef, enemyObject, companion)) {
+        enemyRef.querySelector('.health').textContent = enemyObject.defense;
+        await TimingUtils.wait(880);
+        this.startAutoBattleEnemyFirst(enemyRef, companionRef, enemyObject, companion);
+      }
+    }
   },
 
   enterBattleMode(defaultBattle = true) {
@@ -195,7 +188,7 @@ export default {
     UiBattle.updateDefensiveCardsContainer();
   },
 
-  startBattle(targetEnemyObject, surprised, singleZedId) {
+  async startBattle(targetEnemyObject, surprised, singleZedId) {
     this.prepareBattle();
     // singleZedId is the result of successful luring
     let cardZedDeck = singleZedId
@@ -205,24 +198,22 @@ export default {
       this.spawnZedDeck(cardZedDeck);
       this.enterBattleMode();
       this.includeDefensiveObjects();
-      window.setTimeout(() => {
-        const sparedItems = BattleManager.generateBattleDeck();
-        const battleDeck = BattleManager.getBattleDeck();
-        UiBattle.spawnBattleDeck(
-          surprised,
-          battleDeck,
-          sparedItems,
-          () => this.zedAttack(),
-          () => this.nextTurn()
-        );
-      }, 600);
+      if (!Props.getGameProp('firstFight') && Props.getGameProp('tutorial')) {
+        Props.setGameProp('firstFight', true);
+        Tutorial.triggerBattleTutorial();
+      }
+      await TimingUtils.wait(600);
+      const sparedItems = BattleManager.generateBattleDeck();
+      const battleDeck = BattleManager.getBattleDeck();
+      UiBattle.spawnBattleDeck(
+        surprised,
+        battleDeck,
+        sparedItems,
+        () => this.zedAttack(),
+        () => this.nextTurn()
+      );
     } else {
       this.endBattle();
-    }
-
-    if (!Props.getGameProp('firstFight') && Props.getGameProp('tutorial')) {
-      Props.setGameProp('firstFight', true);
-      Tutorial.triggerBattleTutorial();
     }
   },
 
