@@ -177,6 +177,7 @@ export default {
     cardZedDeck.forEach(function (zedId, index) {
       let zedCardRef = Cards.getCardById(zedId);
       const zedObject = Props.getObject(zedId);
+      if (!zedCardRef || !zedObject) return;
       zedObject.fighting = true;
       zedObject.active = true;
       zedCardRef.classList.add('fight');
@@ -249,6 +250,7 @@ export default {
     cardZedDeck.forEach(function (zedId) {
       let zedCardRef = Cards.getCardById(zedId);
       const zedObject = Props.getObject(zedId);
+      if (!zedCardRef || !zedObject) return;
       zedObject.fighting = false;
       zedCardRef.classList.remove('fight');
       if (zedObject.dead) {

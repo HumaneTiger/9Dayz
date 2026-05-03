@@ -3,7 +3,7 @@ import Audio from './audio.js';
 import Companion from './companion.js';
 import Almanac from './almanac.js';
 import Items from './items.js';
-import { EventManager, EVENTS, PlayerManager, ShipManager } from './core/index.js';
+import { EventManager, EVENTS, PlayerManager, ShipManager, GameState } from './core/index.js';
 import TimingUtils from './utils/timing-utils.js';
 
 const mapHigh = document.querySelector('.map-high img');
@@ -312,7 +312,10 @@ export default {
         // 3. check for open crafting and close it
         this.closeCrafting();
         return;
-      } else if (!document.getElementById('actions').classList.contains('active')) {
+      } else if (
+        !document.getElementById('actions').classList.contains('active') &&
+        !GameState.getGameProp('battle')
+      ) {
         // 4. check for hidden UI and bring it back if hidden
         this.showUI();
         return;
@@ -349,10 +352,13 @@ export default {
   },
 
   showUI: function () {
-    document.getElementById('properties').classList.add('active');
-    document.getElementById('character').classList.add('active');
-    document.getElementById('actions').classList.add('active');
-    document.getElementById('cards').classList.add('active');
+    if (!GameState.getGameProp('battle')) {
+      document.getElementById('actions').classList.add('active');
+      document.getElementById('properties').classList.add('active');
+      document.getElementById('character').classList.add('active');
+      document.getElementById('actions').classList.add('active');
+      document.getElementById('cards').classList.add('active');
+    }
   },
 
   previewProps: function (prop, change) {
