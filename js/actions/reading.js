@@ -24,6 +24,8 @@ export default async function reading(cardId) {
     Map.showTargetLocation('Camp Silverlake');
   } else if (targetLocationName === 'signpost-7') {
     Map.showTargetLocation('Harbor Gas Station');
+  } else if (targetLocationName === 'signpost-8') {
+    Map.showTargetLocation('Autumnridge');
   }
   if (Props.getGameProp('tutorial') === false) {
     Checkpoint.save(targetLocationName);

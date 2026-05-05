@@ -54,7 +54,6 @@ export default {
     { x: 18, y: 3, amount: 1 },
     { x: 17, y: 4, amount: 1 },
     { x: 18, y: 8, amount: 2 },
-    { x: 18, y: 8, amount: 2 },
     { x: 18, y: 10, amount: 1 },
     { x: 18, y: 11, amount: 1 },
     { x: 12, y: 8, amount: 1 },
@@ -66,5 +65,10 @@ export default {
     { x: 14, y: 20, amount: 1 },
     { x: 17, y: 21, amount: 1 },
     { x: 18, y: 22, amount: 1 },
+    { x: 22, y: 14, amount: 1 },
+    { x: 22, y: 15, amount: 1 },
+    { x: 16, y: 15, amount: 1 },
+    { x: 15, y: 14, amount: 1 },
+    { x: 15, y: 16, amount: 1 },
   ],
 };

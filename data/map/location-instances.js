@@ -8,5 +8,6 @@ export default {
     'Billibalds Farm': [40, 30],
     'Camp Silverlake': [28, 22],
     'Harbor Gas Station': [34, 16],
+    Autumnridge: [18, 7],
   },
 };

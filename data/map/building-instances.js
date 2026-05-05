@@ -101,6 +101,7 @@ export default {
     { x: 36, y: 31, buildings: ['signpost-5'] },
     { x: 29, y: 29, buildings: ['signpost-6'] },
     { x: 31, y: 22, buildings: ['signpost-7'] },
+    { x: 23, y: 6, buildings: ['signpost-8'] },
     { x: 23, y: 35, buildings: ['car-1'] },
     { x: 35, y: 41, buildings: ['car-1'] },
     { x: 32, y: 30, buildings: ['car-2'] },
