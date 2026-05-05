@@ -88,7 +88,8 @@ export default {
     const object = Props.getObject(cardId);
     if (object.infested && !object.locked) {
       if (!onlyRats || object.name !== 'beehive') {
-        let hostileObjectIds = Props.spawnCreaturesAt(object.x, object.y, object.enemies);
+        //let hostileObjectIds = Props.spawnCreaturesAt(object.x, object.y, object.enemies);
+        let hostileObjectIds = Props.spawnCreaturesAt(object.enemies);
         // building not infested anymore
         cardRef.classList.remove('infested');
         object.infested = false;

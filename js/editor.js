@@ -7,6 +7,7 @@ import Map from './map.js';
 import Player from './player.js';
 import TestPlayer from './test/test-player.js';
 import TestRecorder from './test/test-recorder.js';
+import { EventManager, EVENTS, ObjectFactory } from './core/index.js';
 
 let squareX = 0,
   squareY = 0;
@@ -18,6 +19,10 @@ export default {
     document.body.addEventListener('click', this.handleClick.bind(this));
     this.initDevConsole();
     TestPlayer.init();
+    EventManager.on(EVENTS.PLAYER_ENTERED_TILE, () => {
+      document.getElementById('character-position').textContent =
+        `(${Player.getPlayerPosition().x}, ${Player.getPlayerPosition().y})`;
+    });
   },
 
   getActionType: function (element) {
@@ -61,13 +66,13 @@ export default {
             if (squareX || squareY) {
               let selectedObject = cardConsoleContainer.querySelector('.select-object').value;
               if (selectedObject === 'zombie') {
-                Props.setZedAt(squareX, squareY, 1);
+                ObjectFactory.setZedAt(squareX, squareY, 1);
               } else if (selectedObject === 'rats') {
-                const creaturesList = Props.createCreaturesList('rat');
-                Props.spawnCreaturesAt(squareX, squareY, creaturesList);
+                const creaturesList = ObjectFactory.createCreaturesList('rat', squareX, squareY);
+                ObjectFactory.spawnCreaturesAt(creaturesList);
               } else if (selectedObject === 'bees') {
-                const creaturesList = Props.createCreaturesList('bee');
-                Props.spawnCreaturesAt(squareX, squareY, creaturesList);
+                const creaturesList = ObjectFactory.createCreaturesList('bee', squareX, squareY);
+                ObjectFactory.spawnCreaturesAt(creaturesList);
               } else if (
                 selectedObject === 'improvised-axe' ||
                 selectedObject === 'axe' ||

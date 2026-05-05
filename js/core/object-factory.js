@@ -385,16 +385,15 @@ export default {
   },
 
   /**
-   * @param {number} x
-   * @param {number} y
    * @param {CreatureObject[]} creaturesList
    * @returns {ObjectIdList}
    */
-  spawnCreaturesAt: function (x, y, creaturesList) {
+  spawnCreaturesAt: function (/*x, y,*/ creaturesList) {
     /** @type {ObjectIdList} */
     let spawnedCreatureIds = [];
     creaturesList.forEach(creature => {
-      const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
+      //const currentObjectsIdCounter = ObjectState.addObjectIdAt(x, y);
+      const currentObjectsIdCounter = ObjectState.addObjectIdAt(creature.x, creature.y);
       ObjectState.setObject(
         currentObjectsIdCounter,
         ObjectState.createGameObject({
