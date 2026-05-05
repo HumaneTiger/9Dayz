@@ -54,9 +54,9 @@
   visibility: hidden;
   pointer-events: none;
 }
-#cards.cards-at-bottom {
-  transform: none;
-  .card {
+.cards-at-bottom {
+  transform: none !important;
+  .card:not(.fight) {
     top: initial;
     bottom: 80px;
   }
