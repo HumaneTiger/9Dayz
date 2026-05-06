@@ -199,6 +199,7 @@ export default {
   },
 
   inventorySlotChangeFeedback: async function (cardRef) {
+    console.log('inventorySlotChangeFeedback triggered for', cardRef);
     cardRef.classList.add('indicate-change');
     await TimingUtils.waitForTransition(cardRef);
     await TimingUtils.wait(100);

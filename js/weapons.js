@@ -8,7 +8,6 @@ const weaponSlotsContainer = document.getElementById('character');
 
 export default {
   init: function () {
-    weaponSlotsContainer.addEventListener('mouseover', this.checkForSlotHover.bind(this));
     weaponSlotsContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
   },
 
@@ -16,10 +15,6 @@ export default {
   getUpgradeType: function (element) {
     const classes = ['attack-upgrade', 'defense-upgrade', 'durability-upgrade'];
     return classes.find(cls => element.classList.contains(cls));
-  },
-
-  checkForSlotHover: function () {
-    return;
   },
 
   checkForSlotClick: function (ev) {
@@ -56,6 +51,7 @@ export default {
             if (InventoryManager.inventoryContains(weaponPropsUpgrade.attack.item)) {
               weaponInstance.damage += weaponPropsUpgrade.attack.amount;
               Audio.sfx('improve-weapon');
+              Character.inventorySlotChangeFeedback(cardSlot);
               if (!CharacterManager.shouldPreserveUpgradeResources()) {
                 Props.addItemToInventory(weaponPropsUpgrade.attack.item, -1);
               } else {
@@ -67,20 +63,22 @@ export default {
           case 'defense-upgrade':
             weaponInstance.protection += weaponPropsUpgrade.defense.amount;
             Audio.sfx('improve-weapon');
+            Character.inventorySlotChangeFeedback(cardSlot);
             if (!CharacterManager.shouldPreserveUpgradeResources()) {
               Props.addItemToInventory(weaponPropsUpgrade.defense.item, -1);
             } else {
-              // TODO: show some feedback
+              // TODO: show some feedback that the upgrade was applied but the resource was preserved (e.g. different sound, visual effect, etc.)
             }
             Character.updateInventorySlots();
             break;
           case 'durability-upgrade':
             weaponInstance.durability += weaponPropsUpgrade.durability.amount;
             Audio.sfx('repair-weapon');
+            Character.inventorySlotChangeFeedback(cardSlot);
             if (!CharacterManager.shouldPreserveUpgradeResources()) {
               Props.addItemToInventory(weaponPropsUpgrade.durability.item, -1);
             } else {
-              // TODO: show some feedback
+              // TODO: show some feedback that the upgrade was applied but the resource was preserved (e.g. different sound, visual effect, etc.)
             }
             Character.updateInventorySlots();
             break;

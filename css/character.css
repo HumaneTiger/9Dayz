@@ -24,8 +24,9 @@
     filter: brightness(101%);
   }
 
-  &.slot-companion.feeding.indicate-change {
-    transform: scale(0.65);
+  &.slot-companion.feeding.indicate-change,
+  &:hover.indicate-change {
+    transform: scale(0.65) !important;
   }
 }
 
