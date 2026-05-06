@@ -17,6 +17,10 @@ const characterContainer = document.getElementById('character');
 
 export default {
   init: function () {
+    if (!characterContainer) {
+      console.error('Character container not found!');
+      return;
+    }
     characterContainer.addEventListener('mousedown', this.checkForSlotClick.bind(this));
     this.addCharacterDescriptionMarkup();
     EventManager.on(
@@ -72,7 +76,6 @@ export default {
   toggleAxeDurabilityPenalty: function (show = true) {
     let axeSlot = null;
     if (InventoryManager.inventoryContains('improvised-axe')) {
-      // <div class="card weapon slot-1 active" data-item="improvised-axe">
       axeSlot = characterContainer.querySelector('.card.weapon.active[data-item="improvised-axe"]');
     } else if (InventoryManager.inventoryContains('axe')) {
       axeSlot = characterContainer.querySelector('.card.weapon.active[data-item="axe"]');
@@ -80,18 +83,25 @@ export default {
     if (axeSlot) {
       if (show) {
         axeSlot.classList.add('indicate-change');
-        axeSlot.querySelector('.durability-penalty').classList.remove('is--hidden');
+        axeSlot.querySelector('.durability-penalty')?.classList.remove('is--hidden');
       } else {
         axeSlot.classList.remove('indicate-change');
-        axeSlot.querySelector('.durability-penalty').classList.add('is--hidden');
+        axeSlot.querySelector('.durability-penalty')?.classList.add('is--hidden');
       }
     }
   },
 
   updateInventorySlots: function () {
+    if (!characterContainer) {
+      return;
+    }
     const allInventoryWeapons = WeaponsManager.getAllInventoryWeapons();
     const slot1 = characterContainer.querySelector('.slot-1');
     const slot2 = characterContainer.querySelector('.slot-2');
+    if (!slot1 || !slot2) {
+      console.error('Inventory slots not found!');
+      return;
+    }
     for (let weapon in allInventoryWeapons) {
       const weaponName = allInventoryWeapons[weapon].name;
       // find suitable slot for the weapon in inventory
