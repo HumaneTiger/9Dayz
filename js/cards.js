@@ -3,10 +3,18 @@ import Props from './props.js';
 import Map from './map.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
+import Character from './character.js';
 import CardsMarkup from './cards-markup.js';
 import ActionsOrchestration from './actions-orchestration.js';
 import ActionsUtils from './utils/actions-utils.js';
-import { EventManager, EVENTS, CardsManager, GameState, ObjectState } from './core/index.js';
+import {
+  EventManager,
+  EVENTS,
+  CardsManager,
+  GameState,
+  ObjectState,
+  ActionsManager,
+} from './core/index.js';
 
 //var cardDeck = [];
 var lastHoverTarget;
@@ -146,6 +154,7 @@ export default {
           this.previewStatsChange(action, cardId);
         } else {
           Ui.resetPreviewProps();
+          Character.toggleAxeDurabilityPenalty(false);
         }
       }
     }
@@ -172,6 +181,8 @@ export default {
         Ui.previewProps('food', -18);
         Ui.previewProps('thirst', -24);
         Ui.previewProps('energy', energy);
+      } else if (ActionsManager.isAxeDurabilityAction(actionObject.id)) {
+        Character.toggleAxeDurabilityPenalty();
       } else if (actionObject.energy !== 0 && actionObject.energy !== undefined) {
         /* take also other energy-consuming actions into account */
         Ui.previewProps('energy', actionObject.energy);

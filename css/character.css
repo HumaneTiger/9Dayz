@@ -294,3 +294,12 @@
 #character .card div.upgrade:not(.nope):hover {
   transform: translateY(-5px) scale(1.2);
 }
+
+#character .card img.durability-penalty {
+  position: absolute;
+  top: 108px;
+  width: 80%;
+  left: 50%;
+  transform: translatex(-50%);
+  height: auto;
+}

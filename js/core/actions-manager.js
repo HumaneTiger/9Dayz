@@ -215,7 +215,20 @@ export default {
   },
 
   /**
-   *
+   * Check if an action is an axe durability action
+   * @param {string} actionId - Action ID to check
+   * @returns {boolean} True if it's an axe durability action, false otherwise
+   */
+  isAxeDurabilityAction: function (actionId) {
+    return (
+      actionId === 'cut-down' ||
+      actionId === 'break-door' ||
+      actionId === 'break-lock' ||
+      actionId === 'destroy'
+    );
+  },
+
+  /**
    * @param {number} objectId
    */
   updateActionsForObject: function (objectId) {
@@ -296,12 +309,7 @@ export default {
         ) {
           action.locked = true;
         }
-      } else if (
-        action.id === 'cut-down' ||
-        action.id === 'break-door' ||
-        action.id === 'break-lock' ||
-        action.id === 'destroy'
-      ) {
+      } else if (this.isAxeDurabilityAction(action.id)) {
         if (
           !InventoryManager.inventoryContains('axe') &&
           !InventoryManager.inventoryContains('improvised-axe')

@@ -69,6 +69,25 @@ export default {
     });
   },
 
+  toggleAxeDurabilityPenalty: function (show = true) {
+    let axeSlot = null;
+    if (InventoryManager.inventoryContains('improvised-axe')) {
+      // <div class="card weapon slot-1 active" data-item="improvised-axe">
+      axeSlot = characterContainer.querySelector('.card.weapon.active[data-item="improvised-axe"]');
+    } else if (InventoryManager.inventoryContains('axe')) {
+      axeSlot = characterContainer.querySelector('.card.weapon.active[data-item="axe"]');
+    }
+    if (axeSlot) {
+      if (show) {
+        axeSlot.classList.add('indicate-change');
+        axeSlot.querySelector('.durability-penalty').classList.remove('is--hidden');
+      } else {
+        axeSlot.classList.remove('indicate-change');
+        axeSlot.querySelector('.durability-penalty').classList.add('is--hidden');
+      }
+    }
+  },
+
   updateInventorySlots: function () {
     const allInventoryWeapons = WeaponsManager.getAllInventoryWeapons();
     const slot1 = characterContainer.querySelector('.slot-1');
@@ -199,7 +218,6 @@ export default {
   },
 
   inventorySlotChangeFeedback: async function (cardRef) {
-    console.log('inventorySlotChangeFeedback triggered for', cardRef);
     cardRef.classList.add('indicate-change');
     await TimingUtils.waitForTransition(cardRef);
     await TimingUtils.wait(100);
