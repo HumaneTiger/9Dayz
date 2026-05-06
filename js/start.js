@@ -106,8 +106,8 @@ export default {
     // TESTING
     Props.beginInventoryBatch();
     if (Props.getGameProp('local')) {
-      Props.addWeaponToInventory('axe', 1, { durability: 2 });
-      Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
+      //Props.addWeaponToInventory('improvised-axe', 1, { durability: 2 });
+      //Props.addWeaponToInventory('wooden-club', 1, { durability: 2 });
       /*
       ObjectFactory.setupWeapon(
         Props.getGameProp('playerPosition').x,

@@ -303,3 +303,11 @@
   transform: translatex(-50%);
   height: auto;
 }
+
+#character.all-slots-filled {
+  transform: translateX(190px);
+
+  .card.slot-hero {
+    opacity: 0;
+  }
+}

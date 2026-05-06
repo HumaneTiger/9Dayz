@@ -5,6 +5,7 @@ import {
   CharacterManager,
   WeaponsManager,
   InventoryManager,
+  CompanionManager,
 } from './core/index.js';
 
 import TimingUtils from './utils/timing-utils.js';
@@ -140,6 +141,11 @@ export default {
       slot2.classList.add('moveToSlot1');
     } else {
       slot2.classList.remove('moveToSlot1');
+    }
+    if (this.numberFilledSlots() === 2 && CompanionManager.isCompanionActive()) {
+      characterContainer.classList.add('all-slots-filled');
+    } else {
+      characterContainer.classList.remove('all-slots-filled');
     }
   },
 
