@@ -414,7 +414,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   vertical-align: top;
 }
 
-#cards .cards-filter-out {
+.cards-filter-out {
   width: 60px;
   height: 60px;
   background: url(../img/ui/filter-out.png) no-repeat center center;
@@ -435,7 +435,7 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   }
 }
 
-#cards .cards-filter {
+.cards-filter {
   width: 80px;
   top: 154px;
   position: fixed;
@@ -479,8 +479,8 @@ body:not(.is--paused) #cards .card:not(.fight):hover .banner {
   }
 }
 
-#cards.filter-active:not(.battle-mode) {
-  left: 60px;
+.filter-active:not(.battle-mode) {
+  left: 60px !important;
 
   .cards-filter {
     transform: translateX(-45px);

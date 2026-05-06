@@ -1,14 +1,14 @@
-import { default as Audio } from './audio.js';
-import { default as Player } from './player.js';
-import { default as Props } from './props.js';
-import { default as Items } from './items.js';
-import { default as Crafting } from './crafting.js';
-import { default as Tutorial } from './tutorial.js';
-import { default as Ui } from './ui.js';
+import Audio from './audio.js';
+import Player from './player.js';
+import Props from './props.js';
+import Items from './items.js';
+import Crafting from './crafting.js';
+import Tutorial from './tutorial.js';
+import Ui from './ui.js';
 import Viewport from './viewport.js';
-import { default as Checkpoint } from './checkpoint.js';
-import { default as Weapons } from './weapons.js';
-import { default as Cooking } from './cooking.js';
+import Checkpoint from './checkpoint.js';
+import Character from './character.js';
+import Cooking from './cooking.js';
 import RngUtils from './utils/rng-utils.js';
 import TimingUtils from './utils/timing-utils.js';
 import Preloading from './preloading.js';
@@ -144,7 +144,7 @@ export default {
 
     Items.generateInventorySlots();
     Items.fillInventorySlots();
-    Weapons.updateWeaponState();
+    Character.updateInventorySlots();
     Cooking.checkAllCookingModeCards();
     Crafting.checkCraftingPrerequisits();
 

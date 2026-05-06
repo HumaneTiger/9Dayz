@@ -1,5 +1,6 @@
 import Props from './props.js';
 import Player from './player.js';
+import Character from './character.js';
 import Ui from './ui.js';
 import { CompanionManager } from './core/index.js';
 
@@ -66,6 +67,7 @@ export default {
       companion.health = companion.maxHealth;
     }
     this.updateCompanionSlot();
+    Character.inventorySlotChangeFeedback(slotCompanion);
   },
 
   updateCompanionSlot: function () {

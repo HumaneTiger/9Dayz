@@ -1,7 +1,7 @@
 import Cards from './cards.js';
 import CardsMarkup from './cards-markup.js';
 import ActionSimulations from './actions/index.js';
-import Weapons from './weapons.js';
+import Character from './character.js';
 import TimingUtils from './utils/timing-utils.js';
 import AudioUtils from './utils/audio-utils.js';
 import ActionsUtils from './utils/actions-utils.js';
@@ -95,7 +95,7 @@ export default {
 
   goBackFromAction: async function () {
     EventManager.emit(EVENTS.PLAYER_UPDATE, { noPenalty: true });
-    Weapons.updateWeaponState();
+    Character.updateInventorySlots();
     await TimingUtils.wait(1000);
     PlayerManager.lockMovement(false);
   },

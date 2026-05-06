@@ -7,7 +7,7 @@ import ActionsOrchestration from './actions-orchestration.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Companion from './companion.js';
-import Weapons from './weapons.js';
+import Character from './character.js';
 import RngUtils from './utils/rng-utils.js';
 import Tutorial from './tutorial.js';
 import Ui from './ui.js';
@@ -163,7 +163,7 @@ export default {
   },
 
   enterBattleMode(defaultBattle = true) {
-    Weapons.updateWeaponState();
+    Character.updateInventorySlots();
     Ui.resetPreviewProps();
     UiBattle.enterUIBattleMode(defaultBattle);
   },
@@ -236,7 +236,7 @@ export default {
     Props.setGameProp('battle', false);
     Crafting.checkCraftingPrerequisits();
     Player.updatePlayer();
-    Weapons.updateWeaponState();
+    Character.updateInventorySlots();
     Player.lockMovement(false);
     Props.pauseGame(false);
   },
