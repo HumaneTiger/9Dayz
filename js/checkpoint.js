@@ -4,8 +4,10 @@ import Companion from './companion.js';
 import Items from './items.js';
 import Crafting from './crafting.js';
 import Ui from './ui.js';
+import Map from './map.js';
 import AlmanacManager from './core/almanac-manager.js';
 import { CompanionManager, MapManager, ShipManager } from './core/index.js';
+import { MapDefinitions } from '../data/index.js';
 
 export default {
   /**
@@ -69,8 +71,8 @@ export default {
       almanac: AlmanacManager.getKnownContent(),
 
       // ===== MAP =====
-      // TODO: Explored areas and discovered locations
-      map: null,
+      // Uncovered fog-of-war coordinates for the active map
+      map: MapDefinitions[MapManager.currentMapKey].uncoveredCoords.slice(),
 
       // ===== SHIP =====
       shipTime: ShipManager.getShipProps().time,
@@ -241,7 +243,10 @@ export default {
     }
 
     // ===== MAP =====
-    // TODO: Restore explored areas and discovered locations
+    // Restore fog-of-war by replaying each uncovered coord through mapUncoverAt
+    if (checkpoint.map) {
+      checkpoint.map.forEach(([x, y]) => Map.mapUncoverAt(x, y));
+    }
 
     return true;
   },

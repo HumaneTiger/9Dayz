@@ -28,6 +28,7 @@ const mapSize = { width: 49, height: 45 };
  * @property {PathGrid} paths - 2D array where each [x][y] is a Coordinate (boolean) representing if a path exists
  * @property {MapPosition} mapPosition - The current position of the map with reference points and actual x, y coordinates
  * @property {MapCoordinate} shipHotSpot - The position of the ship's hot spot on the map
+ * @property {number[][]} uncoveredCoords - Runtime state: game coords that have been uncovered (fog removed)
  */
 
 /**
@@ -52,5 +53,7 @@ export default {
       x: 31,
       y: 8,
     },
+    /** @type {number[][]} */
+    uncoveredCoords: [],
   },
 };

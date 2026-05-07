@@ -1,6 +1,7 @@
 import Props from './props.js';
 import { ObjectState, MapManager, EventManager, EVENTS } from './core/index.js';
 import BuildingDefinitions from '../data/definitions/building-definitions.js';
+import { MapDefinitions } from '../data/index.js';
 
 const buidingsContainer = document.querySelector('.map .map-buildings');
 const highlightsContainer = document.querySelector('.map .map-highlights');
@@ -176,6 +177,7 @@ export default {
     const uncoverY = Math.floor(y / 4);
     if (mapFog2dCtx && uncoverMatrix[uncoverX][uncoverY] === undefined) {
       uncoverMatrix[uncoverX][uncoverY] = true;
+      MapDefinitions[MapManager.currentMapKey].uncoveredCoords.push([uncoverX * 4, uncoverY * 4]);
       if (canvasPrimed) {
         this.addNewMask(uncoverX, uncoverY);
       } else {
