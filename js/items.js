@@ -156,9 +156,7 @@ export default {
               Ui.previewProps('energy', itemProps.energy);
             }
           } else {
-            if (Props.getGameProp('feedingCompanion')) {
-              // TODO: highlight the companion card (same effect as on card hover)
-            } else if (Props.getGameProp('waitingTime')) {
+            if (Props.getGameProp('waitingTime')) {
               document.querySelector('#ship-properties li.time').classList.add('transfer');
               Ui.previewShipProps('time', ShipManager.calcFoodToWaitingTimeRatio(itemProps));
             } else if (Props.getGameProp('fuelingShip')) {

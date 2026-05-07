@@ -58,10 +58,6 @@ export default {
     document.getElementById('character').querySelector('.slot-hero h2').textContent = characterName;
   },
 
-  numberFilledSlots: function () {
-    return CharacterManager.getNumberFilledSlots();
-  },
-
   addCharacterDescriptionMarkup: function () {
     const allCharacters = CharacterManager.getAllCharacterDefinitions();
     Object.keys(allCharacters).forEach(characterKey => {
@@ -142,7 +138,7 @@ export default {
     } else {
       slot2.classList.remove('moveToSlot1');
     }
-    if (this.numberFilledSlots() === 2 && CompanionManager.isCompanionActive()) {
+    if (WeaponsManager.getWeaponTotal() === 2 && CompanionManager.isCompanionActive()) {
       characterContainer.classList.add('all-slots-filled');
     } else {
       characterContainer.classList.remove('all-slots-filled');

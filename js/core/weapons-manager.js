@@ -104,6 +104,9 @@ export default {
         total += 1;
       }
     }
+    if (total > 2) {
+      console.warn('Total weapons in inventory exceeds 2:', total);
+    }
     return total;
   },
 

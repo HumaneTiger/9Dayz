@@ -37,17 +37,6 @@ export default {
     }
   },
 
-  /* TODO: find better solution */
-  /** @returns {number} */
-  getNumberFilledSlots: function () {
-    const characterContainer = document.getElementById('character');
-    const slot1 = characterContainer?.querySelector('.slot-1');
-    const slot2 = characterContainer?.querySelector('.slot-2');
-    return (
-      (slot1?.classList.contains('active') ? 1 : 0) + (slot2?.classList.contains('active') ? 1 : 0)
-    );
-  },
-
   applyHighCalorieConsumptionChanges: function () {
     const character = GameState.getGameProp('character');
     if (character === 'snackivore') {

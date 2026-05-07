@@ -4,7 +4,7 @@
  */
 
 import {
-  CharacterManager,
+  WeaponsManager,
   CompanionManager,
   GameState,
   InventoryManager,
@@ -296,8 +296,7 @@ export default {
       } else if (
         action.id === 'equip' &&
         object.group === 'weapon' &&
-        (InventoryManager.inventoryContains(object.name) ||
-          CharacterManager.getNumberFilledSlots() >= 2)
+        (InventoryManager.inventoryContains(object.name) || WeaponsManager.getWeaponTotal() >= 2)
       ) {
         action.locked = true;
       } else if (action.id === 'smash-window') {

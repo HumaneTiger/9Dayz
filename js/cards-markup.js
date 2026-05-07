@@ -1,10 +1,9 @@
-import { default as Audio } from './audio.js';
-import { default as Props } from './props.js';
-import { default as Player } from './player.js';
-import { default as Cards } from './cards.js';
-import { default as Map } from './map.js';
-import { default as Cooking } from './cooking.js';
-import { default as Character } from './character.js';
+import Audio from './audio.js';
+import Props from './props.js';
+import Player from './player.js';
+import Cards from './cards.js';
+import Map from './map.js';
+import Cooking from './cooking.js';
 import { RecipeDefinitions } from '../data/index.js';
 import TimingUtils from './utils/timing-utils.js';
 import {
@@ -15,6 +14,7 @@ import {
   PlayerManager,
   ObjectState,
   RecipesManager,
+  WeaponsManager,
 } from './core/index.js';
 
 const cardsContainer = document.getElementById('cards');
@@ -416,7 +416,7 @@ export default {
           actionRef.querySelector('.additional-locked').textContent =
             ActionsManager.getActionLabelIfLocked(action.id);
         } else if (action.id === 'equip') {
-          if (Character.numberFilledSlots() >= 2) {
+          if (WeaponsManager.getWeaponTotal() >= 2) {
             actionRef.querySelector('.additional-locked').textContent = 'No free space';
           } else {
             actionRef.querySelector('.additional-locked').textContent = 'Can carry only one';
