@@ -23,6 +23,13 @@ export default {
   },
 
   /**
+   * @return {string[]}
+   */
+  getKnownContent: function () {
+    return AlmanacDefinitions.knownContent.slice();
+  },
+
+  /**
    * @param {string} content
    * @return {AlmanacContentPage|undefined}
    */

@@ -65,8 +65,8 @@ export default {
       firstCompanion: Props.getGameProp('firstCompanion'),
 
       // ===== ALMANAC =====
-      // TODO: Discovered recipes and crafting options
-      almanac: null,
+      // Known almanac pages discovered by the player
+      almanac: AlmanacManager.getKnownContent(),
 
       // ===== MAP =====
       // TODO: Explored areas and discovered locations
@@ -235,7 +235,10 @@ export default {
       Props.setGameProp('firstCompanion', checkpoint.firstCompanion);
 
     // ===== ALMANAC =====
-    // TODO: Restore discovered recipes/crafting options
+    // Restore known almanac pages
+    if (checkpoint.almanac) {
+      checkpoint.almanac.forEach(page => AlmanacManager.makeContentKnown(page));
+    }
 
     // ===== MAP =====
     // TODO: Restore explored areas and discovered locations
