@@ -70,6 +70,7 @@ var game = {
   gameSeed: RngUtils.generateGameSeed(),
   mode: 'real',
   character: 'everyman',
+  touchControls: false,
   isWalking: false,
   isMoveLocked: false,
   startMode: 1,

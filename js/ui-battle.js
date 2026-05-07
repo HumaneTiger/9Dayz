@@ -234,11 +234,14 @@ export default {
     document.getElementById('inventory').classList.remove('active');
     document.getElementById('craft').classList.remove('active');
     document.getElementById('character').classList.remove('active');
+    document.getElementById('character').classList.remove('all-slots-filled');
     document.getElementById('cards').classList.add('battle-mode');
     document.querySelector('#cards .cards-blocker').classList.remove('is--hidden');
     defensiveCardsContainer.classList.remove('heavy-shake');
     defensiveCardsContainer.classList.remove('is--hidden');
-
+    if (GameState.getGameProp('touchControls')) {
+      document.getElementById('touchcontrols')?.classList.add('is--hidden');
+    }
     // Time further changes to allow CSS transitions
     window.setTimeout(() => {
       document.querySelector('#cards .cards-blocker').classList.add('active');
@@ -274,6 +277,9 @@ export default {
     document.getElementById('actions').classList.add('active');
     document.getElementById('character').classList.add('active');
     document.getElementById('cards').classList.remove('battle-mode');
+    if (GameState.getGameProp('touchControls')) {
+      document.getElementById('touchcontrols')?.classList.remove('is--hidden');
+    }
     document.querySelector('#cards .cards-blocker').classList.remove('active');
   },
 

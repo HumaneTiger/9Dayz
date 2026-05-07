@@ -328,8 +328,7 @@ export default {
   prepareGameStart: function () {
     document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
     if (document.getElementById('touchsupport')?.classList.contains('on')) {
-      document.getElementById('touchcontrols')?.classList.remove('is--hidden');
-      document.getElementById('character')?.classList.add('touchcontrols');
+      GameState.setGameProp('touchControls', true);
     }
     if (document.getElementById('fullscreen')?.classList.contains('on')) {
       if (
@@ -371,6 +370,10 @@ export default {
     Audio.playAmbientLoop();
     Viewport.showMapBorder();
     Ui.showUI();
+    if (GameState.getGameProp('touchControls')) {
+      document.getElementById('touchcontrols')?.classList.remove('is--hidden');
+      document.getElementById('character')?.classList.add('touchcontrols');
+    }
     await this.fadeIntoGame();
     Ui.showNewDay(0, true);
   },
