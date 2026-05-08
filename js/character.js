@@ -138,7 +138,11 @@ export default {
     } else {
       slot2.classList.remove('moveToSlot1');
     }
-    if (WeaponsManager.getWeaponTotal() === 2 && CompanionManager.isCompanionActive()) {
+    if (
+      WeaponsManager.getWeaponTotal() === 2 &&
+      CompanionManager.isCompanionActive() &&
+      !GameState.getGameProp('battle')
+    ) {
       characterContainer.classList.add('all-slots-filled');
     } else {
       characterContainer.classList.remove('all-slots-filled');
