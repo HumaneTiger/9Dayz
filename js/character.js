@@ -80,10 +80,10 @@ export default {
     if (axeSlot) {
       if (show) {
         axeSlot.classList.add('indicate-change');
-        axeSlot.querySelector('.durability-penalty')?.classList.remove('is--hidden');
+        axeSlot.querySelector('.durability-penalty').classList.add('is--active');
       } else {
         axeSlot.classList.remove('indicate-change');
-        axeSlot.querySelector('.durability-penalty')?.classList.add('is--hidden');
+        axeSlot.querySelector('.durability-penalty')?.classList.remove('is--active');
       }
     }
   },

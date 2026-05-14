@@ -37,11 +37,11 @@ export default {
 
   treehugger: {
     inventoryPreset: {
-      'mushroom-1': 2,
+      /*'mushroom-1': 2,
       acorn: 1,
       branch: 1,
       'fruit-2': 2,
-      knife: 1,
+      knife: 1,*/
     },
     descriptionMarkup: `
     <p>
@@ -99,9 +99,9 @@ export default {
 
   snackivore: {
     inventoryPreset: {
-      'snack-1': 3,
+      /*'snack-1': 3,
       'drink-5': 1,
-      'snack-2': 1,
+      'snack-2': 1,*/
     },
     descriptionMarkup: `
     <p>
@@ -157,12 +157,12 @@ export default {
 
   craftsmaniac: {
     inventoryPreset: {
-      fail: 1,
+      /*fail: 1,
       tape: 1,
       knife: 1,
       'drink-2': 1,
       pincers: 1,
-      nails: 1,
+      nails: 1,*/
     },
     descriptionMarkup: `
     <p>

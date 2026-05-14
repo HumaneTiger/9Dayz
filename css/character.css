@@ -20,7 +20,7 @@
   transform: scale(0.5);
 
   &.indicate-change {
-    transform: scale(0.55);
+    transform: scale(0.52);
     filter: brightness(101%);
   }
 
@@ -302,6 +302,12 @@
   left: 50%;
   transform: translatex(-50%);
   height: auto;
+  transition: opacity 0.3s ease-out;
+  opacity: 0;
+
+  &.is--active {
+    opacity: 1;
+  }
 }
 
 #character.all-slots-filled {
