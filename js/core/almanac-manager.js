@@ -4,6 +4,7 @@
  */
 
 import { AlmanacDefinitions } from '../../data/index.js';
+import InventoryManager from './inventory-manager.js';
 
 export default {
   /**
@@ -35,5 +36,14 @@ export default {
    */
   getAlmanacContentPage: function (content) {
     return AlmanacDefinitions.contentPages[content];
+  },
+
+  getAllAlmanacPageNames: function () {
+    // all content pages plus potential pages for all items
+    const allContentPages = Object.keys(AlmanacDefinitions.contentPages);
+    const allItems = Object.keys(InventoryManager.getAllItems());
+    return allContentPages.concat(
+      allItems.filter(item => !allContentPages.includes(item) && !/-\d+$/.test(item))
+    );
   },
 };

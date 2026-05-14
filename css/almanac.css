@@ -101,12 +101,12 @@
 #almanac div.markup p {
   margin: 8px 0;
 }
-#almanac p span.keyword {
+#almanac span.keyword {
   text-transform: capitalize;
   color: rgb(255, 91, 6);
   cursor: pointer;
 }
-#almanac p span.keyword small {
+#almanac span.keyword small {
   text-transform: initial;
   font-size: 14px;
   filter: initial;
@@ -119,4 +119,27 @@
 }
 #almanac .footer img {
   width: 150px;
+}
+#almanac-index {
+  width: 100%;
+  padding-right: 5%;
+  padding-left: 5%;
+  padding-top: 10px;
+  height: 400px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+
+  ul {
+    margin-bottom: 20px;
+    text-align: left;
+
+    li {
+      width: 50%;
+      display: inline-block;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
 }

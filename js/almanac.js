@@ -40,6 +40,34 @@ export default {
     });
   },
 
+  addIndexItem: function (content, pagesContainer) {
+    const listItem = document.createElement('li');
+    const linkItem = document.createElement('span');
+    linkItem.href = '#';
+    linkItem.textContent = ItemUtils.extractItemName(content);
+    linkItem.classList.add('keyword');
+    linkItem.dataset.content = content;
+    listItem.appendChild(linkItem);
+    pagesContainer.appendChild(listItem);
+  },
+
+  fillIndexPage: function () {
+    const knownPagesContainer = almanacContainer.querySelector('.known-pages');
+    const unknownPagesContainer = almanacContainer.querySelector('.unknown-pages');
+    knownPagesContainer.innerHTML = '';
+    unknownPagesContainer.innerHTML = '';
+    AlmanacManager.getAllAlmanacPageNames().forEach(pageName => {
+      if (pageName === 'index') {
+        return;
+      }
+      if (AlmanacManager.isContentKnown(pageName)) {
+        this.addIndexItem(pageName, knownPagesContainer);
+      } else {
+        this.addIndexItem(pageName, unknownPagesContainer);
+      }
+    });
+  },
+
   close: function (force) {
     if (force || !almanacContainer.classList.contains('repos')) {
       almanacContainer.classList.remove('repos');
@@ -47,6 +75,10 @@ export default {
       almanacContainer.dataset.item = '';
       almanacContainer.removeAttribute('style');
     }
+  },
+
+  isOpen: function () {
+    return !almanacContainer.classList.contains('out');
   },
 
   /* handles all triggers which open almanac pages via right-click */
@@ -400,8 +432,13 @@ export default {
       this.positionAlmanacContainer(refElem, parentElem);
       this.updatePage();
 
+      if (item === 'index') {
+        this.fillIndexPage();
+      }
+
       if (!almanacHistory.length || almanacHistory.at(-1)[0] !== item) {
         almanacHistory.push([item]);
+        console.log(almanacHistory);
         this.updateNavigation();
       }
     }

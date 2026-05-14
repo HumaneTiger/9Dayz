@@ -100,14 +100,9 @@ export default {
         i: () => actionsPanelActive && dispatch('li.inventory'),
         c: () => actionsPanelActive && dispatch('li.craft'),
         m: () => (actionsPanelActive ? dispatch('li.map') : this.handleMapClick()),
+        l: () => actionsPanelActive && dispatch('li.almanac'),
         e: () => {
-          const settingsAction = actionsPanel.querySelector('li.settings');
-          // make sure editor can be opened even if actions panel is hidden
-          if (settingsAction) {
-            settingsAction.dispatchEvent(new Event('mousedown', { bubbles: true }));
-          } else {
-            document.getElementById('card-console').classList.toggle('out');
-          }
+          document.getElementById('card-console').classList.toggle('out');
         },
         q: () => actionsPanelActive && dispatch('li.quit'),
         f: () => actionsPanelActive && dispatch('li.fullscreen'),
@@ -131,7 +126,16 @@ export default {
 
   // just finds a class among a predefined set
   getActionType: function (element) {
-    const classes = ['inventory', 'craft', 'mixed', 'settings', 'map', 'quit', 'fullscreen'];
+    const classes = [
+      'inventory',
+      'craft',
+      'mixed',
+      'settings',
+      'map',
+      'almanac',
+      'quit',
+      'fullscreen',
+    ];
     return classes.find(cls => element.classList.contains(cls));
   },
 
@@ -168,8 +172,12 @@ export default {
               }
             }
             break;
-          case 'settings':
-            document.getElementById('card-console').classList.toggle('out');
+          case 'almanac':
+            if (Almanac.isOpen()) {
+              Almanac.close();
+            } else {
+              Almanac.showPage('index', action, document.getElementById('actions'));
+            }
             break;
           case 'map':
             this.hideUI();

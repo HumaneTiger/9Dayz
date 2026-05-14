@@ -666,12 +666,12 @@ ul#actions li.craft span {
   background-image: url(../img/actions/craft.png);
 }
 
-ul#actions li.settings {
+ul#actions li.almanac {
   width: 15%;
 }
 
-ul#actions li.settings span {
-  background-image: url(../img/actions/explore.png);
+ul#actions li.almanac span {
+  background-image: url(../img/actions/almanac.png);
 }
 
 ul#actions li.map span {

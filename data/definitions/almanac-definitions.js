@@ -14,6 +14,7 @@ import { default as CharacterDefinitions } from './character-definitions.js';
 export default {
   /** @type {knownContent} */
   knownContent: [
+    'index',
     'battle',
     'health',
     'food',
@@ -27,6 +28,11 @@ export default {
   ],
   /** @type {Record<string, AlmanacContentPage>} */
   contentPages: {
+    index: {
+      motive: './img/almanac/almanac.png',
+      markup:
+        '<div id="almanac-index"><p>Known Pages</p><ul class="known-pages"></ul><p>Unknown Pages</p><ul class="unknown-pages"></ul></div> ',
+    },
     water: {
       motive: './img/items/water.PNG',
       markup:
