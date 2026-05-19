@@ -101,7 +101,7 @@ export default {
         c: () => actionsPanelActive && dispatch('li.craft'),
         m: () => (actionsPanelActive ? dispatch('li.map') : this.handleMapClick()),
         l: () => actionsPanelActive && dispatch('li.almanac'),
-        e: () => {
+        '#': () => {
           document.getElementById('card-console').classList.toggle('out');
         },
         q: () => actionsPanelActive && dispatch('li.quit'),
