@@ -326,7 +326,7 @@ export default {
   },
 
   prepareGameStart: function () {
-    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__update')?.classList.add('is--hidden');
     if (document.getElementById('touchsupport')?.classList.contains('on')) {
       GameState.setGameProp('touchControls', true);
     }
@@ -392,19 +392,19 @@ export default {
 
   switchToScreen2: function () {
     Props.setGameProp('startMode', 2);
-    document.querySelector('#startscreen .screen__1').classList.add('is--hidden');
-    document.querySelector('#startscreen .screen__2').classList.remove('is--hidden');
-    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
-    document.querySelector('#startscreen .screen__update').classList.remove('is--hidden');
+    document.querySelector('#startscreen .screen__1')?.classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2')?.classList.remove('is--hidden');
+    document.querySelector('#startscreen .screen__2a')?.classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__update')?.classList.remove('is--hidden');
   },
 
   switchToScreen3: function () {
     Audio.sfx('shuffle-paper');
-    document.querySelector('#startscreen .screen__2').classList.add('is--hidden');
-    document.querySelector('#startscreen .screen__2a').classList.add('is--hidden');
-    document.querySelector('#startscreen .screen__update').classList.add('is--hidden');
-    document.querySelector('#startscreen .screen__3').classList.remove('is--hidden');
-    document.getElementById('tutorial-beginning').classList.remove('is--hidden');
+    document.querySelector('#startscreen .screen__2')?.classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__2a')?.classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__update')?.classList.add('is--hidden');
+    document.querySelector('#startscreen .screen__3')?.classList.remove('is--hidden');
+    document.getElementById('tutorial-beginning')?.classList.remove('is--hidden');
   },
 
   switchToGameOverScreen: function () {
