@@ -105,6 +105,7 @@ var game = {
   firstDeadAnimal: false,
   firstInventoryOpen: false,
   firstCompanion: false,
+  firstSignpost: false,
   onBoard: false,
   testPlayback: false,
   timeConfig,

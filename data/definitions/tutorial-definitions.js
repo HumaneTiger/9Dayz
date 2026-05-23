@@ -124,5 +124,10 @@ export default {
       title: 'Captain',
       text: '"There is a small town to the West, you just have to get off the boat and follow the road. Or we can set sails right away and leave this place, it\'s up to you my friend."',
     },
+    signpost: {
+      title: 'Signpost',
+      text: 'Signposts point to the next towns. Reading them will also create a checkpoint which saves your progress (not in tutorial).<br><img src="./img/tutorial/signpost.png">',
+      highlightObjects: 'signpost',
+    },
   },
 };

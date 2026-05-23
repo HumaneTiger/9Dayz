@@ -152,7 +152,6 @@ export default {
       CardsManager.getCardDeck().forEach(card => {
         const id = card.id;
         let object = Props.getObject(id);
-
         if (object.infested && !Props.getGameProp('firstInfestation')) {
           Props.setGameProp('firstInfestation', true);
           let objectId = TutorialManager.setupSpecialEvent(
@@ -215,6 +214,15 @@ export default {
           Props.setGameProp('firstRatFight', true);
           let objectId = TutorialManager.setupSpecialEvent(
             'rat-fight',
+            playerPosition.x,
+            playerPosition.y
+          );
+          specialEventObjectIds.push(objectId);
+        }
+        if (object.type === 'signpost' && !Props.getGameProp('firstSignpost')) {
+          Props.setGameProp('firstSignpost', true);
+          let objectId = TutorialManager.setupSpecialEvent(
+            'signpost',
             playerPosition.x,
             playerPosition.y
           );

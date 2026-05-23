@@ -26,6 +26,8 @@ export default async function reading(cardId) {
     Map.showTargetLocation('Harbor Gas Station');
   } else if (targetLocationName === 'signpost-8') {
     Map.showTargetLocation('Autumnridge');
+  } else if (targetLocationName === 'signpost-9') {
+    Map.showTargetLocation('Willowshade');
   }
   if (Props.getGameProp('tutorial') === false) {
     Checkpoint.save(targetLocationName);

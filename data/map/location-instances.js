@@ -9,5 +9,6 @@ export default {
     'Camp Silverlake': [28, 22],
     'Harbor Gas Station': [34, 16],
     Autumnridge: [18, 7],
+    Willowshade: [35, 41],
   },
 };

@@ -38,6 +38,7 @@ export default {
       'signpost-6',
       'signpost-7',
       'signpost-8',
+      'signpost-9',
     ],
     place: ['milton', 'sobor'],
     train: ['train-wreck-2', 'train-wreck-1'],
@@ -141,6 +142,7 @@ export default {
     'signpost-6': { locked: 0, spawn: 0, items: [] },
     'signpost-7': { locked: 0, spawn: 0, items: [] },
     'signpost-8': { locked: 0, spawn: 0, items: [] },
+    'signpost-9': { locked: 0, spawn: 0, items: [] },
     'old-villa': {
       locked: 3,
       spawn: 3,
