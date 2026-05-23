@@ -85,6 +85,7 @@ export default {
     loader.load(14, 'ui/day-teaser-right.png');
     loader.load(15, 'ui/crafting-1.png');
     loader.load(16, 'ui/crafting-2.png');
+    loader.load(16, 'ui/crafting-3.png');
     loader.load(17, 'ui/action-points.png');
     loader.load(18, 'ui/you.png');
   },
@@ -119,5 +120,6 @@ export default {
     loader.load(13, 'step-5.png');
     loader.load(14, 'general-notes.png');
     loader.load(15, 'letter-blank.png');
+    loader.load(16, 'signpost.png');
   },
 };
