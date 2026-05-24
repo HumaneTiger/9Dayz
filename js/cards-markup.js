@@ -299,6 +299,8 @@ export default {
     if (cardRef.dataset.atSource === 'true') {
       delete cardRef.dataset.atSource;
       cardRef.style.top = '';
+      cardRef.style.transform = '';
+      cardRef.style.opacity = 1;
       Audio.sfx('deal-card');
     }
 
