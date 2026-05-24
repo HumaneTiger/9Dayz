@@ -176,7 +176,7 @@ export default {
             if (Almanac.isOpen()) {
               Almanac.close();
             } else {
-              Almanac.showPage('index', action, document.getElementById('actions'));
+              Almanac.open(action, document.getElementById('actions'));
             }
             break;
           case 'map':

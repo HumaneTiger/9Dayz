@@ -68,6 +68,10 @@ export default {
     });
   },
 
+  open: function (refElement, parentElement) {
+    this.showPage('index', refElement, parentElement);
+  },
+
   close: function (force) {
     if (force || !almanacContainer.classList.contains('repos')) {
       almanacContainer.classList.remove('repos');
