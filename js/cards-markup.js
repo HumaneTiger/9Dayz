@@ -62,8 +62,20 @@ export default {
       fieldCounter === 1 ? (fieldCounter = 2) : (fieldCounter = 1);
     }
 
+    const iconEl = document.querySelector(`.icon-${id}`);
+    const scale = Props.getGameProp('scaleFactor');
+    const viewportRect = document.getElementById('viewport').getBoundingClientRect();
+    let spawnLeft;
+    if (iconEl) {
+      const iconRect = iconEl.getBoundingClientRect();
+      const iconGameCenterX = (iconRect.left - viewportRect.left) / scale;
+      spawnLeft = Math.round(iconGameCenterX - 120);
+    } else {
+      spawnLeft = Math.round(object.x * 44.4 - 120);
+    }
+
     let cardMarkupPre =
-      `<div id="${id}" class="card ${object.locked ? 'locked ' : ''} ${object.dead ? 'dead ' : ''} ${object.preview ? 'preview ' : ''} ${object.group}" style="left: ${Math.round(object.x * 44.4 - 120)}px; top: 600px; transform: scale(0.4);">` +
+      `<div id="${id}" class="card ${object.locked ? 'locked ' : ''} ${object.dead ? 'dead ' : ''} ${object.preview ? 'preview ' : ''} ${object.group}" style="left: ${spawnLeft}px; top: 600px; transform: scale(0.4);">` +
       `<div class="inner">`;
 
     let cardMarkupBuilding =
