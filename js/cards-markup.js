@@ -46,6 +46,29 @@ export default {
     }
   },
 
+  getSourcePosition: function (id) {
+    const object = Props.getObject(id);
+    const iconEl = document.querySelector(`.icon-${id}`);
+    const scale = Props.getGameProp('scaleFactor');
+    const viewportRect = document.getElementById('viewport').getBoundingClientRect();
+    const cardHeight = 450 / 2;
+    if (iconEl) {
+      const LEFT_JITTER = 40;
+      const iconRect = iconEl.getBoundingClientRect();
+      const cardsRect = cardsContainer.getBoundingClientRect();
+      const left = Math.round((iconRect.left - viewportRect.left) / scale - 120);
+      const top = Math.round((iconRect.top - cardsRect.top) / scale - cardHeight);
+      return {
+        left: left + Math.round((Math.random() * 2 - 1) * LEFT_JITTER),
+        top: top,
+      };
+    }
+    return {
+      left: Math.round(object.x * 44.4 - 120),
+      top: 600,
+    };
+  },
+
   createCardMarkup: function (id) {
     let object = Props.getObject(id);
     let cardMarkupExtension;
@@ -62,20 +85,10 @@ export default {
       fieldCounter === 1 ? (fieldCounter = 2) : (fieldCounter = 1);
     }
 
-    const iconEl = document.querySelector(`.icon-${id}`);
-    const scale = Props.getGameProp('scaleFactor');
-    const viewportRect = document.getElementById('viewport').getBoundingClientRect();
-    let spawnLeft;
-    if (iconEl) {
-      const iconRect = iconEl.getBoundingClientRect();
-      const iconGameCenterX = (iconRect.left - viewportRect.left) / scale;
-      spawnLeft = Math.round(iconGameCenterX - 120);
-    } else {
-      spawnLeft = Math.round(object.x * 44.4 - 120);
-    }
+    const { left: spawnLeft, top: spawnTop } = this.getSourcePosition(id);
 
     let cardMarkupPre =
-      `<div id="${id}" class="card ${object.locked ? 'locked ' : ''} ${object.dead ? 'dead ' : ''} ${object.preview ? 'preview ' : ''} ${object.group}" style="left: ${spawnLeft}px; top: 600px; transform: scale(0.4);">` +
+      `<div id="${id}" class="card ${object.locked ? 'locked ' : ''} ${object.dead ? 'dead ' : ''} ${object.preview ? 'preview ' : ''} ${object.group}" style="left: ${spawnLeft}px; top: ${spawnTop}px; transform: scale(0.4);" data-at-source="true">` +
       `<div class="inner">`;
 
     let cardMarkupBuilding =
@@ -283,7 +296,8 @@ export default {
 
     sharedDeckState.activeCardIndex += 1;
 
-    if (cardRef.style.top === '600px') {
+    if (cardRef.dataset.atSource === 'true') {
+      delete cardRef.dataset.atSource;
       cardRef.style.top = '';
       Audio.sfx('deal-card');
     }
@@ -388,10 +402,12 @@ export default {
       return;
     }
 
-    cardRef.style.left = Math.round(parseInt(object.x) * 44.4 - 120) + 'px';
-    cardRef.style.top = '600px';
+    const { left: sourceLeft, top: sourceTop } = this.getSourcePosition(cardId);
+    cardRef.style.left = sourceLeft + 'px';
+    cardRef.style.top = sourceTop + 'px';
     cardRef.style.transform = 'scale(0.4)';
     cardRef.style.opacity = 0;
+    cardRef.dataset.atSource = 'true';
 
     await TimingUtils.wait(300);
 
