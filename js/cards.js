@@ -243,12 +243,18 @@ export default {
     CardsManager.calculateCardDeckProperties();
     let cardDeck = CardsManager.getCardDeck();
     cardDeck.sort(this.compare);
+    let permaSpawnTop = null;
 
     cardDeck?.forEach(card => {
       const object = Props.getObject(card.id);
       if (!object.discovered) {
         object.discovered = true;
-        CardsMarkup.createCardMarkup(card.id);
+        const { left: spawnLeft, top: spawnTop } = CardsMarkup.getSourcePosition(card.id);
+        // make sure that all newly added cards in that loop spawn at the same vertical position to prevent a jittery spawn effect
+        if (permaSpawnTop === null) {
+          permaSpawnTop = spawnTop;
+        }
+        CardsMarkup.createCardMarkup(card.id, spawnLeft, permaSpawnTop);
         /* candidates for event bus */
         if (object.group === 'zombie') {
           if (object.name === 'rat') {

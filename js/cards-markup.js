@@ -69,7 +69,7 @@ export default {
     };
   },
 
-  createCardMarkup: function (id) {
+  createCardMarkup: function (id, spawnLeft, spawnTop) {
     let object = Props.getObject(id);
     let cardMarkupExtension;
     let buildingName = object.name.startsWith('signpost-') ? 'signpost' : object.name;
@@ -84,8 +84,6 @@ export default {
       buildingName = buildingName + '-' + fieldCounter;
       fieldCounter === 1 ? (fieldCounter = 2) : (fieldCounter = 1);
     }
-
-    const { left: spawnLeft, top: spawnTop } = this.getSourcePosition(id);
 
     let cardMarkupPre =
       `<div id="${id}" class="card ${object.locked ? 'locked ' : ''} ${object.dead ? 'dead ' : ''} ${object.preview ? 'preview ' : ''} ${object.group}" style="left: ${spawnLeft}px; top: ${spawnTop}px; transform: scale(0.4);" data-at-source="true">` +
