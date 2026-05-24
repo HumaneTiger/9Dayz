@@ -82,7 +82,9 @@ export default {
   },
 
   isOpen: function () {
-    return !almanacContainer.classList.contains('out');
+    return (
+      !almanacContainer.classList.contains('out') || almanacContainer.classList.contains('repos')
+    );
   },
 
   /* handles all triggers which open almanac pages via right-click */
@@ -386,11 +388,6 @@ export default {
         .setAttribute('src', AlmanacManager.getAlmanacContentPage(item).motive);
       markupSection.innerHTML = AlmanacManager.getAlmanacContentPage(item).markup;
       markupSection.classList.remove('is--hidden');
-
-      if (markupSection.offsetHeight > 200) {
-        almanacContainer.style.top =
-          parseInt(almanacContainer.style.top, 10) + markupSection.offsetHeight - 200 + 'px';
-      }
     } else {
       almanacContainer
         .querySelector('img.motive')
@@ -402,19 +399,32 @@ export default {
   },
 
   positionAlmanacContainer: function (refElem, parentElem) {
-    // adjust position if almanac wasn't repositioned
-    if (refElem && parentElem && !almanacContainer.classList.contains('repos')) {
-      const left =
-        refElem.offsetLeft + parentElem.offsetLeft > 120
-          ? refElem.offsetLeft + parentElem.offsetLeft
-          : 120;
-      const top =
-        refElem.offsetTop + parentElem.offsetTop > 550
-          ? refElem.offsetTop + parentElem.offsetTop
-          : 550;
-      almanacContainer.style.left = left + 'px';
-      almanacContainer.style.top = top + 'px';
+    if (!(refElem instanceof Element) || !(parentElem instanceof Element)) {
+      return;
     }
+    if (almanacContainer.classList.contains('repos')) {
+      return;
+    }
+    const scale = Props.getGameProp('scaleFactor');
+    const viewportRect = document.getElementById('viewport').getBoundingClientRect();
+    const refRect = refElem.getBoundingClientRect();
+    const almWidth = almanacContainer.offsetWidth;
+    const almHeight = almanacContainer.offsetHeight;
+
+    // center horizontally on the reference element
+    const refGameCenterX = (refRect.left + refRect.width / 2 - viewportRect.left) / scale;
+    const maxLeft = (window.innerWidth - viewportRect.left) / scale - almWidth;
+    const left = Math.max(0, Math.min(refGameCenterX - almWidth / 2, maxLeft));
+
+    // place below if ref element is in the top half of the screen, otherwise above
+    const refMidY = refRect.top + refRect.height / 2;
+    const placeBelow = refMidY < window.innerHeight / 2;
+    const refGameBottom = (refRect.bottom - viewportRect.top) / scale;
+    const refGameTop = (refRect.top - viewportRect.top) / scale;
+    const top = placeBelow ? refGameBottom + 5 : refGameTop - almHeight - 5;
+
+    almanacContainer.style.left = left + 'px';
+    almanacContainer.style.top = Math.max(0, top) + 'px';
   },
 
   resetAlmanacPageContent: function () {
@@ -433,8 +443,8 @@ export default {
     if (almanacContainer.dataset?.item !== item) {
       almanacContainer.dataset.item = item;
 
-      this.positionAlmanacContainer(refElem, parentElem);
       this.updatePage();
+      this.positionAlmanacContainer(refElem, parentElem);
 
       if (item === 'index') {
         this.fillIndexPage();
@@ -442,7 +452,6 @@ export default {
 
       if (!almanacHistory.length || almanacHistory.at(-1)[0] !== item) {
         almanacHistory.push([item]);
-        console.log(almanacHistory);
         this.updateNavigation();
       }
     }

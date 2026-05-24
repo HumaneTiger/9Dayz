@@ -16,7 +16,6 @@
   z-index: 50;
   user-select: initial;
   opacity: 1;
-  transform: translate(-35%, -110%);
   transition:
     opacity 0.15s ease-out,
     box-shadow 0.15s ease-out;
