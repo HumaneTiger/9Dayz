@@ -207,6 +207,17 @@
   font-size: 32px;
 }
 
+#maximap .inner .map-cover .cover .location:after {
+  content: '★';
+  font-weight: 300;
+  color: rgb(77, 131, 181);
+  display: inline-block;
+  vertical-align: top;
+  line-height: 1;
+  padding-left: 8px;
+  font-size: 32px;
+}
+
 #maximap .inner .map-high img {
   filter: drop-shadow(-7px 3px 7px rgba(0, 0, 0, 0.5))
     drop-shadow(-21px 10px 7px rgba(0, 0, 0, 0.4));

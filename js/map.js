@@ -1,7 +1,7 @@
 import Props from './props.js';
 import { ObjectState, MapManager, EventManager, EVENTS } from './core/index.js';
 import BuildingDefinitions from '../data/definitions/building-definitions.js';
-import { MapDefinitions } from '../data/index.js';
+import { MapDefinitions, LocationInstances } from '../data/index.js';
 
 const buidingsContainer = document.querySelector('.map .map-buildings');
 const highlightsContainer = document.querySelector('.map .map-highlights');
@@ -159,15 +159,15 @@ export default {
   },
 
   showTargetLocation: function (target) {
-    const targetLocations = Props.getAllTargetLocations();
+    const targetLocations = LocationInstances[MapManager.currentMapKey];
     if (targetLocations[target]) {
-      const x = targetLocations[target][0];
-      const y = targetLocations[target][1];
+      const x = targetLocations[target].coords[0];
+      const y = targetLocations[target].coords[1];
       const locationLeft = Math.round(x * 44.4 + 12);
       const locationTop = Math.round(y * 44.4 + 3);
       mapCover.insertAdjacentHTML(
         'beforeend',
-        `<span class='location' style='top: ${locationTop}px; left: ${locationLeft}px;'>${target}</span>`
+        `<span class='location ${targetLocations[target].specialLoot ? 'special-loot' : ''}' style='top: ${locationTop}px; left: ${locationLeft}px;'>${target}</span>`
       );
     }
   },

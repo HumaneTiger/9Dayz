@@ -9,8 +9,6 @@ import {
   ObjectFactory,
 } from './core/index.js';
 
-import { LocationInstances } from '../data/index.js';
-
 export default {
   init: function () {
     GameState.init();
@@ -152,10 +150,6 @@ export default {
 
   setZedCounter: function (value) {
     ObjectState.setZedCounter(value);
-  },
-
-  getAllTargetLocations: function () {
-    return LocationInstances.targetLocations;
   },
 
   createCreaturesList: function (creatureType, x, y) {
