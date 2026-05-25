@@ -73,6 +73,8 @@ export default {
       // ===== MAP =====
       // Uncovered fog-of-war coordinates for the active map
       map: MapDefinitions[MapManager.currentMapKey].uncoveredCoords.slice(),
+      // Target location names revealed on the map (shown via signposts)
+      shownLocations: MapDefinitions[MapManager.currentMapKey].shownLocations.slice(),
 
       // ===== SHIP =====
       shipTime: ShipManager.getShipProps().time,
@@ -246,6 +248,10 @@ export default {
     // Restore fog-of-war by replaying each uncovered coord through mapUncoverAt
     if (checkpoint.map) {
       checkpoint.map.forEach(([x, y]) => Map.mapUncoverAt(x, y));
+    }
+    // Restore revealed target location pins on the map
+    if (checkpoint.shownLocations) {
+      checkpoint.shownLocations.forEach(name => Map.showTargetLocation(name));
     }
 
     return true;

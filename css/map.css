@@ -207,7 +207,7 @@
   font-size: 32px;
 }
 
-#maximap .inner .map-cover .cover .location:after {
+#maximap .inner .map-cover .cover .special-loot:after {
   content: '★';
   font-weight: 300;
   color: rgb(77, 131, 181);

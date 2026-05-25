@@ -29,6 +29,7 @@ const mapSize = { width: 49, height: 45 };
  * @property {MapPosition} mapPosition - The current position of the map with reference points and actual x, y coordinates
  * @property {MapCoordinate} shipHotSpot - The position of the ship's hot spot on the map
  * @property {number[][]} uncoveredCoords - Runtime state: game coords that have been uncovered (fog removed)
+ * @property {string[]} shownLocations - Runtime state: target location names that have been revealed on the map
  */
 
 /**
@@ -55,5 +56,7 @@ export default {
     },
     /** @type {number[][]} */
     uncoveredCoords: [],
+    /** @type {string[]} */
+    shownLocations: [],
   },
 };

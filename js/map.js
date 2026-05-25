@@ -160,7 +160,10 @@ export default {
 
   showTargetLocation: function (target) {
     const targetLocations = LocationInstances[MapManager.currentMapKey];
-    if (targetLocations[target]) {
+    if (
+      targetLocations[target] &&
+      !MapDefinitions[MapManager.currentMapKey].shownLocations.includes(target)
+    ) {
       const x = targetLocations[target].coords[0];
       const y = targetLocations[target].coords[1];
       const locationLeft = Math.round(x * 44.4 + 12);
@@ -169,6 +172,7 @@ export default {
         'beforeend',
         `<span class='location ${targetLocations[target].specialLoot ? 'special-loot' : ''}' style='top: ${locationTop}px; left: ${locationLeft}px;'>${target}</span>`
       );
+      MapDefinitions[MapManager.currentMapKey].shownLocations.push(target);
     }
   },
 
